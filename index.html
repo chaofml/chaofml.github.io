@@ -372,7 +372,7 @@
                 
               
 
-              <time title="Post created: 2018-12-23 18:03:06 / Updated at: 18:17:56" itemprop="dateCreated datePublished" datetime="2018-12-23T18:03:06+08:00">2018-12-23</time>
+              <time title="Post created: 2018-12-23 18:03:06 / Updated at: 20:43:51" itemprop="dateCreated datePublished" datetime="2018-12-23T18:03:06+08:00">2018-12-23</time>
             
 
             
@@ -411,15 +411,25 @@
 
       
         
-          
-            <h1 id="使用配置"><a href="#使用配置" class="headerlink" title="使用配置"></a>使用配置</h1><p>根文件夹下面的_config.yml文件是正个配置文件。在这里面能配置全局的配置。如，部署文件deploy属性。</p>
+          <h1 id="使用配置"><a href="#使用配置" class="headerlink" title="使用配置"></a>使用配置</h1><p>根文件夹下面的_config.yml文件是正个配置文件。在这里面能配置全局的配置。如，部署文件deploy属性。</p>
 <p>但是现在遇到的问题，想设置一下网站的名称，用上了中文，结果出现了乱码问题。网上有说，配置保存成Utf-8形式的。也有说如如下配置的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">language: zh-CN</span><br></pre></td></tr></table></figure></p>
 <p>及</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">language: zh-Hans</span><br></pre></td></tr></table></figure>
 <p>反正以上均不奏效。懒得再折腾，以后再说吧。</p>
 <h3 id="另外，这篇文章保存了gbk结果文章都乱码了。"><a href="#另外，这篇文章保存了gbk结果文章都乱码了。" class="headerlink" title="另外，这篇文章保存了gbk结果文章都乱码了。"></a>另外，这篇文章保存了gbk结果文章都乱码了。</h3><p>试过了重启服务、删除生成的文档、均还是乱码。搞不懂为啥了。结果是，虽然另存了编码，但是保存成了md.txt文件。所以就不奏效咯。配置文件也是同样的问题。</p>
-
+<h3 id="常用配置"><a href="#常用配置" class="headerlink" title="常用配置"></a>常用配置</h3><ul>
+<li>文章中设置显示摘要内容，在文章插入一行：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- more --&gt;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/12/23/useconfig/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
         
       
     </div>
@@ -519,7 +529,7 @@
                 
               
 
-              <time title="Post created: 2018-12-23 16:30:47 / Updated at: 20:14:58" itemprop="dateCreated datePublished" datetime="2018-12-23T16:30:47+08:00">2018-12-23</time>
+              <time title="Post created: 2018-12-23 16:30:47 / Updated at: 20:39:05" itemprop="dateCreated datePublished" datetime="2018-12-23T16:30:47+08:00">2018-12-23</time>
             
 
             
@@ -558,22 +568,16 @@
 
       
         
+          <h1 id="在github上使用hexo"><a href="#在github上使用hexo" class="headerlink" title="在github上使用hexo"></a>在github上使用hexo</h1><p>安装过程，参照这篇<a href="https://www.cnblogs.com/fengxiongZz/p/7707219.html" target="_blank" rel="noopener">文章</a>，写的比较详细。安装比较顺利。之前在服务器也安装过hexo，不过从来没有更新过东西。（这里还有另外一篇<a href="https://www.cnblogs.com/trista222/p/8017300.html" target="_blank" rel="noopener">文章</a>]）<br>介绍hexo的<a href="https://www.jianshu.com/p/21c94eb7bcd1" target="_blank" rel="noopener">文章</a></p>
+          <!--noindex-->
           
-            <h1 id="在github上使用hexo"><a href="#在github上使用hexo" class="headerlink" title="在github上使用hexo"></a>在github上使用hexo</h1><p>安装过程，参照这篇<a href="https://www.cnblogs.com/fengxiongZz/p/7707219.html" target="_blank" rel="noopener">文章</a>，写的比较详细。安装比较顺利。之前在服务器也安装过hexo，不过从来没有更新过东西。（这里还有另外一篇<a href="https://www.cnblogs.com/trista222/p/8017300.html" target="_blank" rel="noopener">文章</a>]）<br>介绍hexo的<a href="https://www.jianshu.com/p/21c94eb7bcd1" target="_blank" rel="noopener">文章</a></p>
-<h3 id="至此，博客已经安装成功"><a href="#至此，博客已经安装成功" class="headerlink" title="至此，博客已经安装成功"></a>至此，博客已经安装成功</h3><p>整个安装过程比较简单，可能是因为平时也使用过了hexo已经git工具、npm工具，所以在理解文章的内容方便，没有任何困难。我安装，并不是严格的安装文章的方式来弄的。下面是我的安装：</p>
-<p>在git的方面，我没有安装文章的方式安装。而是将自己的repository进行clone到本地。然后将hexo文件内的全部文件都移动到clone后的文件。然后执行了一次</p>
-<ul>
-<li>git add .</li>
-<li>git commit -m ‘init’</li>
-<li>git push origin master</li>
-</ul>
-<p>命令之后，然后才安装部署工具。  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-<p>但是，没有设置config.yml 文末最后的deploy，结果没有任何反应。<br>然后仔细看文章后，加上了deploy的相关设置，成功部署。</p>
-<h3 id="部署的实质"><a href="#部署的实质" class="headerlink" title="部署的实质"></a>部署的实质</h3><p>部署的实质其实利用hexo这个博客工具，产生静态文件，放置在public文件夹下面，并利用deploy工具push到git上面。</p>
-<p>2018年12月23日  星期日 16:35</p>
-
-          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/12/23/firstpage/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
         
       
     </div>
