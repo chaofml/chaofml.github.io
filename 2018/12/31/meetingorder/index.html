@@ -112,7 +112,7 @@
 <meta property="og:site_name" content="静谧花园">
 <meta property="og:description" content="会议预约系统中的思考  做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。  比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-31T14:28:33.934Z">
+<meta property="og:updated_time" content="2018-12-31T14:33:11.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="会议预约系统设计中的思考">
 <meta name="twitter:description" content="会议预约系统中的思考  做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。  比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权">
@@ -228,7 +228,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
 
   </li>
         
@@ -245,7 +245,7 @@
 
     
 
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>Über</a>
 
   </li>
         
@@ -279,7 +279,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
 
   </li>
 
@@ -367,14 +367,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
 
               
                 
               
 
-              <time title="Created: 2018-12-31 21:38:30 / Modified: 22:28:33" itemprop="dateCreated datePublished" datetime="2018-12-31T21:38:30+08:00">2018-12-31</time>
+              <time title="Post created: 2018-12-31 21:38:30 / Updated at: 22:33:11" itemprop="dateCreated datePublished" datetime="2018-12-31T21:38:30+08:00">2018-12-31</time>
             
 
             
@@ -460,7 +460,7 @@
 <p>出现上述问题，最重要的还是，代码设计功底不强，抽象能力较差。重复做机械的操作。如果套上设计模式，可能会更好一些。这个值得以后去思考。</p>
 <h2 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h2><hr>
 <blockquote>
-<p>机械的检测的代码，应设计成代码生成器的模式，或者抽象出可复用的。<br>代码应该独立成模块，而且相关的操作，应该放在一起。比如后台的会议预约系统，为了临时的快捷，将发布会议等功能，也放到此模块中。增加了代码的函数，不利于理解。</p>
+<p>机械的检测的代码，应设计成代码生成器的模式，或者抽象出可复用的。<br>代码应该独立成模块，而且相关的操作，应该放在一起。比如后台的会议预约系统，为了临时的快捷，将发布会议等功能，也放到此模块中。增加了代码的函数，不利于理解。<br>增加抽象能力。前端，针对一些常见的操作，应该进一步操作，如：ajax请求，消息提醒等。应该进行抽象。对于一些简单的模块，应该抽象出一个父类组件，子类只需要进行配置，即可使用。（将部分业务跟组件进行合并，进行继承。子类会很干净，整洁）</p>
 </blockquote>
 
       
@@ -553,10 +553,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -577,7 +577,7 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">6</span>
-                    <span class="site-state-item-name">posts</span>
+                    <span class="site-state-item-name">Artikel</span>
                   </a>
                 </div>
               
@@ -598,7 +598,7 @@
                       
                     
                     <span class="site-state-item-count">3</span>
-                    <span class="site-state-item-name">tags</span>
+                    <span class="site-state-item-name">Tags</span>
                   
                 </div>
               
@@ -664,7 +664,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
 
 
 
