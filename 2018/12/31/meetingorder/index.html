@@ -104,25 +104,25 @@
 
 
 
-  <meta name="description" content="写在2019年 今天是2018年12月31日，2018年的最后一天。趁现在，记录一下过去的2018年，迎来我的而立之年。 总结这一年，目标完成了50%，另外的50%，只能看运气呢。">
-<meta name="keywords" content="个人">
+  <meta name="description" content="会议预约系统中的思考  做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。  比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权">
+<meta name="keywords" content="总结">
 <meta property="og:type" content="article">
-<meta property="og:title" content="迎接2019年">
-<meta property="og:url" content="http://yoursite.com/2018/12/31/start2019-md/index.html">
+<meta property="og:title" content="会议预约系统设计中的思考">
+<meta property="og:url" content="http://yoursite.com/2018/12/31/meetingorder/index.html">
 <meta property="og:site_name" content="静谧花园">
-<meta property="og:description" content="写在2019年 今天是2018年12月31日，2018年的最后一天。趁现在，记录一下过去的2018年，迎来我的而立之年。 总结这一年，目标完成了50%，另外的50%，只能看运气呢。">
+<meta property="og:description" content="会议预约系统中的思考  做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。  比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-31T09:53:12.947Z">
+<meta property="og:updated_time" content="2018-12-31T14:28:33.934Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="迎接2019年">
-<meta name="twitter:description" content="写在2019年 今天是2018年12月31日，2018年的最后一天。趁现在，记录一下过去的2018年，迎来我的而立之年。 总结这一年，目标完成了50%，另外的50%，只能看运气呢。">
+<meta name="twitter:title" content="会议预约系统设计中的思考">
+<meta name="twitter:description" content="会议预约系统中的思考  做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。  比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/31/start2019-md/">
+  <link rel="canonical" href="http://yoursite.com/2018/12/31/meetingorder/">
 
 
 
@@ -132,7 +132,7 @@
   };
 </script>
 
-  <title>迎接2019年 | 静谧花园</title>
+  <title>会议预约系统设计中的思考 | 静谧花园</title>
   
 
 
@@ -331,7 +331,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/31/start2019-md/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/31/meetingorder/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -348,7 +348,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">迎接2019年
+          <h1 class="post-title" itemprop="name headline">会议预约系统设计中的思考
 
               
             
@@ -374,7 +374,7 @@
                 
               
 
-              <time title="Post created: 2018-12-31 16:57:39 / Updated at: 17:53:12" itemprop="dateCreated datePublished" datetime="2018-12-31T16:57:39+08:00">2018-12-31</time>
+              <time title="Post created: 2018-12-31 21:38:30 / Updated at: 22:28:33" itemprop="dateCreated datePublished" datetime="2018-12-31T21:38:30+08:00">2018-12-31</time>
             
 
             
@@ -412,40 +412,56 @@
       
 
       
-        <h1 id="写在2019年"><a href="#写在2019年" class="headerlink" title="写在2019年"></a>写在2019年</h1><hr>
-<p>今天是2018年12月31日，2018年的最后一天。趁现在，记录一下过去的2018年，迎来我的而立之年。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一年，目标完成了50%，另外的50%，只能看运气呢。<br><a id="more"></a><br>我顺利地完成了职业的转变，当上了一名it农民工，开始了之前的漫漫的代码之路。</p>
-<h3 id="2018年，变化挺大的一年，挺狗血的一年"><a href="#2018年，变化挺大的一年，挺狗血的一年" class="headerlink" title="2018年，变化挺大的一年，挺狗血的一年"></a>2018年，变化挺大的一年，挺狗血的一年</h3><hr>
-<p>这一年，跨越了几个地方。换了几个环境：</p>
+        <h1 id="会议预约系统中的思考"><a href="#会议预约系统中的思考" class="headerlink" title="会议预约系统中的思考"></a>会议预约系统中的思考</h1><hr>
+<blockquote>
+<p>做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。</p>
+</blockquote>
+<p>比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权限，临时加权限。需要屏蔽权限，临时的更改代码。其实这些权限的功能，理论上应该在后台的数据库里面进行统一管理，而不是采用更改代码的方式，去满足用户的设计。</p>
+<p>一套系统，要上线三个客户端，而三个客户端，要维护三个前端的代码、三个后台的代码，除了个别的模块代码，共用了部分后台代码。虽然完成了用户功能，后台、手机端这种分离的代码，不能很好的形成统一的管理。更不要说后期的代码维护。基本上每个模块都是独立的设计，公用的操作，没有独立出来，而且又没有代码生成器。代码风格确实有点不统一。（如：json返回值code的表示，有的人习惯用0表示没有错误，而有的人喜欢用1。其实个人感觉，应该用0来表示没有错误。因为没有错误只有一种可能。失败，却有很多可能。）</p>
+<p>后台的php代码，没有设计一些必要的全局变量。如根目录、调试模式等。没有设置放置运行过程中的临时变量。</p>
+<p>虽然后台没有很大的访问题量，但是在一些不常更改的地方，应该考虑使用缓存系统。比如，部门结构，这种递归嵌套循环，是很耗时的，而部门往往是最不经常变化的，应该采用缓存。</p>
+<p>系统，没有按照正规的模式，设计模型类，全部是静态类的方式调用。这种方式，其实只是利用了静态类的简单包装功能。并没有深入的面向对象的设计过程。其实框架提供了很多有用的功能，并不需要人为去手动添加的。合理的使用功能。如数据验证、简单的数据查询功能等。这些完全不需要手动去写。只需要new 模型的实例，或者像ThinkPHP中的那样，用D、M函数来自动生成。简化功能。</p>
+<p>最终这个系统，就是简单的使用了$db-&gt;query的功能，连fetchCol等函数，这些框架本身能完成的功能，还需要手动编码。无疑增加了代码量。另外，手机端的会议预约系统，独立的小函数确实多，但是基本上，也没有办法复用。而且阅读代码的时候，由于函数调用的层次过多，其实并不有利于把握整体的代码。</p>
+<blockquote>
+<p>顺便说一句，产品越着急，其实越不适合培养新人。勉强的培养出来一个，其缺少必要的知识，成长的慢。而且需要花费大量的精力。确实得不偿失。</p>
+</blockquote>
+<h2 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h2><hr>
 <ul>
-<li>1月，在安徽定远。</li>
-<li>2月，回家过了一个年。</li>
-<li>3-5月，回到河南的项目，当了几个月的安全部长。思来想去，终于，鼓起勇气，辞去了干了快我五年的工作。</li>
-<li>然后，5-6月，在家经历了两个月的自习。经过漫长的自学的煎熬日子，其实也挺困惑的。那是我最不确定未来的日子。最开始的一个月还好，能耐心的学下去，开是到了第二个月，出现了疲惫。怎么也看不下去视频了。还好，又重新了视频，动手发现自己什么也不会。然后推迟去找工作，在家又耐心的看了半个月。</li>
-<li>7月的第一天，我来到了北京城，开始去找工作。在半个月的时间，我面试了10多家公司，足迹遍布了整个北京城了。大大小小的公司都面过。最终选择了一个公司留下来。</li>
-<li>7月18日在这个公司，经历了自学、做得不好被批、再到自己能够顺利的完成自己的工作。</li>
-</ul>
-<p>不过在北京的工作压力确实挺大的，上班8小时，另外还有4个小时在路上。让本来很累的我，更累了。再加上，遇到不顺心的事，人就更疲乏呢。</p>
-<h2 id="感受"><a href="#感受" class="headerlink" title="感受"></a>感受</h2><p>这一年，感觉自己什么成就也没有。放弃了原本的道路，选择了重新开始，学一门自己都不熟悉的领域。计算机这个行业，内容确实多，而且知识更新的也多。各个方面都需要学习。作为一个新手，感觉自己确实有点狂妄了。</p>
-<p>其实如果早知道学计算机这么累，可能我也没有那么想换工作。只是原来的工作，我确实不想干了。真是一言难尽。其实现在也没有过得更好一点。如果早点进入这个行业，或许，那个时候记忆和理解力更好，能学得更快、更好，或许，早就能谋个好的职位。也许，人生轨迹并不是现在这样的戳。</p>
-<h2 id="2019年，新的目标"><a href="#2019年，新的目标" class="headerlink" title="2019年，新的目标"></a>2019年，新的目标</h2><hr>
-<h3 id="要求："><a href="#要求：" class="headerlink" title="要求："></a>要求：</h3><ul>
-<li>勤做笔记，认真总结，养成随手记笔记的习惯。（善用学习工具）</li>
-<li>不能贪多，划定学习的范围。要在几个方面要深入的学习。</li>
-<li>注重基础。</li>
-<li>掌握正确的学习方式。先整体了解、后深入。边学边练。</li>
+<li><p>数据验证问题</p>
+<blockquote>
+<p>数据删除时，应有相应的删除依赖。</p>
+</blockquote>
+</li>
+<li><p>登录问题</p>
+<blockquote>
+<p>检测用户是否登录。按一般的web设计，如果用户没有登录成功。应该让用户跳转到用户登录。但是，后台却是采用了10秒轮询的方式。定期从后台访问session是否登录。如果没有登录，ajax请求到没有登录，直接跳到登录界面。<br>关于这个设计，其实在code里面统一设计，如果返回某一错误码，并返回操作的附加值，让其跳转到指定的页面。针对一些需要显示内容的页面，也应该设置统一的显示界面。另外，也需要返回一些js代码，能让其动态的直接一些操作。让操作更具有灵活性。code指定了错误类型或者操作类型。</p>
+</blockquote>
+</li>
+<li>数据删除依赖问题<blockquote>
+<p>有些数据删除时，其实是有验证的依赖关系。这种设计，其实应该在最开始的时候，进行考虑。向这种检测，应该有个统一的功能进行负责。而不是侵入到代码。</p>
+</blockquote>
+</li>
+<li><p>数据插入、修改时的唯一性验证问题</p>
+<blockquote>
+<p>其实这也是常见的功能。在数据入库之前，统一进行检测。检测的代码如：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	$sql=&apos;select * from table where id!=updateId and name!=name&apos;;</span><br><span class="line">	$msyql_query($sql)</span><br><span class="line">	//如果检测到资源，提前返回。</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>操作日志</p>
+<blockquote>
+<p>操作日志侵入正常代码，比较厉害。其实应该统一到日志模块中。另外，这种操作日志，其实是有点丑陋。</p>
+</blockquote>
+<h2 id="设计中的闪光点"><a href="#设计中的闪光点" class="headerlink" title="设计中的闪光点"></a>设计中的闪光点</h2></li>
 </ul>
 <hr>
-<h3 id="目标："><a href="#目标：" class="headerlink" title="目标："></a>目标：</h3><ul>
-<li>前端：html  + css +js  。js语法基础，ts、jsx扩展。css，sass扩展。</li>
-<li>前端框：vue extjs 、后端koa框架。</li>
-<li>后端：php、go。php语法基础。框架学习。</li>
-<li>后端框架：zend3 tp5（了解） laravel。go框架 beego等。</li>
-<li>数据库/缓存：mysql redis(重点） memcach smarty。掌握数据库sql优化，分布式部署。</li>
-<li>工具：git工具（高级），npm 、composer。md文档。</li>
-<li>常见的协议，或设计：ouath2.0单点登录、接口调用。</li>
-</ul>
-<h2 id="期待"><a href="#期待" class="headerlink" title="期待"></a>期待</h2><p>一年过去了，迎接新的一年。在新的一年力，调整好心态、奋力拼搏、低调，去争取更好的明天。期待，明年，不再只是工作上的变化。我希望得不只是这个。</p>
+<blockquote>
+<p>最开始的时候，调用三方接口，是散布在正常的代码之中的。而且设计的是面向过程的函数调用方式。后来更改为静态类的设计。因为整个系统中的静态Utils类较多。在后来，其实有心想更换为单例模式，但是切换的代价太大，导致主观上不太想变更。而且，这个消息通知模块，功能设计的也不是特别的合理。尤其是，为所有的消息通知都写了一个特殊的方法。这是错误的。应该发送各个消息，其实过程是相通的，这个应该有一个集中处理的函数，将配置项读取，然后去调用。现在问题突出表现在：阅读难度大，增加一个发送消息，又要重复代码。（虽然发送了两类消息，其实这个也能抽象成一个。）</p>
+</blockquote>
+<p>出现上述问题，最重要的还是，代码设计功底不强，抽象能力较差。重复做机械的操作。如果套上设计模式，可能会更好一些。这个值得以后去思考。</p>
+<h2 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h2><hr>
+<blockquote>
+<p>机械的检测的代码，应设计成代码生成器的模式，或者抽象出可复用的。<br>代码应该独立成模块，而且相关的操作，应该放在一起。比如后台的会议预约系统，为了临时的快捷，将发布会议等功能，也放到此模块中。增加了代码的函数，不利于理解。</p>
+</blockquote>
 
       
     </div>
@@ -469,7 +485,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/个人/" rel="tag"># 个人</a>
+            <a href="/tags/总结/" rel="tag"># 总结</a>
           
         </div>
       
@@ -482,8 +498,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/25/chrismas/" rel="next" title="圣诞节的烦恼">
-                <i class="fa fa-chevron-left"></i> 圣诞节的烦恼
+              <a href="/2018/12/31/start2019-md/" rel="next" title="迎接2019年">
+                <i class="fa fa-chevron-left"></i> 迎接2019年
               </a>
             
           </div>
@@ -491,10 +507,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/31/meetingorder/" rel="prev" title="会议预约系统设计中的思考">
-                会议预约系统设计中的思考 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -620,7 +632,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#写在2019年"><span class="nav-number">1.</span> <span class="nav-text">写在2019年</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.1.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2018年，变化挺大的一年，挺狗血的一年"><span class="nav-number">1.1.1.</span> <span class="nav-text">2018年，变化挺大的一年，挺狗血的一年</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感受"><span class="nav-number">1.2.</span> <span class="nav-text">感受</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2019年，新的目标"><span class="nav-number">1.3.</span> <span class="nav-text">2019年，新的目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#要求："><span class="nav-number">1.3.1.</span> <span class="nav-text">要求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标："><span class="nav-number">1.3.2.</span> <span class="nav-text">目标：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#期待"><span class="nav-number">1.4.</span> <span class="nav-text">期待</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#会议预约系统中的思考"><span class="nav-number">1.</span> <span class="nav-text">会议预约系统中的思考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题总结"><span class="nav-number">1.1.</span> <span class="nav-text">问题总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设计中的闪光点"><span class="nav-number">1.2.</span> <span class="nav-text">设计中的闪光点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建议"><span class="nav-number">1.3.</span> <span class="nav-text">建议</span></a></li></ol></li></ol></div>
             
 
           </div>
