@@ -106,7 +106,7 @@
 
   <meta property="og:type" content="website">
 <meta property="og:title" content="静谧花园">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="静谧花园">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -117,7 +117,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/page/2/">
 
 
 
@@ -218,7 +218,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
 
     
     
@@ -331,7 +331,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/解决找不到me的处理方式，另外一种方式/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2019-01-17_fastTesting/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -351,7 +351,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/解决找不到me的处理方式，另外一种方式/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/2019-01-17_fastTesting/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -393,7 +393,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-14 11:07:18" itemprop="dateModified" datetime="2019-02-14T11:07:18+08:00">2019-02-14</time>
+                <time title="修改时间：2019-01-17 11:25:20" itemprop="dateModified" datetime="2019-01-17T11:25:20+08:00">2019-01-17</time>
               
             
           </span>
@@ -428,16 +428,13 @@
       
         
           
-          找不到对象me以前的处理方式是，利用apply函数，将其放到其作用域中，然后能获取到作用域内的me变量。
-定义upper
-下面是另外一种方式，来为store这种对象增加upper属性，并指向当前的me对象。然后使其能获取到me对象。
-
-12345678910111213afterrender: function (cmp, eOpts) &#123;    var me = this;    va
+          快速测试其实有的时候，想要验证一个功能是否正常，或者自己不确定的时候，最好能有一个地方能快速验证，代码的地方。
+快速删除创建的垃圾数据快速搭建的时候，虽然功能某一部分不完整。但是不影响，能快速的提交表单，进行测试。将其中的一个字段设置为特征值，然后快速建立会议，然后删除。然后将后续环节直接停掉。一步步验证这个环节没有问题，再打通。12SELECT * FROM meeting where meet
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/解决找不到me的处理方式，另外一种方式/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/2019-01-17_fastTesting/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -497,7 +494,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/vue-learn/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2019-01-1_meetingorderdesktop_order_selecttime/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -517,7 +514,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/vue-learn/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/2019-01-1_meetingorderdesktop_order_selecttime/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -559,7 +556,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-03-12 16:44:34" itemprop="dateModified" datetime="2019-03-12T16:44:34+08:00">2019-03-12</time>
+                <time title="修改时间：2019-01-17 11:24:08" itemprop="dateModified" datetime="2019-01-17T11:24:08+08:00">2019-01-17</time>
               
             
           </span>
@@ -594,19 +591,13 @@
       
         
           
-          1time: 2019年2月18日
-vue 学习笔记router-link中传值的三种方式
-
-环境搭建
-
-vue2+webpack4+scss
-以下代码中，如果传递参数1为对应的学生的id？
-1234&lt;li v-for=&quot;student in students&quot; :key=&quot;student.id&quot; @click=&quot;queryScore(1)&
+          会议室选择时间设计会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。
+方案分析第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/vue-learn/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/2019-01-1_meetingorderdesktop_order_selecttime/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -666,7 +657,7 @@ vue2+webpack4+scss
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/shell_note/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2018-12-15_selectedtime/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -686,7 +677,7 @@ vue2+webpack4+scss
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/shell_note/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/2018-12-15_selectedtime/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -728,7 +719,7 @@ vue2+webpack4+scss
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-28 17:46:12" itemprop="dateModified" datetime="2019-01-28T17:46:12+08:00">2019-01-28</time>
+                <time title="修改时间：2019-01-28 17:45:22" itemprop="dateModified" datetime="2019-01-28T17:45:22+08:00">2019-01-28</time>
               
             
           </span>
@@ -763,180 +754,13 @@ vue2+webpack4+scss
       
         
           
-          shell
-查看端口占用netstat -tunlp |grep 端口号，用于查看指定的端口号的进程情况，如查看8000端口的情况，netstat -tunlp |grep 800012345-t (tcp) 仅显示tcp相关选项-u (udp)仅显示udp相关选项-n 拒绝显示别名，能显示数字的全部转化为数字-l 仅列出在Listen(监听)的服务状态-p 显示建立相关链接的程序名
-
-          
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/shell_note/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/php常用函数/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧花园">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/17/php常用函数/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-17 20:53:50" itemprop="dateCreated datePublished" datetime="2019-03-17T20:53:50+08:00">2019-03-17</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-13 16:25:52" itemprop="dateModified" datetime="2019-02-13T16:25:52+08:00">2019-02-13</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          PHP常用函数总结
-数学函数1.abs(): 求绝对值1$abs = abs(-4.2); //4.2 数字绝对值数字
-2.ceil(): 进一法取整1echo ceil(9.999); // 10 浮点数进一取整
-3.floor(): 舍去法取整echo floor(9.999); // 9 浮点数直接舍去小数部分
-4.fmod(): 浮点数取余$x = 5.7;$y = 1.3; // 两个浮
+          感觉下面的代码还能再优化。
+1234567891011121314151617181920212223242526272829303132333435/************     * 2019年1月15日     * 设置选择样式     ************/    setSelectStyle:function(record,indexs)&#123;        var me=t
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/php常用函数/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/2018-12-15_selectedtime/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -996,7 +820,7 @@ vue2+webpack4+scss
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/js_sync/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/vb/toos/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -1016,7 +840,7 @@ vue2+webpack4+scss
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/js_sync/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/vb/toos/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -1058,7 +882,7 @@ vue2+webpack4+scss
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-11 11:24:34" itemprop="dateModified" datetime="2019-01-11T11:24:34+08:00">2019-01-11</time>
+                <time title="修改时间：2019-01-28 17:46:28" itemprop="dateModified" datetime="2019-01-28T17:46:28+08:00">2019-01-28</time>
               
             
           </span>
@@ -1093,13 +917,12 @@ vue2+webpack4+scss
       
         
           
-          js的异步代码js中的代码都是单线程的。遇到异步的代码，特别注意。因为调用getRoomOption过一次，再执行setRoomOption不会报错，如果没有执行的话，那么option就会出错。
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555
+          vb小工具代码快速打开文件12345Private Sub Command2_Click()    &apos;实际上是调用脚本命令。  /c  是用来执行一条命令。    Rem:这是另外一种注释方式。    Shell &quot;c:\windows\system32\cmd.exe /c &quot; + &quot;start \\172.168.64.24\d\ShineMDS\Shi
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/js_sync/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/vb/toos/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1159,7 +982,7 @@ vue2+webpack4+scss
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/href/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/code/lunar/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -1179,7 +1002,7 @@ vue2+webpack4+scss
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/href/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/code/lunar/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -1221,7 +1044,7 @@ vue2+webpack4+scss
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-17 12:40:32" itemprop="dateModified" datetime="2019-01-17T12:40:32+08:00">2019-01-17</time>
+                <time title="修改时间：2019-03-08 16:49:06" itemprop="dateModified" datetime="2019-03-08T16:49:06+08:00">2019-03-08</time>
               
             
           </span>
@@ -1256,182 +1079,13 @@ vue2+webpack4+scss
       
         
           
-          常用链接
-基于Beego开发的易用、易扩展、界面友好的轻量级功能权限管理系统
-Beego官网
-
-
-          
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/href/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/common_msg_win/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧花园">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/17/common_msg_win/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-17 20:53:50" itemprop="dateCreated datePublished" datetime="2019-03-17T20:53:50+08:00">2019-03-17</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-22 09:36:26" itemprop="dateModified" datetime="2019-01-22T09:36:26+08:00">2019-01-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          会议预约通用弹出窗设计
-突发奇想，然后参照一个同事设计了这样一个通用的弹出提示框。这个跟系统自带的窗口，差别还是很大的。跟同事的设计的，又有区别。同事设计的，因为主要内容区域全部都是html写的，不太便于扩展，而且将按钮的事件绑定到了全局的函数中，不利于组件的封装性。所以，就用了半天时间，自己参照设计图，编写了这样一个相对通用的提示框。
-
-过程中遇到的主要问题：
-窗体内的子组件设计：最开始的时候，
+          !function() {
+    var b = [43856, 19416, 19168, 42352, 21717, 53856, 55632, 25940, 22191, 39632, 21970, 19168, 42422, 42192, 53840, 53845, 46415, 54944, 44450, 38320, 18807, 18815, 42160, 46261, 27216
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/common_msg_win/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/code/lunar/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1491,7 +1145,7 @@ Beego官网
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2019-01-18_formmenu/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/code/ext-locale-zh_CN/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -1511,7 +1165,7 @@ Beego官网
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/2019-01-18_formmenu/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/03/17/code/ext-locale-zh_CN/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">未命名</a>
               
             
           </h1>
@@ -1553,7 +1207,7 @@ Beego官网
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-18 11:37:12" itemprop="dateModified" datetime="2019-01-18T11:37:12+08:00">2019-01-18</time>
+                <time title="修改时间：2018-11-13 16:18:40" itemprop="dateModified" datetime="2018-11-13T16:18:40+08:00">2018-11-13</time>
               
             
           </span>
@@ -1588,15 +1242,24 @@ Beego官网
       
         
           
-          提交表单设计增加了提交前的验证函数，利用一个dict映射数组，保存提示消息保。并利用循环，将映射的数组的关系进行查找，如果有此值，则提示响应的内容。
-需要改进的地方。能否省略这个dict数组，将其存放到组件的属性中，直接获取组件的提示消息？
-猜想，估计能实行，利用getFields来进行如下操作。
-1234var me=this;var form =me.down(&apos;form&apos;
+          /**
+ * Simplified Chinese translation
+ * By DavidHu
+ * 09 April 2007
+ *
+ * update by andy_ghg
+ * 2009-10-22 15:00:57
+ */
+Ext.onReady(function() {
+    var parseCodes;
+
+    if (Ext.Date) {
+        Ext.D
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/2019-01-18_formmenu/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/code/ext-locale-zh_CN/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1656,7 +1319,7 @@ Beego官网
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2019-01-22_code_better/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/01/conclude/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -1676,7 +1339,7 @@ Beego官网
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/2019-01-22_code_better/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2019/01/01/conclude/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">后端设计中的总结</a>
               
             
           </h1>
@@ -1701,24 +1364,12 @@ Beego官网
                 
               
 
-              <time title="创建时间：2019-03-17 20:53:50" itemprop="dateCreated datePublished" datetime="2019-03-17T20:53:50+08:00">2019-03-17</time>
+              <time title="创建时间：2019-01-01 17:28:42 / 修改时间：18:01:01" itemprop="dateCreated datePublished" datetime="2019-01-01T17:28:42+08:00">2019-01-01</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-22 17:44:12" itemprop="dateModified" datetime="2019-02-22T17:44:12+08:00">2019-02-22</time>
               
             
           </span>
@@ -1753,16 +1404,24 @@ Beego官网
       
         
           
-          会议预约代码改进前言
-写程序的时候，要知道代码的前提条件是什么。比如，开根号，就应该想到，我可能用到的数可能为负数。所以，需要先验证。（至于验证在哪进行，是开根号函数定义还是调用，视情况而定。）所以这些，才能保证程序的健壮性。
+          后端设计中的总结总结数据处理
+数据处理，可以从来源到输出的方向，进行思考。主要分为以下几个流程。
 
-常用策略使用变量替代复杂的表达式
-一个表达式、多个逻辑值求值或函数调用等反复引用，应该起一个有一定含义的名字，作为一个变量来使用。这样能简化代码。如检查是否是特权用户。使
+数据库进行处理。
+常见的，如增加一个字段，而此字段可以是常量，或经计算所得。进行排序等。
+
+
+后端语言进行处理。
+如果在数据库端处理，不太方便。可以使用在后端的php语言进行处理。常见的有，排序、增加额外的计算字段等。
+
+
+前端Ajax请求后，对数据进行处理。
+在Extjs框架下，数据load之后，
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/2019-01-22_code_better/#more" rel="contents">
+              <a class="btn" href="/2019/01/01/conclude/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1822,7 +1481,7 @@ Beego官网
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/2019-01-07test/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/31/meetingorder/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chaofml">
@@ -1842,7 +1501,7 @@ Beego官网
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/17/2019-01-07test/" class="post-title-link" itemprop="http://yoursite.com/index.html">未命名</a>
+                <a href="/2018/12/31/meetingorder/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">会议预约系统设计中的思考</a>
               
             
           </h1>
@@ -1867,24 +1526,12 @@ Beego官网
                 
               
 
-              <time title="创建时间：2019-03-17 20:53:50" itemprop="dateCreated datePublished" datetime="2019-03-17T20:53:50+08:00">2019-03-17</time>
+              <time title="创建时间：2018-12-31 21:38:30 / 修改时间：22:33:11" itemprop="dateCreated datePublished" datetime="2018-12-31T21:38:30+08:00">2018-12-31</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-07 13:33:20" itemprop="dateModified" datetime="2019-01-07T13:33:20+08:00">2019-01-07</time>
               
             
           </span>
@@ -1919,17 +1566,329 @@ Beego官网
       
         
           
-          
-2019年1月7日 星期一 13:22nginx的配置
-nginx的http配置，内部的一个server代表一个虚拟主机。配置server下的listen 80 git.chaofml.cn是错误的。
+          会议预约系统中的思考
 
-配置虚拟主机
-假设自己在一个服务器上安装了多个网络服务。如网站、git服务器等。网站是默认与nginx搭配好的。但是本机又增加了一个0.0.0.0:8282服务。对conf/文件夹下的nginx
+做会议预约系统，在没有经过深入的思考，就开始编码。在实际过程中，确实遇到不少问题。这种脚踩西瓜皮，滑到哪算哪的方式，并不是一种好的设计方式。在产品成形之后，再根据用户的临时需求，临时的增加一些功能，修改逻辑，确实不是一种好的设计。
+
+比如，最终的权限设计。本来好好的ACL权限设计，其实倒也没有什么问题。但是，运用在产品上，感觉非常的不规范，没有经过系统的设计，临时需要什么权
           ...
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/03/17/2019-01-07test/#more" rel="contents">
+              <a class="btn" href="/2018/12/31/meetingorder/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/31/start2019-md/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/12/31/start2019-md/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">迎接2019年</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-31 16:57:39 / 修改时间：17:53:12" itemprop="dateCreated datePublished" datetime="2018-12-31T16:57:39+08:00">2018-12-31</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="写在2019年"><a href="#写在2019年" class="headerlink" title="写在2019年"></a>写在2019年</h1><hr>
+<p>今天是2018年12月31日，2018年的最后一天。趁现在，记录一下过去的2018年，迎来我的而立之年。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一年，目标完成了50%，另外的50%，只能看运气呢。<br>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/12/31/start2019-md/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+         
+          <!--/noindex-->
+        
+      
+    </p></div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/chrismas/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/12/25/chrismas/" class="post-title-link" itemprop="http://yoursite.com/page/2/index.html">圣诞节的烦恼</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-25 21:41:28" itemprop="dateCreated datePublished" datetime="2018-12-25T21:41:28+08:00">2018-12-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-31 17:30:54" itemprop="dateModified" datetime="2018-12-31T17:30:54+08:00">2018-12-31</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          最近莫名的烦躁。感觉一切都不顺利。好像被整个世界忽略了一样。想发状态，却不知道要发什么样的状态。（2018年12月31日手记，最近一段时间，确实过得挺郁闷的。各方面都不顺心。）
+
+          
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2018/12/25/chrismas/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1978,7 +1937,7 @@ nginx的http配置，内部的一个server代表一个虚拟主机。配置serve
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
