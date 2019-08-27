@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="��֤��ʶ������һ����֤��ʶ��Ļ���ѧϰ��ʹ��python���Ա�д���μ�����ʹ��python�Զ�ʶ����֤�� ʹ�ò��裺1�����ر����룬�Ѿ��ṩ����һ����ʶ������֤�롣2����װ��ص�python�����⡣3�����ʶ�����֤�������֤�벻һ�������Ҫ�Լ��ֶ��ĸ�����֤�롣4��ͼƬ�������">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静谧花园">
+<meta property="og:url" content="http://yoursite.com/2019/08/27/python/randcode/readme/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="��֤��ʶ������һ����֤��ʶ��Ļ���ѧϰ��ʹ��python���Ա�д���μ�����ʹ��python�Զ�ʶ����֤�� ʹ�ò��裺1�����ر����룬�Ѿ��ṩ����һ����ʶ������֤�롣2����װ��ص�python�����⡣3�����ʶ�����֤�������֤�벻һ�������Ҫ�Լ��ֶ��ĸ�����֤�롣4��ͼƬ�������">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/08/27/python/randcode/readme/img/char_feachers.png">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.785Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静谧花园">
+<meta name="twitter:description" content="��֤��ʶ������һ����֤��ʶ��Ļ���ѧϰ��ʹ��python���Ա�д���μ�����ʹ��python�Զ�ʶ����֤�� ʹ�ò��裺1�����ر����룬�Ѿ��ṩ����һ����ʶ������֤�롣2����װ��ص�python�����⡣3�����ʶ�����֤�������֤�벻һ�������Ҫ�Լ��ֶ��ĸ�����֤�롣4��ͼƬ�������">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/27/python/randcode/readme/img/char_feachers.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/27/python/randcode/readme/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/27/python/randcode/readme/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-27 21:27:20 / 修改时间：21:23:49" itemprop="dateCreated datePublished" datetime="2019-08-27T21:27:20+08:00">2019-08-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="��֤��ʶ��"><a href="#��֤��ʶ��" class="headerlink" title="��֤��ʶ��"></a>��֤��ʶ��</h1><p>����һ����֤��ʶ��Ļ���ѧϰ��ʹ��python���Ա�д���μ�����<a href="https://blog.csdn.net/weixin_38641983/article/details/80899354" target="_blank" rel="noopener">ʹ��python�Զ�ʶ����֤��</a></p>
+<h2 id="ʹ�o��裺"><a href="#ʹ�o��裺" class="headerlink" title="ʹ�ò��裺"></a>ʹ�ò��裺</h2><p>1�����ر����룬�Ѿ��ṩ����һ����ʶ������֤�롣<br>2����װ��ص�python�����⡣<br>3�����ʶ�����֤�������֤�벻һ�������Ҫ�Լ��ֶ��ĸ�����֤�롣<br>4��ͼƬ��������Ҫ������֤��ľ���������ֶ��ĵ���capt_process�ڲ����������Ա���ָ�ͼƬ���鿴Ч����</p>
+<h2 id="��Ӧ��Χ"><a href="#��Ӧ��Χ" class="headerlink" title="��Ӧ��Χ"></a>��Ӧ��Χ</h2><p>��ֻ��һ���򵥵�ʶ���㷨������ÿ���ַ��и�Ĵ�С��ͬ��λ����ͬ��</p>
+<h2 id="ʹ�o��L�"><a href="#ʹ�o��L�" class="headerlink" title="ʹ�õ��Ŀ�"></a>ʹ�õ��Ŀ�</h2><ul>
+<li>requests����Ҫ������ȡ��֤�룬�Ǻ��Ŀ�</li>
+<li>PIL�⣬Image������Ҫ����ͼƬ��������װ��pip install Pillow</li>
+<li>numpy�����ĵĿ⣬����ѧϰ�õ��Ŀ⡣</li>
+</ul>
+<p>�����Ŀ⣬��random����Ҫ����ʱ�����ļ�����ֹ�ļ�������һ�ּ򵥻��ơ�ΪɶҪ�õ�����⣿��Ϊ�������ݹ����У����ݵ���PIL��IMAGE����û���ļ����������á�</p>
+<blockquote>
+<p>����˼����������һ���⣬û�з�װ�ɶ������ԣ���������ʱ��û�д���IMAGE�ļ����������װ���󣬿���ֱ��ʹ�ö�������ԡ�</p>
+</blockquote>
+<h2 id="ע������"><a href="#ע������" class="headerlink" title="ע������"></a>ע������</h2><p>����⣬��ʵֻ��ʶ������ַ��̶�����֤�롣�μ�capt_process�����������ڲ�����һ���Ĺ�ʽ���ָ�ÿ���ַ�������������ò���������ô���޷�ʶ����ȷ�Ľ������������ʼ���������鷳�������ŷ��֣�ԭ�������������������һ�����裬������֤���ÿ���ַ���С�̶���λ�ù̶�����ô���մ˷������зָ���</p>
+<h2 id="ʶ����"><a href="#ʶ����" class="headerlink" title="ʶ����"></a>ʶ����</h2><p>ʶ���ʻ����ԡ�ʶ����Ҫ�����⣬3��8���׳�����2��6Ҳ�и��������</p>
+<h1 id="ժ������"><a href="#ժ������" class="headerlink" title="ժ������"></a>ժ������</h1><h2 id="j��"><a href="#j��" class="headerlink" title="ǰ��"></a>ǰ��</h2><ul>
+<li>CAPTCHAȫ��Completely Automated Public Turing Test to Tell Computers and Humans Apart����ȫ�Զ������˻���ͼ����ԡ���Ҳ����֤�뵮������Ҫ���񡣵������Ž���������������ͻ����Ӿ��ķ�չ���û����Ӿ�ʶ��ͼ���Ѿ���÷ǳ����ף���ȥ���������˻�����֤��Ҳ��ʼ��ò��ٰ�ȫ��</li>
+<li>�������������Ǵ��㿪ʼ������ͼ�������㷨������������ʹ�û����Ӿ���ʶ���ʱ����֤�루 ������ʾ �����������ж�򵥡�</li>
+</ul>
+<h3 id="����վ��ȡ��֤��-capt-fetch"><a href="#����վ��ȡ��֤��-capt-fetch" class="headerlink" title="����վ��ȡ��֤�� capt_fetch"></a>����վ��ȡ��֤�� capt_fetch</h3><p>capt_fetch()�����ǳ��򵥣�����ֱ�Ӵ���վ��ȡ��֤�룬����ת��ΪImage���󣬵ȴ���ѵ���Ͳ��ԵȻ��ڵ��á�</p>
+<h3 id="������֤�뵽����"><a href="#������֤�뵽����" class="headerlink" title="������֤�뵽����"></a>������֤�뵽����</h3><ul>
+<li>һ��ǿ��Ļ���ѧϰģ�ͣ����벻��ǿ���ѵ������֧�ֵġ���������Ҳ��������һ��Ԥ�ȴ�ñ�ǩ��Ԥ���ࣩ����֤��ͼƬ�������ܿ�ʼѵ��ģ�͡�</li>
+<li>capt_download()��������������������ѵ��ͼ�񼯵ķ������������capt_fetch()����������õ�Image����չʾ���û����ȴ��û�������֤���е��ַ���Ȼ��ͼƬ����Ϊ�û�������ַ��洢������</li>
+<li>��Ȼ��Ϊ�˱����ļ����ظ��������ȡ���������ַ���ȫ��ͬ����֤�룩��capt_download()������ϵͳʱ��Ҳ���뵽���ļ����С�</li>
+</ul>
+<h3 id="ͼ��Ԥ����-���ص�ע�⣬�ڲ�����������"><a href="#ͼ��Ԥ����-���ص�ע�⣬�ڲ�����������" class="headerlink" title="ͼ��Ԥ���� ���ص�ע�⣬�ڲ�����������"></a>ͼ��Ԥ���� ���ص�ע�⣬�ڲ�����������</h3><ul>
+<li>capt_process()�������Ƚ���֤��תΪ�Ҷ�ͼ��Ȼ���ٸ���ȫ�ֱ����ж����LUT���Ҷ�ͼת��Ϊ�ڰ�ͼƬ����������֤�����ĸ��ַ����ڵ�λ�ý����и</li>
+<li>�Ӳ�ɫͼƬ���Ҷ�ͼ���ٵ��ڰ�ͼ��������֤���е���Ϣ��ʧ�˺ܶ࣬ʵ������������Ŀ����Ϊ��ʹ�ַ��������������ԡ�</li>
+<li>��ʵ�������յõ��ĺڰ�ͼ�����һЩ�����ڣ�����Ҫ������ǰ��ɫ�뱳��ɫ�������ϸ�����ֶȣ����ǿ���ʹ���˲������˵���Щ��㣬�����������ᱻѵ��ģ�͵�������������Ӱ�����Ƿ��ࡣ���ڹ������ķ������һ�ר��дһƪ���ӡ�</li>
+<li>�����ַ���խ�в��죬�������ǰ��ַ��зֺ���Щ�ַ�������һ���֣���Щ�ַ��ᶪʧһ���֡�����7����һ�ʿ�������������Σ�M����һ����������N����ֻҪ����֮�������ֶȣ���Ȼ�ܹ�׼ȷ���ࡣ</li>
+</ul>
+<p>�����ʶ���ǽ����ڵȴ�С�Ľ��зָ�Ļ����ϡ�Ȼ��ʵ���ϣ�ÿ���ַ����ܴ�С�в��죬����ʶ�������⡣</p>
+<h3 id="��ȡͼ���е�����ֵ-capt-inference����"><a href="#��ȡͼ���е�����ֵ-capt-inference����" class="headerlink" title="��ȡͼ���е�����ֵ capt_inference����"></a>��ȡͼ���е�����ֵ capt_inference����</h3><ul>
+<li>������һ�������ǵõ���ͼ�����ɵ����ַ���ɵĺڰ�ͼƬ��0Ϊ��ɫ���ص㣬1Ϊ��ɫ���ص㣩����ʱ��������ǰ�ͼƬתΪ���飬�ͻ�õ�һ����0��1��ɵľ����䳤��ǡ��ͼƬ�Ĵ�С��ͬ�� ÿһ�����ִ���һ�����ص㡣</li>
+<li>������������Ҫ���������ȡ�ܹ����ֲ�ͬ�ַ�������ֵ�����ǿ���ֱ����ͼ���е�ÿһ�����ص���Ϊһ������ֵ��Ҳ���Ի���ͼ���й��ж��ٺ�ɫ���ص㣨��Ȼ������ÿ��ͼƬֻ����ȡһ������ֵ���������԰��������ͼ���е����ص㣬�����Ƚ�ͼƬ�ĵȷ֣��������š���ͼƬ���е����ص㣬����������������࣬�����Լ����·֣�ֱ����ȷ��ÿһ�����ص㡣</li>
+<li>Ϊ��ʹ������Ӽ�࣬��������ֱ�ӻ��ܡ������л�����ͼ�����ص�ĸ���������ȡ��1��ͼƬ + 15�� + 18�� ==&gt; 34������ֵ�����ڰ�������ܵķ��������ǵ������п��˵���дһƪ���ӡ�</li>
+</ul>
+<p><img src="img/char_feachers.png" alt="ͼƬ"></p>
+<h3 id="����ѵ����-train����"><a href="#����ѵ����-train����" class="headerlink" title="����ѵ���� train����"></a>����ѵ���� train����</h3><p>�������ǻὫԤ�����ÿ����֤��ֱ�����ڴ棬�����ǵ�ͼ������ȡ����ֵ�������ǵ���������ȡ��֤������Ӧ�����֣���ǩ������������ֵ���ǩ�ֱ���ܳ��б���ע��train_labels�е�ÿ��Ԫ������train_table�е�ÿһ�����Ӧ�ġ�</p>
+<h3 id="�������g��-nnc����"><a href="#�������g��-nnc����" class="headerlink" title="�������ģ�� nnc����"></a>�������ģ�� nnc����</h3><ul>
+<li>ֻҪ������ȡ������ֵ�����㹻�����ֶȣ��ܹ����ֲ�ͬ�ַ��������������ǿ���ʹ���κλ���ѧϰ��ģ�ͽ�������ֵ���ǩ����ء�</li>
+<li>�ҳ��Թ�ʹ��knn��svm��Decision Tree��ANN�ȸ�����������ѧϰģ�Ͷ���ȡ��ѵ�����ݽ��з��࣬���ܲ�ͬģ�ͱ��ָ��죬��ʶ��׼ȷ�ʶ����Ժ����ɵĴﵽ90%���ϡ�</li>
+<li>�������ǲ�����ʹ�ø��ӵĵ�����ģ�����ѧϰ���̣����������������Լ�д��һ������ģ�͡�ģ��ʵ�ֵ�nnc�㷨��knn��һ�֣�ͨ���ȶ�δ֪�����һ������ֵ���Լ�����һ����֪���������ֵѵ������ӽ����ж����Լ��ķ������Ӧ�ú�������ӽ���ѵ�����ķ������ѵ������ǩ��ͬ��</li>
+<li>��Ȼ������Ҳ�����ԼӸ���ֱ��ʵ��knn�㷨���ҵ�3�顢5���k����δ֪���������������ӽ���ѵ�����е�������������ͨ��Ʊѡ�����Ӧ�ı�ǩ��Ԥ��δ֪��������������ڴ������Ӧ��������һ�ࡣ</li>
+</ul>
+<h3 id="����g�ͷ���Ч��-test"><a href="#����g�ͷ���Ч��-test" class="headerlink" title="����ģ�ͷ���Ч�� test"></a>����ģ�ͷ���Ч�� test</h3><p>���������Ҫ�������ǵ������Ƿ���Ч��ͨ������test()���������ǻ��ȴ���վ��ȡ��֤��ͼ�񣬶�ͼ����д�����������ȡ��Ȼ�����nnc()��������ȡ������������ֵ�����ڷ��࣬�ֱ�õ���֤���е��ĸ��ַ��������֤��ͼ���ʶ�𵽵��ַ��������������Ǳȶ�ʶ������</p>
+<h3 id="ѵ�����ݣ�ʶ����֤��"><a href="#ѵ�����ݣ�ʶ����֤��" class="headerlink" title="ѵ�����ݣ�ʶ����֤��"></a>ѵ�����ݣ�ʶ����֤��</h3><p>�����߱�����������������ʵ���Ļ����ˡ�<br>���ȣ�������Ҫ����һ������ѧϰ�⣬��һ��Ԥ�������֤��ͼƬ�����������ǽ�����ȡ��120����֤����Ϊѵ���������tensorflow������ǧ����εĵ��������ǽ���ģ��������������ǳ�֮�١���Ȼ����ҲҪ��л����ʹ�õ�nnc�㷨������Ҫʮ���Ӵ��ѵ����֧�֣���ʹ�������ܹ���ʡ�ܶ�Ԥ����ʱ�˹�ʶ����֤��ľ�����<br>�����������ǻ����train()��������ѵ������ѵ������ǩ������������ᱻtest()�����õ��������ǰ�����������洢��ȫ�ֱ�������Բ���Ҫ���⴫�ݸ�test()������</p>
+<h3 id="����"><a href="#����" class="headerlink" title="����"></a>����</h3><ul>
+<li>���ˣ�����ͨ�������Ӿ�ʶ����֤���������������ˡ�������ȷ�ʣ����ÿ10����֤�룬40���ַ��л�Ԥ��ʧ��һ���ַ������Ѿ��ȽϽӽ����������ʶ��׼ȷ���ˣ���Ȼ�����ǻ�����ͨ����������Ӵ��ѧϰ�⣬ʹ��knn������ӵ�ģ�ͣ�ʹ�þ����˴���ͼƬ�ȷ�ʽ��ʹʶ��׼ȷ�ʸ��ߡ�</li>
+<li>��Ȼ�������������õķ�����ֻ������ʶ��Ƚϼ򵥵���֤�롣���ڸ��Ӹ��ӵ���֤�루���ļ���������֤��λ�ù̶��������Ϸ����ǲ������õģ����Ⲣ��������������֤�벻��ͨ�������Ӿ�����ʶ��</li>
+<li>�����Ѿ����������Ż����Ӿ��ķ�չ��ͨ����ͳ����֤���������˻��Ѿ�Խ��Խ���ˡ���Ȼ��Ϊ������İ�ȫ�ԣ�����Ҳ��ʹ�ø����ӵ���֤�룬�������͵���֤��ʽ�������϶����顢������֤��ɨ���½�ȡ�</li>
+</ul>
+<h1 id="��oʣ��������ʼѧϰnumpy"><a href="#��oʣ��������ʼѧϰnumpy" class="headerlink" title="��ôʣ��������ʼѧϰnumpy"></a>��ôʣ��������ʼѧϰnumpy</h1><ul>
+<li><a href="https://www.runoob.com/numpy/numpy-tutorial.html" target="_blank" rel="noopener">NumPy�̳�(����̳�)</a></li>
+<li><a href="https://www.numpy.org.cn/" target="_blank" rel="noopener">NumPy �����ĵ�</a>������о�һ��</li>
+</ul>
+<p>���⣬pandas��matplotlib��Ҳ�����˽⡣</p>
+<p>numpy.argmin():����������������Сֵ������</p>
+<p>import numpy as np<br>A = np.array([1,2,3,4,5])<br>B = np.array([1,2,3,4,5])<br>print(‘A+B = ‘,np.add(A,B))<br>print(‘A-B = ‘,np.subtract(A,B))<br>print(‘A*B = ‘,np.multiply(A,B))<br>print(‘A/B = ‘,np.divide(A,B))</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/php/readme/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/vb/toos/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#��֤��ʶ��"><span class="nav-number">1.</span> <span class="nav-text">��֤��ʶ��</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ʹ�o��裺"><span class="nav-number">1.1.</span> <span class="nav-text">ʹ�ò��裺</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#��Ӧ��Χ"><span class="nav-number">1.2.</span> <span class="nav-text">��Ӧ��Χ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ʹ�o��L�"><span class="nav-number">1.3.</span> <span class="nav-text">ʹ�õ��Ŀ�</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ע������"><span class="nav-number">1.4.</span> <span class="nav-text">ע������</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ʶ����"><span class="nav-number">1.5.</span> <span class="nav-text">ʶ����</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ժ������"><span class="nav-number">2.</span> <span class="nav-text">ժ������</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#j��"><span class="nav-number">2.1.</span> <span class="nav-text">ǰ��</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#����վ��ȡ��֤��-capt-fetch"><span class="nav-number">2.1.1.</span> <span class="nav-text">����վ��ȡ��֤�� capt_fetch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#������֤�뵽����"><span class="nav-number">2.1.2.</span> <span class="nav-text">������֤�뵽����</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ͼ��Ԥ����-���ص�ע�⣬�ڲ�����������"><span class="nav-number">2.1.3.</span> <span class="nav-text">ͼ��Ԥ���� ���ص�ע�⣬�ڲ�����������</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#��ȡͼ���е�����ֵ-capt-inference����"><span class="nav-number">2.1.4.</span> <span class="nav-text">��ȡͼ���е�����ֵ capt_inference����</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#����ѵ����-train����"><span class="nav-number">2.1.5.</span> <span class="nav-text">����ѵ���� train����</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#�������g��-nnc����"><span class="nav-number">2.1.6.</span> <span class="nav-text">�������ģ�� nnc����</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#����g�ͷ���Ч��-test"><span class="nav-number">2.1.7.</span> <span class="nav-text">����ģ�ͷ���Ч�� test</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ѵ�����ݣ�ʶ����֤��"><span class="nav-number">2.1.8.</span> <span class="nav-text">ѵ�����ݣ�ʶ����֤��</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#����"><span class="nav-number">2.1.9.</span> <span class="nav-text">����</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#��oʣ��������ʼѧϰnumpy"><span class="nav-number">3.</span> <span class="nav-text">��ôʣ��������ʼѧϰnumpy</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

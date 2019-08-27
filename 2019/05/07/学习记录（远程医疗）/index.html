@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="[TOC] 前端Ext行编辑器功能，动态设置，某列可编辑思路有两种，一种是在编辑前，获取editor，然后设置其 disabled属性，但是麻烦。 另外一种，即放在viewmodel中，通过绑定，来达到动态的设置效果。（多采取此类方法） viewModel设置： 123456viewModel:&amp;#123;	data:&amp;#123;		selections:0,		item_type:0 //这一项">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端Ext">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="[TOC] 前端Ext行编辑器功能，动态设置，某列可编辑思路有两种，一种是在编辑前，获取editor，然后设置其 disabled属性，但是麻烦。 另外一种，即放在viewmodel中，通过绑定，来达到动态的设置效果。（多采取此类方法） viewModel设置： 123456viewModel:&amp;#123;	data:&amp;#123;		selections:0,		item_type:0 //这一项">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560481792860.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560739140891.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560739191839.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560843640304.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561359094251.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561711141877.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561947417403.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561947737954.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561951575932.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560829022696.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561019557714.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561019586941.png">
+<meta property="og:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1561024246876.png">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.793Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="前端Ext">
+<meta name="twitter:description" content="[TOC] 前端Ext行编辑器功能，动态设置，某列可编辑思路有两种，一种是在编辑前，获取editor，然后设置其 disabled属性，但是麻烦。 另外一种，即放在viewmodel中，通过绑定，来达到动态的设置效果。（多采取此类方法） viewModel设置： 123456viewModel:&amp;#123;	data:&amp;#123;		selections:0,		item_type:0 //这一项">
+<meta name="twitter:image" content="http://yoursite.com/2019/05/07/学习记录（远程医疗）/img/1560481792860.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/学习记录（远程医疗）/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>前端Ext | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/学习记录（远程医疗）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">前端Ext
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+08:00">2019-05-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-27 21:23:49" itemprop="dateModified" datetime="2019-08-27T21:23:49+08:00">2019-08-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[TOC]</p>
+<h2 id="前端Ext"><a href="#前端Ext" class="headerlink" title="前端Ext"></a>前端Ext</h2><h3 id="行编辑器功能，动态设置，某列可编辑"><a href="#行编辑器功能，动态设置，某列可编辑" class="headerlink" title="行编辑器功能，动态设置，某列可编辑"></a>行编辑器功能，动态设置，某列可编辑</h3><p>思路有两种，一种是在编辑前，获取editor，然后设置其 disabled属性，但是麻烦。</p>
+<p>另外一种，即放在viewmodel中，通过绑定，来达到动态的设置效果。（多采取此类方法）</p>
+<p>viewModel设置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">viewModel:&#123;</span><br><span class="line">	data:&#123;</span><br><span class="line">		selections:<span class="number">0</span>,</span><br><span class="line">		item_type:<span class="number">0</span> <span class="comment">//这一项需要动态的设置。在beforeedit</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整个grid表格的监听事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">listeners:&#123;</span><br><span class="line">    <span class="comment">//在这个事件中，进行监听</span></span><br><span class="line">	<span class="string">"beforeedit"</span>:<span class="function"><span class="keyword">function</span>(<span class="params">editor, context, eOpts </span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> width=me.columns[<span class="number">2</span>].getWidth();</span><br><span class="line">		<span class="built_in">console</span>.log(context.record);</span><br><span class="line">		<span class="keyword">var</span> item_type=context.record.get(<span class="string">'item_type'</span>);</span><br><span class="line">		me.getViewModel().setData(&#123;<span class="attr">item_type</span>:item_type&#125;);</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">'edit'</span>:<span class="function"><span class="keyword">function</span>(<span class="params">editor, context, eOpts</span>)</span>&#123;</span><br><span class="line">		<span class="comment">//编辑功能</span></span><br><span class="line">		<span class="keyword">var</span> record =context.record;</span><br><span class="line">		<span class="built_in">console</span>.log(record);</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1222222222222222222</span>);</span><br><span class="line">		Ext.Ajax.request(&#123;</span><br><span class="line">			url: SHINEVMSHTTP + <span class="string">'/admin/structure/index/edit'</span>,</span><br><span class="line">			params:record[<span class="string">'data'</span>],</span><br><span class="line">			success: <span class="function"><span class="keyword">function</span>(<span class="params">response, opts</span>) </span>&#123;</span><br><span class="line">				<span class="keyword">var</span> obj = Ext.decode(response.responseText);</span><br><span class="line">				me.currentEditRecordId=obj[<span class="string">'id'</span>];</span><br><span class="line">				me.store.reload();</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;);</span><br><span class="line"></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">'canceledit'</span>:<span class="function"><span class="keyword">function</span>(<span class="params"> editor, context, eOpts </span>)</span>&#123;</span><br><span class="line">		<span class="comment">//添加时，如果点击取消，那么将删除此行</span></span><br><span class="line">		<span class="keyword">var</span> record=context.record;</span><br><span class="line">		<span class="keyword">var</span> id = record.data.structure_id;</span><br><span class="line">		<span class="keyword">if</span>(id==<span class="number">0</span>)&#123;</span><br><span class="line">			me.store.remove(record);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,		</span><br><span class="line">	<span class="string">'selectionchange'</span>:<span class="function"><span class="keyword">function</span>(<span class="params"> cmp, selected, eOpts </span>)</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.getViewModel().setData(&#123;</span><br><span class="line">			selections:selected.length</span><br><span class="line">		&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">		text:<span class="string">'出诊显示天数'</span>,</span><br><span class="line">		dataIndex:<span class="string">'structure_day'</span>,</span><br><span class="line">		editor:&#123;					</span><br><span class="line">			xtype:<span class="string">'numberfield'</span>,</span><br><span class="line">			labelAlign:<span class="string">"right"</span>,			</span><br><span class="line">			valueField: <span class="string">'key'</span>,</span><br><span class="line">			bind:&#123;</span><br><span class="line">				disabled:<span class="string">'&#123;item_type!=2&#125;'</span>,</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">		&#125;,</span><br><span class="line">		renderer:<span class="function"><span class="keyword">function</span>(<span class="params">v,metaData,record,rowIndex,colIndex</span>)</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> record.get(<span class="string">'item_type'</span>) != <span class="number">2</span>?<span class="string">''</span>:(<span class="built_in">parseInt</span>(v)+<span class="string">'天'</span>);</span><br><span class="line">		&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>效果图：</strong></p>
+<p><img src="img/1560481792860.png" alt="1560481792860"></p>
+<p><strong>行编辑器</strong>：注意，新增加的字段，必须在store的field中添加，否则不会生效。第二次踩坑。</p>
+<h3 id="排序科室，未注意到共用组件。"><a href="#排序科室，未注意到共用组件。" class="headerlink" title="排序科室，未注意到共用组件。"></a>排序科室，未注意到共用组件。</h3><blockquote>
+<p>而且共用组件的配置属性，如果是复杂变量，其也是共享内存的。</p>
+</blockquote>
+<p>在组件初始化的时候，对其进行了判断，如果为特定的组件，则增加“排序”字段。结果，有两个问题。</p>
+<ul>
+<li>组件因为是共有的，多次执行后，add多了多个列。</li>
+</ul>
+<p><img src="img/1560739140891.png" alt="1560739140891"></p>
+<ul>
+<li>其他不想用到的这个列，也增加了该字段。</li>
+</ul>
+<p><img src="img/1560739191839.png" alt="1560739191839"></p>
+<p>错误代码如下：</p>
+<p>initComponent方法内，在调用me.callParent();方法之前。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(me.cmpbox &amp;&amp; me.cmpbox==<span class="string">'departmenthome'</span>)&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'我执行啦'</span>);</span><br><span class="line">	me.columns.push(&#123; </span><br><span class="line">		text: <span class="string">'排序'</span>,</span><br><span class="line">		sortable: <span class="literal">false</span>,</span><br><span class="line">		dataIndex: <span class="string">'show_order'</span>,</span><br><span class="line">		width:<span class="number">100</span></span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<blockquote>
+<p>防止复杂变量属性（数组、对象）在原型上共用同一地址。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> col1=&#123; </span><br><span class="line">	xtype:<span class="string">"treecolumn"</span>,</span><br><span class="line">	text: <span class="string">'科目名称'</span>,</span><br><span class="line">	sortable: <span class="literal">false</span>,</span><br><span class="line">	height:<span class="number">0</span>,</span><br><span class="line">	dataIndex: <span class="string">'department_name'</span>,</span><br><span class="line">	flex: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> col2=&#123; </span><br><span class="line">	text: <span class="string">'排序'</span>,</span><br><span class="line">	sortable: <span class="literal">false</span>,</span><br><span class="line">	dataIndex: <span class="string">'show_order'</span>,</span><br><span class="line">	width:<span class="number">100</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">if</span>(me.cmpbox &amp;&amp; me.cmpbox==<span class="string">'departmenthome'</span>)&#123;</span><br><span class="line">	me.columns = [col1,col2];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	me.columns = [col1];</span><br><span class="line">&#125;</span><br><span class="line">me.callParent();</span><br></pre></td></tr></table></figure>
+<p>上面的代码似曾相识，在别人的老代码中见到过类似的写法。</p>
+<p><strong>总结：</strong>1、遇到通用组件，需要在不同的状态下，实例不同的属性，一定要用赋值一个新的变量，而不要修改。（之前，总是关注自定义的）2、与到通用的组件，要注意，在其他组件的显示特性。</p>
+<h3 id="门诊管理菜单改造"><a href="#门诊管理菜单改造" class="headerlink" title="门诊管理菜单改造"></a>门诊管理菜单改造</h3><ul>
+<li><p>创建没有标签的下拉选择框</p>
+<blockquote>
+<p>只需要将fieldLabel等属性注释掉即可。代码如下：</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">me.searchDateCmb = Ext.create(<span class="string">'Ext.form.ComboBox'</span>, &#123;</span><br><span class="line">	<span class="comment">// fieldLabel:'查询类型',</span></span><br><span class="line">	<span class="comment">// labelAlign:"right",</span></span><br><span class="line">	<span class="comment">// labelWidth:60,</span></span><br><span class="line">	value:<span class="number">1</span>,</span><br><span class="line">	width:<span class="number">160</span>,</span><br><span class="line">	editable:<span class="literal">false</span>,</span><br><span class="line">	store:&#123;</span><br><span class="line">		fields: [<span class="string">'key'</span>, <span class="string">'name'</span>],</span><br><span class="line">		data :[</span><br><span class="line">			&#123;<span class="attr">key</span>:<span class="number">1</span>,<span class="attr">name</span>:<span class="string">"预约日期"</span>&#125;,					</span><br><span class="line">			&#123;<span class="attr">key</span>:<span class="number">2</span>,<span class="attr">name</span>:<span class="string">"下单日期"</span>&#125;				</span><br><span class="line">		]</span><br><span class="line">	&#125;,</span><br><span class="line">	listeners:&#123;</span><br><span class="line">		change:<span class="function"><span class="keyword">function</span>(<span class="params">c, newValue, oldValue, eOpts</span>)</span>&#123;</span><br><span class="line">			me.searchDateKey = newValue;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	queryMode: <span class="string">'local'</span>,</span><br><span class="line">	displayField: <span class="string">'name'</span>,</span><br><span class="line">	valueField: <span class="string">'key'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>双层菜单栏设计：</p>
+<p>简单的原理如下：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tbar:[&#123;</span><br><span class="line">	xtype:<span class="string">'panel'</span>,</span><br><span class="line">	layout:<span class="string">'vbox'</span>,</span><br><span class="line">	items:[&#123;</span><br><span class="line">		html:<span class="string">'我是第一行'</span></span><br><span class="line">	&#125;,&#123;</span><br><span class="line">	html:<span class="string">'我是第二行'</span></span><br><span class="line"> 	&#125;]</span><br><span class="line"> &#125;],</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>需要注意的是：vbox布局，需要设置宽度，没有则可能显示不正常。所以每个items里面都是一个panel，设置width:’100%’。然后每个panel都有一个tbar。   或者，不想每个都设置高度的话，则修改布局如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">layout: &#123;</span><br><span class="line">	type: <span class="string">'vbox'</span>,</span><br><span class="line">	align: <span class="string">'stretch'</span><span class="comment">//默认每个100%宽度</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>另外，别人代码是这样设计的。</p>
+<blockquote>
+<p>grid表格没有toobar,然后单独的制作两个toobar。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Ext.define(<span class="string">"View.AppointMenu"</span>, &#123;</span><br><span class="line">    extend: <span class="string">"Ext.panel.Panel"</span>, <span class="attr">alias</span>: <span class="string">"widget.AppointMenu"</span>,</span><br><span class="line">    layout: &#123; <span class="attr">type</span>: <span class="string">"vbox"</span>, <span class="attr">align</span>: <span class="string">"stretch"</span> &#125;,</span><br><span class="line">    items: [</span><br><span class="line">       &#123; <span class="attr">xtype</span>: <span class="string">"appointmain_toolbar"</span>, <span class="attr">height</span>: <span class="number">40</span>, <span class="attr">border</span>: <span class="number">1</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">xtype</span>: <span class="string">"appointmain_toolbar2"</span>, <span class="attr">height</span>: <span class="number">40</span>, <span class="attr">border</span>: <span class="number">1</span> &#125;,</span><br><span class="line">       &#123; <span class="attr">xtype</span>: <span class="string">"appointmain_grid"</span>, <span class="attr">flex</span>: <span class="number">1.0</span>, <span class="attr">border</span>: <span class="literal">false</span>, &#125;,</span><br><span class="line">    ],</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//菜单对象创建</span></span><br><span class="line"></span><br><span class="line">Ext.define(<span class="string">"View.AppointMain_Toolbar"</span>, &#123;</span><br><span class="line">    extend: <span class="string">"Ext.toolbar.Toolbar"</span>, <span class="attr">alias</span>: <span class="string">"widget.appointmain_toolbar"</span>,</span><br><span class="line">    items: [</span><br><span class="line">        <span class="comment">//&#123; xtype: "container", html: "&lt;div&gt;预约日期&lt;/div&gt;", &#125;,</span></span><br><span class="line">        &#123;&#125;]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>发现问题：在tbar:[]中实例化时，括号中，如果是已创建的实例，则不能共用，（共用，则出现，最后一个能用到，前面引用的实例是不会显示的。）如果是配置文件，则互不干扰。</p>
+<p>效果如图：</p>
+<p><img src="img/1560843640304.png" alt="1560843640304"></p>
+<p>tbar想采用方式一，设置，结果总是报错。无奈采用第二种方式。（没想到这也行。）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方式一</span></span><br><span class="line">dockedItems: [&#123;</span><br><span class="line">	xtype: <span class="string">'toolbar-overflowbar'</span>,</span><br><span class="line">	dock: <span class="string">'top'</span>,</span><br><span class="line">	overflowHandler: <span class="string">'menu'</span></span><br><span class="line">&#125;]</span><br><span class="line"><span class="comment">//方式二：</span></span><br><span class="line">tbar:&#123;</span><br><span class="line">	items:[me.searchDateCmb],</span><br><span class="line">	overflowHandler :<span class="string">'scroller'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>store的data无法使用绑定。（好像）。延伸：是不是复杂变量，都不能进行绑定？</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义好数组，供store用</span></span><br><span class="line">viewModel:&#123;</span><br><span class="line">	data:&#123;</span><br><span class="line">		doctorList:[</span><br><span class="line">			&#123;<span class="string">"display"</span>:<span class="string">"一星"</span>, <span class="string">"v"</span>:<span class="number">1</span>&#125;,</span><br><span class="line">			&#123;<span class="string">"display"</span>:<span class="string">"二星"</span>, <span class="string">"v"</span>:<span class="number">2</span>&#125;,</span><br><span class="line">			&#123;<span class="string">"display"</span>:<span class="string">"三星"</span>, <span class="string">"v"</span>:<span class="number">3</span>&#125;,</span><br><span class="line">			&#123;<span class="string">"display"</span>:<span class="string">"四星"</span>, <span class="string">"v"</span>:<span class="number">4</span>&#125;,</span><br><span class="line">			&#123;<span class="string">"display"</span>:<span class="string">"五星"</span>, <span class="string">"v"</span>:<span class="number">5</span>&#125;</span><br><span class="line">		],</span><br><span class="line">		doctor_id:<span class="literal">null</span>,</span><br><span class="line">		date:<span class="literal">null</span>,</span><br><span class="line">	&#125;,</span><br><span class="line">&#125;,</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;<span class="comment">//组合框   //修改医生</span></span><br><span class="line">	xtype:<span class="string">"combobox"</span>,</span><br><span class="line">	fieldLabel: <span class="string">'修改医生'</span>,</span><br><span class="line">	name: <span class="string">'doctor_id'</span>,</span><br><span class="line">	forceSelection:<span class="literal">true</span>,<span class="comment">//强制选择项</span></span><br><span class="line">	editable:<span class="literal">false</span>,</span><br><span class="line">	store: &#123;</span><br><span class="line">		fields: [<span class="string">'display'</span>, <span class="string">'v'</span>],</span><br><span class="line">		bind:&#123;</span><br><span class="line">			data:<span class="string">'&#123;doctorList&#125;'</span> <span class="comment">//事实上，好像并不起作用</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	queryMode: <span class="string">'local'</span>,</span><br><span class="line">	displayField: <span class="string">'display'</span>,</span><br><span class="line">	valueField: <span class="string">'v'</span>,</span><br><span class="line">	submitValue:<span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**************</span></span><br><span class="line"><span class="comment">     * 2019年6月20日</span></span><br><span class="line"><span class="comment">     * 获取当前的查询条件</span></span><br><span class="line"><span class="comment">     **************/</span></span><br><span class="line">	queryParams:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">var</span> me =<span class="keyword">this</span>;</span><br><span class="line">		<span class="keyword">var</span> v= me.getViewModel().getData();</span><br><span class="line">		<span class="built_in">console</span>.log(v);</span><br><span class="line">		<span class="keyword">var</span> fn = <span class="function"><span class="keyword">function</span>(<span class="params">v</span>)</span>&#123;</span><br><span class="line">			<span class="keyword">return</span> Ext.Date.format(<span class="keyword">new</span> <span class="built_in">Date</span>(v),<span class="string">'Y-m-d'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		v[<span class="string">'startdate'</span>]=fn(v[<span class="string">'startdate'</span>]);</span><br><span class="line">		v[<span class="string">'stopdate'</span>]=fn(v[<span class="string">'stopdate'</span>]);</span><br><span class="line">		v[<span class="string">'structureId'</span>]=ShineMessageHub.structureId;</span><br><span class="line">		<span class="built_in">console</span>.log(v);</span><br><span class="line">		<span class="keyword">return</span> v;</span><br><span class="line">	&#125;,</span><br></pre></td></tr></table></figure>
+<h3 id="共用查询条件（导出）"><a href="#共用查询条件（导出）" class="headerlink" title="共用查询条件（导出）"></a>共用查询条件（导出）</h3><blockquote>
+<p>查询在页面显示跟下载，共用一组条件，这样好处是，保证了所见即所得。另外，两个也共用了一套的查询逻辑。导出，利用了自己抽象的组件（参见：数据导出）</p>
+<p>另一点，创新之出，利用了viewModel，将各个选择的项进行了绑定，这样获取当前的查询条件比较方便。（多用viewModel思路）</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**************</span></span><br><span class="line"><span class="comment"> * 2019年6月20日</span></span><br><span class="line"><span class="comment"> * 获取当前的查询条件</span></span><br><span class="line"><span class="comment"> **************/</span></span><br><span class="line">queryParams:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> me =<span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">var</span> v= me.getViewModel().getData();</span><br><span class="line">	<span class="built_in">console</span>.log(v);</span><br><span class="line">	<span class="keyword">var</span> fn = <span class="function"><span class="keyword">function</span>(<span class="params">v</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> Ext.Date.format(<span class="keyword">new</span> <span class="built_in">Date</span>(v),<span class="string">'Y-m-d'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	v[<span class="string">'startdate'</span>]=fn(v[<span class="string">'startdate'</span>]);</span><br><span class="line">	v[<span class="string">'stopdate'</span>]=fn(v[<span class="string">'stopdate'</span>]);</span><br><span class="line">	v[<span class="string">'structureId'</span>]=ShineMessageHub.structureId;</span><br><span class="line">	<span class="built_in">console</span>.log(v);</span><br><span class="line">	<span class="keyword">return</span> v;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="comment">//数据加载前，添加搜索条件</span></span><br><span class="line"><span class="string">'beforeload'</span>:<span class="function"><span class="keyword">function</span>(<span class="params"> store, operation, eOpts</span>)</span>&#123;</span><br><span class="line">	operation[<span class="string">'_params'</span>] = me.queryParams();;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="缺少滚动条"><a href="#缺少滚动条" class="headerlink" title="缺少滚动条"></a>缺少滚动条</h3><p>使用了hbox  vbox布局，一定要仔细处理高度跟宽度。避免造成布局问题。</p>
+<p>问题如下 ：</p>
+<p><img src="img/1561359094251.png" alt="1561359094251"></p>
+<p>原因就是，hbox，左右布局，但是没有为每个items指定高度，所以右侧虽然撑开了，但是组件不知道自己的高度。就缺少了滚动条。</p>
+<p><strong>解决方式：</strong></p>
+<p>指定第二个组件的高度为100%，另外也可以从layout来解决。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">items:[&#123;</span><br><span class="line">					xtype:<span class="string">"organizationlist"</span>,</span><br><span class="line">					split:<span class="literal">true</span>,</span><br><span class="line">					<span class="comment">//collapsible:true,</span></span><br><span class="line">					hideCollapseTool : <span class="literal">true</span>,</span><br><span class="line">					collapseDirection:<span class="string">'left'</span>,</span><br><span class="line">					collapseMode : <span class="string">'mini'</span>,</span><br><span class="line">					title:<span class="string">"出诊基层"</span>,</span><br><span class="line">					switchHandler:<span class="number">8</span>,</span><br><span class="line">					width:<span class="number">450</span>,</span><br><span class="line">					height:<span class="string">'100%'</span>,</span><br><span class="line">				&#125;</span><br><span class="line"><span class="comment">//解决方式二，但是，这个却不起作用。  难道stretch只适合vbox？</span></span><br><span class="line">layout: &#123;</span><br><span class="line">	type: <span class="string">'hbox'</span>,</span><br><span class="line">	align: <span class="string">'stretch'</span><span class="comment">//默认每个100%宽度。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="listeners"><a href="#listeners" class="headerlink" title="listeners"></a>listeners</h3><p>组件已经包含了listeners，引用组件时候，还能再次添加listeners，这两个listeners其实都能起作用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">items:[&#123;</span><br><span class="line">		xtype:<span class="string">"departmentgrid"</span>,</span><br><span class="line">		region:<span class="string">"east"</span>,</span><br><span class="line">		tbarIsHidden:<span class="number">1</span>,</span><br><span class="line">		title:<span class="string">"科目信息"</span>,</span><br><span class="line">		split:<span class="literal">true</span>,</span><br><span class="line">		cmpbox:<span class="string">"medicinehome"</span>,</span><br><span class="line">		width:<span class="number">300</span>,</span><br><span class="line">		listeners:&#123;</span><br><span class="line">			<span class="string">"rowcontextmenu"</span> :<span class="function"><span class="keyword">function</span>(<span class="params"> c, record, tr, rowIndex, e, eOpts </span>)</span>&#123;</span><br><span class="line">				<span class="built_in">console</span>.log(<span class="string">'右键菜单-药品'</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h3 id="listeners中的cmp并不总是this"><a href="#listeners中的cmp并不总是this" class="headerlink" title="listeners中的cmp并不总是this"></a>listeners中的cmp并不总是this</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Ext.tree.Panel  组件的listeners</span></span><br><span class="line">listeners:&#123;</span><br><span class="line">		<span class="string">"rowcontextmenu"</span> :<span class="function"><span class="keyword">function</span>(<span class="params"> c, record, tr, rowIndex, e, eOpts </span>)</span>&#123;</span><br><span class="line">			c == <span class="keyword">this</span> <span class="comment">//false</span></span><br><span class="line">            <span class="comment">//这里面的c居然并不是组件  的this.</span></span><br><span class="line">            <span class="comment">//输出c，发现   xtype: "treeview"</span></span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="用textfield替代hiddenfield"><a href="#用textfield替代hiddenfield" class="headerlink" title="用textfield替代hiddenfield"></a>用textfield替代hiddenfield</h3><p>如下代码，可以将一个输入项隐藏起来。代码本身没有什么亮点，重点在于，用其替代hiddenfield。为啥要替代，因为hiddenfield的功能，没有textfield功能齐全。比如，是否要提交、是否为空等验证。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	hidden:<span class="literal">true</span>,</span><br><span class="line">	xtype:<span class="string">"textfield"</span>,</span><br><span class="line">	name:<span class="string">"lastaccountid"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<h3 id="尽量用viewmodel来代替具体的索引"><a href="#尽量用viewmodel来代替具体的索引" class="headerlink" title="尽量用viewmodel来代替具体的索引"></a>尽量用viewmodel来代替具体的索引</h3><p>在远程医疗模块中，添加终端功能，其内部大量使用了items.getAt（索引号）功能，但是随着需求的更改，变得非常难维护，增加一个items项，代码影响很大。所以能用viewmodel的时候，尽量用。或者用me.query(‘’)方式，尽量代码与其具体的索引无关。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">me.editPanel.items.getAt(me.editPanel.items.length<span class="number">-4</span>).setValue(me.LastAccountID);</span><br><span class="line">me.editPanel.items.getAt(me.editPanel.items.length<span class="number">-3</span>).setValue(Ext.encode(OutData));</span><br></pre></td></tr></table></figure>
+<h3 id="allowBlank改造，为组件增加set方法"><a href="#allowBlank改造，为组件增加set方法" class="headerlink" title="allowBlank改造，为组件增加set方法"></a>allowBlank改造，为组件增加set方法</h3><p>组件的viewmodel方法绑定时，只能绑定有set方法的配置项。如果没有，则会报错。在切换时，有的时候想动态的设置allowBlank，即，在有的选项下进行验证，有的方法下不验证。想通过listeners的blur方法进行切换，markInvalid标记验证结果，触发验证。结果是，在allowBlank=true的情况下，都不会再验证了。后来，在源码观察中，发现allowBlank可以进行改造。遂改造，并实现了效果：<strong>动态开启、关闭验证</strong>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	fieldLabel: <span class="string">"IP地址"</span>,</span><br><span class="line">	labelAlign:<span class="string">"right"</span>,</span><br><span class="line">	name: <span class="string">'device_ip'</span>,</span><br><span class="line">	xtype: <span class="string">'textfield'</span>,</span><br><span class="line">	regex:<span class="regexp">/^((25[0-5]|2[0-4]\d|[01]?\d\d?)($|(?!\.$)\.))&#123;4&#125;$/</span>,</span><br><span class="line">	regexText : <span class="string">'请输入正确的ip地址！'</span>,</span><br><span class="line">	<span class="comment">//注意allowBlank，没有设置方法，下面的绑定，会报错。</span></span><br><span class="line">	bind:&#123;</span><br><span class="line">		allowBlank:<span class="string">'&#123;virtual==1&#125;'</span></span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="comment">//为了解决动态设置allowBlank的问题，自己手动的增加。</span></span><br><span class="line">	setAllowBlank:<span class="function"><span class="keyword">function</span>(<span class="params">v</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.allowBlank=v;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//下面的方法，没有达到预定效果。</span></span><br><span class="line">	<span class="comment">// listeners:&#123;</span></span><br><span class="line">	<span class="comment">// 	'blur':function( cmp, event, eOpts )&#123;</span></span><br><span class="line">	<span class="comment">// 		var v=me.getViewModel().getData();</span></span><br><span class="line">	<span class="comment">// 		if(v['virtual']==0)&#123;</span></span><br><span class="line">	<span class="comment">// 			console.log('真实设备');</span></span><br><span class="line">	<span class="comment">// 			cmp.markInvalid(cmp.regexText);</span></span><br><span class="line">	<span class="comment">// 			cmp.isValid();</span></span><br><span class="line">	<span class="comment">// 		&#125;</span></span><br><span class="line">	<span class="comment">// 	&#125;</span></span><br><span class="line">	<span class="comment">// &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="获取上传文件的内容"><a href="#获取上传文件的内容" class="headerlink" title="获取上传文件的内容"></a>获取上传文件的内容</h3><p>只有一种方式，items.getAt(1).getValue()，其他的方式，都无法获取到上传表单的值。难道这算是一个bug？</p>
+<ul>
+<li>几种方式对比如下：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bform = me.down(<span class="string">'form'</span>).getForm();</span><br><span class="line"><span class="keyword">var</span> filename=bform.getValues()[<span class="string">'attachment'</span>];</span><br><span class="line"><span class="built_in">console</span>.log(bform.getValues());</span><br><span class="line"><span class="keyword">var</span> filename1=me.down(<span class="string">'form'</span>).items.getAt(<span class="number">1</span>).getValue();</span><br><span class="line"><span class="built_in">console</span>.log(&#123;filename,filename1&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结果图：</li>
+</ul>
+<p><img src="img/1561711141877.png" alt="1561711141877"></p>
+<h3 id="window的自适应"><a href="#window的自适应" class="headerlink" title="window的自适应"></a>window的自适应</h3><p>设置window的组件的布局 layout:’fit’,其可以被内部的元素主动撑开，不需要自己再手动的调整高度。</p>
+<p>这个对那种需要动态隐藏某些组件的来说，非常方便。</p>
+<h3 id="需要优化的嵌套if语句"><a href="#需要优化的嵌套if语句" class="headerlink" title="需要优化的嵌套if语句"></a>需要优化的嵌套if语句</h3><p>if的嵌套，有时候可以变成并列条件，也可以反过来。对下面的进行分析，GroupType与filename进行合并，然后else正好合并到了上一级。但是  Msg这一块却没有办法优化，因为其需要回掉。同时，才将submitAction合并成一个函数。另外，这个应该也可以用消息传递、或者promise对象来完成。</p>
+<p><img src="img/1561947417403.png" alt="1561947417403"></p>
+<p>优化成这个样子：</p>
+<p><img src="img/1561947737954.png" alt="1561947737954"></p>
+<h3 id="fieldcontainer，按钮同行布局"><a href="#fieldcontainer，按钮同行布局" class="headerlink" title="fieldcontainer，按钮同行布局"></a>fieldcontainer，按钮同行布局</h3><p>说明：有这样的需求，在原有的行上面增加一个按钮。之前试过用代码动态的插，费时费力，效果也不是很好。后来，fieldcontainer很好用。</p>
+<p>但是需要注意的是，fieldcontainer会将内部的标签fieldLabel提到外部，但是字段的name不能提升，因为其没有。另外，整体的布局样式，应该也是加载fieldcontainer上的，一般都是放在defaults上面。</p>
+<p>代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	xtype:<span class="string">'fieldcontainer'</span>,</span><br><span class="line">	fieldLabel:<span class="string">'宣传片'</span>,</span><br><span class="line">	layout: <span class="string">'hbox'</span>,</span><br><span class="line">	hidden: (GroupType==<span class="number">1</span>)?<span class="literal">false</span>:<span class="literal">true</span>,</span><br><span class="line">	items:[&#123;</span><br><span class="line">		xtype:<span class="string">'filefield'</span>,</span><br><span class="line">		name: <span class="string">'organization_video'</span>,</span><br><span class="line">		buttonText: <span class="string">'浏览'</span>,</span><br><span class="line">		flex:<span class="number">1</span>,</span><br><span class="line">	&#125;,&#123;</span><br><span class="line">		xtype:<span class="string">'button'</span>,</span><br><span class="line">		margin:<span class="string">'0 0 0 5'</span>,</span><br><span class="line">		text:<span class="string">'清空'</span>,</span><br><span class="line">		idth:<span class="number">42</span></span><br><span class="line">	&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图如下：</p>
+<p><img src="img/1561951575932.png" alt="1561951575932"></p>
+<h3 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h3><ul>
+<li>初始化变量的一些小技巧</li>
+</ul>
+<p>下面的方式初始化数组。（有用过类似的方法，但下面的例子让我感兴趣。）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fields: &quot;name,price,count&quot;.split(&quot;,&quot;),</span><br></pre></td></tr></table></figure>
+<ul>
+<li>items数组的动态</li>
+</ul>
+<p>其中items3为根据flag的值动态加载。若加，设置为null，不会加载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">items:[items1,items2,(flag)?item3:null,item4]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>发布版本，清除输出</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log= function()&#123;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>数组合并或者复制数组</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a=[1,2,3,4]</span><br><span class="line">b=[...a] //拷贝a，并形成一个副本</span><br><span class="line">//同理，合并数组</span><br><span class="line">c=[...a,...b]</span><br><span class="line">//之前用的是比较low的方法</span><br><span class="line">c=[]</span><br><span class="line">c.splice(c.length,0,...a)</span><br></pre></td></tr></table></figure>
+<h3 id="store-loadData方法使用"><a href="#store-loadData方法使用" class="headerlink" title="store loadData方法使用"></a>store loadData方法使用</h3><p>重要的事说三遍，是数组，一定要是数组，否则不起作用。 loadData应该是立即执行的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> item = [&#123;<span class="attr">id</span>:<span class="number">-1</span>,<span class="attr">name</span>:<span class="string">'请选择地区'</span>&#125;];<span class="comment">//一定要是数组格式。</span></span><br><span class="line"><span class="keyword">var</span> data=me.cityList[newValue]?Ext.Array.merge(item,me.cityList[newValue]):item;</span><br><span class="line">cityCombo.store.loadData(data);<span class="comment">//data一定要是数组格式，否则不起作用</span></span><br></pre></td></tr></table></figure>
+<p>combo选择功能，再次遇到坑。花费了接近1天的时间才解决。具体代码参见;OrganizationGrid.js</p>
+<p>说一下具体的思路：</p>
+<p>省、市、县的三级联动。默认从后台获取好数据，并组织好，以父级的id作为分组。然后整体一次加载到数据，并存到变量中。每次选择变化时，监听省、市的变化，值变化后，在change事件中，获取到下级的组件store，并动态的为其加载数据，loadData，注意，loadData方法加载很快，然后由于更改了选择，应使下级选择重置。</p>
+<p>每级只需要关注change事件，并为下级动态的加载tstore。</p>
+<p>部分代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&#123;					</span><br><span class="line">	xtype:<span class="string">"combo"</span>,</span><br><span class="line">	fieldLabel : <span class="string">'城　　市'</span>, 									</span><br><span class="line">	name : <span class="string">'city_id'</span>,</span><br><span class="line">	store:&#123;</span><br><span class="line">		fields: [<span class="string">'id'</span>, <span class="string">'name'</span>],</span><br><span class="line">		data  :[&#123;<span class="attr">id</span>:<span class="number">-1</span>,<span class="attr">name</span>:<span class="string">'请选择地区'</span>&#125;]  <span class="comment">//增加了请选择的功能</span></span><br><span class="line">	&#125;,</span><br><span class="line">	queryMode: <span class="string">'local'</span>,</span><br><span class="line">	displayField: <span class="string">'name'</span>,</span><br><span class="line">	editable:<span class="literal">false</span>,</span><br><span class="line">	forceSelection:<span class="literal">true</span>,<span class="comment">//有无均可，editable已经限制了。</span></span><br><span class="line">	valueField: <span class="string">'id'</span>,</span><br><span class="line">	value:<span class="number">-1</span>,  <span class="comment">//默认选择</span></span><br><span class="line">	listeners:&#123;</span><br><span class="line">		<span class="string">'change'</span>:<span class="function"><span class="keyword">function</span>(<span class="params"> cmp, newValue, oldValue, eOpts </span>) </span>&#123;</span><br><span class="line">			<span class="keyword">var</span> countyCombo=me.DepartmentWin.query(<span class="string">'combo[name=county_id]'</span>)[<span class="number">0</span>];</span><br><span class="line">			<span class="keyword">var</span> item = [&#123;<span class="attr">id</span>:<span class="number">-1</span>,<span class="attr">name</span>:<span class="string">'请选择区县'</span>&#125;];  <span class="comment">//注意其为数组。</span></span><br><span class="line">			<span class="keyword">var</span> data=me.cityList[newValue]?Ext.Array.merge(item,me.cityList[newValue]):item;</span><br><span class="line">			countyCombo.store.loadData(data); <span class="comment">//加载的一定要为数组，否则，则不成功</span></span><br><span class="line">			countyCombo.setValue(<span class="number">-1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;					</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//直接使用下列方式，进行重置</span></span><br><span class="line"><span class="comment">// bform.setValues(&#123;province_id:3,city_id:39,county_id:336&#125;)</span></span><br><span class="line"><span class="comment">//在beforeshow事件中，进行调用。</span></span><br><span class="line">getCityValue:<span class="function"><span class="keyword">function</span>(<span class="params">id</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">var</span> me=<span class="keyword">this</span>;</span><br><span class="line">	Ext.Ajax.request(&#123;</span><br><span class="line">		url: SHINEVMSHTTP+<span class="string">'/admin/organization/Organization/cityvalue'</span>,</span><br><span class="line">		method:<span class="string">'POST'</span>,</span><br><span class="line">		params:&#123;<span class="string">"GroupID"</span>:id&#125;,</span><br><span class="line">		success: <span class="function"><span class="keyword">function</span>(<span class="params">response, opts</span>) </span>&#123;</span><br><span class="line">			<span class="keyword">var</span> obj = Ext.decode(response.responseText);</span><br><span class="line">			<span class="built_in">console</span>.log(obj);</span><br><span class="line">			<span class="keyword">if</span>(!obj)&#123;</span><br><span class="line">				<span class="keyword">return</span> ;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">var</span> bform = me.DepartmentWin.items.items[<span class="number">0</span>].getForm();</span><br><span class="line">			<span class="comment">//直接使用下列方式，进行重置</span></span><br><span class="line">			<span class="comment">// bform.setValues(&#123;province_id:3,city_id:39,county_id:336&#125;)</span></span><br><span class="line">			bform.setValues(&#123;<span class="attr">province_id</span>:obj.province_id,<span class="attr">city_id</span>:obj.city_id,<span class="attr">county_id</span>:obj.county_id&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>loadData</p>
+<h3 id="me-down、me-query、getForm-findField-‘name’-查找组件"><a href="#me-down、me-query、getForm-findField-‘name’-查找组件" class="headerlink" title="me.down、me.query、getForm().findField(‘name’) 查找组件"></a>me.down、me.query、getForm().findField(‘name’) 查找组件</h3><p>查找组件，不只有一种方法。每种方法，都有各自的有缺点。但是最好，别用getAt索引的方式查找，代码扩展性不好，增加减少或者重新排序组件，都需要重新更改索引。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//常用的</span></span><br><span class="line">me.down() <span class="comment">//只能找到第一个组件</span></span><br><span class="line">me.items.getAt(<span class="number">0</span>) <span class="comment">//通过索引查找</span></span><br><span class="line"><span class="comment">//根据特殊的属性查找，能保存找到的是唯一，但是注意，其为数组。</span></span><br><span class="line">me.query(<span class="string">'combo[name=doctor]'</span>)[<span class="number">0</span>]</span><br><span class="line"><span class="comment">//如果是form组件，则可以使用下列方式查找。如果不是，理论上也能包裹一层form</span></span><br><span class="line">getForm().findField(<span class="string">'name'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//只能往查找</span></span><br><span class="line">me.up()</span><br></pre></td></tr></table></figure>
+<h3 id="filefield设置value（重点在思路）"><a href="#filefield设置value（重点在思路）" class="headerlink" title="filefield设置value（重点在思路）"></a>filefield设置value（重点在思路）</h3><p>核心的做法，找到dom，利用原生的js代码，修改dom值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var bform=c.down(&apos;form&apos;).getForm();</span><br><span class="line">bform.findField (&apos;attachment&apos;).inputEl.dom.value= 12343431;</span><br></pre></td></tr></table></figure>
+<p>先说一下排查的思路。首先，为啥setValue不起作用？其实我也不知道。后来，直接在控制台输出，发现如下：<br>输入cmp.setValue，得到一个空函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ƒ () &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出cmp.getValue，得到如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ƒ () &#123;</span><br><span class="line">        var me = this,</span><br><span class="line">            val = me.rawToValue(me.processRawValue(me.getRawValue()));</span><br><span class="line">        me.value = val;</span><br><span class="line">        return val;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>输入，cmp.getRawValue，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ƒ () &#123;</span><br><span class="line">        var me = this,</span><br><span class="line">            v = (me.inputEl ? me.inputEl.getValue() : Ext.valueFrom(me.rawValue, &apos;&apos;));</span><br><span class="line">        me.rawValue = v;</span><br><span class="line">        return v;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>输入cmp.inputEl.getValue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ƒ (asNumber) &#123;</span><br><span class="line">            var value = this.dom.value;</span><br><span class="line">            return asNumber ? parseInt(value, 10) : value;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>然后发现，实际上是dom的值。this指  cmp.inputEl。所以直接就修改了。（之前在Ext的源码里面，也试图找，结果没有找到）</p>
+<p><strong>所以，很重要的一点就是，学会利用控制台查看，函数的源码。</strong></p>
+<p>另外，之前做了另外一个版本的代码是真长。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var videoSrc=me.currentEditRecord.organization_video;</span><br><span class="line">		var html=&apos;&lt;div class=&quot;x-form-text-wrap x-form-text-wrap-default&quot;&gt;&lt;input type=&quot;text&quot; value=&quot;&apos;+videoSrc+&apos;&quot; readonly=&quot;readonly&quot; class=&quot;x-form-field x-form-text x-form-text-default x-form-text-file  x-form-empty-field x-form-empty-field-default&quot;&gt;&lt;/div&gt;&apos;;</span><br><span class="line"></span><br><span class="line">//这个是主要的逻辑，因为show的时候，要显示能改变的html的值</span><br><span class="line">&apos;show&apos;:function()&#123;</span><br><span class="line">	var video=me.DepartmentWin.down(&apos;filefield[name=organization_video]&apos;);</span><br><span class="line">	var el=video.getEl();</span><br><span class="line">	var div=me.DepartmentWin.inputDiv=el.down(&apos;#&apos;+el.id+&apos;-inputWrap&apos;);</span><br><span class="line">	div.setStyle(&apos;display&apos;,&apos;none&apos;);</span><br><span class="line">	me.DepartmentWin.inputNew=Ext.DomHelper.insertAfter(div,html,true);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">//change后，就显示新的原本的textfield的原本的值</span><br><span class="line"></span><br><span class="line">listeners:&#123;</span><br><span class="line">	&apos;change&apos;:function(cmp, value, eOpts )&#123;</span><br><span class="line">		var div=me.DepartmentWin.inputDiv;</span><br><span class="line">		div &amp;&amp; div.setStyle(&apos;display&apos;,&apos;block&apos;);</span><br><span class="line">		me.DepartmentWin.inputNew.setStyle(&apos;display&apos;,&apos;none&apos;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="利用nginx在本地开发"><a href="#利用nginx在本地开发" class="headerlink" title="利用nginx在本地开发"></a>利用nginx在本地开发</h2><p>按之前的套路，开发的时候利用netty，在本地跑一个web服务，跑前端服务，然后在首页index.html配置好后端的服务器，以后代码中所有的url，均利用该配置，这样凡是ajax调用的地方，均访问真实的后端服务。在去年沈阳加班的时候，那个时候就在想，如何整合前、后端的。</p>
+<p>所以，我那时就想到了，用nginx将前后整合到一台服务器上。再后来，我又发现netty本身是个服务器，也能代理后端的请求。我记得我当时还作了笔记。有空，放到一起。</p>
+<h3 id="之前采取方式的弊端："><a href="#之前采取方式的弊端：" class="headerlink" title="之前采取方式的弊端："></a>之前采取方式的弊端：</h3><ul>
+<li>前后端分离，ajax等存在跨域，虽然可以通过设置响应通来允许访问。但是对与session、cookie和Ext中的表单支持不好。十分不方便调试。如果，1、上传文件，能上传成功，但是具体的相应是不对的。2、form提交表单，也会返回错误。</li>
+<li>无法利用session，那么无法利用到角色、登录功能。那么开发过程中，只能手动的设置角色。先将角色写死，然后后期整合的时候，再进行调整，非常的不方便。</li>
+</ul>
+<h3 id="那么，具体说，nginx的代理服务。"><a href="#那么，具体说，nginx的代理服务。" class="headerlink" title="那么，具体说，nginx的代理服务。"></a>那么，具体说，nginx的代理服务。</h3><ul>
+<li><p>设置本地的开发域名host。win+r  运行，输入system32，依次找到drivers\etc，在host文件中，增加一行，dev.com。我host文件内容如下，最后一行是新添加的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1       localhost</span><br><span class="line">127.0.0.1       zend.scc</span><br><span class="line">127.0.0.1       www.openpoor.com</span><br><span class="line">127.0.0.1       www.myspace.com</span><br><span class="line">127.0.0.1       dev.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置nginx的代理功能</p>
+<blockquote>
+<p>找到nginx目录，在conf/nginx.conf文件中，有设置。在http 大括号内，最末尾添加自己的代理内容。记得配置好后，运行 nginx.exe -t 进行测试配置文件。如果错误了，查看错误，并解决错误。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; server&#123;</span><br><span class="line">&gt; 	listen 80;</span><br><span class="line">&gt; 	server_name dev.com;</span><br><span class="line">&gt; 	location / &#123;</span><br><span class="line">&gt; 		proxy_pass http://localhost:1841/;</span><br><span class="line">&gt; 	&#125;</span><br><span class="line">&gt; 	location /admin &#123;</span><br><span class="line">&gt; 		proxy_pass http://172.168.4.36/admin;</span><br><span class="line">&gt; 	&#125;</span><br><span class="line">&gt; &#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<p>  说明：默认将所有的访问都重定向到前端服务器locahost:1841，然后将以/admin开头的重定向到后端服务器172.168.4.36</p>
+<p>  完美访问：</p>
+<p><img src="img/1560829022696.png" alt="1560829022696"></p>
+<h3 id="奇葩的代理需求"><a href="#奇葩的代理需求" class="headerlink" title="奇葩的代理需求"></a>奇葩的代理需求</h3><p>  需求：同事要做版本的迁移工作，需要将数据从原有的系统中迁移到新版本中。所有就有了两个数据库。想根据不同的请求，使用不同的数据库。</p>
+<p>  核心原理是，添加不同的请求头，根据不同的请求头，选择不同的库。如下:</p>
+<ul>
+<li><p>php代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$params =  参数1 ;// 数据库参数</span><br><span class="line">if(isset($_SERVER[&quot;HTTP_DATABASE&quot;]) &amp;&amp; strpos($_SERVER[&quot;HTTP_DATABASE&quot;],&apos;shinejinyu&apos;) &gt;= 0)&#123;</span><br><span class="line">	</span><br><span class="line">	$params  =  参数2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>nginx配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">	listen 80;</span><br><span class="line">	server_name dev.com;</span><br><span class="line">	location / &#123;</span><br><span class="line">		proxy_set_header database &apos;shinejinyu&apos;;</span><br><span class="line">		proxy_pass http://172.168.4.36/;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="php"><a href="#php" class="headerlink" title="php"></a>php</h2><h3 id="Zend引入模块"><a href="#Zend引入模块" class="headerlink" title="Zend引入模块"></a>Zend引入模块</h3><blockquote>
+<p>Zend要求引入的模块，跟类的名称必须一致。否则会报如下错误。</p>
+</blockquote>
+<p><img src="img/1561019557714.png" alt="1561019557714"></p>
+<p>显示的具体原因。</p>
+<p><img src="img/1561019586941.png" alt="1561019586941"></p>
+<h3 id="字符串变量"><a href="#字符串变量" class="headerlink" title="字符串变量"></a>字符串变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$fun=&apos;hello&apos;;</span><br><span class="line">self::$fun();//会调用静态函数  hello，并输出。</span><br></pre></td></tr></table></figure>
+<h3 id="数据导出功能"><a href="#数据导出功能" class="headerlink" title="数据导出功能"></a>数据导出功能</h3><blockquote>
+<p>利用现成的PHPExcel功能，要求自己对原有的功能，再进行一次封装。所以，对调用者来说，更方便、更通用。满足两个功能：1、从数据库查出的数据，每行一条记录，填充到excel中；2、有简单的替换功能，通过设置header功能。</p>
+<p>代码的通用性比较好，是要对其进行更高级的抽象。这个时候确实感受到了抽象的重要性。另外，这个代码核心的思想就是：1、用数组写一行数组。2、用数组写一列数据。3、用数组，指定起点，填充一列数据。这些都是要对原有提供的底层的api进行封装。</p>
+<p>代码质量不高。但是应该从中<strong>学会抽象。</strong></p>
+</blockquote>
+<ul>
+<li>遇到的第一个下马威：</li>
+</ul>
+<p>错误提示如下，只能将570的break注释掉，然后能正常的生成文件呢。（不明白为啥会有这个错误）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fatal error: &apos;break&apos; not in the &apos;loop&apos; or &apos;switch&apos; context in D:\ShineVMS\xampp\htdocs\admin\library\PHPExcel\PHPExcel\Calculation\Functions.php on line 570</span><br></pre></td></tr></table></figure>
+<p><img src="img/1561024246876.png" alt="1561024246876"></p>
+<ul>
+<li>准备工作</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//入口文件，添加默认的库的导入路径 set_include_path 添加</span><br><span class="line">set_include_path( . PATH_SEPARATOR . &apos;library/phpexcel&apos;)</span><br><span class="line">//将库文件放到 library/phpexcel，大小写没有关系。</span><br><span class="line">//引入库</span><br><span class="line">Zend_Loader::loadClass(&apos;PHPExcel&apos;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>核心php代码：</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*********</span></span><br><span class="line"><span class="comment"> * 2019年6月20日</span></span><br><span class="line"><span class="comment"> * 将从数据库查询出的数据导出为excel格式。 author 苏传超</span></span><br><span class="line"><span class="comment">*********/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataExportUtils</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">protected</span> $titleInfo = <span class="keyword">array</span>(</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'patient_name'</span>,<span class="string">'患者'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'patient_sex'</span>,<span class="string">'性别'</span>,<span class="number">10</span>,<span class="keyword">array</span>(<span class="number">1</span>=&gt;<span class="string">'男'</span>,<span class="number">2</span>=&gt;<span class="string">'女'</span>)),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'patient_birthday'</span>,<span class="string">'年龄'</span>,<span class="number">10</span>,<span class="string">'getBrithAge'</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'patient_id_card'</span>,<span class="string">'身份证'</span>,<span class="number">10</span>,<span class="string">'tostring'</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'patient_phone'</span>,<span class="string">'手机号'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'department_name'</span>,<span class="string">'科室'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="comment">// array('conversation_id','病区',10),</span></span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'hospital'</span>,<span class="string">'所属医院'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'doctor'</span>,<span class="string">'医生'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'conversation_schedule_date'</span>,<span class="string">'预约日期'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'visit_status'</span>,<span class="string">'就诊状态'</span>,<span class="number">10</span>,<span class="keyword">array</span>(<span class="number">0</span>=&gt;<span class="string">'未预检'</span>,<span class="number">1</span>=&gt;<span class="string">'预检等候'</span>,<span class="number">2</span>=&gt;<span class="string">'叫号'</span>,<span class="number">3</span>=&gt;<span class="string">'过号'</span>,<span class="number">4</span>=&gt;<span class="string">'复诊'</span>,<span class="number">5</span>=&gt;<span class="string">'诊结'</span>,<span class="number">6</span>=&gt;<span class="string">'复诊等候'</span>)),<span class="comment">//门诊（未预检=0，预检等候=1，叫号=2，过号=3，复诊=4，诊结=5，复诊等候=6）</span></span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'order_type'</span>,<span class="string">'预约方式'</span>,<span class="number">10</span>,<span class="keyword">array</span>(<span class="number">1</span>=&gt;<span class="string">'预约机'</span>,<span class="number">2</span>=&gt;<span class="string">'手机'</span>,<span class="number">3</span>=&gt;<span class="string">'工作站预约'</span>)),  <span class="comment">//预约机=1，手机=2，工作站预约=3</span></span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'pay_type'</span>,<span class="string">'支付方式'</span>,<span class="number">10</span>,<span class="keyword">array</span>(<span class="number">1</span>=&gt;<span class="string">'微信'</span>,<span class="number">2</span>=&gt;<span class="string">'支付宝'</span>)), <span class="comment">//微信=1，支付宝=2</span></span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'pay_status'</span>,<span class="string">'支付状态'</span>,<span class="number">10</span>,<span class="keyword">array</span>(<span class="number">0</span>=&gt;<span class="string">'未支付'</span>,<span class="number">1</span>=&gt;<span class="string">'等待支付'</span>,<span class="number">2</span>=&gt;<span class="string">'已支付'</span>,<span class="number">3</span>=&gt;<span class="string">'等待退款'</span>,<span class="number">4</span>=&gt;<span class="string">'已退款'</span>)),  <span class="comment">//未支付=0，等待支付=1，已支付=2，等待退款=3，已退款=4</span></span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'pay_ordernumber'</span>,<span class="string">'订单号'</span>,<span class="number">10</span>,<span class="string">'tostring'</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'pay_price'</span>,<span class="string">'价格'</span>,<span class="number">10</span>),</span><br><span class="line">		<span class="keyword">array</span>(<span class="string">'pay_time'</span>,<span class="string">'下单时间'</span>,<span class="number">10</span>)</span><br><span class="line">	);</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">protected</span> $colIndex = <span class="keyword">array</span>(<span class="string">'A'</span>,<span class="string">'B'</span>,<span class="string">'C'</span>,<span class="string">'D'</span>,<span class="string">'E'</span>,<span class="string">'F'</span>,<span class="string">'G'</span>,<span class="string">'H'</span>,<span class="string">'I'</span>,<span class="string">'J'</span>,<span class="string">'K'</span>,<span class="string">'L'</span>,<span class="string">'M'</span>,<span class="string">'N'</span>,<span class="string">'O'</span>,<span class="string">'P'</span>,<span class="string">'Q'</span>,<span class="string">'R'</span>,<span class="string">'S'</span>,<span class="string">'T'</span>,<span class="string">'U'</span>,<span class="string">'V'</span>,<span class="string">'W'</span>,<span class="string">'X'</span>,<span class="string">'Y'</span>,<span class="string">'Z'</span>,<span class="string">'AA'</span>,<span class="string">'AB'</span>,<span class="string">'AC'</span>,<span class="string">'AD'</span>,<span class="string">'AE'</span>,<span class="string">'AF'</span>,<span class="string">'AG'</span>,<span class="string">'AH'</span>,<span class="string">'AI'</span>,<span class="string">'AJ'</span>,<span class="string">'AK'</span>,<span class="string">'AL'</span>,<span class="string">'AM'</span>,<span class="string">'AN'</span>,<span class="string">'AO'</span>,<span class="string">'AP'</span>,<span class="string">'AQ'</span>,<span class="string">'AR'</span>,<span class="string">'AS'</span>,<span class="string">'AT'</span>,<span class="string">'AU'</span>,<span class="string">'AV'</span>,<span class="string">'AW'</span>,<span class="string">'AX'</span>,<span class="string">'AY'</span>,<span class="string">'AZ'</span>);</span><br><span class="line">	<span class="comment">/***********</span></span><br><span class="line"><span class="comment">	 * 2019年6月20日</span></span><br><span class="line"><span class="comment">	 * 导出数据</span></span><br><span class="line"><span class="comment">	***********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">exportData</span><span class="params">($records)</span></span>&#123;</span><br><span class="line">		<span class="comment">// echo json_encode($records);exit;</span></span><br><span class="line">		$objPHPExcel=<span class="keyword">new</span> PHPExcel();</span><br><span class="line">		$objPHPExcel-&gt;getProperties()</span><br><span class="line">					-&gt;setCreator(<span class="string">"神州视翰"</span>)</span><br><span class="line">					-&gt;setLastModifiedBy(<span class="string">"神州视翰"</span>)</span><br><span class="line">					-&gt;setTitle(<span class="string">"数据EXCEL导出"</span>)</span><br><span class="line">					-&gt;setSubject(<span class="string">"数据EXCEL导出"</span>)</span><br><span class="line">					-&gt;setDescription(<span class="string">"会议数据"</span>)</span><br><span class="line">					-&gt;setKeywords(<span class="string">"excel"</span>)</span><br><span class="line">					-&gt;setCategory(<span class="string">"result file"</span>);</span><br><span class="line"></span><br><span class="line">		$objPHPExcel-&gt;setActiveSheetIndex(<span class="number">0</span>);</span><br><span class="line">		<span class="comment">//设置表头</span></span><br><span class="line">		<span class="keyword">foreach</span>(<span class="keyword">self</span>::$titleInfo <span class="keyword">as</span> $k =&gt;$v)&#123;</span><br><span class="line">			$key = <span class="keyword">self</span>::$colIndex[$k].<span class="string">'1'</span>;</span><br><span class="line">			$value= $v[<span class="number">1</span>];</span><br><span class="line">			$objPHPExcel-&gt;getActiveSheet()-&gt;setCellValue($key, $value);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//填充数据</span></span><br><span class="line">		<span class="keyword">foreach</span>($records <span class="keyword">as</span> $index=&gt;$value)&#123;</span><br><span class="line">			<span class="keyword">foreach</span>(<span class="keyword">self</span>::$titleInfo <span class="keyword">as</span> $k =&gt;$v)&#123;</span><br><span class="line">				$key = <span class="keyword">self</span>::$colIndex[$k].($index+<span class="number">2</span>);</span><br><span class="line">				$cellValue = <span class="keyword">self</span>::convert($value[$v[<span class="number">0</span>]],$k);</span><br><span class="line">				$objPHPExcel-&gt;getActiveSheet()-&gt;setCellValue($key, $cellValue);<span class="comment">// PHPExcel_Cell_DataType::TYPE_STRING</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//设置居左</span></span><br><span class="line">		$objPHPExcel-&gt;getDefaultStyle()-&gt;getAlignment()-&gt;setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);</span><br><span class="line">		<span class="comment">//设置列宽</span></span><br><span class="line">		<span class="keyword">foreach</span>(<span class="keyword">self</span>::$titleInfo <span class="keyword">as</span> $k =&gt;$v)&#123;</span><br><span class="line">			$key = <span class="keyword">self</span>::$colIndex[$k];</span><br><span class="line">			<span class="keyword">if</span>(!<span class="keyword">empty</span>($v[<span class="number">2</span>]))&#123;</span><br><span class="line">				$objPHPExcel-&gt;getActiveSheet()-&gt;getColumnDimension($key)-&gt;setWidth($v[<span class="number">2</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		$objPHPExcel-&gt;getActiveSheet()-&gt;setTitle(<span class="string">"会议导出记录"</span>);	</span><br><span class="line">		$objPHPExcel-&gt;setActiveSheetIndex(<span class="number">0</span>);</span><br><span class="line">		$fileName = iconv(<span class="string">'utf-8'</span>, <span class="string">'gb2312'</span>,<span class="string">"会议导出"</span>);</span><br><span class="line">		$time = date(<span class="string">'Y-m-d-H-i-s'</span>,time()).<span class="string">".xls"</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//保存结果</span></span><br><span class="line">		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,<span class="string">'Excel5'</span>);</span><br><span class="line">		$objWriter -&gt; save($_SERVER[<span class="string">'DOCUMENT_ROOT'</span>].<span class="string">"/"</span>.$fileName.$time);<span class="comment">//			 </span></span><br><span class="line">		$settingdata = <span class="keyword">array</span>(<span class="string">'code'</span>=&gt;<span class="number">0</span>,<span class="string">'url'</span>=&gt;<span class="string">"会议导出"</span>.$time);</span><br><span class="line">		<span class="keyword">return</span> $settingdata;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/***********</span></span><br><span class="line"><span class="comment">		2019年1月7日</span></span><br><span class="line"><span class="comment">		获取数组的值</span></span><br><span class="line"><span class="comment">	***********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getValue</span><span class="params">($map,$key)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(array_key_exists($key,$map))&#123;</span><br><span class="line">			<span class="keyword">return</span> $map[$key];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> $key;<span class="comment">//修改bug，原来是返回$map</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/***********</span></span><br><span class="line"><span class="comment">	 * 2019年6月21日  </span></span><br><span class="line"><span class="comment">	 * 数值转换函数  苏传超</span></span><br><span class="line"><span class="comment">	***********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">convert</span><span class="params">($v,$index)</span></span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="keyword">self</span>::$titleInfo[$index][<span class="number">3</span>]))&#123;</span><br><span class="line">			<span class="keyword">return</span> $v;</span><br><span class="line">		&#125;</span><br><span class="line">		$cv=<span class="keyword">self</span>::$titleInfo[$index][<span class="number">3</span>];</span><br><span class="line">		<span class="keyword">if</span>(is_array($cv))&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">self</span>::getValue($cv,$v);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(is_string($cv))&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">self</span>::$cv($v);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/***********</span></span><br><span class="line"><span class="comment">	 * 2019年6月21日  </span></span><br><span class="line"><span class="comment">	 * 根据出生日期，求年龄  苏传超</span></span><br><span class="line"><span class="comment">	***********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getBrithAge</span><span class="params">($v)</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> date(<span class="string">'Y'</span>)-date(<span class="string">'Y'</span>,strtotime($v));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">tostring</span><span class="params">($v)</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"'$v"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="产生虚拟ip、mac地址"><a href="#产生虚拟ip、mac地址" class="headerlink" title="产生虚拟ip、mac地址"></a>产生虚拟ip、mac地址</h3><p>具体代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ip=sprintf(<span class="string">"0.%d.%d.%d"</span>,mt_rand(<span class="number">1</span>,<span class="number">255</span>),mt_rand(<span class="number">1</span>,<span class="number">255</span>),mt_rand(<span class="number">1</span>,<span class="number">255</span>));</span><br><span class="line">$mac=sprintf(<span class="string">"00:00:%02X:%02X:%02X:%02X"</span>,mt_rand(<span class="number">1</span>,<span class="number">255</span>),mt_rand(<span class="number">1</span>,<span class="number">255</span>),mt_rand(<span class="number">1</span>,<span class="number">255</span>),mt_rand(<span class="number">1</span>,<span class="number">255</span>));</span><br></pre></td></tr></table></figure>
+<p>上面的代码，虽然是简单，但是想记录当时的思维过程。使用了sprintf函数，第一次感觉到C语言的标准函数功能强大之处。前人，设计C语言函数库的时候，真是非常强大。记得有一次，用js做时间处理的时候，就在想js里面为啥没有这样的函数，所以只好手动补0，1:2转换为01:02的格式。</p>
+<p>写代码，首先要有大局的思路。首先想大体的想，可能有几种方式。然后逐一考虑各个方法的优缺点。择优选择。上面代码的思维过程：1、将ip作为一个整体来处理。比如：192.168.2.235当成256进制的数，然后将产生的一个比较大的数字，再转换为ip，再进行分隔。所以，有点麻烦了不是。2、后来，中午吃饭，快走回来的时候，想到了，ip呢，当随机数处理。MAC地址，就当作字符处理。随机选择[0-9A-F]中的一个字符。再join。3、实际编码的过程中，简单粗暴，直接按上面的代码处理。反正为啥要用到sprintf函数，不知道，灵光一现吧。</p>
+<p>（差点想要循环，join等函数呢。）</p>
+<h3 id="php中对应的序列解包功能-可变数量的参数列表"><a href="#php中对应的序列解包功能-可变数量的参数列表" class="headerlink" title="php中对应的序列解包功能  - 可变数量的参数列表"></a>php中对应的序列解包功能  - 可变数量的参数列表</h3><p>php中，好像没有办法，将一个数组，直接解包成逐个的变量，代入到函数的调用中。那么只好使用了替代的方法，call_user_func_array，跟js中的apply，有点像。算是一种替代的方法。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$params=<span class="keyword">array</span>(<span class="string">"00.00.%02X.%02X.%02X.%02X"</span>);</span><br><span class="line"><span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;substr_count($params[<span class="number">0</span>], <span class="string">'%'</span>);$i++)&#123;</span><br><span class="line">	$params[]=mt_rand(<span class="number">1</span>,<span class="number">255</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> call_user_func_array(<span class="string">'sprintf'</span>,$params);</span><br></pre></td></tr></table></figure>
+<p>作为对比，看js的代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params">a,b,c</span>)</span>&#123;<span class="keyword">return</span> c&#125;</span><br><span class="line">test.apply(<span class="keyword">this</span>,[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])  <span class="comment">//3  这个跟call_user_func_array像。</span></span><br><span class="line">test.call(<span class="keyword">this</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)    <span class="comment">//这个是直接调用</span></span><br><span class="line">test(...[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])        <span class="comment">//其实，想要的是这个运算符</span></span><br></pre></td></tr></table></figure>
+<p>后来发现，php中也有类似的写发。叫<strong>可变数量的参数列表</strong>（PHP5.6版本以上）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//直接调用</span></span><br><span class="line"><span class="keyword">echo</span> sprintf(<span class="string">'00.00.%02X.%02X.%02X.%02X'</span>,...<span class="keyword">array</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">//就是将传入的参数变成一个索引数组</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">app</span><span class="params">(...$num)</span> </span>&#123;</span><br><span class="line">    var_dump($num); <span class="comment">//输出为一个索引数组</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> app(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>);</span><br><span class="line"><span class="comment">//就是传入一个数组，参数依次接收</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">app</span><span class="params">($a, $b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> $a + $b; <span class="comment">//输出3</span></span><br><span class="line">&#125;</span><br><span class="line">$arr = [<span class="number">1</span>, <span class="number">2</span>];</span><br><span class="line">app(...$num);</span><br></pre></td></tr></table></figure>
+<h3 id="php上传文件格式判断"><a href="#php上传文件格式判断" class="headerlink" title="php上传文件格式判断"></a>php上传文件格式判断</h3><p>上传文件时，当然需要对上传文件的格式进行判断。之前一直采用获取文件的扩展名，转换小写，并判断是否在允许上传的格式中。然后，又发现另外一种好方法，好像浏览器会根据上传的文件，进行自动判断格式。type字段，有上传的格式信息。如下：</p>
+<p>之前的老方法：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//允许上传的文件类型</span></span><br><span class="line"><span class="keyword">if</span>(!in_array($ext,<span class="keyword">array</span>(<span class="string">'.avi'</span>,<span class="string">'.mov'</span>,<span class="string">'.rmvb'</span>,<span class="string">'.mpeg'</span>,<span class="string">'mpg'</span>,<span class="string">'mpe'</span>,<span class="string">'.mkv'</span>,<span class="string">'.flv'</span>,<span class="string">'.m4v'</span>,<span class="string">'.rm'</span>,<span class="string">'.3gp'</span>,<span class="string">'.dat'</span>,<span class="string">'.mp4'</span>,<span class="string">'.wmv'</span>)))&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">array</span>(<span class="string">'msg'</span>=&gt;<span class="string">'文件上传失败，视频格式不支持！'</span>,<span class="string">'success'</span>=&gt;<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(strpos($_FILES[$field][<span class="string">'type'</span>],<span class="string">'video/'</span>)!==<span class="number">0</span>)&#123;</span><br><span class="line">	 <span class="keyword">return</span> <span class="keyword">array</span>(<span class="string">'msg'</span>=&gt;<span class="string">'文件上传失败，视频格式不支持！'</span>,<span class="string">'success'</span>=&gt;<span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="php中的树数据结构，遍历"><a href="#php中的树数据结构，遍历" class="headerlink" title="php中的树数据结构，遍历"></a>php中的树数据结构，遍历</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getOrganization</span><span class="params">($structureId)</span></span>&#123;</span><br><span class="line">	$db = Zend_Registry::get(<span class="string">'db'</span>); </span><br><span class="line">	$rows=$db-&gt;fetchAll(<span class="string">'select organization_id id ,organization_parent_id pid,organization_name name from  organization where structure_id =:id;'</span>,<span class="keyword">array</span>(<span class="string">'id'</span>=&gt;$structureId));</span><br><span class="line">	$mapping = array_column($rows,<span class="string">'pid'</span>,<span class="string">'id'</span>);</span><br><span class="line">	<span class="keyword">self</span>::$organizationData = $mapping;</span><br><span class="line">	$result=<span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">foreach</span>($mapping <span class="keyword">as</span> $id=&gt;$pid)&#123;</span><br><span class="line">		$cur=$pid;</span><br><span class="line">		$path=<span class="keyword">array</span>($pid);</span><br><span class="line">		<span class="keyword">while</span>($cur&gt;<span class="number">0</span>)&#123;<span class="comment">//末级节点</span></span><br><span class="line">			$cur=$mapping[$cur];</span><br><span class="line">			$path[]=$cur;</span><br><span class="line">			<span class="keyword">if</span>(count($path)&gt;<span class="number">20</span>)&#123;<span class="comment">//防止死循环</span></span><br><span class="line">				<span class="keyword">die</span>(<span class="string">"maximum recursion depth exceeded "</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		$result[$id]=join(<span class="string">','</span>,$path);<span class="comment">//路径</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="分组统计"><a href="#分组统计" class="headerlink" title="分组统计"></a>分组统计</h3><blockquote>
+<p>分组统计，则需要对数据创建数组。有可能是高维的。高维数组，注意初始化数组。js代码估计也差不多。</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对数据进行分组统计，创建一个三维的数组，然后每个数组叠加。</span></span><br><span class="line"></span><br><span class="line">$data = <span class="keyword">array</span>();  <span class="comment">//data ['organization_id']['date'][]</span></span><br><span class="line"><span class="keyword">foreach</span>($rows <span class="keyword">as</span> $k=&gt;&amp;$row)&#123;</span><br><span class="line">	$oid=$row[<span class="string">'organization_id'</span>];</span><br><span class="line">	$date = $row[<span class="string">'conversation_schedule_date'</span>];</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($data[$oid]))&#123;<span class="comment">//如果当前的，不存在，则进行初始化。</span></span><br><span class="line">		$data[$oid]=<span class="keyword">array</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($data[$oid][$date]))&#123;</span><br><span class="line">		$data[$oid][$date]=<span class="keyword">array</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	$data[$oid][$date][]=$row;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最后再对每个数组，进行求和、或者处理。或者在上一步的时候，进行处理。</span></span><br></pre></td></tr></table></figure>
+<p>然后将多维的数组，再次降成一维数组，输出。</p>
+<blockquote>
+<p>需要注意的时候，嵌套的循环，内部的foreach，则是外层的循环变量，如$oidArr。我在写的过程成，错写成了$data。</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$result =<span class="keyword">array</span>();</span><br><span class="line"><span class="keyword">foreach</span>($data <span class="keyword">as</span> $oid=&gt;$oidArr)&#123;</span><br><span class="line">	<span class="keyword">foreach</span>($oidArr <span class="keyword">as</span> $date=&gt;$dateArr)&#123;</span><br><span class="line">		$basehospital = <span class="keyword">self</span>::$organizationData[$oid];</span><br><span class="line">		<span class="comment">// &#123;'date':'2019-07-01','basehospital':'华山医院','price':'11','count':'1'&#125;,</span></span><br><span class="line">		$result[]=<span class="keyword">array</span>(<span class="string">'date'</span>=&gt;$date,<span class="string">'basehospital'</span>=&gt;$basehospital,<span class="string">'price'</span>=&gt;$dateArr[<span class="string">'price'</span>],<span class="string">'count'</span>=&gt;$dateArr[<span class="string">'count'</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>  sql中如果有BETWEEN关键字，由于其已经包含了and，所以整句应该添加一个括号，包裹。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">and (visit_status BETWEEN 1 and 10)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>sql替换<blockquote>
+<p>两种其实差不多，后一种为了查询更多内容。</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$sql = &quot;select user_name from user_extend where user_id = (select user_id from schedule where schedule_id = $id)&quot;;</span><br><span class="line"></span><br><span class="line">$sql= &quot;select s.user_id,user_name from schedule  as s  left join user_extend as u  on s.user_id=u.user_id where schedule_id = $id&quot;;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/一个Ext JS 6可用的下载类/" rel="next" title="一个Ext JS 6可用的下载类">
+                <i class="fa fa-chevron-left"></i> 一个Ext JS 6可用的下载类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/apache/" rel="prev" title="apache����">
+                apache���� <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前端Ext"><span class="nav-number">1.</span> <span class="nav-text">前端Ext</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行编辑器功能，动态设置，某列可编辑"><span class="nav-number">1.1.</span> <span class="nav-text">行编辑器功能，动态设置，某列可编辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排序科室，未注意到共用组件。"><span class="nav-number">1.2.</span> <span class="nav-text">排序科室，未注意到共用组件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#门诊管理菜单改造"><span class="nav-number">1.3.</span> <span class="nav-text">门诊管理菜单改造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共用查询条件（导出）"><span class="nav-number">1.4.</span> <span class="nav-text">共用查询条件（导出）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺少滚动条"><span class="nav-number">1.5.</span> <span class="nav-text">缺少滚动条</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listeners"><span class="nav-number">1.6.</span> <span class="nav-text">listeners</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#listeners中的cmp并不总是this"><span class="nav-number">1.7.</span> <span class="nav-text">listeners中的cmp并不总是this</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用textfield替代hiddenfield"><span class="nav-number">1.8.</span> <span class="nav-text">用textfield替代hiddenfield</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尽量用viewmodel来代替具体的索引"><span class="nav-number">1.9.</span> <span class="nav-text">尽量用viewmodel来代替具体的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#allowBlank改造，为组件增加set方法"><span class="nav-number">1.10.</span> <span class="nav-text">allowBlank改造，为组件增加set方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取上传文件的内容"><span class="nav-number">1.11.</span> <span class="nav-text">获取上传文件的内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#window的自适应"><span class="nav-number">1.12.</span> <span class="nav-text">window的自适应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要优化的嵌套if语句"><span class="nav-number">1.13.</span> <span class="nav-text">需要优化的嵌套if语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fieldcontainer，按钮同行布局"><span class="nav-number">1.14.</span> <span class="nav-text">fieldcontainer，按钮同行布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小技巧"><span class="nav-number">1.15.</span> <span class="nav-text">小技巧</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#store-loadData方法使用"><span class="nav-number">1.16.</span> <span class="nav-text">store loadData方法使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#me-down、me-query、getForm-findField-‘name’-查找组件"><span class="nav-number">1.17.</span> <span class="nav-text">me.down、me.query、getForm().findField(‘name’) 查找组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filefield设置value（重点在思路）"><span class="nav-number">1.18.</span> <span class="nav-text">filefield设置value（重点在思路）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用nginx在本地开发"><span class="nav-number">2.</span> <span class="nav-text">利用nginx在本地开发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#之前采取方式的弊端："><span class="nav-number">2.1.</span> <span class="nav-text">之前采取方式的弊端：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#那么，具体说，nginx的代理服务。"><span class="nav-number">2.2.</span> <span class="nav-text">那么，具体说，nginx的代理服务。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#奇葩的代理需求"><span class="nav-number">2.3.</span> <span class="nav-text">奇葩的代理需求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php"><span class="nav-number">3.</span> <span class="nav-text">php</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Zend引入模块"><span class="nav-number">3.1.</span> <span class="nav-text">Zend引入模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串变量"><span class="nav-number">3.2.</span> <span class="nav-text">字符串变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据导出功能"><span class="nav-number">3.3.</span> <span class="nav-text">数据导出功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#产生虚拟ip、mac地址"><span class="nav-number">3.4.</span> <span class="nav-text">产生虚拟ip、mac地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php中对应的序列解包功能-可变数量的参数列表"><span class="nav-number">3.5.</span> <span class="nav-text">php中对应的序列解包功能  - 可变数量的参数列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php上传文件格式判断"><span class="nav-number">3.6.</span> <span class="nav-text">php上传文件格式判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php中的树数据结构，遍历"><span class="nav-number">3.7.</span> <span class="nav-text">php中的树数据结构，遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组统计"><span class="nav-number">3.8.</span> <span class="nav-text">分组统计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库"><span class="nav-number">4.</span> <span class="nav-text">数据库</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="NodeMCU NodeMCU网站例子网站地址 手册地址 wifi模块12345wifi.setmode(wifi.STATION)wifi.sta.config(&amp;quot;SSID&amp;quot;,&amp;quot;password&amp;quot;)print(wifi.sta.getip())-- wifi.sta.connect() 像Arduino一样操作IO12345pin = 1gpio.mode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静谧花园">
+<meta property="og:url" content="http://yoursite.com/2019/08/27/NodeMCU/NodeMCU简单入门文档/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="NodeMCU NodeMCU网站例子网站地址 手册地址 wifi模块12345wifi.setmode(wifi.STATION)wifi.sta.config(&amp;quot;SSID&amp;quot;,&amp;quot;password&amp;quot;)print(wifi.sta.getip())-- wifi.sta.connect() 像Arduino一样操作IO12345pin = 1gpio.mode">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.733Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静谧花园">
+<meta name="twitter:description" content="NodeMCU NodeMCU网站例子网站地址 手册地址 wifi模块12345wifi.setmode(wifi.STATION)wifi.sta.config(&amp;quot;SSID&amp;quot;,&amp;quot;password&amp;quot;)print(wifi.sta.getip())-- wifi.sta.connect() 像Arduino一样操作IO12345pin = 1gpio.mode">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/27/NodeMCU/NodeMCU简单入门文档/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/27/NodeMCU/NodeMCU简单入门文档/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-27 21:27:20 / 修改时间：21:23:49" itemprop="dateCreated datePublished" datetime="2019-08-27T21:27:20+08:00">2019-08-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>NodeMCU</p>
+<h2 id="NodeMCU网站例子"><a href="#NodeMCU网站例子" class="headerlink" title="NodeMCU网站例子"></a>NodeMCU网站例子</h2><p><a href="http://www.nodemcu.com/index_cn.html" target="_blank" rel="noopener">网站地址</a></p>
+<p><a href="https://nodemcu.readthedocs.io/en/master/" target="_blank" rel="noopener">手册地址</a></p>
+<h3 id="wifi模块"><a href="#wifi模块" class="headerlink" title="wifi模块"></a>wifi模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wifi.setmode(wifi.STATION)</span><br><span class="line">wifi.sta.config(&quot;SSID&quot;,&quot;password&quot;)</span><br><span class="line">print(wifi.sta.getip())</span><br><span class="line"></span><br><span class="line">-- wifi.sta.connect()</span><br></pre></td></tr></table></figure>
+<h3 id="像Arduino一样操作IO"><a href="#像Arduino一样操作IO" class="headerlink" title="像Arduino一样操作IO"></a>像Arduino一样操作IO</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pin = 1</span><br><span class="line">gpio.mode(pin,gpio.OUTPUT)</span><br><span class="line">gpio.write(pin,gpio.HIGH)</span><br><span class="line">gpio.mode(pin,gpio.INPUT)</span><br><span class="line">print(gpio.read(pin))</span><br></pre></td></tr></table></figure>
+<h3 id="简单的HTTP客户端"><a href="#简单的HTTP客户端" class="headerlink" title="简单的HTTP客户端"></a>简单的HTTP客户端</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- A simple http client</span><br><span class="line">conn=net.createConnection(net.TCP, false) </span><br><span class="line">conn:on(&quot;receive&quot;, function(conn, pl) print(pl) end)</span><br><span class="line">conn:connect(80,&quot;121.41.33.127&quot;)</span><br><span class="line">conn:send(&quot;GET / HTTP/1.1\r\nHost: www.nodemcu.com\r\n&quot;</span><br><span class="line">    ..&quot;Connection: keep-alive\r\nAccept: */*\r\n\r\n&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="更简单的HTTP服务器"><a href="#更简单的HTTP服务器" class="headerlink" title="更简单的HTTP服务器"></a>更简单的HTTP服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-- a simple http server</span><br><span class="line">srv=net.createServer(net.TCP) </span><br><span class="line">srv:listen(80,function(conn) </span><br><span class="line">    conn:on(&quot;receive&quot;,function(conn,payload) </span><br><span class="line">    print(payload) </span><br><span class="line">    conn:send(&quot;&lt;h1&gt; Hello, NodeMcu.&lt;/h1&gt;&quot;)</span><br><span class="line">    end) </span><br><span class="line">end)</span><br></pre></td></tr></table></figure>
+<h3 id="PWM操作"><a href="#PWM操作" class="headerlink" title="PWM操作"></a>PWM操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function led(r,g,b) </span><br><span class="line">    pwm.setduty(1,r) </span><br><span class="line">    pwm.setduty(2,g) </span><br><span class="line">    pwm.setduty(3,b) </span><br><span class="line">end</span><br><span class="line">pwm.setup(1,500,512) </span><br><span class="line">pwm.setup(2,500,512) </span><br><span class="line">pwm.setup(3,500,512)</span><br><span class="line">pwm.start(1) </span><br><span class="line">pwm.start(2) </span><br><span class="line">pwm.start(3)</span><br><span class="line">led(512,0,0) -- red</span><br><span class="line">led(0,0,512) -- blue</span><br></pre></td></tr></table></figure>
+<h3 id="闪烁LED"><a href="#闪烁LED" class="headerlink" title="闪烁LED"></a>闪烁LED</h3><blockquote>
+<p>tmr.alarm 是定时器，会周期的执行回调函数。四个参数。按顺序为：</p>
+<p>0 任务id。结束定时器的时候，需要用到。</p>
+<p>1000 即1000毫秒，每1000毫秒执行一次回调。</p>
+<p>1   不知道什么作用，常为1.</p>
+<p>function ，即回调函数。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">lighton=0</span><br><span class="line">tmr.alarm(0,1000,1,function()</span><br><span class="line">if lighton==0 then </span><br><span class="line">    lighton=1 </span><br><span class="line">    led(512,512,512) </span><br><span class="line">    -- 512/1024, 50% duty cycle</span><br><span class="line">else </span><br><span class="line">    lighton=0 </span><br><span class="line">    led(0,0,0) </span><br><span class="line">end </span><br><span class="line">end)</span><br></pre></td></tr></table></figure>
+<h3 id="启动文件"><a href="#启动文件" class="headerlink" title="启动文件"></a>启动文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">--init.lua will be excuted</span><br><span class="line">file.open(&quot;init.lua&quot;,&quot;w&quot;)</span><br><span class="line">file.writeline([[print(&quot;Hello World!&quot;)]])</span><br><span class="line">file.close()</span><br><span class="line">node.restart()  -- this will restart the module.</span><br></pre></td></tr></table></figure>
+<h3 id="用定时器来循环执行"><a href="#用定时器来循环执行" class="headerlink" title="用定时器来循环执行"></a>用定时器来循环执行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tmr.alarm(1,5000,1,function() print(&quot;alarm 1&quot;) end)</span><br><span class="line">tmr.alarm(0,1000,1,function() print(&quot;alarm 0&quot;) end)</span><br><span class="line">tmr.alarm(2,2000,1,function() print(&quot;alarm 2&quot;) end)</span><br><span class="line">-- after sometime</span><br><span class="line">tmr.stop(0)</span><br></pre></td></tr></table></figure>
+<h3 id="纯Lua写的telnet服务器"><a href="#纯Lua写的telnet服务器" class="headerlink" title="纯Lua写的telnet服务器"></a>纯Lua写的telnet服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">-- a simple telnet server</span><br><span class="line">s=net.createServer(net.TCP,180) </span><br><span class="line">s:listen(2323,function(c) </span><br><span class="line">    function s_output(str) </span><br><span class="line">      if(c~=nil) </span><br><span class="line">        then c:send(str) </span><br><span class="line">      end </span><br><span class="line">    end </span><br><span class="line">    node.output(s_output, 0)   </span><br><span class="line">    -- re-direct output to function s_ouput.</span><br><span class="line">    c:on(&quot;receive&quot;,function(c,l) </span><br><span class="line">      node.input(l)           </span><br><span class="line">      --like pcall(loadstring(l)), support multiple separate lines</span><br><span class="line">    end) </span><br><span class="line">    c:on(&quot;disconnection&quot;,function(c) </span><br><span class="line">      node.output(nil)        </span><br><span class="line">      --unregist redirect output function, output goes to serial</span><br><span class="line">    end) </span><br><span class="line">    print(&quot;Welcome to NodeMcu world.&quot;)</span><br><span class="line">end)</span><br></pre></td></tr></table></figure>
+<h3 id="与传感器接口"><a href="#与传感器接口" class="headerlink" title="与传感器接口"></a>与传感器接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">-- read temperature with DS18B20</span><br><span class="line">t=require(&quot;ds18b20&quot;)</span><br><span class="line">t.setup(9)</span><br><span class="line">addrs=t.addrs()</span><br><span class="line">-- Total DS18B20 numbers, assume it is 2</span><br><span class="line">print(table.getn(addrs))</span><br><span class="line">-- The first DS18B20</span><br><span class="line">print(t.read(addrs[1],t.C))</span><br><span class="line">print(t.read(addrs[1],t.F))</span><br><span class="line">print(t.read(addrs[1],t.K))</span><br><span class="line">-- The second DS18B20</span><br><span class="line">print(t.read(addrs[2],t.C))</span><br><span class="line">print(t.read(addrs[2],t.F))</span><br><span class="line">print(t.read(addrs[2],t.K))</span><br><span class="line">-- Just read</span><br><span class="line">print(t.read())</span><br><span class="line">-- Just read as centigrade</span><br><span class="line">print(t.read(nil,t.C))</span><br><span class="line">-- Don&apos;t forget to release it after use</span><br><span class="line">t = nil</span><br><span class="line">ds18b20 = nil</span><br><span class="line">package.loaded[&quot;ds18b20&quot;]=nil</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/js/base64/JSBase64/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/php/composer使用/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#NodeMCU网站例子"><span class="nav-number">1.</span> <span class="nav-text">NodeMCU网站例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wifi模块"><span class="nav-number">1.1.</span> <span class="nav-text">wifi模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#像Arduino一样操作IO"><span class="nav-number">1.2.</span> <span class="nav-text">像Arduino一样操作IO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的HTTP客户端"><span class="nav-number">1.3.</span> <span class="nav-text">简单的HTTP客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更简单的HTTP服务器"><span class="nav-number">1.4.</span> <span class="nav-text">更简单的HTTP服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PWM操作"><span class="nav-number">1.5.</span> <span class="nav-text">PWM操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#闪烁LED"><span class="nav-number">1.6.</span> <span class="nav-text">闪烁LED</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动文件"><span class="nav-number">1.7.</span> <span class="nav-text">启动文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用定时器来循环执行"><span class="nav-number">1.8.</span> <span class="nav-text">用定时器来循环执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#纯Lua写的telnet服务器"><span class="nav-number">1.9.</span> <span class="nav-text">纯Lua写的telnet服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与传感器接口"><span class="nav-number">1.10.</span> <span class="nav-text">与传感器接口</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

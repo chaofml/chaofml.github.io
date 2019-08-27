@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="typecho 源码解读（二） 接之前的源码分析，继续对其进行分析。  首页是如何显示出来的需要经具体的路由呢。Router.php中的注释（TODO 增加cache缓存）依然没有实现。 dispatch方法： 循环路由表，根据匹配到的值，匹配到出口，然后执行try中的语句。跟match方法很像。  1234567891011121314151617181920212223242526272829">
+<meta property="og:type" content="article">
+<meta property="og:title" content="typecho 源码解读（二）">
+<meta property="og:url" content="http://yoursite.com/2019/05/05/2019-05-05/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="typecho 源码解读（二） 接之前的源码分析，继续对其进行分析。  首页是如何显示出来的需要经具体的路由呢。Router.php中的注释（TODO 增加cache缓存）依然没有实现。 dispatch方法： 循环路由表，根据匹配到的值，匹配到出口，然后执行try中的语句。跟match方法很像。  1234567891011121314151617181920212223242526272829">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.729Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="typecho 源码解读（二）">
+<meta name="twitter:description" content="typecho 源码解读（二） 接之前的源码分析，继续对其进行分析。  首页是如何显示出来的需要经具体的路由呢。Router.php中的注释（TODO 增加cache缓存）依然没有实现。 dispatch方法： 循环路由表，根据匹配到的值，匹配到出口，然后执行try中的语句。跟match方法很像。  1234567891011121314151617181920212223242526272829">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/05/2019-05-05/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>typecho 源码解读（二） | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/05/2019-05-05/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">typecho 源码解读（二）
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-05 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-05T12:12:00+08:00">2019-05-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-27 21:23:49" itemprop="dateModified" datetime="2019-08-27T21:23:49+08:00">2019-08-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="typecho-源码解读（二）"><a href="#typecho-源码解读（二）" class="headerlink" title="typecho 源码解读（二）"></a>typecho 源码解读（二）</h1><blockquote>
+<p>接之前的源码分析，继续对其进行分析。</p>
+</blockquote>
+<h2 id="首页是如何显示出来的"><a href="#首页是如何显示出来的" class="headerlink" title="首页是如何显示出来的"></a>首页是如何显示出来的</h2><p>需要经具体的路由呢。<br>Router.php中的注释（TODO 增加cache缓存）依然没有实现。</p>
+<h3 id="dispatch方法："><a href="#dispatch方法：" class="headerlink" title="dispatch方法："></a>dispatch方法：</h3><blockquote>
+<p>循环路由表，根据匹配到的值，匹配到出口，然后执行try中的语句。跟match方法很像。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">    * 路由分发函数</span><br><span class="line">    *</span><br><span class="line">    * @return void</span><br><span class="line">    * @throws Exception</span><br><span class="line">    */</span><br><span class="line">   public static function dispatch()</span><br><span class="line">   &#123;</span><br><span class="line">       /** 获取PATHINFO */</span><br><span class="line">       $pathInfo = self::getPathInfo();</span><br><span class="line"></span><br><span class="line">       foreach (self::$_routingTable as $key =&gt; $route) &#123;</span><br><span class="line">           if (preg_match($route[&apos;regx&apos;], $pathInfo, $matches)) &#123;</span><br><span class="line">               self::$current = $key;</span><br><span class="line"></span><br><span class="line">               try &#123;</span><br><span class="line">                   /** 载入参数 */</span><br><span class="line">                   $params = NULL;</span><br><span class="line"></span><br><span class="line">                   if (!empty($route[&apos;params&apos;])) &#123;</span><br><span class="line">                       unset($matches[0]);</span><br><span class="line">                       $params = array_combine($route[&apos;params&apos;], $matches);</span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                   $widget = Typecho_Widget::widget($route[&apos;widget&apos;], NULL, $params);</span><br><span class="line"></span><br><span class="line">                   if (isset($route[&apos;action&apos;])) &#123;</span><br><span class="line">                       $widget-&gt;&#123;$route[&apos;action&apos;]&#125;();</span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                   Typecho_Response::callback();</span><br><span class="line">                   return;</span><br><span class="line"></span><br><span class="line">               &#125; catch (Exception $e) &#123;</span><br><span class="line">                   if (404 == $e-&gt;getCode()) &#123;</span><br><span class="line">                       Typecho_Widget::destory($route[&apos;widget&apos;]);</span><br><span class="line">                       continue;</span><br><span class="line">                   &#125;</span><br><span class="line"></span><br><span class="line">                   throw $e;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       /** 载入路由异常支持 */</span><br><span class="line">       throw new Typecho_Router_Exception(&quot;Path &apos;&#123;$pathInfo&#125;&apos; not found&quot;, 404);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>在路由分发之前，其实已经获取到了路由表。可是从哪一步获取到的呢？正常加载，config.inc.php然后到index.php。加载是在Typecho_Widget::widget(‘Widget_Init’);过程中有了路由表，那么全局Router::setRoutes只调用了一次。而其作用是设置路由表的。那么其又是如何被调用的？通过全局搜索，找到Init.php中有如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/** 初始化路由器 */</span><br><span class="line">Typecho_Router::setRoutes($options-&gt;routingTable);</span><br></pre></td></tr></table></figure>
+<p>如果上述初始化代码被注释，有如下报错，而且还有404页面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Notice: Undefined index: feed in D:\phpStudy\PHPTutorial\zend\typecho\var\Typecho\Router.php on line 176</span><br><span class="line"></span><br><span class="line">Warning: Invalid argument supplied for foreach() in D:\phpStudy\PHPTutorial\zend\typecho\var\Typecho\Router.php on line 180</span><br></pre></td></tr></table></figure>
+<p>重点来了<strong>Typecho_Widget::widget(‘Widget_Init’);</strong>作用是，初始化，Widget文件夹下面的Init.php。并执行execute方法体。（稍后研究）</p>
+<p>index.php中，调试路由表的过程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//index.php</span><br><span class="line">/** 开始路由分发 */</span><br><span class="line">var_dump(Typecho_Router::getTable());</span><br><span class="line">Typecho_Router::dispatch();</span><br><span class="line"></span><br><span class="line">//在Router.php中增加方法，输出私有变量</span><br><span class="line">public static function getTable()</span><br><span class="line">&#123;</span><br><span class="line">	return self::$_routingTable;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>路径获取，类似于，有限从类的缓存，静态变量中获取，如果没有，则重新获取（实际上是默认参数），代码如下（略过）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 设置全路径</span><br><span class="line"> *</span><br><span class="line"> * @access public</span><br><span class="line"> * @param string $pathInfo</span><br><span class="line"> * @return void</span><br><span class="line"> */</span><br><span class="line">public static function setPathInfo($pathInfo = &apos;/&apos;)</span><br><span class="line">&#123;</span><br><span class="line">    self::$_pathInfo = $pathInfo;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 获取全路径</span><br><span class="line"> *</span><br><span class="line"> * @access public</span><br><span class="line"> * @return string</span><br><span class="line"> */</span><br><span class="line">public static function getPathInfo()</span><br><span class="line">&#123;	</span><br><span class="line">	//优先从“缓冲”中读取，如果没有，则先设置“缓存”再读取</span><br><span class="line">    if (NULL === self::$_pathInfo) &#123;</span><br><span class="line">        self::setPathInfo();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return self::$_pathInfo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="实例化Widget组件"><a href="#实例化Widget组件" class="headerlink" title="实例化Widget组件"></a>实例化Widget组件</h3><p>在dispatch中，其实有这样的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$widget = Typecho_Widget::widget($route[&apos;widget&apos;], NULL, $params);</span><br><span class="line"></span><br><span class="line">if (isset($route[&apos;action&apos;])) &#123;</span><br><span class="line">    $widget-&gt;&#123;$route[&apos;action&apos;]&#125;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>即实例化路由表中的组件，已经调用action。打印（Router::dispatch中var_dump(self::$_routingTable);）得到路由表，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[&quot;index&quot;]=&gt;</span><br><span class="line">  array(6) &#123;</span><br><span class="line">    [&quot;url&quot;]=&gt;</span><br><span class="line">    string(1) &quot;/&quot;</span><br><span class="line">    [&quot;widget&quot;]=&gt;</span><br><span class="line">    string(14) &quot;Widget_Archive&quot;</span><br><span class="line">    [&quot;action&quot;]=&gt;</span><br><span class="line">    string(6) &quot;render&quot;</span><br><span class="line">    [&quot;regx&quot;]=&gt;</span><br><span class="line">    string(8) &quot;|^[/]?$|&quot;</span><br><span class="line">    [&quot;format&quot;]=&gt;</span><br><span class="line">    string(1) &quot;/&quot;</span><br><span class="line">    [&quot;params&quot;]=&gt;</span><br><span class="line">    array(0) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>所以，首页会渲染Widget_Archive组件，并调用render方法。那么根据Typecho_Widget的定义，widget方法会检测，如果没有实例化这个变量，则实例化这个变量，然后调用execute方法。</p>
+<p>Widget_Archive组件的继承关系：Widget_Archive→Widget_Abstract_Contents→Widget_Abstract→Typecho_Widget。所以首页的文章是这样的出来的。具体细节待再分析。</p>
+<h2 id="Widget-Init类"><a href="#Widget-Init类" class="headerlink" title="Widget_Init类"></a>Widget_Init类</h2><p>先贴代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 初始化模块</span><br><span class="line"> *</span><br><span class="line"> * @package Widget</span><br><span class="line"> */</span><br><span class="line">class Widget_Init extends Typecho_Widget</span><br><span class="line">&#123;</span><br><span class="line">    /**</span><br><span class="line">     * 入口函数,初始化路由器</span><br><span class="line">     *</span><br><span class="line">     * @access public</span><br><span class="line">     * @return void</span><br><span class="line">     */</span><br><span class="line">    public function execute()</span><br><span class="line">    &#123;</span><br><span class="line">        /** 对变量赋值 */</span><br><span class="line">        $options = $this-&gt;widget(&apos;Widget_Options&apos;);</span><br><span class="line"></span><br><span class="line">        /** 检查安装状态 */</span><br><span class="line">        if (!$options-&gt;installed) &#123;</span><br><span class="line">            $options-&gt;update(array(&apos;value&apos; =&gt; 1), Typecho_Db::get()-&gt;sql()-&gt;where(&apos;name = ?&apos;, &apos;installed&apos;));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** 语言包初始化 */</span><br><span class="line">        if ($options-&gt;lang &amp;&amp; $options-&gt;lang != &apos;zh_CN&apos;) &#123;</span><br><span class="line">            $dir = defined(&apos;__TYPECHO_LANG_DIR__&apos;) ? __TYPECHO_LANG_DIR__ : __TYPECHO_ROOT_DIR__ . &apos;/usr/langs&apos;;</span><br><span class="line">            Typecho_I18n::setLang($dir . &apos;/&apos; . $options-&gt;lang . &apos;.mo&apos;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** 备份文件目录初始化 */</span><br><span class="line">        if (!defined(&apos;__TYPECHO_BACKUP_DIR__&apos;)) &#123;</span><br><span class="line">            define(&apos;__TYPECHO_BACKUP_DIR__&apos;, __TYPECHO_ROOT_DIR__ . &apos;/usr/backups&apos;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** cookie初始化 */</span><br><span class="line">        Typecho_Cookie::setPrefix($options-&gt;rootUrl);</span><br><span class="line"></span><br><span class="line">        /** 初始化charset */</span><br><span class="line">        Typecho_Common::$charset = $options-&gt;charset;</span><br><span class="line"></span><br><span class="line">        /** 初始化exception */</span><br><span class="line">        Typecho_Common::$exceptionHandle = &apos;Widget_ExceptionHandle&apos;;</span><br><span class="line"></span><br><span class="line">        /** 设置路径 */</span><br><span class="line">        if (defined(&apos;__TYPECHO_PATHINFO_ENCODING__&apos;)) &#123;</span><br><span class="line">            $pathInfo = $this-&gt;request-&gt;getPathInfo(__TYPECHO_PATHINFO_ENCODING__, $options-&gt;charset);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            $pathInfo = $this-&gt;request-&gt;getPathInfo();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Typecho_Router::setPathInfo($pathInfo);</span><br><span class="line"></span><br><span class="line">        /** 初始化路由器 */</span><br><span class="line">        Typecho_Router::setRoutes($options-&gt;routingTable);</span><br><span class="line"></span><br><span class="line">        /** 初始化插件 */</span><br><span class="line">        Typecho_Plugin::init($options-&gt;plugins);</span><br><span class="line"></span><br><span class="line">        /** 初始化回执 */</span><br><span class="line">        $this-&gt;response-&gt;setCharset($options-&gt;charset);</span><br><span class="line">        $this-&gt;response-&gt;setContentType($options-&gt;contentType);</span><br><span class="line"></span><br><span class="line">        /** 初始化时区 */</span><br><span class="line">        Typecho_Date::setTimezoneOffset($options-&gt;timezone);</span><br><span class="line"></span><br><span class="line">        /** 开始会话, 减小负载只针对后台打开session支持 */</span><br><span class="line">        if ($this-&gt;widget(&apos;Widget_User&apos;)-&gt;hasLogin()) &#123;</span><br><span class="line">            @session_start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /** 监听缓冲区 */ </span><br><span class="line">        ob_start();//只有两处，另外一处是在install.php中</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>ob_start缓存区开了，但是找不到关的地方。backup.php中确实有，但好像并不是总会调用。</p>
+<h2 id="ajax请求"><a href="#ajax请求" class="headerlink" title="ajax请求"></a>ajax请求</h2><p>查看，ajax请求，是如何响应的。那么第一个问题是，怎么鉴定一个请求是不是ajax请求？从network中，过滤xhr发现并没有，而登录好像并不是ajax请求？那么这个框架，能实现ajax请求吗？暂略。</p>
+<p>Widget_Ajax这个好像是跟ajax相关的。但是这个类的方法比较少。那么猜想，这个Widget组件是如何被调用的呢？全局搜索Widget_Ajax只在Widget_Do extends Typecho_Widget中发现。这个类，有个映射关系变量，另外实现了一个execute方法。此文件的原理，有待考究。有一处重点代码，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (isset($widgetName) &amp;&amp; class_exists($widgetName)) &#123;</span><br><span class="line">    //类反射</span><br><span class="line">    $reflectionWidget =  new ReflectionClass($widgetName);</span><br><span class="line">    //如果这个类实现了Widget_Interface_Do接口，则执行</span><br><span class="line">    if ($reflectionWidget-&gt;implementsInterface(&apos;Widget_Interface_Do&apos;)) &#123;</span><br><span class="line">        $this-&gt;widget($widgetName)-&gt;action();</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Widget_Do这个只在Upgrade中使用。升级文件洋洋洒洒2千行，主要功能是对数据库文件进行转换格式等，确保数据库的格式兼容。以后有用到升级相关的，考究一下。</p>
+<h2 id="数据库的深层机理"><a href="#数据库的深层机理" class="headerlink" title="数据库的深层机理"></a>数据库的深层机理</h2><h2 id="一些特别的代码"><a href="#一些特别的代码" class="headerlink" title="一些特别的代码"></a>一些特别的代码</h2><h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><p>位于Archive.php中。switch一般都是一个变量，case是一个常量。而下面的true即为case表达式中的返回值情况，如果未真，则执行。不知道其他语言，有没有这个特点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/** 判断聚合类型 */</span><br><span class="line">switch (true) &#123;</span><br><span class="line">    case 0 === strpos($this-&gt;request-&gt;feed, &apos;/rss/&apos;) || &apos;/rss&apos; == $this-&gt;request-&gt;feed:</span><br><span class="line">        /** 如果是RSS1标准 */</span><br><span class="line">        $this-&gt;request-&gt;feed = substr($this-&gt;request-&gt;feed, 4);</span><br><span class="line">        $this-&gt;_feedType = Typecho_Feed::RSS1;</span><br><span class="line">        $this-&gt;_currentFeedUrl = $this-&gt;options-&gt;feedRssUrl;</span><br><span class="line">        $this-&gt;_feedContentType = &apos;application/rdf+xml&apos;;</span><br><span class="line">        break;</span><br><span class="line">    case 0 === strpos($this-&gt;request-&gt;feed, &apos;/atom/&apos;) || &apos;/atom&apos; == $this-&gt;request-&gt;feed:</span><br><span class="line">        /** 如果是ATOM标准 */</span><br><span class="line">        $this-&gt;request-&gt;feed = substr($this-&gt;request-&gt;feed, 5);</span><br><span class="line">        $this-&gt;_feedType = Typecho_Feed::ATOM1;</span><br><span class="line">        $this-&gt;_currentFeedUrl = $this-&gt;options-&gt;feedAtomUrl;</span><br><span class="line">        $this-&gt;_feedContentType = &apos;application/atom+xml&apos;;</span><br><span class="line">        break;</span><br><span class="line">    default:</span><br><span class="line">        $this-&gt;_feedType = Typecho_Feed::RSS2;</span><br><span class="line">        $this-&gt;_currentFeedUrl = $this-&gt;options-&gt;feedUrl;</span><br><span class="line">        $this-&gt;_feedContentType = &apos;application/rss+xml&apos;;</span><br><span class="line">        break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/29/2019-04-29-2/" rel="next" title="typecho 源码解读">
+                <i class="fa fa-chevron-left"></i> typecho 源码解读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/打印输出（打开一个新页面）/" rel="prev" title="打印输出">
+                打印输出 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#typecho-源码解读（二）"><span class="nav-number">1.</span> <span class="nav-text">typecho 源码解读（二）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#首页是如何显示出来的"><span class="nav-number">1.1.</span> <span class="nav-text">首页是如何显示出来的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dispatch方法："><span class="nav-number">1.1.1.</span> <span class="nav-text">dispatch方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例化Widget组件"><span class="nav-number">1.1.2.</span> <span class="nav-text">实例化Widget组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Widget-Init类"><span class="nav-number">1.2.</span> <span class="nav-text">Widget_Init类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ajax请求"><span class="nav-number">1.3.</span> <span class="nav-text">ajax请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库的深层机理"><span class="nav-number">1.4.</span> <span class="nav-text">数据库的深层机理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些特别的代码"><span class="nav-number">1.5.</span> <span class="nav-text">一些特别的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#switch"><span class="nav-number">1.5.1.</span> <span class="nav-text">switch</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

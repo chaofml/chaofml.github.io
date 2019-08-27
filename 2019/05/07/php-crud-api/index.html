@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="php-crud-api改造记php-crud-api地址 这个是小组组长要求使用到的一个开源的php的库。目地是，减少php代码，使精力专注在前端页面上。但是在使用过程中，发现并不能很好的与前端的Extjs框架配合好。为了解决这个问题，便要对其进行适当的改进。  改造如下前端提交表单，需要返回success字段  前端需求数据跟后端的api接口返回数据格式不一致，前端需要提交数据成功后，需要增加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php-crud-api改造记">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/php-crud-api/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="php-crud-api改造记php-crud-api地址 这个是小组组长要求使用到的一个开源的php的库。目地是，减少php代码，使精力专注在前端页面上。但是在使用过程中，发现并不能很好的与前端的Extjs框架配合好。为了解决这个问题，便要对其进行适当的改进。  改造如下前端提交表单，需要返回success字段  前端需求数据跟后端的api接口返回数据格式不一致，前端需要提交数据成功后，需要增加">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.771Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php-crud-api改造记">
+<meta name="twitter:description" content="php-crud-api改造记php-crud-api地址 这个是小组组长要求使用到的一个开源的php的库。目地是，减少php代码，使精力专注在前端页面上。但是在使用过程中，发现并不能很好的与前端的Extjs框架配合好。为了解决这个问题，便要对其进行适当的改进。  改造如下前端提交表单，需要返回success字段  前端需求数据跟后端的api接口返回数据格式不一致，前端需要提交数据成功后，需要增加">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/php-crud-api/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>php-crud-api改造记 | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/php-crud-api/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">php-crud-api改造记
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+08:00">2019-05-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-27 21:23:49" itemprop="dateModified" datetime="2019-08-27T21:23:49+08:00">2019-08-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="php-crud-api改造记"><a href="#php-crud-api改造记" class="headerlink" title="php-crud-api改造记"></a>php-crud-api改造记</h1><h2 id="php-crud-api地址"><a href="#php-crud-api地址" class="headerlink" title="php-crud-api地址"></a><a href="https://github.com/mevdschee/php-crud-api" target="_blank" rel="noopener">php-crud-api地址</a></h2><blockquote>
+<p>这个是小组组长要求使用到的一个开源的php的库。目地是，减少php代码，使精力专注在前端页面上。但是在使用过程中，发现并不能很好的与前端的Extjs框架配合好。为了解决这个问题，便要对其进行适当的改进。</p>
+</blockquote>
+<h1 id="改造如下"><a href="#改造如下" class="headerlink" title="改造如下"></a>改造如下</h1><h2 id="前端提交表单，需要返回success字段"><a href="#前端提交表单，需要返回success字段" class="headerlink" title="前端提交表单，需要返回success字段"></a>前端提交表单，需要返回success字段</h2><blockquote>
+<p> 前端需求数据跟后端的api接口返回数据格式不一致，前端需要提交数据成功后，需要增加一个success=true字段，而原有的api框架，只返回成功后的api。需要需要对其进行改造。</p>
+</blockquote>
+<p>改造得比较丑，代码可以优化。另外，这种需求是简单的处理。结合之前看到的其他的框架，可以用事件插件模式来处理。（参见typecho的设计模式），RecordController.php，create、update方法。<br>话不多说，代码前后对比：</p>
+<h3 id="改造前："><a href="#改造前：" class="headerlink" title="改造前："></a>改造前：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$params = $request-&gt;getParams();</span><br><span class="line">if (is_array($record)) &#123;</span><br><span class="line">    $result = array();</span><br><span class="line">    foreach ($record as $r) &#123;</span><br><span class="line">        $result[] = $this-&gt;service-&gt;create($table, $r, $params);</span><br><span class="line">    &#125;</span><br><span class="line">    return $this-&gt;responder-&gt;success($result);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    return $this-&gt;responder-&gt;success($this-&gt;service-&gt;create($table, $record, $params));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="改造后："><a href="#改造后：" class="headerlink" title="改造后："></a>改造后：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$params = $request-&gt;getParams();</span><br><span class="line">$needSuccess=false;</span><br><span class="line">if(isset($params[&apos;success&apos;]))&#123;</span><br><span class="line">	$needSuccess=true;</span><br><span class="line">&#125;</span><br><span class="line">if (is_array($record)) &#123;</span><br><span class="line">	$result = array();</span><br><span class="line">	foreach ($record as $r) &#123;</span><br><span class="line">		$result[] = $this-&gt;service-&gt;create($table, $r, $params);</span><br><span class="line">	&#125;</span><br><span class="line">	if($needSuccess)&#123;</span><br><span class="line">		return $this-&gt;responder-&gt;success(array(&apos;success&apos;=&gt;true,&apos;result&apos;=&gt;$result));</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		return $this-&gt;responder-&gt;success($result);</span><br><span class="line">	&#125;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">	if($needSuccess)&#123;</span><br><span class="line">		$result=$this-&gt;service-&gt;create($table, $record, $params);</span><br><span class="line">		return $this-&gt;responder-&gt;success(array(&apos;success&apos;=&gt;true,&apos;result&apos;=&gt;$result));</span><br><span class="line">	&#125;else&#123;</span><br><span class="line">		return $this-&gt;responder-&gt;success($this-&gt;service-&gt;create($table, $record, $params));</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/php-nginx-php-fpm/" rel="next" title="php与nginx的安装">
+                <i class="fa fa-chevron-left"></i> php与nginx的安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/常用的vs扩展/" rel="prev" title="常用的vs扩展">
+                常用的vs扩展 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#php-crud-api改造记"><span class="nav-number">1.</span> <span class="nav-text">php-crud-api改造记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#php-crud-api地址"><span class="nav-number">1.1.</span> <span class="nav-text">php-crud-api地址</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#改造如下"><span class="nav-number">2.</span> <span class="nav-text">改造如下</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前端提交表单，需要返回success字段"><span class="nav-number">2.1.</span> <span class="nav-text">前端提交表单，需要返回success字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#改造前："><span class="nav-number">2.1.1.</span> <span class="nav-text">改造前：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改造后："><span class="nav-number">2.1.2.</span> <span class="nav-text">改造后：</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

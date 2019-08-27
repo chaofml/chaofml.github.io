@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="123title:编程语言是什么date: 2018-04-11 13:26tag: 作为一个程序员，学习编程，到接触到多种多样的编程语言。其实，我也想知道编程语言是什么？下面说说自己关于编程语言的一些拙见吧。 语言之争每种语言都有自身的特点，或是用在特定的解决方案中，或是用在特点的环境中。脱离了语言的使用环境而去谈一种语言，确实不妥。比如,lua，由于自身解释器比较小巧，而且易嵌入到c语言中，所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静谧花园">
+<meta property="og:url" content="http://yoursite.com/2019/08/27/thinkaboutlanguage/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="123title:编程语言是什么date: 2018-04-11 13:26tag: 作为一个程序员，学习编程，到接触到多种多样的编程语言。其实，我也想知道编程语言是什么？下面说说自己关于编程语言的一些拙见吧。 语言之争每种语言都有自身的特点，或是用在特定的解决方案中，或是用在特点的环境中。脱离了语言的使用环境而去谈一种语言，确实不妥。比如,lua，由于自身解释器比较小巧，而且易嵌入到c语言中，所">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.786Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静谧花园">
+<meta name="twitter:description" content="123title:编程语言是什么date: 2018-04-11 13:26tag: 作为一个程序员，学习编程，到接触到多种多样的编程语言。其实，我也想知道编程语言是什么？下面说说自己关于编程语言的一些拙见吧。 语言之争每种语言都有自身的特点，或是用在特定的解决方案中，或是用在特点的环境中。脱离了语言的使用环境而去谈一种语言，确实不妥。比如,lua，由于自身解释器比较小巧，而且易嵌入到c语言中，所">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/27/thinkaboutlanguage/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/27/thinkaboutlanguage/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-27 21:27:20 / 修改时间：21:23:49" itemprop="dateCreated datePublished" datetime="2019-08-27T21:27:20+08:00">2019-08-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title:编程语言是什么</span><br><span class="line">date: 2018-04-11 13:26</span><br><span class="line">tag:</span><br></pre></td></tr></table></figure>
+<p>作为一个程序员，学习编程，到接触到多种多样的编程语言。其实，我也想知道编程语言是什么？下面说说自己关于编程语言的一些拙见吧。</p>
+<h2 id="语言之争"><a href="#语言之争" class="headerlink" title="语言之争"></a>语言之争</h2><p>每种语言都有自身的特点，或是用在特定的解决方案中，或是用在特点的环境中。脱离了语言的使用环境而去谈一种语言，确实不妥。比如,lua，由于自身解释器比较小巧，而且易嵌入到c语言中，所以呢，在嵌入式设备中使用的比较多。比如，路由器。试想，如果用java等语言，内存等各方便均不能使其流程跑起来。这就是lua的使用环境。比如，写网页，那么目前而言，只能选择javascript语言，别无二家。网站编程，那么php由于有丰富的类库，确实比较容易写。同样，java社区大、各类库、解决方法比较多，同样也适合服务web的编程。语言由于其主要的特性存在，往往使人们误以为只能用在这种场合。其实，抛弃那些限制，用于也能用在其他的方便。比如，javascript也能用在服务端编程，加上其特点，在配置低的服务器上，也能跑得欢快。</p>
+<h3 id="javascript语言"><a href="#javascript语言" class="headerlink" title="javascript语言"></a>javascript语言</h3><p>主要特点：异步单线程、前端语言、跨平台。异步：其实主要是还是因为其是单线程的，如果在某个费时的代码处阻塞了，那么后续的代码就不能继续执行。表现在，网页会卡顿。</p>
+<p>有人说，这个语言比较接近lisp语言。</p>
+<p>静态词法分析，函数的作用域，在其定义位置中，决定。（怎么说比较顺口？）适合做闭包的语言。</p>
+<p>学这个语言，我明白了异步编程的原理。另外，Ramda.js，明白柯里化的概念。高阶函数、装饰器等很容易同过这个知识点来掌握。</p>
+<h3 id="php"><a href="#php" class="headerlink" title="php"></a>php</h3><p>主要特点：后端渲染模板语言，天然的模板引擎，适合html嵌入脚本。对比，javascript，js主要运行在浏览器中进行解析，而php运行在服务器中进行解析。.php文件包含标签，而js不需要再包含。js也能运行在服务器中，因为node平台。（捂脸，暂时想不出来）。我目前主要的岗位语言。想起来了，php应该说是主要用来web服务应用的，所以，其本身具有天生的混合在普通文本的模板能力。当然，这个功能，其他编程语言，也能实现，比如python使用了jinjia等库，也能与普通的html进行混合编程。那么怎么看待php呢？比如，对比一下python，都是用c语言构建的虚拟机，然后解释器解释运行代码。python的中间代码为pyc，php中间代码为opcode。php除了构建web服务，也能做为脚本运行一些处理，也能通过一些扩展，做多进程、线程的处理。php的swoole框架，php的高并发、异步扩展（不是框架）。</p>
+<h3 id="visualBasic"><a href="#visualBasic" class="headerlink" title="visualBasic"></a>visualBasic</h3><p>主要特点：解释执行，事件机制。我上大学，学得第一门编程语言。后台也自学过c++等。</p>
+<h3 id="java"><a href="#java" class="headerlink" title="java"></a>java</h3><p>资源很丰富。其实也是一种解释执行的语言。但是由于其字节码进行了优化过，效率也不错。据说go也java性能差不多。</p>
+<h3 id="c"><a href="#c" class="headerlink" title="c"></a>c</h3><p>我没有认真学过，上大学的时候学《网络技术》考试的时候，看过一点的。上手难度并是很大，难点在指针等内容。现在，我真想说，这个语言确实很强大，系统开发、其他语言的虚拟机多数都是该语言实现的。我需要找个时间认真学习一下这个语言。其实，C能做什么，确实我也不知道。如果用来写界面的程序，确实，它能做，但是感觉并不擅长。系统有很多的api都是有c搞定。php解释器，都是由c。其实说白了，用C来开发，确实很费脑子，在此基础上进一步抽象，在内存管理等方面，语法特点等，生成特定的语言。即基于C，进一步抽象，变成高级语言。</p>
+<p>c可接近低层，一可以往高级方面发展。</p>
+<h3 id="C"><a href="#C" class="headerlink" title="C++"></a>C++</h3><p>在c的基础上增加了类机制，类还有友元、虚类等概念，确实让类编程难度很大。依然使用指针等，所以程序员手动释放内存空间等。</p>
+<h2 id="lisp"><a href="#lisp" class="headerlink" title="lisp"></a>lisp</h2><p>神语言，此语言看似很低级，实则很高级。如果想写新语言，lisp确实适合搞搞。</p>
+<p>#语言特点</p>
+<h2 id="异步、事件"><a href="#异步、事件" class="headerlink" title="异步、事件"></a>异步、事件</h2><p>代表语言js。线程不会阻塞在io等耗时操作上，对于高并发，能在一个线程里面，处理多个客户端任务。由于是异步的，所以一个任务完成了，需要通过事件模式来通知。另外，python也有一些库，也能完成异步，（ async / await 做异步编程）。另外javascript，是单线程的。</p>
+<h3 id="编程特点"><a href="#编程特点" class="headerlink" title="编程特点"></a>编程特点</h3><p>回调，一个事件完成之后，回调函数，进而将流程转给其他的代码。关键字常有await、async。对象，promise。</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>异步编程，跟正常顺序执行的代码思维略有区别，理解难度大一些。异步通过消息机制，能避免回调地狱，但是任不简单。</p>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>代表语言go。go语言语法里面本身支持 go chan等关键字，本身很适合做高并发。协程特点，创建协程比线程、进程等节省资源，所以适合高并发。</p>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><p>暂无。</p>
+<h2 id="解释性语言"><a href="#解释性语言" class="headerlink" title="解释性语言"></a>解释性语言</h2><p>多被称为脚本语言。如python、php、lua、ruby、basic等一大批语言。特点，变量使用前不需要申明，直接拿来用就好，而且也不需要制定类型，变量能存放多种类型。由于是解释执行的，并为编译到特点平台的机器码。所以呢，跨平台很好。只要在该平台实现了解释器，就能执行。但是，性能有折损。毕竟，运行的时候，需要先解释。另外的特点，脚本语言，代码一般更容易理解，上手难度小，开发周期较快。但是，由于缺乏类型的支持，开发期一些bug无法通过编译器找出来，代码提示不够好。所以呢，php7中增加了类型的支持、js有语法变体typescript。说明了，类型在脚本语言中也变得重要了。</p>
+<h2 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h2><p>js、php等都有这个概念。闭包的基础是，在一个函数内，能直接返回一个函数指针。那么返回的这个函数指针，其作用域能享受到其定义的位置的外层函数内的作用域。所以，就能闭包。而php，需要use关键子来显示的需要指定用到的外层变量。</p>
+<h2 id="作用域特点"><a href="#作用域特点" class="headerlink" title="作用域特点"></a>作用域特点</h2><p>这个其实算不上特点。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/README/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#语言之争"><span class="nav-number">1.</span> <span class="nav-text">语言之争</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript语言"><span class="nav-number">1.1.</span> <span class="nav-text">javascript语言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php"><span class="nav-number">1.2.</span> <span class="nav-text">php</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#visualBasic"><span class="nav-number">1.3.</span> <span class="nav-text">visualBasic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java"><span class="nav-number">1.4.</span> <span class="nav-text">java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c"><span class="nav-number">1.5.</span> <span class="nav-text">c</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C"><span class="nav-number">1.6.</span> <span class="nav-text">C++</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lisp"><span class="nav-number">2.</span> <span class="nav-text">lisp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步、事件"><span class="nav-number">3.</span> <span class="nav-text">异步、事件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编程特点"><span class="nav-number">3.1.</span> <span class="nav-text">编程特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协程"><span class="nav-number">4.</span> <span class="nav-text">协程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">4.1.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解释性语言"><span class="nav-number">5.</span> <span class="nav-text">解释性语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#闭包"><span class="nav-number">6.</span> <span class="nav-text">闭包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作用域特点"><span class="nav-number">7.</span> <span class="nav-text">作用域特点</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

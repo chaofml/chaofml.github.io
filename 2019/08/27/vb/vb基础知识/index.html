@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="vb基础知识前言vb是一种解释性的执行语言。每条语句，并不需要添加 分号等结尾。 注释，以单引号开头   ‘ 变量字符串Len Len(string|varname) 返回字符串内字符的数目，或是存储一变量所需的字节数。  Trim Trim(string) 将字符串前后的空格去掉  Ltrim Ltrim(string) 将字符串前面的空格去掉  Rtrim Rtrim(string) 将字符串">
+<meta property="og:type" content="article">
+<meta property="og:title" content="静谧花园">
+<meta property="og:url" content="http://yoursite.com/2019/08/27/vb/vb基础知识/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="vb基础知识前言vb是一种解释性的执行语言。每条语句，并不需要添加 分号等结尾。 注释，以单引号开头   ‘ 变量字符串Len Len(string|varname) 返回字符串内字符的数目，或是存储一变量所需的字节数。  Trim Trim(string) 将字符串前后的空格去掉  Ltrim Ltrim(string) 将字符串前面的空格去掉  Rtrim Rtrim(string) 将字符串">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.789Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="静谧花园">
+<meta name="twitter:description" content="vb基础知识前言vb是一种解释性的执行语言。每条语句，并不需要添加 分号等结尾。 注释，以单引号开头   ‘ 变量字符串Len Len(string|varname) 返回字符串内字符的数目，或是存储一变量所需的字节数。  Trim Trim(string) 将字符串前后的空格去掉  Ltrim Ltrim(string) 将字符串前面的空格去掉  Rtrim Rtrim(string) 将字符串">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/27/vb/vb基础知识/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/27/vb/vb基础知识/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-27 21:27:20 / 修改时间：21:23:49" itemprop="dateCreated datePublished" datetime="2019-08-27T21:27:20+08:00">2019-08-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="vb基础知识"><a href="#vb基础知识" class="headerlink" title="vb基础知识"></a>vb基础知识</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vb是一种解释性的执行语言。每条语句，并不需要添加 分号等结尾。</p>
+<p>注释，以单引号开头   ‘</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>Len Len(string|varname) 返回字符串内字符的数目，或是存储一变量所需的字节数。 </p>
+<p>Trim Trim(string) 将字符串前后的空格去掉 </p>
+<p>Ltrim Ltrim(string) 将字符串前面的空格去掉 </p>
+<p>Rtrim Rtrim(string) 将字符串后面的空格去掉 </p>
+<p>Mid Mid(string,start,length) 从string字符串的start字符开始取得length长度的字符串，如果省略第三个参数表示从start字符开始到字符串结尾的字符串 </p>
+<p>Left Left(string,length) 从string字符串的左边取得length长度的字符串 </p>
+<p>Right Right(string,length) 从string字符串的右边取得length长度的字符串 </p>
+<p>LCase LCase(string) 将string字符串里的所有大写字母转化为小写字母 </p>
+<p>UCase UCase(string) 将string字符串里的所有大写字母转化为大写字母 </p>
+<p>StrComp StrComp(string1,string2[，compare]) 返回string1字符串与string2字符串的比较结果，如果两个字符串相同，则返回0，如果小于则返回-1，如果大于则返回1 </p>
+<p>InStr InStr(string1,string2[, compare]) 返回string1字符串在string2字符串中第一次出现的位置 </p>
+<p>Split Split(string1,delimiter[, count[, start]]) 将字符串根据delimiter拆分成一维数组，其中delimiter用于标识子字符串界限。如果省略，使用空格(“”)作为分隔符。 </p>
+<p>count 返回的子字符串数目，-1 指示返回所有子字符串。 </p>
+<p>start为 1 执行文本比较；如果为 0 或者省略执行二进制比较。</p>
+<p>Replace Replace(expression, find, replacewith[, compare[, count[, start]]]) 返回字符串，其中指定数目的某子字符串(find)被替换为另一个子字符串(replacewith)。</p>
+<p>1、Len函数示例： </p>
+<p>下面的示例利用 Len 函数返回字符串中的字符数目： </p>
+<p>Dim MyString </p>
+<p>MyString = Len(“VBSCRIPT”) ‘’MyString 包含 8。</p>
+<p>2、Trim、Ltrim、Rtrim函数示例： </p>
+<p>下面的示例利用 LTrim, RTrim, 和 Trim 函数分别用来除去字符串开始的空格、尾部空格、 开始和尾部空格： </p>
+<p>Dim MyVar </p>
+<p>MyVar = LTrim(“ vbscript “) ‘’MyVar 包含 “vbscript “。 </p>
+<p>MyVar = RTrim(“ vbscript “) ‘’MyVar 包含 “ vbscript”。 </p>
+<p>MyVar = Trim(“ vbscript “) ‘’MyVar 包含”vbscript”。</p>
+<p>3、Mid函数示例： </p>
+<p>下面的示例利用 Mid 函数返回字符串中从第四个字符开始的六个字符： </p>
+<p>Dim MyVar </p>
+<p>MyVar = Mid(“VB脚本is fun!”, 4, 6) ‘’MyVar 包含 “Script”。</p>
+<p>4、Left函数示例： </p>
+<p>下面的示例利用Left 函数返回MyString 的左边三个字母： </p>
+<p>Dim MyString, LeftString </p>
+<p>MyString = “VBSCript” </p>
+<p>LeftString = Left(MyString, 3) ‘’LeftString 包含 “VBS</p>
+<p>5、Right函数示例： </p>
+<p>下面的示例利用 Right 函数从字符串右边返回指定数目的字符： </p>
+<p>Dim AnyString, MyStr </p>
+<p>AnyString = “Hello World” ‘’定义字符串。 </p>
+<p>MyStr = Right(AnyString, 1) ‘’返回 “d”。 </p>
+<p>MyStr = Right(AnyString, 6) ‘’ 返回 “ World”。 </p>
+<p>MyStr = Right(AnyString, 20) ‘’ 返回 “Hello World”。 </p>
+<p>6、LCase函数示例： </p>
+<p>下面的示例利用 LCase 函数把大写字母转换为小写字母： </p>
+<p>Dim MyString </p>
+<p>Dim LCaseString </p>
+<p>MyString = “VBSCript” </p>
+<p>LCaseString = LCase(MyString) ‘’ LCaseString 包含 “vbscript”。 </p>
+<p>7、 UCase函数示例： </p>
+<p>下面的示例利用 UCase 函数返回字符串的大写形式： </p>
+<p>Dim MyWord </p>
+<p>MyWord = UCase(“Hello World”) ‘’ 返回”HELLO WORLD”。</p>
+<p>8、StrComp函数示例： </p>
+<p>下面的示例利用 StrComp 函数返回字符串比较的结果。如果第三个参数为 1 执行文本比较；如果第三个参数为 0 或者省略执行二进制比较。</p>
+<p>Dim MyStr1, MyStr2, MyComp </p>
+<p>MyStr1 = “ABCD”: MyStr2 = “abcd” ‘’定义变量。 </p>
+<p>MyComp = StrComp(MyStr1, MyStr2, 1) ‘’ 返回 0。 </p>
+<p>MyComp = StrComp(MyStr1, MyStr2, 0) ‘’ 返回 -1。 </p>
+<p>MyComp = StrComp(MyStr2, MyStr1) ‘’ 返回 1。</p>
+<p>9、InStr示例： </p>
+<p>下面的示例利用 InStr 搜索字符串： </p>
+<p>Dim SearchString, SearchChar, MyPos </p>
+<p>SearchString =”XXpXXpXXPXXP”??? </p>
+<p>SearchChar = “P”?? </p>
+<p>MyPos = Instr(SearchString, SearchChar)???’’返回 9. </p>
+<p>注意：返回的不是一个字符串在另一个字符串中第一次出现的字符位置，而是字节位置。</p>
+<p>10、Split函数示例： </p>
+<p>Dim MyString, MyArray, Msg </p>
+<p>MyString = “VBScriptXisXfun!” </p>
+<p>MyArray = Split(MyString, “x”,-1,1) </p>
+<p>‘’ MyArray(0) contains “VBScript”. </p>
+<p>‘’ MyArray(1) contains “is”. </p>
+<p>‘’ MyArray(2) contains “fun!”. </p>
+<p>Response.Write(MyArray(0))</p>
+<p>11、Replace函数示例： </p>
+<p>Replace(“ABCD”, “BC”, “12”) ‘’得到A12D</p>
+<p>Ucase(string) 将字符串转换为大写。 </p>
+<p>Val(string) 将代表数字的字符串转换为数值型态，若字符串中含有非数字的内容则会将其去除后，合并为一数字。 </p>
+<p>Weekday(date) 取的参数中的日期是一个星期的第几天，星期天为1、星期一为2、星期二为3 依此类推。 </p>
+<p>WeekDayName(number) 依接收的参数取得星期的名称，可接收的参数为1 到7，星期天为1、星期一为2、星期二为3 依此类推。 </p>
+<p>Split(expression[, delimiter]) 以delimiter 参数设定的条件字符串来将字符串分割为字符串数组。 </p>
+<p>Sqrt(number) 取得一数值得平方根。 </p>
+<p>Str(number) 将数字转为字符串后传回。 </p>
+<p>StrReverse(expression) 取得字符串内容反转后的结果。 </p>
+<p>Tan(number) 取得某个角度的正切值。 </p>
+<p>TimeOfDay() 取得目前不包含日期的时间。 </p>
+<p>Timer() 取得由0:00 到目前时间的秒数，型态为Double。 </p>
+<p>TimeSerial(hour, minute, second) 将接收的参数合并为一个只有时间Date 型态的数据。 </p>
+<p>Timavalue(time) 取得符合国别设定样式的时间值。 </p>
+<p>Today() 取得今天不包含时间的日期。 </p>
+<p>Trim(string) 去掉字符串开头和结尾的空白。 </p>
+<p>TypeName(varname) 取得变量或对象的型态。 </p>
+<p>Ubound(arrayname[, dimension]) 取得数组的最终索引值，dimension 参数是指定取得第几维度的最终索引值。 </p>
+<p>MonthName(month) 依接收的月份数值取得该月份的完整写法。 </p>
+<p>Now() 取得目前的日期和时间。 </p>
+<p>Oct(number) 将数值参数转换为8 进制值。 </p>
+<p>Replace(expression, find, replace) 将字符串中find 参数指定的字符串转换为replace 参数指定的字符串。 </p>
+<p>Right(string,length) 由字符串右边开始取得length 参数设定长度的字符。 </p>
+<p>RmDir(path) 移除一个空的目录。 </p>
+<p>Rnd() 取得介于0 到1 之间的小数，如果每次都要取得不同的值，使用前需加上Randomize 叙述。 </p>
+<p>Rtrim(string) 去掉字符串的右边空白部分。 </p>
+<p>Second(time) 取得时间内容的秒部分，型态为Integer。 </p>
+<p>Sign(number) 取得数值内容是正数或负数，正数传回1，负数传回-1，0 传回0。 </p>
+<p>Sin(number) 取得一个角度的正弦值。 </p>
+<p>Space(number) 取得number 参数设定的空白字符串。 </p>
+<p>IsDate(expression) 判断表达式内容是否为DateTime 型态，若是则传回True，反之则为False。 </p>
+<p>IsDbNull(expression) 判断表达式内容是否为Null，若是则传回True，反之则为False。</p>
+<p>IsNumeric(expression) 判断表达式内容是否为数值型态，若是则传回True，反之则为False。 </p>
+<p>Join(sourcearray[, delimiter]) 将字符串数组合并唯一个字符串，delimiter 参数是设定在各个元素间加入新的字符串。 </p>
+<p>Lcase(string) 将字符串转换为小写字体。 </p>
+<p>Left(string, length) 由字符串左边开始取得length 参数设定长度的字符。 </p>
+<p>Len(string) 取得字符串的长度。 </p>
+<p>Log(number) 取得数值的自然对数。 </p>
+<p>Ltrim(string) 去掉字符串的左边空白部分。 </p>
+<p>Mid(string, start[, length]) 取出字符串中strat 参数设定的字符后length 长度的字符串，若length 参数没有设定，则取回start 以后全部的字符。 </p>
+<p>Minute(time) 取得时间内容的分部分，型态为Integer。 </p>
+<p>MkDir(path) 建立一个新的目录。 </p>
+<p>Month(date) 取得日期的月部分，型态为Integer。 </p>
+<p>FormatDateTime(date[,namedformat]) 传回格式化的日期或时间数据。 </p>
+<p>FormatNumber(expression[,numdigitsafterdecimal [,includeleadingdigit]]) 传回格式化 </p>
+<p>的数值数据。Numdigitsafterdecimal 参数为小数字数，includeleadingdigit 参数为当整数为0 时是否补至整数字数。 </p>
+<p>FormatPercent(expression[,numdigitsafterdecimal [,includeleadingdigit]]) 传回转换为百分比格式的数值数据。numdigitsafterdecimal 参数为小数字数，includeleadingdigit 参数为当整数为0 时是否补至整数字数。 </p>
+<p>GetAttr(filename) 传回档案或目录的属性值。 </p>
+<p>Hex(number) 将数值参数转换为16 进制值。 </p>
+<p>Hour(time) 传回时间的小时字段，型态是Integer。 </p>
+<p>Iif(expression, truepart, falsepart) 当表达式的传回值为True 时执行truepart 字段的程序，反之则执行falsepart 字段。 </p>
+<p>InStr([start, ]string1, string2) 搜寻string2 参数设定的字符出现在字符串的第几个字符，start 为由第几个字符开始寻找，string1 为欲搜寻的字符串，string2 为欲搜寻的字符。 </p>
+<p>Int(number) 传回小于或等于接收参数的最大整数值。 </p>
+<p>IsArray(varname) 判断一个变量是否为数组型态，若为数组则传回True，反之则为False。 </p>
+<p>Day(datetime) 依接收的日期参数传回日。 </p>
+<p>Eof(filenumber) 当抵达一个被开启的档案结尾时会传回True。 </p>
+<p>Exp(number) 依接收的参数传回e 的次方值。 </p>
+<p>FileDateTime(pathname) 传回档案建立时的日期、时间。 </p>
+<p>FileLen(pathname) 传回档案的长度，单位是Byte。 </p>
+<p>Filter(sourcearray, match[, include[, compare]]) 搜寻字符串数组中的指定字符串，凡是数组元素中含有指定字符串，会将它们结合成新的字符串数组并传回。若是要传回不含指定字符串的数组元素，则include 参数设为False。compare 参数则是设定搜寻时是否区分大小写，此时只要给TextCompare 常数或1 即可。 </p>
+<p>Fix(number) 去掉参数的小数部分并传回。 </p>
+<p>Format(expression[, style[, firstdayofweek[, firstweekofyear]]]) 将日期、时间和数值资料转为每个国家都可以接受的格式。 </p>
+<p>FormatCurrency(expression[,numdigitsafterdecimal [,includeleadingdigit]]) 将数值输出为金额型态。 </p>
+<p>numdigitsafterdecimal 参数为小数字数，includeleadingdigit 参数为当整数为0 时是否补至整数字数。 </p>
+<p>CObj(expression) 转换表达式为Object 型态。 </p>
+<p>CShort(expression) 转换表达式为Short 型态。 </p>
+<p>CSng(expression) 转换表达式为Single 型态。 </p>
+<p>CStr(expression) 转换表达式为String 型态。 </p>
+<p>Choose (index, choice-1[, choice-2, … [, choice-n]]) 以索引值来选择并传回所设定的参数。 </p>
+<p>Chr(charcode) 以ASCII 码来取得字符内容。 </p>
+<p>Close(filenumberlist) 结束使用Open 开启的档案。 </p>
+<p>Cos(number) 取得一个角度的余弦值。 </p>
+<p>Ctype(expression, typename) 转换表达式的型态。 </p>
+<p>DateAdd(dateinterval, number, datetime) 对日期或时间作加减。 </p>
+<p>DateDiff(dateinterval, date1, date2) 计算两个日期或时间间的差值。 </p>
+<p>DatePart (dateinterval, date) 依接收的日期或时间参数传回年、月、日或时间。 </p>
+<p>DateSerial(year, month, day) 将接收的参数合并为一个只有日期的Date 型态的数据。 </p>
+<p>Datevalue(datetime) 取得符合国别设定样式的日期值，并包含时间。 </p>
+<p>Abs(number) 取得数值的绝对值。 </p>
+<p>Asc(String) 取得字符串表达式的第一个字符ASCII 码。 </p>
+<p>Atn(number) 取得一个角度的反正切值。 </p>
+<p>CallByName (object, procname, usecalltype,[args()]) 执行一个对象的方法、设定或传回对象的属性。 </p>
+<p>CBool(expression) 转换表达式为Boolean 型态。 </p>
+<p>CByte(expression) 转换表达式为Byte 型态。 </p>
+<p>CChar(expression) 转换表达式为字符型态。 </p>
+<p>CDate(expression) 转换表达式为Date 型态。 </p>
+<p>CDbl(expression) 转换表达式为Double 型态。 </p>
+<p>CDec(expression) 转换表达式为Decimal 型态。 </p>
+<p>CInt(expression) 转换表达式为Integer 型态。 </p>
+<p>CLng(expression) 转换表达式为Long 型态</p>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">card = Array(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)</span><br><span class="line"><span class="keyword">For</span> i = <span class="number">0</span> <span class="keyword">To</span> UBound(card)</span><br><span class="line">	TracePrint card(i)</span><br><span class="line"><span class="keyword">Next</span></span><br></pre></td></tr></table></figure>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> hello(id)</span><br><span class="line">    print(id)</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br></pre></td></tr></table></figure>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Sub</span> test(id)</span><br><span class="line">	print(id)</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Sub</span></span><br></pre></td></tr></table></figure>
+<p>调用</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">print <span class="number">1</span></span><br><span class="line"><span class="comment">'或者</span></span><br><span class="line">print(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<h1 id="其他知识"><a href="#其他知识" class="headerlink" title="其他知识"></a>其他知识</h1><h2 id="shell调用外部命令"><a href="#shell调用外部命令" class="headerlink" title="shell调用外部命令"></a>shell调用外部命令</h2><ul>
+<li>vbHide  能隐藏窗体</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Shell &quot;cmd /c &quot; &amp; &quot;ping www.baidu.com &gt;c:/1.txt&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Private</span> <span class="keyword">Declare</span> <span class="keyword">Function</span> ShellExecute <span class="keyword">Lib</span> <span class="string">"shell32.dll"</span> <span class="keyword">Alias</span> <span class="string">"ShellExecuteA"</span> (<span class="keyword">ByVal</span> hWnd <span class="keyword">As</span> <span class="built_in">Long</span>, <span class="keyword">ByVal</span> lpOperation <span class="keyword">As</span> <span class="built_in">String</span>, <span class="keyword">ByVal</span> lpFile <span class="keyword">As</span> <span class="built_in">String</span>, <span class="keyword">ByVal</span> lpParameters <span class="keyword">As</span> <span class="built_in">String</span>, <span class="keyword">ByVal</span> lpDirectory <span class="keyword">As</span> <span class="built_in">String</span>, <span class="keyword">ByVal</span> nShowCmd <span class="keyword">As</span> <span class="built_in">Long</span>) <span class="keyword">As</span> <span class="built_in">Long</span></span><br><span class="line"><span class="comment">'能打开任意文件的shell</span></span><br><span class="line"><span class="keyword">Public</span> <span class="keyword">Function</span> ShellAll(nHwnd <span class="keyword">As</span> <span class="built_in">Long</span>, <span class="keyword">ByVal</span> strFilePath <span class="keyword">As</span> <span class="built_in">String</span>, <span class="keyword">Optional</span> <span class="keyword">ByVal</span> strCanShu <span class="keyword">As</span> <span class="built_in">String</span> = <span class="string">""</span>) <span class="keyword">As</span> <span class="built_in">Boolean</span></span><br><span class="line">    <span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">GoTo</span> ShellAllErr</span><br><span class="line">    ShellAll = <span class="literal">True</span></span><br><span class="line">    strFilePath = Trim(strFilePath)</span><br><span class="line">    <span class="keyword">Dim</span> nLs <span class="keyword">As</span> <span class="built_in">Long</span></span><br><span class="line">    nLs = ShellExecute(nHwnd, <span class="string">"open"</span>, strFilePath, vbNullString, strCanShu, vbNormalFocus)</span><br><span class="line">    <span class="keyword">If</span> nLs &lt;= <span class="number">32</span> <span class="keyword">Then</span></span><br><span class="line">        ShellAll = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">End</span> <span class="keyword">If</span></span><br><span class="line">    <span class="keyword">Exit</span> <span class="keyword">Function</span></span><br><span class="line">ShellAllErr:</span><br><span class="line">    Err.Clear</span><br><span class="line">    ShellAll = <span class="literal">False</span></span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br><span class="line"><span class="comment">'不提示错误的shell，可SHELL外部DOs命令</span></span><br><span class="line"><span class="keyword">Public</span> <span class="keyword">Function</span> myShell(strFile <span class="keyword">As</span> <span class="built_in">String</span>) <span class="keyword">As</span> <span class="built_in">Boolean</span></span><br><span class="line">    <span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">GoTo</span> shellError</span><br><span class="line">    myShell = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">Dim</span> k <span class="keyword">As</span> <span class="built_in">Long</span></span><br><span class="line">    k = Shell(strFile, vbNormalFocus)</span><br><span class="line">    <span class="keyword">If</span> k = <span class="number">0</span> <span class="keyword">Then</span> myShell = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">Exit</span> <span class="keyword">Function</span></span><br><span class="line">shellError:</span><br><span class="line">    myShell = <span class="literal">False</span></span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br><span class="line"><span class="comment">'SHELL　DOS的内部命令</span></span><br><span class="line"><span class="keyword">Public</span> <span class="keyword">Sub</span> ShellDocIn(<span class="keyword">ByVal</span> strCmd <span class="keyword">As</span> <span class="built_in">String</span>)</span><br><span class="line">    <span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">Resume</span> <span class="keyword">Next</span> <span class="comment">'此过程不保证一定执行成功</span></span><br><span class="line">    strCmd = Trim(strCmd)</span><br><span class="line">    Shell <span class="string">"Cmd.exe /k "</span> &amp; strCmd, vbHide</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Sub</span></span><br></pre></td></tr></table></figure>
+<h3 id="VB的文件拖放实现"><a href="#VB的文件拖放实现" class="headerlink" title="VB的文件拖放实现"></a>VB的文件拖放实现</h3><p>VB中，很多控件都可以实现拖放功能。拖放功能有内部控件间的拖放和由程序外部对程序本身的拖放。文件拖放应该使用OLEDragDrop事件，而不是DragDrop事件。</p>
+<ul>
+<li>OLEDragDrop事件的语法如下：</li>
+</ul>
+<p>Private Sub object_OLEDragDrop(data As DataObject, effect As Long, button As Integer, shift As Integer, x As Single, y As Single)</p>
+<ul>
+<li><p>以Form为例，实现方法如下：</p>
+</li>
+<li><p>建立一个窗体Form1，将OLEDragMode属性设置为 1 - Manual。</p>
+</li>
+<li><p>在Form1的OLEDragDrop事件代码如下例：</p>
+</li>
+</ul>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Private</span> <span class="keyword">Sub</span> Form_OLEDragDrop(Data <span class="keyword">As</span> DataObject, Effect <span class="keyword">As</span> <span class="built_in">Long</span>, Button <span class="keyword">As</span> <span class="built_in">Integer</span>, Shift <span class="keyword">As</span> <span class="built_in">Integer</span>, X <span class="keyword">As</span> <span class="built_in">Single</span>, Y <span class="keyword">As</span> <span class="built_in">Single</span>)</span><br><span class="line"></span><br><span class="line">Dim f As Variant '注意对象类型</span><br><span class="line">    <span class="keyword">For</span> <span class="keyword">Each</span> f <span class="keyword">In</span> Data.Files</span><br><span class="line">        print f</span><br><span class="line">    <span class="keyword">Next</span> f</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Sub</span></span><br></pre></td></tr></table></figure>
+<p>然后运行，拖放文件到程序窗体，即可看到立即窗口打印的文件路径。</p>
+<p>也可以使用  Debug.print Data.Files(1)  来显示第一个文件的路径。</p>
+<p><strong>注意，Files集合是从(1)开始，而不是(0)。</strong></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/27/vb/toos/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/27/api/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vb基础知识"><span class="nav-number">1.</span> <span class="nav-text">vb基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">1.2.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串"><span class="nav-number">1.2.1.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数组"><span class="nav-number">1.2.2.</span> <span class="nav-text">数组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number">1.3.</span> <span class="nav-text">函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过程"><span class="nav-number">1.4.</span> <span class="nav-text">过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他知识"><span class="nav-number">2.</span> <span class="nav-text">其他知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shell调用外部命令"><span class="nav-number">2.1.</span> <span class="nav-text">shell调用外部命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VB的文件拖放实现"><span class="nav-number">2.1.1.</span> <span class="nav-text">VB的文件拖放实现</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

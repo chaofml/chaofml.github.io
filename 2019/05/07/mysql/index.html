@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="mysql相关用户管理MySQL 默认有个root用户，但是这个用户权限太大，一般只在管理数据库时候才用。如果在项目中要连接 MySQL 数据库，则建议新建一个权限较小的用户来连接。  在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户： 1CREATE USER username IDENTIFIED BY &amp;apos;password&amp;apos;;  新用户创建完成，但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql相关">
+<meta property="og:url" content="http://yoursite.com/2019/05/07/mysql/index.html">
+<meta property="og:site_name" content="静谧花园">
+<meta property="og:description" content="mysql相关用户管理MySQL 默认有个root用户，但是这个用户权限太大，一般只在管理数据库时候才用。如果在项目中要连接 MySQL 数据库，则建议新建一个权限较小的用户来连接。  在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户： 1CREATE USER username IDENTIFIED BY &amp;apos;password&amp;apos;;  新用户创建完成，但">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-27T13:23:49.769Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql相关">
+<meta name="twitter:description" content="mysql相关用户管理MySQL 默认有个root用户，但是这个用户权限太大，一般只在管理数据库时候才用。如果在项目中要连接 MySQL 数据库，则建议新建一个权限较小的用户来连接。  在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户： 1CREATE USER username IDENTIFIED BY &amp;apos;password&amp;apos;;  新用户创建完成，但">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/07/mysql/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>mysql相关 | 静谧花园</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion .logo-line-before i { left: initial; }
+    .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">静谧花园</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">君子善思，善假于物。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/mysql/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="静谧花园">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">mysql相关
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+08:00">2019-05-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-27 21:23:49" itemprop="dateModified" datetime="2019-08-27T21:23:49+08:00">2019-08-27</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="mysql相关"><a href="#mysql相关" class="headerlink" title="mysql相关"></a>mysql相关</h1><h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><p>MySQL 默认有个root用户，但是这个用户权限太大，一般只在管理数据库时候才用。如果在项目中要连接 MySQL 数据库，则建议新建一个权限较小的用户来连接。</p>
+<ul>
+<li><p>在 MySQL 命令行模式下输入如下命令可以为 MySQL 创建一个新用户：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER username IDENTIFIED BY &apos;password&apos;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>新用户创建完成，但是此刻如果以此用户登陆的话，会报错，因为我们还没有为这个用户分配相应权限，分配权限的命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL PRIVILEGES ON *.* TO &apos;username&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;password&apos;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>授予username用户在所有数据库上的所有权限。</p>
+<p>说明：<em>.</em>表示所有的库上的所有的表</p>
+<ul>
+<li>如果此时发现刚刚给的权限太大了，如果我们只是想授予它在某个数据库上的权限，那么需要切换到root 用户撤销刚才的权限，重新授权：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">EVOKE ALL PRIVILEGES ON *.* FROM &apos;username&apos;@&apos;localhost&apos;;</span><br><span class="line">GRANT ALL PRIVILEGES ON wordpress.* TO &apos;username&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;password&apos;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>甚至还可以指定该用户只能执行 select 和 update 命令：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT SELECT, UPDATE ON wordpress.* TO &apos;username&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;password&apos;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这样一来，再次以username登陆 MySQL，只有wordpress数据库是对其可见的，并且如果你只授权它select权限，那么它就不能执行delete 语句。</p>
+<ul>
+<li><p>另外每当调整权限后，通常需要执行以下语句刷新权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除刚才创建的用户：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP USER username@localhost;</span><br></pre></td></tr></table></figure>
+<h2 id="mysql账户密码"><a href="#mysql账户密码" class="headerlink" title="mysql账户密码"></a>mysql账户密码</h2><h3 id="第一种方式："><a href="#第一种方式：" class="headerlink" title="第一种方式："></a>第一种方式：</h3><ul>
+<li>找出别人的链接的ID<br>show processlist;</li>
+</ul>
+<p>在系统下mysqladmin -uroot -ppassword kill 要杀的ID </p>
+<p>先修改了root密码，语句如下：<br>UPDATE mysql.user SET PASSWORD=PASSWORD(‘root’) WHERE USER=’root’;<br>FLUSH PRIVILEGES;</p>
+<ul>
+<li>限制下安全吧，root授权的时候只给自己的IP进行授权<br>grant ALL on <em>.</em> to “root”@”自己的IP” identified by “密码”;<br>FLUSH PRIVILEGES;<br>下面好像可以增加了一个新的用户。</li>
+</ul>
+<h3 id="第二种方式：mysql-native-password"><a href="#第二种方式：mysql-native-password" class="headerlink" title="第二种方式：mysql_native_password"></a>第二种方式：mysql_native_password</h3><p>修改密码加密方式，改成mysql_native_password</p>
+<p>ALTER USER ‘root‘@’localhost’ IDENTIFIED WITH mysql_native_password BY ‘root’;<br>然后修改密码：</p>
+<p>SET PASSWORD FOR ‘root‘@’localhost’ = PASSWORD(‘newpassword’);<br>或者执行命令flush privileges使权限配置项立即生效。</p>
+<p>这种方式，可以在mysql.user表中看到，password字段中内容为空，而plugin字段中，为mysql_native_password。另外，authentication_string字段中，多了一些内容。<strong>在实际操作中，发现password中有内容了，而原来的还是为空。</strong></p>
+<h3 id="忘记密码"><a href="#忘记密码" class="headerlink" title="忘记密码"></a>忘记密码</h3><p>只需要跳过权限登录MySQL 服务器端，在cmd中执行 mysqld –skip-grant-tables。需要先结束mysqld服务进程。 </p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>仔细上面几个命令，可以发现不管是授权，还是撤销授权，都要指定响应的host（即 @ 符号后面的内容），因为以上及格命令实际上都是在操作mysql 数据库中的user表，可以用如下命令查看相应用户及对应的host:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT User, Host FROM user;</span><br></pre></td></tr></table></figure></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><h4 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h4><ul>
+<li>!（验证过，确实如此）<br>密码中含有叹号（！）,那么在控制台登录时会出现错误哦，但是PHP能正常的访问。</li>
+<li>&amp;<br>如果有特殊字符&amp;，那么就会出现如下提示：-bash: syntax error near unexpected token `&amp;’</li>
+</ul>
+<h3 id="mysql-user表中Host为-的含义"><a href="#mysql-user表中Host为-的含义" class="headerlink" title="mysql.user表中Host为%的含义"></a>mysql.user表中Host为%的含义</h3><p>　　Host列指定了允许用户登录所使用的IP，比如user=root Host=192.168.1.1。这里的意思就是说root用户只能通过192.168.1.1的客户端去访问。<br>　　而%是个通配符，如果Host=192.168.1.%，那么就表示只要是IP地址前缀为“192.168.1.”的客户端都可以连接。如果Host=%，表示所有IP都有连接权限。<br>　　这也就是为什么在开启远程连接的时候，大部分人都直接把Host改成%的缘故，为了省事。</p>
+<h2 id="数据库备份"><a href="#数据库备份" class="headerlink" title="数据库备份"></a>数据库备份</h2><ul>
+<li>备份<br>mysqldump -uroot -pshinestb –databases publish led meetings shinevideomeeting iptv cdnserver interactive  ctinteractive   &gt; 文件.sql;</li>
+<li>恢复<br>mysql -uroot -pshinestb publish &lt; 文件</li>
+</ul>
+<p><a href="https://www.cnblogs.com/wanghetao/p/3806888.html" target="_blank" rel="noopener">https://www.cnblogs.com/wanghetao/p/3806888.html</a></p>
+<p><a href="https://www.cnblogs.com/libin6505/p/8269035.html" target="_blank" rel="noopener">https://www.cnblogs.com/libin6505/p/8269035.html</a></p>
+<p><a href="https://blog.csdn.net/z69183787/article/details/76449186" target="_blank" rel="noopener">https://blog.csdn.net/z69183787/article/details/76449186</a></p>
+<p><a href="https://www.cnblogs.com/SQL888/p/5748824.html" target="_blank" rel="noopener">https://www.cnblogs.com/SQL888/p/5748824.html</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/07/apache目录访问控制权限/" rel="next" title="apache���ʿ���">
+                <i class="fa fa-chevron-left"></i> apache���ʿ���
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/07/2019-05-07/" rel="prev" title="js线程问题">
+                js线程问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">chaofml</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql相关"><span class="nav-number">1.</span> <span class="nav-text">mysql相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#用户管理"><span class="nav-number">1.1.</span> <span class="nav-text">用户管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql账户密码"><span class="nav-number">1.2.</span> <span class="nav-text">mysql账户密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一种方式："><span class="nav-number">1.2.1.</span> <span class="nav-text">第一种方式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二种方式：mysql-native-password"><span class="nav-number">1.2.2.</span> <span class="nav-text">第二种方式：mysql_native_password</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#忘记密码"><span class="nav-number">1.2.3.</span> <span class="nav-text">忘记密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">1.2.4.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">1.2.5.</span> <span class="nav-text">注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#特殊字符"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">特殊字符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-user表中Host为-的含义"><span class="nav-number">1.2.6.</span> <span class="nav-text">mysql.user表中Host为%的含义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库备份"><span class="nav-number">1.3.</span> <span class="nav-text">数据库备份</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">一个业余的程序员</div>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
