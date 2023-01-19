@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="[TOC] 不确定层数的嵌套循环1、多层循环，铺平。 结果发现，其实我要实现的就是一个迭代器而已。我想在python里面应该有相应的成熟的方法。而我现在还在这…………重复造轮子。而且写这个代码，用了很长时间  简单的思路 想自定义一个对象，然后将相关的方法，封装在里面。结果写了一点，发现不是个好思路。还要考虑对象的初始化问题。js里面的对象，尤其是继承，用起来比较麻烦。所以，放弃了这种思路。">
 <meta property="og:type" content="article">
@@ -104,7 +104,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -160,18 +160,18 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/blog/archives">
           <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/blog/tags/">
         <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
@@ -214,7 +214,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2019/05/07/%E4%B8%8D%E7%A1%AE%E5%AE%9A%E5%B1%82%E6%95%B0%E7%9A%84%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -318,19 +318,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/js/" rel="tag"># js</a>
+              <a href="/blog/tags/js/" rel="tag"># js</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2019/05/07/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/" rel="prev" title="域名解析">
+                <a href="/blog/2019/05/07/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/" rel="prev" title="域名解析">
                   <i class="fa fa-chevron-left"></i> 域名解析
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2019/05/07/%E4%B8%80%E4%B8%AAExt%20JS%206%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%B1%BB/" rel="next" title="一个Ext JS 6可用的下载类">
+                <a href="/blog/2019/05/07/%E4%B8%80%E4%B8%AAExt%20JS%206%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%8B%E8%BD%BD%E7%B1%BB/" rel="next" title="一个Ext JS 6可用的下载类">
                   一个Ext JS 6可用的下载类 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -389,7 +389,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
 
   
 

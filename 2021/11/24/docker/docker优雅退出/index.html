@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="Docker中 shell 启动程序后优雅退出三种方式本文来自转载 2021-11-09 08:55·云技术趣谈 之前的文章介绍了如何让容器优雅退出，但如果我们是通过shell 的方式启动我们的应用，那么pid 为1的进程就是shell 进程，无法将 kill -15 信号传递给我们的业务程序，进而执行优雅退出。比如下面写法">
 <meta property="og:type" content="article">
@@ -108,7 +108,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -164,18 +164,18 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/blog/archives">
           <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/blog/tags/">
         <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
@@ -218,7 +218,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/24/docker/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -290,21 +290,21 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/docker/" rel="tag"># docker</a>
-              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
-              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/blog/tags/docker/" rel="tag"># docker</a>
+              <a href="/blog/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/blog/tags/python/" rel="tag"># python</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/24/python/concurrent/" rel="prev" title="concurrent">
+                <a href="/blog/2021/11/24/python/concurrent/" rel="prev" title="concurrent">
                   <i class="fa fa-chevron-left"></i> concurrent
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/11/26/java/%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" rel="next" title="配置模板">
+                <a href="/blog/2021/11/26/java/%E9%85%8D%E7%BD%AE%E6%A8%A1%E6%9D%BF/" rel="next" title="配置模板">
                   配置模板 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -363,7 +363,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
 
   
 

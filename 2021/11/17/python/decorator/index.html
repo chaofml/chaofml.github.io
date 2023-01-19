@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="装饰器decorator 是我之前一直很难懂的地方，曾经想死记装饰器的写法，但不得要领。现在，自己又实现了一次装饰器的编写，发现并没有那么难懂呢。发现，其实，它跟js的闭包非常的像。甚至说一致，然后再加上一个f&#x3D;myfnc(f)的作用域替换。 所以，装饰器模式，首先能闭包，即函数内能继续嵌套定义函数，内部的函数，享受外部作用域的变量值。另外，有一种方便的方式，覆盖原函数。 关于理解：从调用的方式来">
 <meta property="og:type" content="article">
@@ -105,7 +105,7 @@
 
   <div class="site-meta">
 
-    <a href="/" class="brand" rel="start">
+    <a href="/blog/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -161,18 +161,18 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives">
+          <a href="/blog/archives">
           <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="/blog/tags/">
         <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
@@ -215,7 +215,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/17/python/decorator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -287,20 +287,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/js/" rel="tag"># js</a>
-              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/blog/tags/js/" rel="tag"># js</a>
+              <a href="/blog/tags/python/" rel="tag"># python</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/16/python/getopt/" rel="prev" title="getopt">
+                <a href="/blog/2021/11/16/python/getopt/" rel="prev" title="getopt">
                   <i class="fa fa-chevron-left"></i> getopt
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/11/22/docker/docker%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" rel="next" title="docker定时任务">
+                <a href="/blog/2021/11/22/docker/docker%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" rel="next" title="docker定时任务">
                   docker定时任务 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -359,7 +359,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
 
   
 
