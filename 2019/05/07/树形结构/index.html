@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
 
@@ -21,23 +21,23 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;$row)&amp;#123;			if(!isset($">
 <meta property="og:type" content="article">
 <meta property="og:title" content="树形结构">
-<meta property="og:url" content="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/index.html">
 <meta property="og:site_name" content="超凡魔力">
 <meta property="og:description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;$row)&amp;#123;			if(!isset($">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-05-07T04:12:00.000Z">
-<meta property="article:modified_time" content="2020-12-21T08:54:58.190Z">
+<meta property="article:published_time" content="2019-05-07T12:12:00.000Z">
+<meta property="article:modified_time" content="2023-01-19T08:26:41.630Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="个人博客、超凡魔力">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
+<link rel="canonical" href="https://blog.chaofml.cn/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
 
 
 <script class="page-configurations">
@@ -104,7 +104,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -160,18 +160,18 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives">
+          <a href="/archives">
           <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
+            <a href="/tags/">
         <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
@@ -211,10 +211,10 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -235,14 +235,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2019-05-07 04:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T04:12:00+00:00">2019-05-07</time>
+      <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+00:00">2019-05-07</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-21 08:54:58" itemprop="dateModified" datetime="2020-12-21T08:54:58+00:00">2020-12-21</time>
+        <time title="修改时间：2023-01-19 08:26:41" itemprop="dateModified" datetime="2023-01-19T08:26:41+00:00">2023-01-19</time>
       </span>
 
   
@@ -276,12 +276,12 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/blog/2019/05/07/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E8%BF%9C%E7%A8%8B%E5%8C%BB%E7%96%97%EF%BC%89/" rel="prev" title="前端Ext">
+                <a href="/2019/05/07/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E8%BF%9C%E7%A8%8B%E5%8C%BB%E7%96%97%EF%BC%89/" rel="prev" title="前端Ext">
                   <i class="fa fa-chevron-left"></i> 前端Ext
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/blog/2019/05/07/%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%BD%BF%E7%94%A8/" rel="next" title="柱状图使用">
+                <a href="/2019/05/07/%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%BD%BF%E7%94%A8/" rel="next" title="柱状图使用">
                   柱状图使用 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -340,7 +340,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
