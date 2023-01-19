@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="删除重复的数据，目前有两种策略，一种是，分组统计，找到唯一的数据，选择保留，或在重复的范围中，取反删除不唯一的条目。另外一种思路，联同一张表，进行查找删除。 在删除重复数据中，需要注意：1、如果是删除操作，注意该表可能还在有新增的操作，注意不能影响到新插入的数据。2、能分批操作，分批。（但是分批，一般来说也不太好操作） 文章以下的内容，是需要建立在以下的认识。1、全体样本。全体样本，可能还在变化，">
 <meta property="og:type" content="article">
@@ -105,7 +105,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -161,19 +161,19 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives">
-          <span class="site-state-item-count">357</span>
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+            <a href="/categories/">
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
-        <span class="site-state-item-count">97</span>
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,7 +215,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -236,14 +236,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-01-26 17:55:00" itemprop="dateCreated datePublished" datetime="2021-01-26T17:55:00+08:00">2021-01-26</time>
+      <time title="创建时间：2021-01-26 09:55:00" itemprop="dateCreated datePublished" datetime="2021-01-26T09:55:00+00:00">2021-01-26</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+        <time title="修改时间：2022-03-17 03:42:22" itemprop="dateModified" datetime="2022-03-17T03:42:22+00:00">2022-03-17</time>
       </span>
 
   
@@ -366,20 +366,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/mysql/" rel="tag"># mysql</a>
-              <a href="/blog/tags/sql/" rel="tag"># sql</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/tags/sql/" rel="tag"># sql</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/blog/2021/01/25/python/django/" rel="prev" title="django">
+                <a href="/2021/01/25/python/django/" rel="prev" title="django">
                   <i class="fa fa-chevron-left"></i> django
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/blog/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/" rel="next" title="gp建表及分区">
+                <a href="/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/" rel="next" title="gp建表及分区">
                   gp建表及分区 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -424,7 +424,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -438,7 +438,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 

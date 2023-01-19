@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="requestspython中的请求库，相当于php中的curl。是对底层库进一层封装。">
 <meta property="og:type" content="article">
@@ -30,8 +30,8 @@
 <meta property="og:site_name" content="超凡魔力">
 <meta property="og:description" content="requestspython中的请求库，相当于php中的curl。是对底层库进一层封装。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-01-16T03:07:00.000Z">
-<meta property="article:modified_time" content="2022-03-17T03:42:22.165Z">
+<meta property="article:published_time" content="2021-01-16T11:07:00.000Z">
+<meta property="article:modified_time" content="2023-01-19T02:46:38.000Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="requests">
@@ -105,7 +105,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -149,7 +149,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#requests"><span class="nav-number">1.</span> <span class="nav-text">requests</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text">返回对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.3.</span> <span class="nav-text">常用的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%AF%B7%E6%B1%82"><span class="nav-number">1.3.4.</span> <span class="nav-text">其他请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.5.</span> <span class="nav-text">下载文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E4%BF%9D%E6%8C%81"><span class="nav-number">1.3.6.</span> <span class="nav-text">会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-header"><span class="nav-number">1.3.7.</span> <span class="nav-text">示例代码+header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie"><span class="nav-number">1.3.8.</span> <span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%85%E8%8E%B7%E5%8F%96%E5%93%8D%E5%BA%94%E5%A4%B4%EF%BC%8C%E4%B8%8D%E6%83%B3%E8%8E%B7%E5%8F%96%E5%86%85%E5%AE%B9"><span class="nav-number">1.3.9.</span> <span class="nav-text">仅获取响应头，不想获取内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E7%99%BB%E5%BD%95"><span class="nav-number">1.4.1.</span> <span class="nav-text">模拟登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">1.5.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%B1%E7%A0%81"><span class="nav-number">1.6.</span> <span class="nav-text">乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.7.</span> <span class="nav-text">问题</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#requests"><span class="nav-number">1.</span> <span class="nav-text">requests</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text">返回对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.3.</span> <span class="nav-text">常用的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%AF%B7%E6%B1%82"><span class="nav-number">1.3.4.</span> <span class="nav-text">其他请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.5.</span> <span class="nav-text">下载文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E4%BF%9D%E6%8C%81"><span class="nav-number">1.3.6.</span> <span class="nav-text">会话保持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-header"><span class="nav-number">1.3.7.</span> <span class="nav-text">示例代码+header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie"><span class="nav-number">1.3.8.</span> <span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%85%E8%8E%B7%E5%8F%96%E5%93%8D%E5%BA%94%E5%A4%B4%EF%BC%8C%E4%B8%8D%E6%83%B3%E8%8E%B7%E5%8F%96%E5%86%85%E5%AE%B9"><span class="nav-number">1.3.9.</span> <span class="nav-text">仅获取响应头，不想获取内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%B1%E8%B4%A5%E9%87%8D%E8%AF%95"><span class="nav-number">1.3.10.</span> <span class="nav-text">失败重试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E7%99%BB%E5%BD%95"><span class="nav-number">1.4.1.</span> <span class="nav-text">模拟登录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">1.5.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%B1%E7%A0%81"><span class="nav-number">1.6.</span> <span class="nav-text">乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.7.</span> <span class="nav-text">问题</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -161,19 +161,19 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives">
-          <span class="site-state-item-count">357</span>
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+            <a href="/categories/">
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
-        <span class="site-state-item-count">97</span>
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,7 +215,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/16/python/requests/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -236,14 +236,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-01-16 11:07:00" itemprop="dateCreated datePublished" datetime="2021-01-16T11:07:00+08:00">2021-01-16</time>
+      <time title="创建时间：2021-01-16 11:07:00" itemprop="dateCreated datePublished" datetime="2021-01-16T11:07:00+00:00">2021-01-16</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+        <time title="修改时间：2023-01-19 02:46:38" itemprop="dateModified" datetime="2023-01-19T02:46:38+00:00">2023-01-19</time>
       </span>
 
   
@@ -261,6 +261,7 @@
 
 <h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lsdb/p/9071015.html">https://www.cnblogs.com/lsdb/p/9071015.html</a>   这篇文章还算比较全。</p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fu-yong/p/9226008.html">https://www.cnblogs.com/fu-yong/p/9226008.html</a> 这片文章，非常好。</p>
+<p>除了requests库，还可以尝试用用urllib3的库。用法非常相似。【<a target="_blank" rel="noopener" href="https://www.cnblogs.com/lincappu/p/12801817.html">链接地址</a>】</p>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install requests</span><br></pre></td></tr></table></figure>
 
 
@@ -432,6 +433,14 @@
 <p>这种方法在requests中也行得通，但requests提供了更为简单的方法，直接使用request.Session类来请求即可，其保持登录的原理是保留之前请求中服务端通过set-cookie等设置的参数。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s = Session()</span><br><span class="line">url=<span class="string">&#x27;http://docs.python-requests.org/en/master/&#x27;</span></span><br><span class="line"><span class="comment"># 所有方法和直接使用requests时一样用即可</span></span><br><span class="line">s.get(url)</span><br></pre></td></tr></table></figure>
 
+
+
+<p>会话保持，因为避免频繁的建立tcp连接，效率会高一点点。</p>
+<p>通过以下方式观察，有无反复建立tcp连接。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">strace -p 54206 -e trace=connect  # p 进程id</span><br><span class="line"></span><br><span class="line">netstat -an | awk &#x27;/^tcp/ &#123;++State[$NF]&#125;END&#123;for(key in State)print key &quot;\t&quot; State[key]&#125;&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 无回话保持时  TIME_WAIT也多</span></span><br></pre></td></tr></table></figure>
+
+
+
 <h3 id="示例代码-header"><a href="#示例代码-header" class="headerlink" title="示例代码+header"></a>示例代码+header</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">url</span>):</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        user_agent =<span class="string">&#x27;Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0&#x27;</span></span><br><span class="line">        response = requests.get(url,  headers=&#123;<span class="string">&#x27;User-Agent&#x27;</span>: user_agent&#125;)</span><br><span class="line">        response.raise_for_status()   <span class="comment"># 如果返回的状态码不是200， 则抛出异常;</span></span><br><span class="line">        response.encoding = response.apparent_encoding  <span class="comment"># 判断网页的编码格式， 便于respons.text知道如何解码;</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">&quot;爬取错误&quot;</span>)</span><br><span class="line">        print(e)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(response.url)</span><br><span class="line">        print(<span class="string">&quot;爬取成功!&quot;</span>)</span><br><span class="line">        <span class="keyword">return</span>  response.content</span><br></pre></td></tr></table></figure>
 
 <h3 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h3><p>有两种方式，直接使用cookie模式</p>
@@ -449,6 +458,12 @@
 
 <p>对于要下载的文件，我们不下载，但是想知道文件多大，也可以用这种方式。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resp.headers[<span class="string">&#x27;Content-Length&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="失败重试"><a href="#失败重试" class="headerlink" title="失败重试"></a>失败重试</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> requests.adapters <span class="keyword">import</span> HTTPAdapter, Retry</span><br><span class="line">s = requests.Session()</span><br><span class="line">retries = Retry(total=<span class="number">5</span>,</span><br><span class="line">                backoff_factor=<span class="number">0.1</span>,</span><br><span class="line">                status_forcelist=[ <span class="number">500</span>, <span class="number">502</span>, <span class="number">503</span>, <span class="number">504</span> ])</span><br><span class="line">s.mount(<span class="string">&#x27;http://&#x27;</span>, HTTPAdapter(max_retries=retries))</span><br><span class="line">s.get(<span class="string">&#x27;http://httpstat.us/500&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者简单的</span></span><br><span class="line">s.mount(<span class="string">&#x27;http://&#x27;</span>, HTTPAdapter(max_retries=<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+
+
 
 
 
@@ -479,20 +494,20 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/python/" rel="tag"># python</a>
-              <a href="/blog/tags/requests/" rel="tag"># requests</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/requests/" rel="tag"># requests</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/blog/2021/01/15/python/pip%E6%BA%90/" rel="prev" title="pip源">
-                  <i class="fa fa-chevron-left"></i> pip源
+                <a href="/2021/01/16/python/lxml/" rel="prev" title="lxml">
+                  <i class="fa fa-chevron-left"></i> lxml
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/blog/2021/01/16/python/bs4/" rel="next" title="bs4">
+                <a href="/2021/01/16/python/bs4/" rel="next" title="bs4">
                   bs4 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -537,7 +552,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -551,7 +566,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 

@@ -7,12 +7,12 @@
 <meta name="generator" content="Hexo 5.2.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
 
@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="concurrent的库，在多进程、多线程方面，进行了更高的抽象，可以非常方便的从多线程切换到多进程等，在多进程模式下，没有GIL全局锁的限制。这样，感觉python还非常不错，至少比php，自己从底层来搞这些方便多了，标准库真的是好用。 设置的work量可以比任务数多，也可以少，不一定非要相等。这样，能重份得利用。 既然submit返回的对象是一种封装，那它应该也会耗费内存。如果有上亿的任务？那">
 <meta property="og:type" content="article">
@@ -104,7 +104,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
       <h1 class="site-title">超凡魔力</h1>
       <i class="logo-line"></i>
@@ -160,19 +160,19 @@
 <div class="site-state-wrap site-overview-item animated">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives">
-          <span class="site-state-item-count">357</span>
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
-        <span class="site-state-item-count">11</span>
+            <a href="/categories/">
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/blog/tags/">
-        <span class="site-state-item-count">97</span>
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -214,7 +214,7 @@
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/24/python/concurrent/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
       <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
@@ -235,14 +235,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-11-24 10:05:17" itemprop="dateCreated datePublished" datetime="2021-11-24T10:05:17+08:00">2021-11-24</time>
+      <time title="创建时间：2021-11-24 02:05:17" itemprop="dateCreated datePublished" datetime="2021-11-24T02:05:17+00:00">2021-11-24</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+        <time title="修改时间：2022-03-17 03:42:22" itemprop="dateModified" datetime="2022-03-17T03:42:22+00:00">2022-03-17</time>
       </span>
 
   
@@ -293,19 +293,19 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/blog/tags/python/" rel="tag"># python</a>
+              <a href="/tags/python/" rel="tag"># python</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/blog/2021/11/23/other/vs%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5/" rel="prev" title="vscode代码片段">
+                <a href="/2021/11/23/other/vs%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5/" rel="prev" title="vscode代码片段">
                   <i class="fa fa-chevron-left"></i> vscode代码片段
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/blog/2021/11/24/docker/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA/" rel="next" title="docker优雅退出">
+                <a href="/2021/11/24/docker/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA/" rel="next" title="docker优雅退出">
                   docker优雅退出 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
@@ -350,7 +350,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -364,7 +364,7 @@
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
 
