@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="删除重复的数据，目前有两种策略，一种是，分组统计，找到唯一的数据，选择保留，或在重复的范围中，取反删除不唯一的条目。另外一种思路，联同一张表，进行查找删除。 在删除重复数据中，需要注意：1、如果是删除操作，注意该表可能还在有新增的操作，注意不能影响到新插入的数据。2、能分批操作，分批。（但是分批，一般来说也不太好操作） 文章以下的内容，是需要建立在以下的认识。1、全体样本。全体样本，可能还在变化，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="删除重复记录保留1条">
+<meta property="og:url" content="http://example.com/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="删除重复的数据，目前有两种策略，一种是，分组统计，找到唯一的数据，选择保留，或在重复的范围中，取反删除不唯一的条目。另外一种思路，联同一张表，进行查找删除。 在删除重复数据中，需要注意：1、如果是删除操作，注意该表可能还在有新增的操作，注意不能影响到新插入的数据。2、能分批操作，分批。（但是分批，一般来说也不太好操作） 文章以下的内容，是需要建立在以下的认识。1、全体样本。全体样本，可能还在变化，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-26T09:55:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.147Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="sql">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>删除重复记录保留1条 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E7%BB%84"><span class="nav-number">1.</span> <span class="nav-text">分组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">1.1.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%AD%97%E6%AE%B5"><span class="nav-number">1.1.1.</span> <span class="nav-text">单字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%AD%97%E6%AE%B5"><span class="nav-number">1.1.2.</span> <span class="nav-text">多字段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%88%B0%E6%96%B0%E8%A1%A8"><span class="nav-number">1.2.</span> <span class="nav-text">插入到新表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">删除法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%951%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">方法1：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%952%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">方法2：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E8%81%94%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">自联表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%B3%951%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">写法1：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%B3%952%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">写法2：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E5%86%99%E7%9A%84%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">自己写的例子：</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          删除重复记录保留1条
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-26 17:55:00" itemprop="dateCreated datePublished" datetime="2021-01-26T17:55:00+08:00">2021-01-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>删除重复的数据，目前有两种策略，一种是，分组统计，找到唯一的数据，选择保留，或在重复的范围中，取反删除不唯一的条目。另外一种思路，联同一张表，进行查找删除。</p>
+<p>在删除重复数据中，需要注意：1、如果是删除操作，注意该表可能还在有新增的操作，注意不能影响到新插入的数据。2、能分批操作，分批。（但是分批，一般来说也不太好操作）</p>
+<p>文章以下的内容，是需要建立在以下的认识。1、全体样本。全体样本，可能还在变化，如新增、删除、更新。（如果是这种复杂情况，建议需要三思）2、全体样本中的唯一。这个应该是要保留的数据（group by ）3、重复样本全体分组，注意是分组，我们还可以对它进行运算。（group by + having count(*)&gt;1）这个里面，包含了全部的重复数据，但是不能直接删除它们，因为要从他们中间保存1条。4、重复样本分组max/min，（max + group by + having count(）&gt; 1)</p>
+<a id="more"></a>
+
+<p>文章：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chongcheng/p/12900841.html">https://www.cnblogs.com/chongcheng/p/12900841.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000019458642">https://segmentfault.com/a/1190000019458642</a></p>
+<h1 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h1><p>利用分组<code> group by 字段1,字段2,字段2   +  having count(*) &gt; 1</code>来实现找到重复的数据。</p>
+<p>方式一（保留）：</p>
+<p>然后从中挑选出唯一的数据，然后选择插入到另外一长表或者删除掉，</p>
+<p>方式二（删除）：</p>
+<p>或者删除除已找到的数据以外的所有数据。（方法较麻烦，某些情况下，查询表，又删除该表的内容，可能会触发错误，需要用到子查询。）</p>
+<p>相当于排除法，具体排除有就种方式。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><h3 id="单字段"><a href="#单字段" class="headerlink" title="单字段"></a>单字段</h3><p>在几千条记录里,存在着些相同的记录,如何能用SQL语句,删除掉重复的呢<br>1、查找表中多余的重复记录，重复记录是根据单个字段（peopleId）来判断</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> people</span><br><span class="line"><span class="keyword">where</span> peopleId <span class="keyword">in</span> (<span class="keyword">select</span> peopleId <span class="keyword">from</span> people <span class="keyword">group</span> <span class="keyword">by</span> peopleId <span class="keyword">having</span> <span class="keyword">count</span>(peopleId) &gt; <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>2、删除表中多余的重复记录，重复记录是根据单个字段（peopleId）来判断，只留有rowid最小的记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> people</span><br><span class="line"><span class="keyword">where</span>  peopleName <span class="keyword">in</span> (<span class="keyword">select</span> peopleName  <span class="keyword">from</span> people <span class="keyword">group</span> <span class="keyword">by</span> peopleName   <span class="keyword">having</span> <span class="keyword">count</span>(peopleName) &gt; <span class="number">1</span>)</span><br><span class="line"><span class="keyword">and</span>  peopleId <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">min</span>(peopleId) <span class="keyword">from</span> people <span class="keyword">group</span> <span class="keyword">by</span> peopleName   <span class="keyword">having</span> <span class="keyword">count</span>(peopleName)&gt;<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="多字段"><a href="#多字段" class="headerlink" title="多字段"></a>多字段</h3><p>3、查找表中多余的重复记录（多个字段）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> vitae a</span><br><span class="line"><span class="keyword">where</span> (a.peopleId,a.seq) <span class="keyword">in</span> (<span class="keyword">select</span> peopleId,seq <span class="keyword">from</span> vitae <span class="keyword">group</span> <span class="keyword">by</span> peopleId,seq <span class="keyword">having</span> <span class="keyword">count</span>(*) &gt; <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>4、删除表中多余的重复记录（多个字段），只留有rowid最小的记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> vitae a</span><br><span class="line"><span class="keyword">where</span> (a.peopleId,a.seq) <span class="keyword">in</span> (<span class="keyword">select</span> peopleId,seq <span class="keyword">from</span> vitae <span class="keyword">group</span> <span class="keyword">by</span> peopleId,seq <span class="keyword">having</span> <span class="keyword">count</span>(*) &gt; <span class="number">1</span>)</span><br><span class="line"><span class="keyword">and</span> <span class="keyword">rowid</span> <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">min</span>(<span class="keyword">rowid</span>) <span class="keyword">from</span> vitae <span class="keyword">group</span> <span class="keyword">by</span> peopleId,seq <span class="keyword">having</span> <span class="keyword">count</span>(*)&gt;<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>5、查找表中多余的重复记录（多个字段），不包含rowid最小的记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> vitae a</span><br><span class="line"><span class="keyword">where</span> (a.peopleId,a.seq) <span class="keyword">in</span> (<span class="keyword">select</span> peopleId,seq <span class="keyword">from</span> vitae <span class="keyword">group</span> <span class="keyword">by</span> peopleId,seq <span class="keyword">having</span> <span class="keyword">count</span>(*) &gt; <span class="number">1</span>)</span><br><span class="line"><span class="keyword">and</span> <span class="keyword">rowid</span> <span class="keyword">not</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">min</span>(<span class="keyword">rowid</span>) <span class="keyword">from</span> vitae <span class="keyword">group</span> <span class="keyword">by</span> peopleId,seq <span class="keyword">having</span> <span class="keyword">count</span>(*)&gt;<span class="number">1</span>) </span><br></pre></td></tr></table></figure>
+
+<h2 id="插入到新表"><a href="#插入到新表" class="headerlink" title="插入到新表"></a>插入到新表</h2><p>不删除原有的表的数据，将整理后的不重复的数据插入到新表中。</p>
+<blockquote>
+<p>只想包含局部的列，不想要全部的列，如，原表的id不要。如下。可能的情况有，由于没有id的限制，下面的语句可以执行多次，会导致数据重复。</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> td_mail_03 ( ship_id, send_id, recv_id, kafka_time, insert_time )</span><br><span class="line"><span class="keyword">SELECT</span> ship_id,</span><br><span class="line">		 send_id,</span><br><span class="line">		 recv_id,</span><br><span class="line">		 kafka_time,</span><br><span class="line">		 insert_time</span><br><span class="line"><span class="keyword">FROM</span> td_mail_02</span><br><span class="line"><span class="keyword">WHERE</span> <span class="string">&quot;id&quot;</span> <span class="keyword">IN</span> </span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="keyword">MIN</span> (<span class="keyword">ID</span>)</span><br><span class="line">    <span class="keyword">FROM</span> td_mail_02</span><br><span class="line">    <span class="keyword">GROUP</span> <span class="keyword">BY</span>  ship_id, recv_id, send_id )</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>全部的列都复制。两者的表结构一致。则可以使用更简单的sql。如下：</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> td_mail_03  </span><br><span class="line"><span class="keyword">SELECT</span> *</span><br><span class="line"><span class="keyword">FROM</span> td_mail_02</span><br><span class="line"><span class="keyword">WHERE</span> <span class="string">&quot;id&quot;</span> <span class="keyword">IN</span> </span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="keyword">MIN</span> (<span class="keyword">ID</span>)</span><br><span class="line">    <span class="keyword">FROM</span> td_mail_02</span><br><span class="line">    <span class="keyword">GROUP</span> <span class="keyword">BY</span>  ship_id, recv_id, send_id )</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除法"><a href="#删除法" class="headerlink" title="删除法"></a>删除法</h2><p>在删除的时候，要注意，此时系统是否还在新入库数据。如果还在新入库数据，排除的时候，最好加上范围，如：between(min,max)，进行分批处理，这样，避免删除掉新添加的数据。在大量数据的时候，非常有必要。</p>
+<h3 id="方法1："><a href="#方法1：" class="headerlink" title="方法1："></a>方法1：</h3><blockquote>
+<p>该方法排除的比较麻烦。另外，按下列方式进行排除，需要重复执行两个子查询，子查询本身是耗费时间的，如果在此旗舰，又增加了数据，下面删除，可能不妥。</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> user_info </span><br><span class="line"><span class="keyword">where</span> (<span class="keyword">name</span>,sex,age) <span class="keyword">in</span> ( </span><br><span class="line">	<span class="keyword">select</span> x.* <span class="keyword">from</span> ( <span class="comment">-- 删除的时候，这里要在包裹一层子查询</span></span><br><span class="line">		<span class="keyword">select</span> <span class="comment">-- 查询重复数据中，name, sex, age的值</span></span><br><span class="line">			<span class="keyword">name</span>, sex, age</span><br><span class="line">		<span class="keyword">from</span> user_info</span><br><span class="line">		<span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>, sex, age</span><br><span class="line">		<span class="keyword">having</span> <span class="keyword">count</span>(*) &gt; <span class="number">1</span></span><br><span class="line">	) <span class="keyword">as</span> x</span><br><span class="line">)</span><br><span class="line"><span class="keyword">and</span> <span class="keyword">id</span> <span class="keyword">not</span> <span class="keyword">in</span> (</span><br><span class="line">	<span class="keyword">select</span> min_id <span class="keyword">from</span> ( <span class="comment">-- 删除的时候，这里要在包裹一层子查询</span></span><br><span class="line">		<span class="keyword">select</span> <span class="comment">-- 查询重复数据中，最小的id值</span></span><br><span class="line">			<span class="keyword">min</span>(<span class="keyword">id</span>) <span class="keyword">as</span> min_id</span><br><span class="line">		<span class="keyword">from</span> user_info </span><br><span class="line">		<span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>, sex, age</span><br><span class="line">		<span class="keyword">having</span> <span class="keyword">count</span>(*) &gt; <span class="number">1</span></span><br><span class="line">	) <span class="keyword">as</span> y</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p> 注意：上面的删除语句中，我们在两个where条件中的子查询语句外面又包裹了一层子查询，即为上面SQL语句中的as x和as y两个查询语句，之所以包裹一层的原因是在程序如下的错误提示： </p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1093 - You can&#39;t specify target table &#39;user_info&#39; </span><br><span class="line">for update in FROM clause, Time: 0.084000s</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p> 上述错误的原因是：修改一个表的时候子查询不能是这被修改的这个表，所以，我们的解决办法是，在子查询外面再套一层查询语句就可以了。 </p>
+<h3 id="方法2："><a href="#方法2：" class="headerlink" title="方法2："></a>方法2：</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> user_info </span><br><span class="line"><span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">not</span> <span class="keyword">in</span>(</span><br><span class="line">	<span class="keyword">select</span> min_id <span class="keyword">from</span> (</span><br><span class="line">		<span class="keyword">select</span> </span><br><span class="line">			<span class="keyword">min</span>(<span class="keyword">id</span>) <span class="keyword">as</span> min_id</span><br><span class="line">		<span class="keyword">from</span> user_info </span><br><span class="line">		<span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>, sex, age</span><br><span class="line">	) <span class="keyword">as</span> x</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p> 注意：这里为了避免MySQL的1903错误，我们也在where条件的子查询中包裹了另外一个子查询，即上面SQL中as x查询语句。 </p>
+<p>上面相当于从全部数据中，排除数据，然后删除。相当于，一次性操作全表。我们可以加上范围（id between(min,max)），分批处理。</p>
+<h1 id="自联表"><a href="#自联表" class="headerlink" title="自联表"></a>自联表</h1><blockquote>
+<p>进行联表查询，inner join 同一张表，进行处理。会有重复，重复条数按组合排列来计算。（重复n条，则该条会有n*(n-1)/条，即组合排列。如果某条记录有3条重复的，那么查出来应该是组合 c3 2。4条重复的，则c4 2）</p>
+</blockquote>
+<hr>
+<p>通过两个表关联的方式来删除数据，这个方式效率比较高，推荐使用这种方式。自己和自己关联，关联的条件就是我们判断数据是否为重复数据的key。除此之外，最重要的一个条件是：两个表的id关联条件，这个是删除保留数据的关键条件。 </p>
+<p>理解：首先name、sex、age相等，这个是查找重复的条件，而a.id=b.id 这样查找，条目数跟原有的表一样的条目，只是多了一些重复的列。而 a.id &gt; b.id 相当于找到的是a.id较大的id，这样删除时，只保留最小的id。a.id &lt; b.id 是找到较小的id，按a.id时，保留较小的id。另外，a.id中结果有重复。</p>
+<p>查询重复的数据如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.*,b.* </span><br><span class="line"><span class="keyword">from</span> user_info <span class="keyword">as</span> a </span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> user_info <span class="keyword">as</span> b </span><br><span class="line"><span class="keyword">on</span> a.name = b.name </span><br><span class="line"><span class="keyword">and</span> a.sex = b.sex </span><br><span class="line"><span class="keyword">and</span> a.age = b.age</span><br><span class="line"><span class="keyword">and</span>  a.id &gt; b.id;</span><br></pre></td></tr></table></figure>
+
+<h2 id="写法1："><a href="#写法1：" class="headerlink" title="写法1："></a>写法1：</h2><p>删除重复数据SQL语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> A .*</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	user_info <span class="keyword">AS</span> A</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> user_info <span class="keyword">AS</span> b <span class="keyword">ON</span> A . <span class="keyword">NAME</span> = b. <span class="keyword">NAME</span></span><br><span class="line"><span class="keyword">AND</span> A .sex = b.sex</span><br><span class="line"><span class="keyword">AND</span> A .age = b.age</span><br><span class="line"><span class="keyword">AND</span> A . <span class="keyword">ID</span> &gt; b. <span class="keyword">ID</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面的写法，好像好像没有成功。</p>
+<h2 id="写法2："><a href="#写法2：" class="headerlink" title="写法2："></a>写法2：</h2><p>查询待删除的重复数据SQL如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> user_info <span class="keyword">as</span> a </span><br><span class="line"><span class="keyword">where</span> a.id &lt;&gt; (</span><br><span class="line">	<span class="keyword">select</span> </span><br><span class="line">		<span class="keyword">min</span>(b.id) </span><br><span class="line">	<span class="keyword">from</span> user_info <span class="keyword">as</span> b </span><br><span class="line">	<span class="keyword">where</span> a.name = b.name</span><br><span class="line">	<span class="keyword">and</span> a.sex = b.sex</span><br><span class="line">	<span class="keyword">and</span> a.age = b.age</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>删除重复数据的SQL语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> a.* <span class="keyword">from</span> user_info <span class="keyword">as</span> a</span><br><span class="line"><span class="keyword">where</span> a.id &lt;&gt; (</span><br><span class="line">	<span class="keyword">select</span></span><br><span class="line">		<span class="keyword">min</span>(b.id)</span><br><span class="line">	<span class="keyword">from</span> (</span><br><span class="line">		<span class="keyword">select</span> * <span class="keyword">from</span> user_info</span><br><span class="line">	) <span class="keyword">as</span> b</span><br><span class="line">	<span class="keyword">where</span> a.<span class="string">`name`</span>= b.<span class="string">`name`</span></span><br><span class="line">	<span class="keyword">and</span> a.sex = b.sex</span><br><span class="line">	<span class="keyword">and</span> a.age = b.age</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>最后提醒一点：</strong> 在真正删除之前，记得对原数据备份一下。以便删除错误后，数据不能恢复回来。可以使用如下的语句来创建一个备份表，以便于在删除错误后，把数据恢复到原来的表中去。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> user_info_bak <span class="keyword">as</span> <span class="keyword">select</span> * <span class="keyword">from</span> user_info; <span class="comment">--创建一个备份表</span></span><br><span class="line"><span class="keyword">truncate</span> <span class="keyword">table</span> user_info; <span class="comment">-- 清空原始表中的数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> user_info <span class="keyword">select</span> * <span class="keyword">from</span> user_info_bak; <span class="comment">-- 从备份表中把数据插入到原始表中</span></span><br></pre></td></tr></table></figure>
+
+<p>像上面这样操作，数据如果删除失误的时候，可以从user_info_bak中还原数据到user_info表中。</p>
+<h1 id="自己写的例子："><a href="#自己写的例子：" class="headerlink" title="自己写的例子："></a>自己写的例子：</h1><p>首先，表结构：</p>
+<blockquote>
+<p>重复定义如下：ship_id、send_id、recv_id均相等，则认为重复了。</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> td_mail_02</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> bigserial,</span><br><span class="line">    ship_id <span class="built_in">bigint</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    send_id <span class="built_in">varchar</span>(<span class="number">24</span>),</span><br><span class="line">    recv_id <span class="built_in">varchar</span>(<span class="number">24</span>),</span><br><span class="line">    kafka_time <span class="built_in">timestamp</span> <span class="keyword">without</span> <span class="built_in">time</span> zone,</span><br><span class="line">    insert_time <span class="built_in">timestamp</span> <span class="keyword">without</span> <span class="built_in">time</span> zone,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span> (<span class="string">&quot;id&quot;</span>)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">WITH</span> (</span><br><span class="line">    OIDS = <span class="literal">FALSE</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">DISTRIBUTED</span> <span class="keyword">BY</span> (<span class="keyword">id</span>);</span><br></pre></td></tr></table></figure>
+
+<p>查看需要删除的重复数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">from</span> td_mail_02 <span class="keyword">where</span> <span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">20</span>  <span class="keyword">and</span> <span class="keyword">id</span> <span class="keyword">not</span> <span class="keyword">in</span> (</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">min</span>(<span class="string">&quot;id&quot;</span>) <span class="keyword">from</span> td_mail_02 <span class="keyword">WHERE</span> <span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">20</span>  </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">	ship_id,</span><br><span class="line">	recv_id,</span><br><span class="line">	send_id );</span><br></pre></td></tr></table></figure>
+
+<p>删除</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">from</span> td_mail_02 <span class="keyword">where</span> <span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">20</span>  <span class="keyword">and</span> <span class="keyword">id</span> <span class="keyword">not</span> <span class="keyword">in</span> (</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">min</span>(<span class="string">&quot;id&quot;</span>) <span class="keyword">from</span> td_mail_02 <span class="keyword">WHERE</span> <span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span> <span class="keyword">and</span> <span class="number">20</span>  </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line">	ship_id,</span><br><span class="line">	recv_id,</span><br><span class="line">	send_id );</span><br></pre></td></tr></table></figure>
+
+<p>但是，此方法，只能保证局部<code>BETWEEN 1 and 20</code> 没有重复数据。如果是分批来删，只能保证每批里面没有重复数据，每披之间的数据无法保证是否重复。虽然有缺陷，但是按天删除重复数据，还是可以的。</p>
+<p>自联表的查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="keyword">DISTINCT</span> a.<span class="string">&quot;id&quot;</span>   <span class="comment">-- 如果是* 显示全部</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	td_mail_02 a</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> td_mail_02 <span class="keyword">AS</span> b <span class="keyword">ON</span> a.ship_id = b.ship_id</span><br><span class="line"><span class="keyword">AND</span> a.recv_id = b.recv_id</span><br><span class="line"><span class="keyword">AND</span> a.send_id = b.send_id</span><br><span class="line"><span class="keyword">AND</span> a.<span class="string">&quot;id&quot;</span> &gt; b.<span class="string">&quot;id&quot;</span></span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	a.<span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> <span class="number">8</span> </span><br></pre></td></tr></table></figure>
+
+<p>配合脚本执行，将上一步的代码写入。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> td_mail_02 <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span> (上一步结构)</span><br></pre></td></tr></table></figure>
+
+<p>或者直接点：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">from</span> td_mail_02 <span class="keyword">where</span> <span class="keyword">id</span> <span class="keyword">in</span> (</span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">	<span class="keyword">DISTINCT</span> A.<span class="string">&quot;id&quot;</span></span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">	td_mail_02 A</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> td_mail_02 <span class="keyword">AS</span> b <span class="keyword">ON</span> A .ship_id = b.ship_id</span><br><span class="line"><span class="keyword">AND</span> A .recv_id = b.recv_id</span><br><span class="line"><span class="keyword">AND</span> A .send_id = b.send_id</span><br><span class="line"><span class="keyword">AND</span> A .<span class="string">&quot;id&quot;</span> &gt; b.<span class="string">&quot;id&quot;</span></span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">	A .<span class="string">&quot;id&quot;</span> <span class="keyword">BETWEEN</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">AND</span> <span class="number">8</span> )</span><br></pre></td></tr></table></figure>
+
+<p>我突然想到，用脚本来保存结果，其实，我也能将其写到一张临时表里面。然后下次直接从表里面删除掉。然后分两个脚本来操作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/blog/tags/sql/" rel="tag"># sql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/25/python/django/" rel="prev" title="django">
+                  <i class="fa fa-chevron-left"></i> django
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/" rel="next" title="gp建表及分区">
+                  gp建表及分区 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

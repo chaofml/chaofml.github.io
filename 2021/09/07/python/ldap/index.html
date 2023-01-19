@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="第一才接触到ldap，用在公司的soa上。感觉这个东西类似于树形的数据库一样，跟自己平时用到的数据库不太一样。故希望简单的记录一下用法。 连接工具：LdapAdmin.exe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ldap">
+<meta property="og:url" content="http://example.com/2021/09/07/python/ldap/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="第一才接触到ldap，用在公司的soa上。感觉这个东西类似于树形的数据库一样，跟自己平时用到的数据库不太一样。故希望简单的记录一下用法。 连接工具：LdapAdmin.exe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-07T03:06:15.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.164Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="ldap">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/09/07/python/ldap/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>ldap | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LDAP%E5%85%A5%E9%97%A8"><span class="nav-number">2.1.</span> <span class="nav-text">LDAP入门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E6%93%8D%E4%BD%9C%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.</span> <span class="nav-text">Python操作代码</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/07/python/ldap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ldap
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-07 11:06:15" itemprop="dateCreated datePublished" datetime="2021-09-07T11:06:15+08:00">2021-09-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>第一才接触到ldap，用在公司的soa上。感觉这个东西类似于树形的数据库一样，跟自己平时用到的数据库不太一样。故希望简单的记录一下用法。</p>
+<p>连接工具：<code>LdapAdmin.exe</code></p>
+<a id="more"></a>
+
+
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/awpatp/archive/2010/02/14/1668097.html">查询条件</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_33856370/article/details/91571842">查询条件2</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.iigrowing.cn/ldap_mu_lu_sou_suo.html">http://www.iigrowing.cn/ldap_mu_lu_sou_suo.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dreamer-fish/p/5531339.html">https://www.cnblogs.com/dreamer-fish/p/5531339.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/unicom/2421224">https://blog.51cto.com/unicom/2421224</a></li>
+</ul>
+<p>redis</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/51608696">https://zhuanlan.zhihu.com/p/51608696</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2639549bedc8">https://www.jianshu.com/p/2639549bedc8</a></li>
+</ul>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>摘抄自<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/7e4d99f6baaf">https://www.jianshu.com/p/7e4d99f6baaf</a></p>
+<h3 id="LDAP入门"><a href="#LDAP入门" class="headerlink" title="LDAP入门"></a>LDAP入门</h3><ul>
+<li>首先要先理解什么是LDAP，当时我看了很多解释，也是云里雾里，弄不清楚。在这里给大家稍微捋一捋。</li>
+<li>首先LDAP是一种通讯协议，LDAP支持TCP/IP。协议就是标准，并且是抽象的。在这套标准下，AD（Active Directory）是微软出的一套实现。<br> 那AD是什么呢？暂且把它理解成是个数据库。也有很多人直接把LDAP说成数据库(可以把LDAP理解成存储数据的数据库)。像是其他数据库一样，LDAP也是有client端和server端。server端是用来存放资源，client端用来操作增删改查等操作。</li>
+<li>而我们通常说的LDAP是指运行这个数据库的服务器。</li>
+<li>可以简单理解AD =LDAP服务器＋LDAP应用。</li>
+</ul>
+<p>那LDAP这种数据库有什么特殊的呢？</p>
+<ul>
+<li>我们知道，像MySQL数据库，数据都是按记录一条条记录存在表中。而LDAP数据库，是树结构的，数据存储在叶子节点上。看看下面的比喻：</li>
+</ul>
+<blockquote>
+<p>假设你要树上的一个苹果（一条记录），你怎么告诉园丁它的位置呢？当然首先要说明是哪一棵树（dc，相当于MYSQL的DB），然后是从树根到那个苹果所经过的所有“分叉”（ou），最后就是这个苹果的名字（uid，相当于MySQL表主键id）。好了！这时我们可以清晰的指明这个苹果的位置了，就是那棵“歪脖树”的东边那个分叉上的靠西边那个分叉的再靠北边的分叉上的半红半绿的……</p>
+</blockquote>
+<p>就这样就可以描述清楚“树结构”上的一条记录了。<br> 说一下LDAP里如何定义一个记录的位置吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">树（dc&#x3D;ljheee)</span><br><span class="line">分叉（ou&#x3D;bei,ou&#x3D;xi,ou&#x3D; dong）</span><br><span class="line">苹果（cn&#x3D;redApple）</span><br></pre></td></tr></table></figure>
+
+<p>好了，redApple的位置出来了：<br> <code>dn:cn=honglv,ou=bei,ou=xi,ou=dong,dc=ljheee</code><br> 其中dn标识一条记录，描述了一条数据的详细路径。<br> 咦!有人疑问，为什么ou会有多个值？你想想，从树根到达苹果的位置，可能要经过好几个树杈，所有ou可能有多个值。关于dn后面一长串，分别是cn，ou,dc；中间用逗号隔开。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">总结一下LDAP树形数据库如下：</span><br><span class="line">dn ：一条记录的详细位置</span><br><span class="line">dc ：一条记录所属区域    (哪一颗树)</span><br><span class="line">ou ：一条记录所属组织    （哪一个分支）</span><br><span class="line">cn&#x2F;uid：一条记录的名字&#x2F;ID   (哪一个苹果名字)</span><br><span class="line">LDAP目录树的最顶部就是根，也就是所谓的“基准DN&quot;。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为什么要用LDAP目录树来存储数据，用MySQL不行吗，为什么非要搞出一个树形的数据库呢？</li>
+<li>这是因为用树形结构存储数据，查询效率更高（具体为什么，可以看一下关系型数据库索引的实现原理——B树/B+树）。在某些特定的场景下，使用树形数据库更理想。比如：需要储存大量的数据，而且数据不是经常更改，需要很快速的查找。</li>
+<li>把它与传统的关系型数据库相比，LDAP除了快速查找的特点，它还有很多的运用场景，比如域验证等。</li>
+</ul>
+<h3 id="Python操作代码"><a href="#Python操作代码" class="headerlink" title="Python操作代码"></a>Python操作代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-：</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> ldap3</span><br><span class="line"><span class="keyword">from</span> ldap3 <span class="keyword">import</span> Server, Connection</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 要检索的字段</span></span><br><span class="line">retrieveAttributes = [<span class="string">&#x27;cn&#x27;</span>, <span class="string">&#x27;uid&#x27;</span>, <span class="string">&quot;sn&quot;</span>, <span class="string">&quot;userPassword&quot;</span>, <span class="string">&quot;objectClass&quot;</span>,<span class="string">&#x27;telephoneNumber&#x27;</span>]</span><br><span class="line">searchScope = ldap3.SUBTREE</span><br><span class="line"><span class="comment"># 限定查询范围</span></span><br><span class="line">ldap_base_search = <span class="string">&#x27;dc=xxx,dc=com&#x27;</span></span><br><span class="line"><span class="comment"># 账号密码信息</span></span><br><span class="line">(g_ldap_host , g_ldap_port, g_ldap_admin, g_ldap_admin_pass ) = (<span class="string">&#x27;ldap://10.1.1.1&#x27;</span>,<span class="number">34923</span>,<span class="string">&#x27;cn=admin,dc=xxx,dc=com&#x27;</span>,<span class="string">&#x27;123456&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取ldap连接</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getConnection</span>():</span></span><br><span class="line">    s = Server(host=g_ldap_host, port=g_ldap_port, use_ssl=<span class="literal">False</span>, get_info=<span class="string">&#x27;ALL&#x27;</span>)</span><br><span class="line">    ldap_conn = Connection( s, </span><br><span class="line">                            user=g_ldap_admin, password=g_ldap_admin_pass,</span><br><span class="line">                            auto_bind=<span class="string">&#x27;NONE&#x27;</span>,</span><br><span class="line">                            version=<span class="number">3</span>,</span><br><span class="line">                            authentication=<span class="string">&#x27;SIMPLE&#x27;</span>, client_strategy=<span class="string">&#x27;SYNC&#x27;</span>, auto_referrals=<span class="literal">True</span>,</span><br><span class="line">                            check_names=<span class="literal">True</span>,</span><br><span class="line">                            read_only=<span class="literal">False</span>, lazy=<span class="literal">False</span>,</span><br><span class="line">                            raise_exceptions=<span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        conn = ldap_conn.bind()</span><br><span class="line">        <span class="keyword">if</span> conn:</span><br><span class="line">            <span class="keyword">return</span> ldap_conn</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        print(<span class="string">&#x27;ldap server bind error&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">search_phone</span>():</span></span><br><span class="line">    ldap_conn = getConnection()</span><br><span class="line">    <span class="keyword">if</span> ldap_conn == <span class="literal">False</span>:</span><br><span class="line">        print(<span class="string">&quot;获取服务器 %s 连接失败&quot;</span> % (g_ldap_host))</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="comment"># 自定义查找条件，关键</span></span><br><span class="line">    search_filter = <span class="string">&#x27;(&amp;(objectclass=top)(ou=myou))&#x27;</span></span><br><span class="line">    search_filter = <span class="string">&#x27;(sn=*)&#x27;</span></span><br><span class="line">    ldap_conn.search(search_base=ldap_base_search,</span><br><span class="line">                                        search_filter=search_filter,</span><br><span class="line">                                        attributes=retrieveAttributes,</span><br><span class="line">                                        search_scope=searchScope)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(ldap_conn.response) == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">&quot;无结果&quot;</span> )</span><br><span class="line">        <span class="keyword">return</span> </span><br><span class="line">    print(<span class="string">&#x27;phone,number&#x27;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> ldap_conn.response:</span><br><span class="line">        <span class="comment"># print(i)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(i[<span class="string">&#x27;raw_attributes&#x27;</span>][<span class="string">&#x27;telephoneNumber&#x27;</span>]) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="built_in">len</span>(i[<span class="string">&#x27;raw_attributes&#x27;</span>][<span class="string">&#x27;cn&#x27;</span>]) &gt;<span class="number">0</span> :</span><br><span class="line">            <span class="comment"># 编码转换问题</span></span><br><span class="line">            phone = <span class="built_in">str</span>(i[<span class="string">&#x27;raw_attributes&#x27;</span>][<span class="string">&#x27;telephoneNumber&#x27;</span>][<span class="number">0</span>],<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">            number = <span class="built_in">str</span>(i[<span class="string">&#x27;raw_attributes&#x27;</span>][<span class="string">&#x27;cn&#x27;</span>][<span class="number">0</span>],<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">            print(<span class="string">&#x27;%s,%s\n&#x27;</span>%(phone,number))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    search_phone()</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/python/" rel="tag"># python</a>
+              <a href="/blog/tags/ldap/" rel="tag"># ldap</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/09/02/pg/%E4%BD%BF%E7%94%A8case%E4%BD%9C%E4%B8%BA%E8%81%94%E8%A1%A8%E6%9D%A1%E4%BB%B6/" rel="prev" title="使用case作为联表条件">
+                  <i class="fa fa-chevron-left"></i> 使用case作为联表条件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/09/08/shell/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/" rel="next" title="四则运算">
+                  四则运算 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

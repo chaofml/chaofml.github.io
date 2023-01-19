@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Learn_ZhangK&#x2F;article&#x2F;details&#x2F;80241366 1.简介1.1国际惯例按照国际惯例先来理论的介绍。 awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。 aw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="awk入门">
+<meta property="og:url" content="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="原文链接：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Learn_ZhangK&#x2F;article&#x2F;details&#x2F;80241366 1.简介1.1国际惯例按照国际惯例先来理论的介绍。 awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。 aw">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-31T05:44:42.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.216Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk%E5%85%A5%E9%97%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>awk入门 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1.简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E5%9B%BD%E9%99%85%E6%83%AF%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1.1国际惯例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">2.使用方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%85%A5%E9%97%A8%E5%AE%9E%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">3.入门实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">3.1基本用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-awk%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">3.2 awk内置变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-print%E5%92%8Cprintf"><span class="nav-number">2.2.1.</span> <span class="nav-text">3.2.1 print和printf</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-awk%E7%BC%96%E7%A8%8B"><span class="nav-number">2.3.</span> <span class="nav-text">3.3 awk编程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1-%E5%8F%98%E9%87%8F%E5%92%8C%E8%B5%8B%E5%80%BC"><span class="nav-number">2.3.1.</span> <span class="nav-text">3.3.1 变量和赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2-%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.3.2.</span> <span class="nav-text">3.3.2 条件语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-3-%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.3.3 循环语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-4-%E6%95%B0%E7%BB%84"><span class="nav-number">2.3.4.</span> <span class="nav-text">3.3.4 数组</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          awk入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-31 13:44:42" itemprop="dateCreated datePublished" datetime="2021-05-31T13:44:42+08:00">2021-05-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80241366">https://blog.csdn.net/Learn_ZhangK/article/details/80241366</a></p>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1国际惯例"><a href="#1-1国际惯例" class="headerlink" title="1.1国际惯例"></a>1.1国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
+<p>awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。</p>
+<p>awk有3个不同版本: awk、nawk和gawk，未作特别说明，一般指gawk，gawk 是 AWK 的 GNU 版本。</p>
+<p>awk其名称得自于它的创始人 Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。实际上 AWK 的确拥有自己的语言： AWK 程序设计语言 ， 三位创建者已将它正式定义为“样式扫描和处理语言”。它允许您创建简短的程序，这些程序读取输入文件、为数据排序、处理数据、对输入执行计算以及生成报表，还有无数其他的功能。</p>
+<a id="more"></a>
+
+<h2 id="2-使用方法"><a href="#2-使用方法" class="headerlink" title="2.使用方法"></a>2.使用方法</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk [option]  &#x27;pattern &#123;action&#125;&#x27; test.txt</span><br></pre></td></tr></table></figure>
+
+<p>尽管操作可能会很复杂，但语法总是这样，其中 pattern 表示 AWK 在数据中查找的内容，而 action 是在找到匹配内容时所执行的一系列命令。花括号（{}）不需要在程序中始终出现，但它们用于根据特定的模式对一系列指令进行分组。 pattern就是要表示的正则表达式，用斜杠括起来。</p>
+<p>awk语言的最基本功能是在文件或者字符串中基于指定规则浏览和抽取信息，awk抽取信息后，才能进行其他文本操作。完整的awk脚本通常用来格式化文本文件中的信息。</p>
+<p>通常，awk是以文件的一行为处理单位的。awk每接收文件的一行，然后执行相应的命令，来处理文本。</p>
+<h1 id="3-入门实例"><a href="#3-入门实例" class="headerlink" title="3.入门实例"></a>3.入门实例</h1><h2 id="3-1基本用法"><a href="#3-1基本用法" class="headerlink" title="3.1基本用法"></a>3.1基本用法</h2><p>假设last -n 5的输出如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@www ~]# last -n 5 &lt;==仅取出前五行</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 11:21   still logged in</span><br><span class="line">root     pts/1   192.168.1.100  Tue Feb 10 00:46 - 02:28  (01:41)</span><br><span class="line">root     pts/1   192.168.1.100  Mon Feb  9 11:41 - 18:30  (06:48)</span><br><span class="line">dmtsai   pts/1   192.168.1.100  Mon Feb  9 11:41 - 11:41  (00:00)</span><br><span class="line">root     tty1                   Fri Sep  5 14:09 - 14:10  (00:01)</span><br></pre></td></tr></table></figure>
+
+<p>如果只是显示最近登录的5个帐号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">last -n 5 | awk  <span class="string">&#x27;&#123;print $1&#125;&#x27;</span></span></span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">root</span><br><span class="line">dmtsai</span><br><span class="line">root</span><br></pre></td></tr></table></figure>
+
+<p>awk工作流程是这样的：读入有’\n’换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，0则表示所有域,1表示第一个域,n表示第n个域。默认域分隔符是”空白键”或”[tab]键”,所以$1表示登录用户，$3表示登录用户ip,以此类推。</p>
+<p>如果只是显示/etc/passwd的账户:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">cat /etc/passwd |awk  -F <span class="string">&#x27;:&#x27;</span>  <span class="string">&#x27;&#123;print $1&#125;&#x27;</span></span>  </span><br><span class="line">root</span><br><span class="line">daemon</span><br><span class="line">bin</span><br><span class="line">sys</span><br></pre></td></tr></table></figure>
+
+<p>这种是awk+action的示例，每行都会执行action{print $1}。<br>-F指定域分隔符为’:’。**(简写成 -F:)**</p>
+<p>如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以tab键分割:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">cat /etc/passwd |awk  -F <span class="string">&#x27;:&#x27;</span>  <span class="string">&#x27;&#123;print $1&quot;\t&quot;$7&#125;&#x27;</span></span></span><br><span class="line">root    /bin/bash</span><br><span class="line">daemon  /bin/sh</span><br><span class="line">bin     /bin/sh</span><br><span class="line">sys     /bin/sh</span><br></pre></td></tr></table></figure>
+
+<p>如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以逗号分割,而且在所有行添加列名name,shell,在最后一行添加”blue,/bin/nosh”。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd |awk  -F &#x27;:&#x27;  &#x27;BEGIN &#123;print &quot;name,shell&quot;&#125;  &#123;print $1&quot;,&quot;$7&#125; END &#123;print &quot;blue,/bin/nosh&quot;&#125;&#x27;</span><br><span class="line"></span><br><span class="line">name,shell</span><br><span class="line">root,/bin/bash</span><br><span class="line">daemon,/bin/sh</span><br><span class="line">bin,/bin/sh</span><br><span class="line">sys,/bin/sh</span><br><span class="line">....</span><br><span class="line">blue,/bin/nosh</span><br></pre></td></tr></table></figure>
+
+<p>awk工作流程是这样的：先执行BEGIN，然后读取文件，读入有<code>\n</code>换行符分割的一条记录，然后将记录按指定的域分隔符划分域，填充域，0则表示所有域,$1表示第一个域,$n表示第n个域,随后开始执行模式所对应的动作action。接着开始读入第二条记录······直到所有的记录都读完，最后执行END操作。</p>
+<p>搜索/etc/passwd有root关键字的所有行:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">awk -F: <span class="string">&#x27;/root/&#x27;</span> /etc/passwd</span></span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>这种是pattern的使用示例，匹配了pattern(这里是root)的行才会执行action(没有指定action，默认输出每行的内容)。<br>搜索支持正则，例如找root开头的: awk -F: ‘/^root/’ /etc/passwd</p>
+<p>搜索/etc/passwd有root关键字的所有行，并显示对应的shell:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> awk -F: <span class="string">&#x27;/root/&#123;print $7&#125;&#x27;</span> /etc/passwd</span>             </span><br><span class="line"></span><br><span class="line">/bin/bash</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-awk内置变量"><a href="#3-2-awk内置变量" class="headerlink" title="3.2 awk内置变量"></a>3.2 awk内置变量</h2><p>awk有许多内置变量用来设置环境信息，这些变量可以被改变，下面给出了最常用的一些变量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ARGC               命令行参数个数</span><br><span class="line">ARGV               命令行参数排列</span><br><span class="line">ENVIRON            支持队列中系统环境变量的使用</span><br><span class="line">FILENAME           awk浏览的文件名</span><br><span class="line">FNR                浏览文件的记录数</span><br><span class="line">FS                 设置输入域分隔符，等价于命令行 -F选项</span><br><span class="line">NF                 浏览记录的域的个数</span><br><span class="line">NR                 已读的记录数</span><br><span class="line">OFS                输出域分隔符</span><br><span class="line">ORS                输出记录分隔符</span><br><span class="line">RS                 控制记录分隔符</span><br></pre></td></tr></table></figure>
+
+<p>此外,0变量是指整条记录。$1表示当前行的第一个域,$2表示当前行的第二个域,……以此类推。</p>
+<p>统计/etc/passwd:文件名，每行的行号，每行的列数，对应的完整行内容:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">awk  -F <span class="string">&#x27;:&#x27;</span>  <span class="string">&#x27;&#123;print &quot;filename:&quot; FILENAME &quot;,linenumber:&quot; NR &quot;,columns:&quot; NF &quot;,linecontent:&quot;$0&#125;&#x27;</span> /etc/passwd</span></span><br><span class="line"></span><br><span class="line">filename:/etc/passwd,linenumber:1,columns:7,linecontent:root:x:0:0:root:/root:/bin/bash</span><br><span class="line">filename:/etc/passwd,linenumber:2,columns:7,linecontent:daemon:x:1:1:daemon:/usr/sbin:/bin/sh</span><br><span class="line">filename:/etc/passwd,linenumber:3,columns:7,linecontent:bin:x:2:2:bin:/bin:/bin/sh</span><br><span class="line">filename:/etc/passwd,linenumber:4,columns:7,linecontent:sys:x:3:3:sys:/dev:/bin/sh</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用printf替代print,可以让代码更加简洁，易读：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk  -F &#x27;:&#x27;  &#x27;&#123;printf(&quot;filename:%10s,linenumber:%s,columns:%s,linecontent:%s\n&quot;,FILENAME,NR,NF,$0)&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-1-print和printf"><a href="#3-2-1-print和printf" class="headerlink" title="3.2.1 print和printf"></a>3.2.1 print和printf</h3><p>awk中同时提供了print和printf两种打印输出的函数。</p>
+<p>其中print函数的参数可以是变量、数值或者字符串。字符串必须用双引号引用，参数用逗号分隔。如果没有逗号，参数就串联在一起而无法区分。这里，逗号的作用与输出文件的分隔符的作用是一样的，只是后者是空格而已。printf函数，其用法和c语言中printf基本相似,可以格式化字符串,输出复杂时，printf更加好用，代码更易懂。</p>
+<h2 id="3-3-awk编程"><a href="#3-3-awk编程" class="headerlink" title="3.3 awk编程"></a>3.3 awk编程</h2><h3 id="3-3-1-变量和赋值"><a href="#3-3-1-变量和赋值" class="headerlink" title="3.3.1 变量和赋值"></a>3.3.1 变量和赋值</h3><p>除了awk的内置变量，awk还可以自定义变量。<br>下面统计/etc/passwd的账户人数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">awk &#x27;&#123;count++;print $0;&#125; END&#123;print &quot;user count is &quot;, count&#125;&#x27; /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">......</span><br><span class="line">user count is  40</span><br></pre></td></tr></table></figure>
+
+
+
+<p>count是自定义变量。之前的action{}里都是只有一个print,其实print只是一个语句，而action{}可以有多个语句，以;号隔开。</p>
+<p>这里没有初始化count，虽然默认是0，但是妥当的做法还是初始化为0:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">awk &#x27;BEGIN &#123;count=0;print &quot;[start]user count is &quot;, count&#125; &#123;count=count+1;print $0;&#125; END&#123;print &quot;[end]user count is &quot;, count&#125;&#x27; /etc/passwd</span><br><span class="line">[start]user count is  0</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">...</span><br><span class="line">[end]user count is  40</span><br></pre></td></tr></table></figure>
+
+
+
+<p>统计某个文件夹下的文件占用的字节数：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls -l |awk &#x27;BEGIN &#123;size=0;&#125; &#123;size=size+$5;&#125; END&#123;print &quot;[end]size is &quot;, size/1024/1024,&quot;M&quot;&#125;&#x27; </span><br><span class="line">[end]size is  8.25889 M</span><br></pre></td></tr></table></figure>
+
+<p>注意，统计不包括文件夹的子目录。</p>
+<h3 id="3-3-2-条件语句"><a href="#3-3-2-条件语句" class="headerlink" title="3.3.2 条件语句"></a>3.3.2 条件语句</h3><p> awk中的条件语句是从C语言中借鉴来的，见如下声明方式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (expression) &#123;</span><br><span class="line">    statement;</span><br><span class="line">    statement;</span><br><span class="line">    ... ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (expression) &#123;</span><br><span class="line">    statement;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    statement2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (expression) &#123;</span><br><span class="line">    statement1;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (expression1) &#123;</span><br><span class="line">    statement2;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    statement3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>统计某个文件夹下的文件占用的字节数,过滤4096大小的文件(一般都是文件夹):</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls -l |awk &#x27;BEGIN &#123;size=0;print &quot;[start]size is &quot;, size&#125; &#123;if($5!=4096)&#123;size=size+$5;&#125;&#125; END&#123;print &quot;[end]size is &quot;, size/1024/1024,&quot;M&quot;&#125;&#x27; </span><br><span class="line">[end]size is  8.22339 M</span><br></pre></td></tr></table></figure>
+
+<p>疑问：为何不用<code>ls -al |grep ^[^d]</code>等语句来排除文件夹呢？</p>
+<h3 id="3-3-3-循环语句"><a href="#3-3-3-循环语句" class="headerlink" title="3.3.3 循环语句"></a>3.3.3 循环语句</h3><p>awk中的循环语句同样借鉴于C语言，支持while、do/while、for、break、continue，这些关键字的语义和C语言中的语义完全相同。</p>
+<h3 id="3-3-4-数组"><a href="#3-3-4-数组" class="headerlink" title="3.3.4 数组"></a>3.3.4 数组</h3><p>​     因为awk中数组的下标可以是数字和字母，数组的下标通常被称为关键字(key)。值和关键字都存储在内部的一张针对key/value应用hash的表格里。由于hash不是顺序存储，因此在显示数组内容时会发现，它们并不是按照你预料的顺序显示出来的。数组和变量一样，都是在使用时自动创建的，awk也同样会自动判断其存储的是数字还是字符串。一般而言，awk中的数组用来从记录中收集信息，可以用于计算总和、统计单词以及跟踪模板被匹配的次数等等。</p>
+<p>显示/etc/passwd的账户（for）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">awk -F &#x27;:&#x27; &#x27;BEGIN &#123;count=0;&#125; &#123;name[count] = $1;count++;&#125;; END&#123;for (i = 0; i &lt; NR; i++) print i, name[i]&#125;&#x27; /etc/passwd</span><br><span class="line">0 root</span><br><span class="line">1 daemon</span><br><span class="line">2 bin</span><br><span class="line">3 sys</span><br><span class="line">4 sync</span><br><span class="line">5 games</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>显示/etc/passwd的账户（while）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">awk -F &#x27;:&#x27; &#x27;BEGIN &#123;count=0;&#125; &#123;name[count] = $1;count++;&#125;; END&#123; i = 1; while (i &lt; NR) &#123;print i, name[i];i++&#125;&#125;&#x27; /etc/passwd</span><br><span class="line">0 root</span><br><span class="line">1 daemon</span><br><span class="line">2 bin</span><br><span class="line">3 sys</span><br><span class="line">4 sync</span><br><span class="line">5 games</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>breadkcontinue语句。break用于在满足条件的情况下跳出循环；continue用于在满足条件的情况下忽略后面的语句，直接返回循环的顶端:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;for ( x=3; x&lt;=NF; x++) </span><br><span class="line">if ($x&lt;0)&#123;print &quot;Bottomed out!&quot;; break&#125;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#123;for ( x=3; x&lt;=NF; x++)</span><br><span class="line">if ($x==0)&#123;print &quot;Get next item&quot;; continue&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>补充：在awk里，NR和FNR的含义相近，唯一的区别就是作用范围，NR是所有读取的行信息计数，而FNR是正在读取文件的行信息技术，FNR在文件切换时会从0重新开始计数，所以上述语句的意思是：<br>NR==FNR在判断是不是在读a.txt，如果是a.txt则以第一个数据项为key，以整行信息为数据组成数组；<br>NR&gt;FNR则判断是不是在读b.txt，因为此时NR=（a.txt的总行数+FNR），如果是，则判断第一个数据项在不在a.txt数据组成的数组里，如果在，则打印本行加数组项。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F&#x27;\t&#x27; &#x27;BEGIN&#123;OFS=&quot;\t&quot;&#125;&#123;if(NR==FNR)a[$2]=$0;else print &quot;&#x27;$green_day&#x27;&quot;,a[$1],$2&#125;&#x27; a.txt b.txt &gt;temp.txt</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+              <a href="/blog/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk_sql/" rel="prev" title="awk进行统计分析SQL">
+                  <i class="fa fa-chevron-left"></i> awk进行统计分析SQL
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--grep%E5%85%A5%E9%97%A8/" rel="next" title="grep入门（大数据）">
+                  grep入门（大数据） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

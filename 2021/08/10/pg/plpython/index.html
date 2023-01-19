@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="postgresql中，自定义函数(udf)，利用python的工具库来计算。 资源 postgresql的官方手册。[Chapter 46. PL&#x2F;Python - Python 过程 语言 ]  Greenplumn从大数据战略到实现   说明PL&#x2F;Python使用的Python解释器是Greenplum自带的，位于目录$GPHOME&#x2F;ext&#x2F;python下面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="plpython">
+<meta property="og:url" content="http://example.com/2021/08/10/pg/plpython/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="postgresql中，自定义函数(udf)，利用python的工具库来计算。 资源 postgresql的官方手册。[Chapter 46. PL&#x2F;Python - Python 过程 语言 ]  Greenplumn从大数据战略到实现   说明PL&#x2F;Python使用的Python解释器是Greenplum自带的，位于目录$GPHOME&#x2F;ext&#x2F;python下面">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-10T03:32:18.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.158Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="pg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/08/10/pg/plpython/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>plpython | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-number">1.1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85python%E5%8C%85"><span class="nav-number">1.2.</span> <span class="nav-text">安装python包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gp%E6%95%B0%E6%8D%AE%E8%AE%A1%E7%AE%97%E7%9A%84Python%E5%8C%85%E9%9B%86%E5%90%88"><span class="nav-number">1.3.</span> <span class="nav-text">gp数据计算的Python包集合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E8%A8%80%E5%AE%89%E8%A3%85"><span class="nav-number">2.1.</span> <span class="nav-text">语言安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB"><span class="nav-number">2.2.</span> <span class="nav-text">数据共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.3.</span> <span class="nav-text">类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%99%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">教程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%B9%B6%E8%AE%BF%E9%97%AEredis"><span class="nav-number">3.1.</span> <span class="nav-text">安装并访问redis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E6%AD%A3%E5%88%99%E5%88%86%E8%AF%8D%E6%B5%8B%E8%AF%95"><span class="nav-number">3.2.</span> <span class="nav-text">中文正则分词测试</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/10/pg/plpython/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          plpython
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-10 11:32:18" itemprop="dateCreated datePublished" datetime="2021-08-10T11:32:18+08:00">2021-08-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>postgresql中，自定义函数(udf)，利用python的工具库来计算。</p>
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><p>postgresql的官方手册。[Chapter 46. PL/Python - Python 过程 语言 ]</p>
+</li>
+<li><p>Greenplumn从大数据战略到实现</p>
+</li>
+</ul>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>PL/Python使用的Python解释器是Greenplum自带的，位于目录$GPHOME/ext/python下面</p>
+<a id="more"></a>
+
+<h3 id="安装python包"><a href="#安装python包" class="headerlink" title="安装python包"></a>安装python包</h3><p>gpscp、gpssh两个工具辅助安装python工具包。</p>
+<p>各节点安装pip</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat all_hosts</span></span><br><span class="line">sdw1</span><br><span class="line">sdw2</span><br><span class="line">sdw3</span><br><span class="line"><span class="meta">$</span><span class="bash">gpssh -f all_hosts</span></span><br><span class="line">=source /usr/local/greenplum-db/greenplum_path.sh</span><br><span class="line">=&gt;wget --no-check-certificate https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">=&gt;python get-pip.py</span><br><span class="line">=&gt;exit</span><br></pre></td></tr></table></figure>
+
+<p>用pip，安装python包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> gpssh -f all_hosts</span></span><br><span class="line">=&gt; source /usr/local/greenplum-db/greenplum_path.sh</span><br><span class="line">=&gt; pip install numpy</span><br><span class="line">=&gt; exit</span><br></pre></td></tr></table></figure>
+
+<h3 id="gp数据计算的Python包集合"><a href="#gp数据计算的Python包集合" class="headerlink" title="gp数据计算的Python包集合"></a>gp数据计算的Python包集合</h3><p>相当于一次安装一批的软件集合。会在各个节点上安装好。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">source /usr/local/greenplum-db/greenplum_path.sh</span><br><span class="line">gppkg -i DataSciencePython-&lt;version&gt;-rhel&lt;N&gt;-x86_64.gppkg</span><br><span class="line">source /usr/local/greenplum-db/greenplum_path.sh</span><br><span class="line">gpstop -r </span><br></pre></td></tr></table></figure>
+
+<p>gppkg将会在所有节点上安装这些包。注意，在安装这些包后需要用source命令来重新装载环境变量并重启Greenplum集群，这是因为这些Python包放在一个$GPHOME/ext/DataSciencePython/目录下面，所以必须修改PYTHONPATH、LD_LIBRARY_PATH环境变量，以便PL/Python能调用到这些包，而这些环境变量的变动保存在greenplum_path.sh文件中。</p>
+<p>​    </p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="语言安装"><a href="#语言安装" class="headerlink" title="语言安装"></a>语言安装</h3><p>在shell环境下执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createlang plpythonu -d develop</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>-d 参数，指定数据库</p>
+</blockquote>
+<p>删除语言：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">droplang plpythonu -d postgres</span><br></pre></td></tr></table></figure>
+
+<p>出于安全考虑，Greenplum只允许数据库的超级用户启用PL/Python并编写PL/Python函数，普通用户则只能运行PL/Python函数。PL/Python使用的Python解释器是Greenplum自带的，位于目录$GPHOME/ext/python下面，版本为2.7.12</p>
+<p>psql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">create or replace function pyinc(a integer) returns int as $$</span><br><span class="line">return a+1</span><br><span class="line">$$ language plpythonu;</span><br></pre></td></tr></table></figure>
+
+<p>调用测试：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select pyinc(10);</span><br></pre></td></tr></table></figure>
+
+<p>删除函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">FUNCTION</span> pyinc(<span class="built_in">integer</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- create or replace function 更改了返回类型，则需要先删除函数。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="数据共享"><a href="#数据共享" class="headerlink" title="数据共享"></a>数据共享</h3><p>PL/Python支持函数级别和会话级别的数据共享，即允许在函数调用时候把一些数据保存在内存，供这个函数调用或者这个会话中的其他函数使用。函数级别的数据共享是通过SD词典实现的，而会话级别的数据共享是通过GD词典实现的。使用这两个词典有时候会大幅提升性能。我们以下面的函数为例解释SD和GD的使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE FUNCTION pylog(a integer, b integer)RETURNS</span><br><span class="line">double precision AS $$</span><br><span class="line">import math</span><br><span class="line">return math.log(a，b)</span><br><span class="line">$$ LANGUAGE plpythonu;</span><br><span class="line"></span><br><span class="line">select pylog(a, b) from tbl;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数的功能是对于tbl表中的每一行计算一个log函数，其中用到了math这个Python包。Greenplum执行器在处理tbl表的每一行时会运行这个函数，而每次运行都要导入math这个Python包，这样会影响性能。但是如果把函数修改为下面这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE FUNCTION pylog(a integer，b integer) RETURNS double precision AS $$</span><br><span class="line">If <span class="string">&#x27;math&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> GD:</span><br><span class="line">    <span class="keyword">import</span> math</span><br><span class="line">	GD[<span class="string">&#x27;math&#x27;</span>] = math</span><br><span class="line"><span class="keyword">return</span> GD[<span class="string">&#x27;math&#x27;</span>].log(a, b)</span><br><span class="line">$$LANGUAGE plpythonu;</span><br></pre></td></tr></table></figure>
+
+<p>由于有了全局词典GD, math包在这个会话中只需一次import操作，后续其他函数也可以继续使用这个词典项。当然，如果不考虑其他函数的使用，这里也可以使用SD词典。SD词典是函数级别的，只能在这个函数的多次调用中被共享使用。下面是一个常用的SD例子（注意，GD是会话级别的，会话中别的函数也可以使用，因此使用的时候要注意安全性）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE FUNCTION valid_type(a text) RETURNS text AS $$</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> SD.has_key(<span class="string">&quot;plan&quot;</span>):</span><br><span class="line">    SD[<span class="string">&quot;plan&quot;</span>] = plpy.prepare(<span class="string">&quot;SELECT fname FROM users WHERE lname = $1&quot;</span>，[ <span class="string">&quot;text&quot;</span>])</span><br><span class="line">    rv = plpy.execute(SD[<span class="string">&quot;plan&quot;</span>],[ a ])</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(rv):</span><br><span class="line">        <span class="keyword">return</span> rv[<span class="number">0</span>][<span class="string">&quot;fname&quot;</span>]</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">$$ LANGUAGE plpythonu;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型"><a href="#类型" class="headerlink" title="类型"></a>类型</h3><p>参数、及返回的类型，来源于postgre本身的类型。如：</p>
+<ul>
+<li>integer</li>
+<li>text   </li>
+</ul>
+<p>写了一个函数，用来处理字符串的</p>
+<p>结果呢，对于中文，总是出错。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">create or replace function mysplitword(str text) returns text[] as $$</span><br><span class="line">n &#x3D; len(str)</span><br><span class="line">res &#x3D; []</span><br><span class="line">for i in range(0,n-1):</span><br><span class="line">    res.append(str[i:i+2])</span><br><span class="line">return res</span><br><span class="line">$$ language plpythonu;</span><br></pre></td></tr></table></figure>
+
+<h2 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h2><h3 id="安装并访问redis"><a href="#安装并访问redis" class="headerlink" title="安装并访问redis"></a>安装并访问redis</h3><p>安装过程如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 由于使用su - gpadmin 已执行了环境变量，故直接安装</span></span><br><span class="line">python get-pip.py --trusted-host repo.xxx.com  -i http://repo.xxx.com/pypi/simple/</span><br><span class="line">pip install redis --trusted-host repo.xxx.com  -i http://repo.xxx.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+
+<p>简单使用示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE FUNCTION redis_test(mykey text) RETURNS text AS $$</span><br><span class="line">if &#39;redis_client&#39; not in GD:</span><br><span class="line">    import redis</span><br><span class="line">    client &#x3D; redis.Redis(host&#x3D;&#39;10.172.1.1&#39;, port&#x3D;1016,password&#x3D;&#39;&#39;, decode_responses&#x3D;True)</span><br><span class="line">    GD[&#39;redis_client&#39;] &#x3D; client</span><br><span class="line">rds &#x3D; GD[&#39;redis_client&#39;]</span><br><span class="line">return rds.get(&#39;sms:ph2nu:%s&#39;%mykey)</span><br><span class="line">$$LANGUAGE plpythonu;</span><br></pre></td></tr></table></figure>
+
+<p>函数使用</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 使用</span></span><br><span class="line"><span class="keyword">select</span> redis_test(<span class="string">&#x27;132434&#x27;</span>);</span><br><span class="line"><span class="comment">-- 压测</span></span><br><span class="line"><span class="keyword">select</span> redis_test(<span class="string">&#x27;15056967586&#x27;</span>) <span class="keyword">from</span> generate_series(<span class="number">1</span>,<span class="number">10000000</span>);</span><br></pre></td></tr></table></figure>
+
+<p>性能方便，100万次请求，时间200秒，跟直接写python的脚本调用性能差不多。性能方面并不是很好。</p>
+<h3 id="中文正则分词测试"><a href="#中文正则分词测试" class="headerlink" title="中文正则分词测试"></a>中文正则分词测试</h3><p>备注：如果函数的类型发生变化，需要先删除。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE FUNCTION parse_addr(addr text) RETURNS bool AS $$</span><br><span class="line">#coding&#x3D;utf-8</span><br><span class="line">if &#39;pattn&#39; not in GD:</span><br><span class="line">    import re</span><br><span class="line">    pattn &#x3D;[]</span><br><span class="line">    pattn.append( re.compile(&#39;(.&#123;1,5&#125;省)(.&#123;1,5&#125;市)(.&#123;1,5&#125;区)&#39;))</span><br><span class="line">    pattn.append( re.compile(&#39;(.&#123;1,5&#125;省)(.&#123;1,5&#125;市)(.&#123;1,5&#125;县)&#39;))</span><br><span class="line">    pattn.append( re.compile(&#39;(.&#123;1,5&#125;省)(.&#123;1,5&#125;市)(.&#123;1,5&#125;市)&#39;))</span><br><span class="line">    GD[&#39;pattn&#39;] &#x3D; pattn</span><br><span class="line">pat &#x3D; GD[&#39;pattn&#39;]</span><br><span class="line">sch &#x3D; pat[0].search(addr)  # search</span><br><span class="line">if sch and sch.group(0):</span><br><span class="line">    return True</span><br><span class="line">sch &#x3D; pat[1].search(addr)  # search</span><br><span class="line">if sch and sch.group(0):</span><br><span class="line">    return True</span><br><span class="line">sch &#x3D; pat[2].search(addr)  # search</span><br><span class="line">if sch and sch.group(0):</span><br><span class="line">    return True</span><br><span class="line">print(addr)</span><br><span class="line">return False</span><br><span class="line">$$LANGUAGE plpythonu;</span><br></pre></td></tr></table></figure>
+
+<p>调用sql</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select recv_addr, parse_addr(recv_addr) from tu_doc_info limit 10;</span><br></pre></td></tr></table></figure>
+
+<p>问题：</p>
+<p>结果是正则表达式的原因。最开始以为是中文编码的原因。故如下排查</p>
+<ul>
+<li>中文测试</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> test_ch(addr <span class="built_in">text</span>) <span class="keyword">RETURNS</span> <span class="built_in">text</span> <span class="keyword">AS</span> $$</span><br><span class="line"><span class="keyword">return</span> <span class="string">&#x27;河南&#x27;</span></span><br><span class="line">$$<span class="keyword">LANGUAGE</span> plpythonu;</span><br><span class="line"><span class="keyword">select</span> test_ch(<span class="string">&#x27;1&#x27;</span>) ;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>中文正则匹配也能通过</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">CREATE OR REPLACE FUNCTION test_ch(addr text) RETURNS text AS $$</span><br><span class="line">import re</span><br><span class="line">pat &#x3D; re.compile(&#39;.*南&#39;)</span><br><span class="line">sch &#x3D; pat.search(addr)  # search</span><br><span class="line">if sch and sch.group(0):</span><br><span class="line">    return sch.group(0)</span><br><span class="line">return &#39;没有找到&#39;</span><br><span class="line">$$LANGUAGE plpythonu;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select test_ch(&#39;河南&#39;) ;</span><br><span class="line">select test_ch(&#39;湖南省&#39;) ;</span><br></pre></td></tr></table></figure>
+
+<p>而错误的提示如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#39;.&#123;1,5&#125;省&#39;</span><br><span class="line"># 错误 </span><br><span class="line"></span><br><span class="line">ERROR:  invalid byte sequence for encoding &quot;UTF8&quot;: 0xb9</span><br><span class="line">CONTEXT:  while creating return value</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最终的示例</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> parse_addr(addr <span class="built_in">text</span>) <span class="keyword">RETURNS</span> <span class="built_in">text</span> <span class="keyword">AS</span> $$</span><br><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">if</span> <span class="string">&#x27;pattn&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> GD:</span><br><span class="line">    <span class="keyword">import</span> re</span><br><span class="line">    pattn =[]</span><br><span class="line">    pattn.append( re.compile(<span class="string">&#x27;(.*?省)(.*?市)(.*?区)&#x27;</span>))</span><br><span class="line">    pattn.append( re.compile(<span class="string">&#x27;(.*?省)(.*?市)(.*?县)&#x27;</span>))</span><br><span class="line">    pattn.append( re.compile(<span class="string">&#x27;(.*?省)(.*?市)(.*?市)&#x27;</span>))</span><br><span class="line">    GD[<span class="string">&#x27;pattn&#x27;</span>] = pattn</span><br><span class="line">pat = GD[<span class="string">&#x27;pattn&#x27;</span>]</span><br><span class="line">sch = pat[<span class="number">0</span>].search(addr)  <span class="comment"># search</span></span><br><span class="line"><span class="keyword">if</span> sch <span class="keyword">and</span> sch.group(<span class="number">0</span>):</span><br><span class="line">    <span class="keyword">return</span> sch.group(<span class="number">0</span>)</span><br><span class="line">sch = pat[<span class="number">1</span>].search(addr)  <span class="comment"># search</span></span><br><span class="line"><span class="keyword">if</span> sch <span class="keyword">and</span> sch.group(<span class="number">0</span>):</span><br><span class="line">    <span class="keyword">return</span> sch.group(<span class="number">0</span>)</span><br><span class="line">sch = pat[<span class="number">2</span>].search(addr)  <span class="comment"># search</span></span><br><span class="line"><span class="keyword">if</span> sch <span class="keyword">and</span> sch.group(<span class="number">0</span>):</span><br><span class="line">    <span class="keyword">return</span> sch.group(<span class="number">0</span>)</span><br><span class="line"><span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">$$<span class="keyword">LANGUAGE</span> plpythonu;</span><br></pre></td></tr></table></figure>
+
+<p>sql中的以下，经测试，有、没有的情况下，执行结果都是一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#coding&#x3D;utf-8</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/python/" rel="tag"># python</a>
+              <a href="/blog/tags/pg/" rel="tag"># pg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/08/06/php/pdo/" rel="prev" title="pdo">
+                  <i class="fa fa-chevron-left"></i> pdo
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/08/11/shell/error/" rel="next" title="error">
+                  error <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

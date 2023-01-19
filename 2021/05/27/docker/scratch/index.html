@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="首先，scratch这个是空的docker镜像，既然是空的，它不支持从docker hub直接下载，（提示报错）。不用手动拉（或创建）该镜像，直接在Dockerfile中用就行。而且，它是docker里面默认的关键字。 它的好处：空镜像scratch，能在符合我们实际业务需求的前提下，确保镜像尺寸尽可能的小。而且，没有预装其他的软件，能使镜像更安全，增加被攻击的难度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="scratch">
+<meta property="og:url" content="http://example.com/2021/05/27/docker/scratch/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="首先，scratch这个是空的docker镜像，既然是空的，它不支持从docker hub直接下载，（提示报错）。不用手动拉（或创建）该镜像，直接在Dockerfile中用就行。而且，它是docker里面默认的关键字。 它的好处：空镜像scratch，能在符合我们实际业务需求的前提下，确保镜像尺寸尽可能的小。而且，没有预装其他的软件，能使镜像更安全，增加被攻击的难度。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-27T02:17:02.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.141Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/05/27/docker/scratch/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>scratch | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B1"><span class="nav-number">3.1.</span> <span class="nav-text">示例1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B2"><span class="nav-number">3.2.</span> <span class="nav-text">示例2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B3"><span class="nav-number">3.3.</span> <span class="nav-text">示例3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B4"><span class="nav-number">3.4.</span> <span class="nav-text">示例4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B5"><span class="nav-number">3.5.</span> <span class="nav-text">示例5</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E7%B3%BB%E7%BB%9F%E9%95%9C%E5%83%8F"><span class="nav-number">4.</span> <span class="nav-text">从系统镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#centos"><span class="nav-number">4.1.</span> <span class="nav-text">centos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9centos"><span class="nav-number">4.2.</span> <span class="nav-text">修改centos</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/27/docker/scratch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          scratch
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-27 10:17:02" itemprop="dateCreated datePublished" datetime="2021-05-27T10:17:02+08:00">2021-05-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>首先，scratch这个是空的docker镜像，既然是空的，它不支持从docker hub直接下载，（提示报错）。不用手动拉（或创建）该镜像，<strong>直接在Dockerfile中用就行</strong>。而且，它是docker里面默认的关键字。</p>
+<p>它的好处：空镜像scratch，能在符合我们实际业务需求的前提下，确保镜像尺寸尽可能的小。而且，没有预装其他的软件，能使镜像更安全，增加被攻击的难度。</p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><p>本文参考的资源有：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/sap-jerry/p/10029824.html">从头基于空镜像scratch创建一个新的Docker镜像</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/uscWIFI/p/11917662.html">关于docker的scratch镜像与helloworld</a></p>
+<h2 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h2><p>如果真的想创建这样一个空的镜像。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar cv --files-from /dev/null | docker import - scratch</span><br></pre></td></tr></table></figure>
+
+<p>不用手动拉（或创建）该镜像，<strong>直接在Dockerfile中用就行</strong>。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h3><p>随便增加几个文件，然后添加到scratch里面。但是，下面的镜像，是不能直接运行的。除非，添加go编译的工具（没有依赖的那种），它能直接跟内核交互。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> . /work</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h3><blockquote>
+<p>这个是裸内核上直接运行我们go编译后的文件。其中，go编译文件，使用了两阶段构建。</p>
+</blockquote>
+<p>golang源码 main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">10000</span>; i++ &#123;</span><br><span class="line">		fmt.Printf(<span class="string">&quot;hello world %d\n&quot;</span>, i)</span><br><span class="line">		time.Sleep(time.Duration(<span class="number">2</span>) * time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>dockerfile</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> golang:<span class="number">1.16</span> as build</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /work</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> main.go  .</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> go build main.go</span></span><br><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=build /work/main /work/main</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/work/main&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>构建、运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 构建</span></span><br><span class="line">docker build -t myown:0.2 .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行，每隔1秒输出内容</span></span><br><span class="line">docker run -it --rm myown:0.2 </span><br></pre></td></tr></table></figure>
+
+<p>对镜像进行分析</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 保存自己的镜像</span></span><br><span class="line">docker save myown:0.2  &gt; myown.tar</span><br><span class="line"><span class="meta">#</span><span class="bash"> 解压镜像，查看解压出来的文件</span></span><br><span class="line">tar xvf myown.tar</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看解压出来的文件夹</span></span><br><span class="line">ls</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">hash</span>值可能不一样，具体分析</span></span><br><span class="line">cd 1015307a0efe206b2c7ad45445b189194d54d3113f3300b42221a821a2a83487/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 解压该层的存储文件</span></span><br><span class="line">tar xvf layer.tar </span><br><span class="line">ls</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看 work  实际上是自己上面自己放进去的位置</span></span><br><span class="line">cd work/</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
+
+<p>我们看到，go可以跑在裸内核上，这是因为go自己封装好了运行时。（当然如果引用了依赖c扩展的代码，可能就不行了）。</p>
+<h3 id="示例3"><a href="#示例3" class="headerlink" title="示例3"></a>示例3</h3><p>从网上直接下载debian的rootfs，然后构建。</p>
+<p>下载地址</p>
+<blockquote>
+<p> <a target="_blank" rel="noopener" href="https://github.com/debuerreotype/docker-debian-artifacts/raw/b024a792c752a5c6ccc422152ab0fd7197ae8860/jessie/rootfs.tar.xz">https://github.com/debuerreotype/docker-debian-artifacts/raw/b024a792c752a5c6ccc422152ab0fd7197ae8860/jessie/rootfs.tar.xz</a> </p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> rootfs.tar.xz /</span></span><br><span class="line"><span class="comment"># 下面这个可加、可不加</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;bash&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>构建镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t mydebian:0.1 .</span><br></pre></td></tr></table></figure>
+
+<p>运行镜像：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -it --rm  mydebian:0.1  bash</span><br><span class="line"><span class="meta">#</span><span class="bash"> 发现以下命令都是可用的</span></span><br><span class="line">ls</span><br><span class="line">who</span><br><span class="line">whoami</span><br><span class="line">ps</span><br><span class="line">top</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="示例4"><a href="#示例4" class="headerlink" title="示例4"></a>示例4</h3><p>在上一个示例的基础上，继续完善，比如安装一个nginx服务等。</p>
+<blockquote>
+<p>创建自己的index页面</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; index.html &lt;&lt;EOL</span><br><span class="line">&lt;h1&gt;Hi,my friends!!!&lt;/h1&gt;</span><br><span class="line">EOL</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>下面重定向nginx的日志到标准的输入、错误，是个亮点。</p>
+</blockquote>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"></span><br><span class="line"><span class="comment"># set the environment to honour SAP&#x27;s proxy servers</span></span><br><span class="line"><span class="comment">#ENV http_proxy http://sap.corp:8080</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># give yourself some credit</span></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> maintainer=<span class="string">&quot;chuanchao&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment"># add and unpack an archive that contains a Debian root filesystem</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> rootfs.tar.xz /</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># use the apt-get package manager to install nginx and wget</span></span><br><span class="line"><span class="comment"># 下面的过程可能会很长</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update &amp;&amp; \</span></span><br><span class="line"><span class="bash">apt-get -y install nginx wget</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#COPY nginx.conf /etc/nginx/nginx.conf</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> index.html /var/www/html/index.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># link nginx log files to Docker log collection facility</span></span><br><span class="line"><span class="comment"># 两点操作</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> ln -sf /dev/stdout /var/<span class="built_in">log</span>/nginx/access.log &amp;&amp; \</span></span><br><span class="line"><span class="bash">ln -sf /dev/stderr /var/<span class="built_in">log</span>/nginx/error.log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># expose port 80 - the standard port for webservers</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># and make sure that nginx runs when a container is created</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>构建</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t mydebian:0.2 .</span><br></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -d -p 8030:80 mydebian:0.2</span><br><span class="line"><span class="meta">#</span><span class="bash"> 浏览器访问服务   ip:8030</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看服务的日志  （上面经过重定向输入到日志）</span></span><br><span class="line">docker logs -f a3c2aea1fcfb14312 </span><br></pre></td></tr></table></figure>
+
+<p>上面的例子，能完整的运行。</p>
+<h3 id="示例5"><a href="#示例5" class="headerlink" title="示例5"></a>示例5</h3><p>直接拷贝一个现有的镜像呢</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> myown:<span class="number">0.2</span>  as build</span><br><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=build / /</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/work/main&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>构建、运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 构建</span></span><br><span class="line">docker build -t myown:0.3 .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行</span></span><br><span class="line">docker run -it --rm myown:0.3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 我们发现是可以正常输出的</span></span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<p>再用更复杂的镜像呢？</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> mydebian:<span class="number">0.2</span>  as build</span><br><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="comment"># 拷贝文件太多，可能需要一定时间</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=build / /</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;nginx&quot;</span>, <span class="string">&quot;-g&quot;</span>, <span class="string">&quot;daemon off;&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>构建、运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker build -t mydebian:0.3 .</span><br><span class="line"></span><br><span class="line">docker run --rm -d -p 8030:80 mydebian:0.3</span><br><span class="line"><span class="meta">#</span><span class="bash"> 浏览器访问服务   ip:8030</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看服务的日志  （上面经过重定向输入到日志）</span></span><br><span class="line">docker logs -f 47d2e20287d6e14a594c</span><br></pre></td></tr></table></figure>
+
+<p>发现也是可以正常运行的。我猜测，其他的镜像应该也是一样的吧！！！</p>
+<p>镜像大小 从<code>239MB</code>减少到<code>232MB</code>（前面只是简单的全部拷贝）</p>
+<h2 id="从系统镜像"><a href="#从系统镜像" class="headerlink" title="从系统镜像"></a>从系统镜像</h2><p>经过上面的探索，我们初步感受到，可以从系统的镜像iso文件中，提取想用到的镜像。那么，如何构建呢？</p>
+<h3 id="centos"><a href="#centos" class="headerlink" title="centos"></a>centos</h3><p>查看centos的构建过程：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/CentOS/sig-cloud-instance-images/tree/CentOS-7.8.2003-x86_64/docker">https://github.com/CentOS/sig-cloud-instance-images/tree/CentOS-7.8.2003-x86_64/docker</a></p>
+<p>如下，即为其构建过程：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> scratch</span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> centos-7.8.2003-x86_64-docker.tar.xz /</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> \</span></span><br><span class="line"><span class="bash">    org.label-schema.schema-version=<span class="string">&quot;1.0&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.label-schema.name=<span class="string">&quot;CentOS Base Image&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.label-schema.vendor=<span class="string">&quot;CentOS&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.label-schema.license=<span class="string">&quot;GPLv2&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.label-schema.build-date=<span class="string">&quot;20200504&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.opencontainers.image.title=<span class="string">&quot;CentOS Base Image&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.opencontainers.image.vendor=<span class="string">&quot;CentOS&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.opencontainers.image.licenses=<span class="string">&quot;GPL-2.0-only&quot;</span> \</span></span><br><span class="line"><span class="bash">    org.opencontainers.image.created=<span class="string">&quot;2020-05-04 00:00:00+01:00&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/bin/bash&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>这说明，对于这些基本的centos等直接从scratch镜像构建。所以，我大概明白了，公司的0号镜像是如何来的呢。</p>
+<h3 id="修改centos"><a href="#修改centos" class="headerlink" title="修改centos"></a>修改centos</h3><p>上面的压缩文件，我们解压后、再重新添加文件后，再重新构建。主要操作如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 解压文件</span></span><br><span class="line">tar xvf centos-7.8.2003-x86_64-docker.tar.xz</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新打包到另外一个目录下，当然我们可以修改它。</span></span><br><span class="line">mkdir -p ../docker04</span><br><span class="line">tar -zcvf ../docker04/mycentos.tar.gz .</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 进入新的文件夹进行操作</span></span><br><span class="line">cd docker04/</span><br><span class="line"><span class="meta">#</span><span class="bash"> Dockerfile</span></span><br><span class="line">cat &gt; Dockerfile &lt;&lt;&lt;EOL</span><br><span class="line">FROM scratch</span><br><span class="line">ADD mycentos.tar.gz /</span><br><span class="line">CMD [&quot;/bin/bash&quot;]</span><br><span class="line">EOL</span><br><span class="line"><span class="meta">#</span><span class="bash"> 构建 并运行，发现基本命令都是ok的呢。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 这说明，如果我们能从操作系统上提炼出我们自己的系统镜像，就ok了</span></span><br><span class="line">docker build -t mymycentos:0.1 .</span><br><span class="line">docker run --rm -it mymycentos:0.1</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>其实我在想，既然docker的形式，能运行，感觉把镜像解压后，（增加若干启动有关的东西），便也能运行起来？就算不行，（chroot应该可以吧？）</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/26/other/css%E5%BA%8F%E5%8F%B7%E9%80%89%E6%8B%A9%E5%99%A8/" rel="prev" title="序号选择器">
+                  <i class="fa fa-chevron-left"></i> 序号选择器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk_sql/" rel="next" title="awk进行统计分析SQL">
+                  awk进行统计分析SQL <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

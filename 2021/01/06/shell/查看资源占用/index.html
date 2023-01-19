@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="查看资源占用Linux下常用的查看资源占用量的工具汇总。cpu、内存等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="查看资源占用">
+<meta property="og:url" content="http://example.com/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="查看资源占用Linux下常用的查看资源占用量的工具汇总。cpu、内存等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8.assets/5e20b1a0e806444b8934c60665375e6f.png">
+<meta property="article:published_time" content="2021-01-06T09:47:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.221Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8.assets/5e20b1a0e806444b8934c60665375e6f.png">
+
+
+<link rel="canonical" href="http://example.com/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>查看资源占用 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">查看资源占用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ps"><span class="nav-number">1.1.</span> <span class="nav-text">ps</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pmap"><span class="nav-number">1.2.</span> <span class="nav-text">pmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#top"><span class="nav-number">1.3.</span> <span class="nav-text">top</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#htop"><span class="nav-number">1.4.</span> <span class="nav-text">htop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iftop"><span class="nav-number">1.5.</span> <span class="nav-text">iftop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iotop"><span class="nav-number">1.6.</span> <span class="nav-text">iotop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%B5%81%E9%87%8F"><span class="nav-number">1.7.</span> <span class="nav-text">查看流量</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          查看资源占用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-06 17:47:00" itemprop="dateCreated datePublished" datetime="2021-01-06T17:47:00+08:00">2021-01-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="查看资源占用"><a href="#查看资源占用" class="headerlink" title="查看资源占用"></a>查看资源占用</h1><p>Linux下常用的查看资源占用量的工具汇总。cpu、内存等。</p>
+<a id="more"></a>
+
+<h2 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h2><p>查看进程、进程号。</p>
+<p>RSS，也就是物理内存占用，单位是KB。RSS是常驻内存集（Resident Set Size），表示该进程分配的内存大小。RSS不包括进入交换分区的内存。RSS包括共享库占用的内存（只要共享库在内存中）RSS包括所有分配的栈内存和堆内存。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ps aux |grep xxx</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">其中rsz是实际内存</span></span><br><span class="line">ps -e -o &#x27;pid,comm,args,pcpu,rsz,vsz,stime,user,uid&#x27; </span><br><span class="line">ps -e -o &#x27;pid,comm,args,pcpu,rsz,vsz,stime,user,uid&#x27; | grep oracle |  sort -nrk5</span><br></pre></td></tr></table></figure>
+
+<h2 id="pmap"><a href="#pmap" class="headerlink" title="pmap"></a>pmap</h2><p> 可以根据进程查看进程相关信息占用的内存情况，(进程号可以通过ps查看)如下所示： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pmap -d 14596</span><br></pre></td></tr></table></figure>
+
+<h2 id="top"><a href="#top" class="headerlink" title="top"></a>top</h2><p> <img src="%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8.assets/5e20b1a0e806444b8934c60665375e6f.png" alt="111"> </p>
+<p>top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。可以直接使用top命令后，查看%MEM的内容。可以选择按进程查看或者按用户查看，如想查看oracle用户的进程内存使用情况的话可以使用如下的命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top -u oracle</span></span><br></pre></td></tr></table></figure>
+
+<p>内容解释</p>
+<p>PID：进程的ID</p>
+<p>USER：进程所有者</p>
+<p>PR：进程的优先级别，越小越优先被执行</p>
+<p>NInice：值</p>
+<p>VIRT：进程占用的虚拟内存</p>
+<p>RES进程占用的物理内存</p>
+<p>SHR：进程使用的共享内存</p>
+<p>S：进程的状态。S表示休眠，R表示正在运行，Z表示僵死状态，N表示该进程优先值为负数</p>
+<p>%CPU：进程占用CPU的使用率</p>
+<p>%MEM：进程使用的物理内存和总内存的百分比</p>
+<p>TIME+：该进程启动后占用的总的CPU时间，即占用CPU使用时间的累加值。</p>
+<p>COMMAND：进程启动命令名称 </p>
+<p>　常用的命令：</p>
+<blockquote>
+<p>　　P：按%CPU使用率排行<br>　　T：按MITE+排行<br>　　M：按%MEM排行</p>
+</blockquote>
+<h2 id="htop"><a href="#htop" class="headerlink" title="htop"></a>htop</h2><p>htop可以说是上面刚提到的top工具命令的“进化版本”，它的一大特色在于可视化交互方面做得很优秀。它也是Linux系统下的一个交互式进程浏览器，可以替代上面的top命令，与top命令对比，htop有如下优点：</p>
+<ul>
+<li>支持鼠标点按交互</li>
+<li>画面可以水平/垂直滚动，更像一个窗口</li>
+<li>可以跟踪进程，显示进程打开的文件等</li>
+<li>支持进程的树状图显示</li>
+<li>支持按名称查找进程</li>
+<li>…等等</li>
+</ul>
+<p>总体可以分成三部分看：</p>
+<ul>
+<li><p>顶部是资源使用总体概览，这进度条看着就挺酷炫</p>
+</li>
+<li><p>中间是进程表，和top命令的类似</p>
+</li>
+<li><p>下面是操作指引和快捷键，清晰明了</p>
+</li>
+</ul>
+<p>可以查看进程树状图，可以点击列头进行各类排序，可以选择某一个进程，按S键即可利用strace追踪进程的系统调用。</p>
+<h2 id="iftop"><a href="#iftop" class="headerlink" title="iftop"></a>iftop</h2><p> iftop是Linux系统上的网络流量和带宽监控工具，可用于查看（监控）实时的网络流量、网络TCP/IP连接等等，也是非常有用的！ </p>
+<p>iftop命令常用的可带参数如下，这里做个小规模总结：</p>
+<ul>
+<li>-i 指定网卡，如：iftop -i eth0</li>
+<li>-B 以bytes为单位显示，如：iftop -B</li>
+<li>-n host信息显示IP，如：iftop -n</li>
+<li>-N 端口信息显示端口号，如: iftop -N</li>
+<li>-F 指定网段，如iftop -F 10.10.1.0/24</li>
+<li>-h 帮助信息</li>
+<li>…</li>
+</ul>
+<p>进入iftop视图画面后还有很多操作命令可用，具体指令可以随用随help，不过要注意区分大小写。</p>
+<h2 id="iotop"><a href="#iotop" class="headerlink" title="iotop"></a>iotop</h2><p>iotop 是一个可以用来进行磁盘I/O使用情况监控的工具命令，其UI界面和上面提到的几个top命令也都类似，包括进程表信息也都给了出来。</p>
+<p>其实Linux下系统自带的IO统计工具也有不少，常用的就比如iostat等等，但是iotop命令可以很直接了当地查看到占用磁盘I/O的进程信息，比较直观且容易上手。</p>
+<h2 id="查看流量"><a href="#查看流量" class="headerlink" title="查看流量"></a>查看流量</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sar -n DEV 1 100		</span><br></pre></td></tr></table></figure>
+
+<p>1代表一秒统计并显示一次<br>100代表统计一百次</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/06/php/PHP%E6%89%B9%E9%87%8F%E6%8F%92%E5%85%A5/" rel="prev" title="PHP批量插入">
+                  <i class="fa fa-chevron-left"></i> PHP批量插入
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/08/other/csv%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="next" title="csv文件格式">
+                  csv文件格式 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

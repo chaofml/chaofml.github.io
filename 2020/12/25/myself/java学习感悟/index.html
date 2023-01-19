@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="java学习感悟要明白一个道理，应该是会得越多，越好学。我现在学习java，总觉得java好多概念，springboot里面有很多不懂的东西，而且总是感叹，之前学php是多么容易，多么简单。但是，细想一下，之前学得时候，也并没有那么容易，也没有那么简单。只是，做为成功者回来看，总觉得以前多么容易，对眼前的困难，总觉得很困难似的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java学习感悟">
+<meta property="og:url" content="http://example.com/2020/12/25/myself/java%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="java学习感悟要明白一个道理，应该是会得越多，越好学。我现在学习java，总觉得java好多概念，springboot里面有很多不懂的东西，而且总是感叹，之前学php是多么容易，多么简单。但是，细想一下，之前学得时候，也并没有那么容易，也没有那么简单。只是，做为成功者回来看，总觉得以前多么容易，对眼前的困难，总觉得很困难似的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-25T02:42:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.146Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/12/25/myself/java%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>java学习感悟 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F"><span class="nav-number">1.</span> <span class="nav-text">java学习感悟</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E8%87%AA%E5%B7%B1%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">总结自己的问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E5%B8%8C%E6%9C%9B%E8%87%AA%E5%B7%B1%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">我希望自己：</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/12/25/myself/java%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java学习感悟
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-25 10:42:00" itemprop="dateCreated datePublished" datetime="2020-12-25T10:42:00+08:00">2020-12-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="java学习感悟"><a href="#java学习感悟" class="headerlink" title="java学习感悟"></a>java学习感悟</h1><p>要明白一个道理，应该是会得越多，越好学。我现在学习java，总觉得java好多概念，springboot里面有很多不懂的东西，而且总是感叹，之前学php是多么容易，多么简单。但是，细想一下，之前学得时候，也并没有那么容易，也没有那么简单。只是，做为成功者回来看，总觉得以前多么容易，对眼前的困难，总觉得很困难似的。</p>
+<a id="more"></a>
+
+<p>首先，在学习python的django框架的时候，从某个大牛的视频入手，视频虽然是用快进的方式看完的，但是第一遍看完的时候，一点概念也没有，如此反复看了好几遍，才略微懂了一些概念，然后才明白，从前端传来的页面form提交的数据，如果被实例化到对象中，登录错误后，再重新渲染到页面中，已经session的概念。<br>有了python的基础后，我又重新学了php，其实吧，刚开始学时候，也是看了好多遍，先看视频，视频里面讲了登录的概念，应该是兄弟连的视频，我记得当时也是看了好几次。但是就算有了这些基础，到后面再用ci框架的时候，从官网的文档看了又看，但是操作的时候，完全按照官网的例子来做，还是遇到各种问题。然后自学期间，自己看了两套php教程，虽然整体上没有花太多时间，但是后来，自己以教程上的例子，自己动手来做的时候，终于发现了一个规律，眼高手低，然后自己静下心来，看完一集视频，自己就去默写视频中的代码，遇到问题，然后解决问题，如此坚持了10多天，虽然教程没有完全对应操作完，但是对项目更懂了一些。但是，我记得，我去合肥办离职手续的那天，其实脑海里还是对rbac权限系统不太明白，一直在想其中的问题，总是对其中的概念模模糊糊。</p>
+<p>回头来看，自己这半年，8、9月份开始准备想看java，陆陆续续也看了一段时间，中间又放弃了一段时间，到现在，对java的spring项目还是不懂。</p>
+<h2 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h2><p>java确实跟之前接触到的Python、js、php等不太一样。</p>
+<p>因为人家是静态语言，有类型约束（脚本语言也有了，但是没有严格要求类型）。</p>
+<p>习惯上，可能不太一样。另外，框架里面的配置真是太多了。什么xml配bean等。引入一个组件需要复杂的配置等。但是有了springboot而且又有别人的教程，所以，这些也都不是什么复杂的事。</p>
+<p>另外，还有注解。是的，这个概念别的语言也有。js里面能实现，但是很少用。python里面被称为装饰器模式。php呢，主要从事web开发，所以呢，也有框架学了spring的概念，php7的时候，利用反射能读到注视，然后自己实现了。php8的版本呢，原生已经支持了注解开发。但是java里面，注解成了主角。像spring这种框架，完全离不了注解。</p>
+<p>代码比较长。java的变量命令长度、代码量都比较长。所以呢，看代码，相对来讲有点费劲。</p>
+<h2 id="总结自己的问题："><a href="#总结自己的问题：" class="headerlink" title="总结自己的问题："></a>总结自己的问题：</h2><ul>
+<li>1、学习java没有坚持下去，中间陆续切换了几种兴趣点。</li>
+<li>2、认为java太难，总是说java比php（或者脚本语言）难，学框架半天不得要领。嫌弃java项目啰嗦，干啥事，都要先声明一个实体内。然后呢，要先写接口，再写服务类。麻烦是麻烦点，但是IDEA的代码提示功能，比php好太多了。至少，声明变量的时候，基本写几个字母，它就知道你要干啥，很贴心的给出了代码。</li>
+<li>3、我希望自己，在学新技术的时候，找到一个合适的视频、教程，然后坚持下来，自己动手实现。可以切换。</li>
+</ul>
+<h2 id="我希望自己："><a href="#我希望自己：" class="headerlink" title="我希望自己："></a>我希望自己：</h2><ul>
+<li>不管学习任何东西的时候，都能静下心来去做。不要管过去，做一件事的时候，如何简单、容易等。学习的时候，就应该以一个学徒的心理，从头开始。不要觉得自己多么多么的厉害，怎么这点东西，就搞不定。</li>
+<li>如果打算做一件事，就认真做，做细。不要半途而废。有持之以恒的决心。</li>
+<li>学习东西，想少走弯路，应该学对学习的教程、路径等。由浅入深。</li>
+<li>边学边练。不要觉得代码看看就会了，就忽略了练。别人想讲的东西，也许并没有完整的描述出来，自己应该试试，遇到坑后，才更加理解一个概念。</li>
+<li>边练边记。好不容易踩坑学会的东西，自己很容易就忘记了。应该记录下来，这样才高效。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E4%B8%AA%E4%BA%BA/" rel="tag"># 个人</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/12/21/redis/%E5%AE%89%E8%A3%85redis/" rel="prev" title="安装redis">
+                  <i class="fa fa-chevron-left"></i> 安装redis
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/12/26/you-get/" rel="next" title="you-get与youtube-dl">
+                  you-get与youtube-dl <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,434 +1,263 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
-
-
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '6.6.0',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  <meta name="description" content="会议室选择时间设计会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。 方案分析第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深">
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="会议室选择时间设计会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。 方案分析第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深">
 <meta property="og:type" content="article">
 <meta property="og:title" content="会议室选择时间设计">
-<meta property="og:url" content="http://yoursite.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/index.html">
-<meta property="og:site_name" content="静谧花园">
+<meta property="og:url" content="http://example.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/index.html">
+<meta property="og:site_name" content="超凡魔力">
 <meta property="og:description" content="会议室选择时间设计会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。 方案分析第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-27T13:38:07.556Z">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-20T12:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-21T08:54:58.149Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="会议室选择时间设计">
-<meta name="twitter:description" content="会议室选择时间设计会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。 方案分析第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深">
 
 
+<link rel="canonical" href="http://example.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/">
 
 
-
-
-  <link rel="canonical" href="http://yoursite.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/">
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
-
-  <title>会议室选择时间设计 | 静谧花园</title>
+<title>会议室选择时间设计 | 超凡魔力</title>
   
-
-
-
-
-
-
-
-
-
 
 
 
   <noscript>
   <style>
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
+  body { margin-top: 2rem; }
 
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-    .use-motion .logo-line-before i { left: initial; }
-    .use-motion .logo-line-after i { right: initial; }
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">静谧花园</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <p class="site-subtitle">君子善思，善假于物。</p>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
 
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
-</nav>
-
-
-
-  
 
 
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%9A%E8%AE%AE%E5%AE%A4%E9%80%89%E6%8B%A9%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">会议室选择时间设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E5%88%86%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">方案分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dataview%E6%96%B9%E6%A1%88%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">dataview方案深度剖析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E5%8A%9F%E8%83%BD"><span class="nav-number">1.4.</span> <span class="nav-text">后续功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.5.</span> <span class="nav-text">快速实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E5%88%A9%E7%94%A8%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E7%95%8C%E9%9D%A2"><span class="nav-number">1.5.1.</span> <span class="nav-text">先利用静态数据，快速搭建界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E4%B8%9A%E5%8A%A1"><span class="nav-number">1.5.2.</span> <span class="nav-text">快速搭建业务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81%E4%B8%8A%E9%9D%A2%EF%BC%8C%E7%AA%81%E7%84%B6%E5%8F%88%E9%9A%BE%E4%BD%8F%E6%88%91%E4%BA%86%E3%80%82"><span class="nav-number">1.5.3.</span> <span class="nav-text">关于时间冲突上面，突然又难住我了。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E7%BB%AD%E6%94%B9%E8%BF%9B"><span class="nav-number">1.5.4.</span> <span class="nav-text">持续改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5"><span class="nav-number">1.6.</span> <span class="nav-text">代码片段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E6%95%B0%E6%8D%AE%E9%87%8D%E5%88%B7%E6%9C%BA%E5%88%B6"><span class="nav-number">1.6.1.</span> <span class="nav-text">页面数据重刷机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%B3%E6%AD%A4%E4%BB%A3%E7%A0%81%E5%9F%BA%E6%9C%AC%E4%B8%8A%E5%AE%8C%E6%88%90%E3%80%82"><span class="nav-number">1.7.</span> <span class="nav-text">至此代码基本上完成。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%94%B9%E8%BF%9B%EF%BC%9A"><span class="nav-number">1.8.</span> <span class="nav-text">代码改进：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E5%8F%91%E9%80%81%E7%BB%99%E5%95%86%E5%93%81%E6%A8%A1%E5%9D%97%E7%9A%84%E6%B6%88%E6%81%AF%E7%8B%AC%E7%AB%8B%E6%88%90%E5%87%BD%E6%95%B0"><span class="nav-number">1.8.1.</span> <span class="nav-text">将发送给商品模块的消息独立成函数</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
+    <div class="main-inner post posts-expand">
 
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
 
   
 
-  
+
+<div class="post-block">
   
   
 
-  
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/">
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧花园">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
     </span>
-
-    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          会议室选择时间设计
+        </h1>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">会议室选择时间设计
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              
-            
-          </h1>
-        
+      <time title="创建时间：2019-01-20 20:00:00" itemprop="dateCreated datePublished" datetime="2019-01-20T20:00:00+08:00">2019-01-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-21 16:54:58" itemprop="dateModified" datetime="2020-12-21T16:54:58+08:00">2020-12-21</time>
+      </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-20 20:00:00" itemprop="dateCreated datePublished" datetime="2019-01-20T20:00:00+08:00">2019-01-20</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-08-27 21:38:07" itemprop="dateModified" datetime="2019-08-27T21:38:07+08:00">2019-08-27</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <h1 id="会议室选择时间设计"><a href="#会议室选择时间设计" class="headerlink" title="会议室选择时间设计"></a>会议室选择时间设计</h1><p>会议室选择时间，根据效果图来看，样式深度定制。外观第一印象，就像一个Grid表格。初选方案有两种：grid、dataview。</p>
 <h2 id="方案分析"><a href="#方案分析" class="headerlink" title="方案分析"></a>方案分析</h2><p>第一种方案,grid，默认的数据都是按行来显示，而效果图则是竖向显示，每天的情况按列显示。不管是grid、dataview都跟数据离不开关系。如果是竖向的展示，那么grid<br>来显示，还需要将数据横竖方向进行转换，这个难度也大，加上grid表格的是深度定制的样式，选择grid来做，困难很大。<br>第二种方案，dataview样式可以轻松定制，这个是自定义样式并要处理大量数据的法宝之一。数据的显示的横竖向，都可以通过css样式来定义，而且html骨架都是可控的。基于此，更倾向于选择dataview。</p>
+<a id="more"></a>
 <h2 id="dataview方案深度剖析"><a href="#dataview方案深度剖析" class="headerlink" title="dataview方案深度剖析"></a>dataview方案深度剖析</h2><ul>
 <li>html骨架选择，考虑到grid本身就是使用table来完成布局的。所以优向考虑使用table来布每一列的显示样式。</li>
 <li>在数据来源方面，有两种选择，ajax请求，store来处理。使用store处理的时候，更倾向于后台处理好所有的逻辑，前台负责显示。如果选择store来作为数据源，那么，应当在后台处理所有的逻辑。</li>
@@ -437,8 +266,10 @@
 <li>在选择模型上说，由于选择时间，要选择开始时间、结束时间，属于多选，如果使用原生的选择模型的话，考虑使用multi模式，即多选模式，在细节上进行如下处理：选择不合理，如跨天、跨越占用时间段，默认的将第一个选择清理掉，然后将新的加入进去。（这个跟手机端的设计有差别，手机段是自己要连续选择每一个时间段。）</li>
 <li>另外，如何翻页？是否设置专门的翻页处理函数？最好是使用record来隐藏记录，那么这又有一个问题，record隐藏之后，record的粒度是按天还是按时段？按天的话，是否真有必要抽象出按天时间端的组件？</li>
 </ul>
-<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><p>选择的时间<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[时间1、时间2]</span><br></pre></td></tr></table></figure></p>
-<p>每天的每个具体的时间段，即时间的最小粒度，一条记录。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//record</span><br><span class="line">[时间序列号、date、当前时间段内的可用状态，会议状态信息等，当前是否被选择。]</span><br><span class="line"></span><br><span class="line">## 选择</span><br><span class="line"></span><br><span class="line">最终觉得当作一个整体来处理，可以更加直接。每一列作为一条record来处理。会议的信息，附加在上面。翻页等于是过滤要见的范围。</span><br><span class="line"></span><br><span class="line">时间不可选择，有两种情况，1、时间已过期，2、时间被占用。</span><br><span class="line"></span><br><span class="line">选择时，可用时间应经常刷新时间。另外，页面加载的时候，也应该刷新。</span><br></pre></td></tr></table></figure></p>
+<h2 id="数据格式"><a href="#数据格式" class="headerlink" title="数据格式"></a>数据格式</h2><p>选择的时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[时间1、时间2]</span><br></pre></td></tr></table></figure>
+<p>每天的每个具体的时间段，即时间的最小粒度，一条记录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;record</span><br><span class="line">[时间序列号、date、当前时间段内的可用状态，会议状态信息等，当前是否被选择。]</span><br><span class="line"></span><br><span class="line">## 选择</span><br><span class="line"></span><br><span class="line">最终觉得当作一个整体来处理，可以更加直接。每一列作为一条record来处理。会议的信息，附加在上面。翻页等于是过滤要见的范围。</span><br><span class="line"></span><br><span class="line">时间不可选择，有两种情况，1、时间已过期，2、时间被占用。</span><br><span class="line"></span><br><span class="line">选择时，可用时间应经常刷新时间。另外，页面加载的时候，也应该刷新。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="后续功能"><a href="#后续功能" class="headerlink" title="后续功能"></a>后续功能</h2><p>如用户不但能查看当前选择的会议室，还能查看未选择的会议室的使用情况，如果使用满意，可以直接点击确定，更换会议室。功能看似简单，但是要加很多的业务处理。前期先不考虑。</p>
 <h2 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h2><h3 id="先利用静态数据，快速搭建界面"><a href="#先利用静态数据，快速搭建界面" class="headerlink" title="先利用静态数据，快速搭建界面"></a>先利用静态数据，快速搭建界面</h3><p>界面分为左右两个dataview,左侧的为时间段展示区，右侧为最近几天的时间，会议占用情况。布局hbox，允许overflow。右侧的时间端区域，布局为div下table布局，每天的记录，为一个记录，封装在一个div&gt;table里面，这个div是向左浮动的。因为向左浮动了，所以，如果overflow之后，会将一行展示的内容，挤到多行显示，效果非常差。所以就固定右侧dataview的宽度，保证其有充足的宽度。然后就能完全显示。进一步处理，后期如果有时间，可以在dataview的onreize事件中，监听整体的大小，动态的决定右侧的dataview要加载多少条记录。</p>
 <h3 id="快速搭建业务"><a href="#快速搭建业务" class="headerlink" title="快速搭建业务"></a>快速搭建业务</h3><p>-</p>
@@ -449,7 +280,8 @@
 <p>上述对内业务处理完毕后，同步到内部的viewModel，然后将消息发送出去。<br>在快速搭建过程，由于上述过程较多，先快速打通整个业务，然后再完善细节。</p>
 <p>1、快速生成右侧的时间。<br>暂未增加时间冲突、时间过期处理，预留有字段。<br>2、快速的处理点击事件。</p>
 <p>选择  0 - 1 -2 -0</p>
-<h3 id="关于时间冲突上面，突然又难住我了。"><a href="#关于时间冲突上面，突然又难住我了。" class="headerlink" title="关于时间冲突上面，突然又难住我了。"></a>关于时间冲突上面，突然又难住我了。</h3><p>如果判断一个时间段在一个区间内？首先，两个区间的端点值肯定都是按顺序排列的。<br>端点是否允许重复？<br>突然发现，判断两个区间不重叠更容易些。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">时间段１的最大值　＞　　时间段２的最小值。</span><br><span class="line">时间段１的最小值　＜　　时间段２的最大值。</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于时间冲突上面，突然又难住我了。"><a href="#关于时间冲突上面，突然又难住我了。" class="headerlink" title="关于时间冲突上面，突然又难住我了。"></a>关于时间冲突上面，突然又难住我了。</h3><p>如果判断一个时间段在一个区间内？首先，两个区间的端点值肯定都是按顺序排列的。<br>端点是否允许重复？<br>突然发现，判断两个区间不重叠更容易些。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">时间段１的最大值　＞　　时间段２的最小值。</span><br><span class="line">时间段１的最小值　＜　　时间段２的最大值。</span><br></pre></td></tr></table></figure>
 <p>上述比较，如果都成立，那么则两个时间端不重叠。<br>思想来源于两个小车模型，一个后面的车追向一个前面的车的过程。相遇则上上面的情况取反。</p>
 <h3 id="持续改进"><a href="#持续改进" class="headerlink" title="持续改进"></a>持续改进</h3><ul>
 <li>打通，能顺利通过初始化工作，加载修改数据。时间端过滤该会议、绑定到特定的会议室。</li>
@@ -463,213 +295,40 @@
 <h2 id="代码片段"><a href="#代码片段" class="headerlink" title="代码片段"></a>代码片段</h2><blockquote>
 <p>下面的代码的思想，来源于小车追赶其他车辆的模型。虽然里面的if 循环嵌套较复杂。如果理解了，整体代码应该也比较好懂了。</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> /************</span><br><span class="line"> * 2019年1月15日</span><br><span class="line"> * 时间冲突判断。</span><br><span class="line"> ************/</span><br><span class="line">isOccupy:function(items,start,stop)&#123;</span><br><span class="line">    var me=this;</span><br><span class="line">    var item;</span><br><span class="line">    var fn=function(v)&#123;</span><br><span class="line">        return Ext.Date.parse(v,&apos;Y-m-d H:i:s&apos;);</span><br><span class="line">    &#125;;</span><br><span class="line">    if(items.length&gt;0)&#123;</span><br><span class="line">        item=items[0];</span><br><span class="line">        while(start&gt;=fn(item.stoptime))&#123;</span><br><span class="line">            items.shift();</span><br><span class="line">            if(items.length==0)&#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">            item=items[0];</span><br><span class="line">        &#125;</span><br><span class="line">        if(stop&lt;=fn(item.starttime))&#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<h3 id="页面数据重刷机制"><a href="#页面数据重刷机制" class="headerlink" title="页面数据重刷机制"></a>页面数据重刷机制</h3><p>ajaxGetOccupy数据刷新的机制。本来ajaxGetOccupy只在initComponent方法里面直接调用。但是接口连通之后，放在meetingorderhomeaddevent初始化事件中，更合理。但是考虑到每次激活该页面的时候，数据都应该刷新一次。所以又将此方法移到active事件中。但是要等到active的时候，数据才开始加载一次，第一次显示的时候特别的丑，没有任何数据，表格都没有完全建立。所以呢，原来的仍保留一份。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">initComponent:function()&#123;//先执行</span><br><span class="line">        var me = this;</span><br><span class="line">        me.applySelectTimePanel();</span><br><span class="line">        me.callParent();</span><br><span class="line">        //添加会议时，设置默认项</span><br><span class="line">        ShineMessageHub.on(&quot;meetingorderhomeaddevent&quot;,function(rdData)&#123;</span><br><span class="line">            me.meetingdate = rdData[&apos;meeting_date&apos;];</span><br><span class="line">            me.starttime = rdData[&apos;starttime&apos;];</span><br><span class="line">            me.stoptime = rdData[&apos;stoptime&apos;];</span><br><span class="line">            me.conference_room_id = rdData[&apos;conference_room_id&apos;];</span><br><span class="line">            me.meeting_id = rdData[&apos;meeting_id&apos;];</span><br><span class="line">            me.ajaxGetOccupy();//仍保留一份，避免直到activate才加载数据，页面太丑了。啥都没有。</span><br><span class="line">        &#125;,me);</span><br><span class="line">        //更改会议室，不在这个里面更新数据，是因为这个地方刷新太频繁了。没有必要。</span><br><span class="line">        ShineMessageHub.on(&apos;selectroompanelselectionchange&apos;,function(roomid)&#123;</span><br><span class="line">            me.conference_room_id=roomid;</span><br><span class="line">        &#125;,me);</span><br><span class="line">        me.makeTimeList();</span><br><span class="line">        me.displayStart=Ext.Date.format(new Date(),&apos;Y-m-d&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    listeners:&#123;</span><br><span class="line">        &quot;afterrender&quot;:function(cmp,opt)&#123;</span><br><span class="line">            var me = this;</span><br><span class="line">            var stData=Ext.Array.map(me.timeList,function(v)&#123;</span><br><span class="line">                return &#123;period:v+&apos;-&apos;+me.timeAdd(v,me.increment)&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            var st=me.down(&apos;dataview&apos;).store;</span><br><span class="line">            st.timeAdd=me.timeAdd;</span><br><span class="line">            st.loadData(stData);</span><br><span class="line">        &#125;,</span><br><span class="line">        &apos;activate&apos;:function(cmp, eOpts)&#123;//这个地方才是最好的刷新时机。</span><br><span class="line">            this.ajaxGetOccupy();</span><br><span class="line">        &#125;,</span><br><span class="line">        &apos;storeloaddata&apos;:function(dataview,store)&#123;</span><br><span class="line">            var me=this;</span><br><span class="line">            var indexs=[me.getTimeListIndex(me.starttime),me.getTimeListIndex(me.stoptime)];</span><br><span class="line">            store.each(function(rd)&#123;</span><br><span class="line">                if(rd.get(&apos;meetingdate&apos;)==me.meetingdate)&#123;</span><br><span class="line">                    me.setSelectStyle(rd,indexs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
-<h2 id="至此代码基本上完成。"><a href="#至此代码基本上完成。" class="headerlink" title="至此代码基本上完成。"></a>至此代码基本上完成。</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br></pre></td><td class="code"><pre><span class="line">/******************</span><br><span class="line"> * 2019年1月11日</span><br><span class="line"> * 选择时间</span><br><span class="line"> * &quot;meeting_date&quot;:&quot;&quot;,//开会日期</span><br><span class="line"> * &quot;starttime&quot;:&quot;&quot;,//开始时间</span><br><span class="line"> * &quot;stoptime&quot;:&quot;&quot;,//结束时间</span><br><span class="line"> ******************/</span><br><span class="line">Ext.define(&apos;DesktopOrder.view.meetingorder.SelectTimePanel&apos;, &#123;</span><br><span class="line">    extend: &apos;Ext.panel.Panel&apos;,</span><br><span class="line">    xtype:&quot;selecttimepanel&quot;,</span><br><span class="line">    layout:&quot;hbox&quot;,</span><br><span class="line">    scrollable:true,</span><br><span class="line">    minValue:&apos;08:00&apos;,//设置当前的最早时间</span><br><span class="line">    maxValue:&apos;22:00&apos;,//设置当前的最晚时间</span><br><span class="line">    increment:30,//设置时间的增长步长</span><br><span class="line">    timeList:null,//左侧显示的时间段</span><br><span class="line">    displayStart:&apos;&apos;,//起始展示日期 2019-01-14形式</span><br><span class="line">    displayLength:6,//展示最近6天的</span><br><span class="line">    orderLimit:15,//允许预定在多少天内的。</span><br><span class="line">    servertime:null,//服务器时间</span><br><span class="line">    conference_room_id:0,//会议室id</span><br><span class="line">    meeting_id:0,//会议id</span><br><span class="line">    conference_room_name:&apos;&apos;,//会议室名称</span><br><span class="line">    conference_room_cost:&apos;&apos;,//会议室费用</span><br><span class="line"></span><br><span class="line">    meetingdate:&apos;&apos;,//已选日期</span><br><span class="line">    starttime:&apos;&apos;,//开始时间</span><br><span class="line">    stoptime:&apos;&apos;,//结束时间</span><br><span class="line">    idx:-1,//上次选择</span><br><span class="line">    requires: [</span><br><span class="line">        &apos;Ext.window.Toast&apos;</span><br><span class="line">    ],</span><br><span class="line">    constructor:function(config)&#123;//后执行</span><br><span class="line">		var me = this;</span><br><span class="line">        me.superclass.constructor.call(me, config); </span><br><span class="line">    &#125;,</span><br><span class="line">    initComponent:function()&#123;//先执行</span><br><span class="line">        var me = this;</span><br><span class="line">        me.callParent();</span><br><span class="line">        //添加会议时，设置默认项</span><br><span class="line">        ShineMessageHub.on(&quot;meetingorderhomeaddevent&quot;,function(rdData)&#123;</span><br><span class="line">            me.meetingdate = rdData[&apos;meeting_date&apos;];</span><br><span class="line">            me.starttime = rdData[&apos;starttime&apos;];</span><br><span class="line">            me.stoptime = rdData[&apos;stoptime&apos;];</span><br><span class="line">            me.conference_room_id = rdData[&apos;conference_room_id&apos;];</span><br><span class="line">            me.meeting_id = rdData[&apos;meeting_id&apos;];</span><br><span class="line">            me.ajaxGetOccupy();</span><br><span class="line">        &#125;,me);</span><br><span class="line">        //更改会议室</span><br><span class="line">        ShineMessageHub.on(&apos;selectroompanelselectionchange&apos;,function(roomid,screen_type,template_id,data)&#123;</span><br><span class="line">            me.conference_room_id=roomid;</span><br><span class="line">            me.conference_room_name=data.conference_room_name;</span><br><span class="line">            me.conference_room_cost=data.conference_room_cost;</span><br><span class="line">        &#125;,me);</span><br><span class="line">        me.makeTimeList();</span><br><span class="line">        me.displayStart=Ext.Date.format(new Date(),&apos;Y-m-d&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    listeners:&#123;</span><br><span class="line">        &quot;afterrender&quot;:function(cmp,opt)&#123;</span><br><span class="line">            var me = this;</span><br><span class="line">            var stData=Ext.Array.map(me.timeList,function(v)&#123;</span><br><span class="line">                return &#123;period:v+&apos;-&apos;+me.timeAdd(v,me.increment)&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            var st=me.down(&apos;dataview&apos;).store;</span><br><span class="line">            st.timeAdd=me.timeAdd;</span><br><span class="line">            st.loadData(stData);</span><br><span class="line">        &#125;,</span><br><span class="line">        &apos;activate&apos;:function(cmp, eOpts)&#123;</span><br><span class="line">            this.ajaxGetOccupy();</span><br><span class="line">        &#125;,</span><br><span class="line">        &apos;storeloaddata&apos;:function(dataview,store)&#123;</span><br><span class="line">            var me=this;</span><br><span class="line">            var indexs=[me.getTimeListIndex(me.starttime),me.getTimeListIndex(me.stoptime)];</span><br><span class="line">            store.each(function(rd)&#123;</span><br><span class="line">                if(rd.get(&apos;meetingdate&apos;)==me.meetingdate)&#123;</span><br><span class="line">                    me.setSelectStyle(rd,indexs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    tbar:[&#123;</span><br><span class="line">        xtype:&apos;label&apos;,</span><br><span class="line">        text:&apos;查看会议室使用情况&apos;,//请更改对应的设置</span><br><span class="line">        flex:1,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&apos;black&apos;,</span><br><span class="line">            fontSize:&apos;20px&apos;,</span><br><span class="line">            lineHeight:&apos;20px&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&apos;label&apos;,</span><br><span class="line">        text:&apos;表示已被占用&apos;,//请更改对应的设置</span><br><span class="line">        width:120,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&apos;red&apos;,</span><br><span class="line">            background:&apos;url(resources/meetingorder/images/time/circle.png) no-repeat  0px 0px/16px 16px;&apos;,</span><br><span class="line">            textAlign:&apos;center&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&apos;label&apos;,</span><br><span class="line">        text:&apos;空白表格表示该会议室可以预定&apos;,//请更改对应的设置</span><br><span class="line">        width:270,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&apos;black&apos;,</span><br><span class="line">            textAlign:&apos;center&apos;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;],</span><br><span class="line">    items:[&#123;</span><br><span class="line">        xtype:&apos;dataview&apos;,</span><br><span class="line">        width:125,</span><br><span class="line">        itemSelector:&apos;tr.selecttimepanelperioditemCls&apos;,</span><br><span class="line">        store:&#123;</span><br><span class="line">            fields:[</span><br><span class="line">                &#123;name:&quot;period&quot;,type:&quot;string&quot;&#125;</span><br><span class="line">            ],</span><br><span class="line">        &#125;,</span><br><span class="line">        tpl:[</span><br><span class="line">            &apos;&lt;div class=&quot;selecttimepanel-period-box&quot;&gt;&apos;,</span><br><span class="line">                &apos;&lt;table&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tr&gt;&lt;th&gt;时间|日期&lt;/th&gt;&lt;/tr&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tpl for=&quot;.&quot;&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tr class=&quot;selecttimepanelperioditemCls&quot;&gt;&apos;,</span><br><span class="line">                        &apos;&lt;td&gt;&#123;period&#125;&lt;/td&gt;&apos;,</span><br><span class="line">                    &apos;&lt;/tr&gt;&apos;,</span><br><span class="line">                    &apos;&lt;/tpl&gt;&apos;,</span><br><span class="line">                &apos;&lt;/table&gt;&apos;,</span><br><span class="line">            &apos;&lt;div&gt;&apos;,</span><br><span class="line">        ],</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&apos;dataview&apos;,</span><br><span class="line">        itemSelector:&apos;div.selecttimepanelchoseitemCls&apos;,</span><br><span class="line">        store:&#123;</span><br><span class="line">        &#125;,</span><br><span class="line">        tpl:[</span><br><span class="line">            &apos;&lt;div class=&quot;selecttimepanel-right-box&quot;&gt;&apos;,</span><br><span class="line">                &apos;&lt;div class=&quot;arrow left-arrow&quot;&gt;&lt;/div&gt;&apos;,</span><br><span class="line">                &apos;&lt;tpl for=&quot;.&quot;&gt;&apos;,</span><br><span class="line">                &apos;&lt;div class=&quot;selecttimepanelchoseitemCls&quot;&gt;&lt;table&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tr&gt;&lt;th&gt;&#123;displaydate&#125;&lt;/th&gt;&lt;/tr&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tpl for=&quot;timelist&quot;&gt;&apos;,</span><br><span class="line">                    &apos;&lt;tr&gt;&apos;,</span><br><span class="line">                        &apos;&lt;td dataref=&#123;index&#125; &#123;[values.selected?&quot;class=selecttimepanel-selected&quot;:&quot;&quot;]&#125; &#123;[values.status==1?&quot;class=selecttimepanel-expired&quot;:&quot;&quot;]&#125; &#123;[values.status==2?&quot;class=selecttimepanel-occupy&quot;:&quot;&quot;]&#125;&gt;&lt;/td&gt;&apos;,</span><br><span class="line">                    &apos;&lt;/tr&gt;&apos;,</span><br><span class="line">                    &apos;&lt;/tpl&gt;&apos;,</span><br><span class="line">                &apos;&lt;/table&gt;&lt;/div&gt;&apos;,</span><br><span class="line">                &apos;&lt;/tpl&gt;&apos;,</span><br><span class="line">                &apos;&lt;div class=&quot;arrow right-arrow&quot;&gt;&lt;/div&gt;&apos;,</span><br><span class="line">            &apos;&lt;/div&gt;&apos;,</span><br><span class="line">        ],</span><br><span class="line">        listeners:&#123;</span><br><span class="line">            &apos;containerclick&apos;:function(cmp, e, eOpts)&#123;</span><br><span class="line">                var me=this.up(&apos;selecttimepanel&apos;);</span><br><span class="line">                //添加左右箭头的点击事件</span><br><span class="line">                var clickClass=e.target.className.trim();</span><br><span class="line">                if(clickClass===&apos;arrow left-arrow&apos;)&#123;</span><br><span class="line">                    me.turnPage(-1);</span><br><span class="line">                &#125;</span><br><span class="line">                if(clickClass===&apos;arrow right-arrow&apos;)&#123;</span><br><span class="line">                    me.turnPage(1);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &apos;itemclick&apos;:function(cmp, record, item, index, e, eOpts)&#123;</span><br><span class="line">                var me=this.up(&apos;selecttimepanel&apos;);</span><br><span class="line">                var idx=e.target.getAttribute(&apos;dataref&apos;);</span><br><span class="line">                var cell;</span><br><span class="line">                if(idx)&#123;//点击表格</span><br><span class="line">                    idx=parseInt(idx);</span><br><span class="line">                    cell=record.get(&apos;timelist&apos;)[idx];</span><br><span class="line">                    //无效点，直接返回</span><br><span class="line">                    if(cell[&apos;status&apos;]==1||cell[&apos;status&apos;]==2)&#123;</span><br><span class="line">                        Ext.toast(&apos;当前时间段不可用。&apos;);</span><br><span class="line">                        return ;</span><br><span class="line">                    &#125;</span><br><span class="line">                    //跨越点，先清除上次选择</span><br><span class="line">                    if(me.meetingdate)&#123;</span><br><span class="line">                        if(me.meetingdate!==record.get(&apos;meetingdate&apos;))&#123;</span><br><span class="line">                            me.idx=-1;</span><br><span class="line">                            me.setUnSelectStyleByDate(me.meetingdate);</span><br><span class="line">                            me.meetingdate=record.get(&apos;meetingdate&apos;);</span><br><span class="line">                        &#125;</span><br><span class="line">                        if(me.idx&gt;-1)&#123;</span><br><span class="line">                            var i=Math.min(me.idx,idx);</span><br><span class="line">                            var tmp=record.get(&apos;timelist&apos;);</span><br><span class="line">                            while(++i&lt;Math.max(me.idx,idx))&#123;</span><br><span class="line">                                if(tmp[i][&apos;status&apos;])&#123;</span><br><span class="line">                                    me.idx=-1;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    //有效点</span><br><span class="line">                    var indexs=me.idx&gt;idx?[idx,me.idx]:[me.idx,idx];</span><br><span class="line">                    console.log(indexs);</span><br><span class="line">                    me.setSelectStyle(record,indexs);</span><br><span class="line">                    me.meetingdate=record.get(&apos;meetingdate&apos;);</span><br><span class="line"></span><br><span class="line">                    if(indexs[0]&gt;-1)&#123;//已选择两个点</span><br><span class="line">                        me.idx=-1;</span><br><span class="line">                        me.starttime=me.timeList[indexs[0]];</span><br><span class="line">                        me.stoptime=me.timeAdd(me.timeList[indexs[1]],me.increment);</span><br><span class="line">                    &#125;else&#123;//已选择一个点</span><br><span class="line">                        me.idx=idx;</span><br><span class="line">                        me.starttime=me.timeList[idx];</span><br><span class="line">                        me.stoptime=me.timeAdd(me.timeList[idx],me.increment);</span><br><span class="line">                    &#125;</span><br><span class="line">                    //保存选择</span><br><span class="line">                    ShineMessageHub.fireEvent(&apos;meetingordermenusetviewmodelevent&apos;,&#123;</span><br><span class="line">                        meeting_date:record.get(&apos;meetingdate&apos;),</span><br><span class="line">                        starttime:me.starttime,</span><br><span class="line">                        stoptime:me.stoptime</span><br><span class="line">                    &#125;);</span><br><span class="line">                    //发送数据变化消息</span><br><span class="line">                    var count=Math.ceil(me.timeDiff(me.starttime,me.stoptime)/30)*0.5;</span><br><span class="line">                    var o=&#123;commodity_id:-1,commodity_name:me.conference_room_name,commodity_price:me.conference_room_cost,count:count&#125;;</span><br><span class="line">                    ShineMessageHub.fireEvent(&apos;selecttimepanelchangetime&apos;,o);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;],</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月16日</span><br><span class="line">     * 计算时间差，string 08:00   返回分钟</span><br><span class="line">     ************/</span><br><span class="line">    timeDiff:function(min,max)&#123;</span><br><span class="line">        max=Ext.Date.parse(&apos;2018-07-18 &apos;+max,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        min=Ext.Date.parse(&apos;2018-07-18 &apos;+min,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        return Ext.Date.diff(min,max,Ext.Date.MINUTE);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 时间相加，单位分钟</span><br><span class="line">     * @params v string 08:00  interval 分钟</span><br><span class="line">     ************/</span><br><span class="line">    timeAdd:function(v,interval)&#123;</span><br><span class="line">        var st=Ext.Date.parse(&apos;2018-07-18 &apos;+v,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var ret=Ext.Date.add(st,Ext.Date.SECOND,interval*60);</span><br><span class="line">        return Ext.Date.format(ret,&apos;H:i&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 日期相加 </span><br><span class="line">     * @params v string 2019-01-14</span><br><span class="line">     * @params interval 天</span><br><span class="line">     ************/</span><br><span class="line">    dateAdd:function(v,interval)&#123;</span><br><span class="line">        var ret=Ext.Date.add(Ext.Date.parse(v,&apos;Y-m-d&apos;),Ext.Date.DAY,interval);</span><br><span class="line">        return Ext.Date.format(ret,&apos;Y-m-d&apos;);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 解析字符串，并转换格式</span><br><span class="line">     * @params v string 2019-01-14  为1月14日</span><br><span class="line">     ************/</span><br><span class="line">    dateFormat:function(v,format)&#123;</span><br><span class="line">        if(!format)&#123;</span><br><span class="line">            format=&apos;m月d日&apos;;</span><br><span class="line">        &#125;</span><br><span class="line">        var ret=Ext.Date.parse(v,&apos;Y-m-d&apos;);</span><br><span class="line">        return Ext.Date.format(ret,format);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 生成时间序列</span><br><span class="line">     ************/</span><br><span class="line">    makeTimeList:function()&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var start=Ext.Date.parse(&apos;2018-07-18 &apos;+me.minValue,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var end=Ext.Date.parse(&apos;2018-07-18 &apos;+me.maxValue,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var cur=start;</span><br><span class="line">        var ret=[];</span><br><span class="line">        while(cur&lt;=end)&#123;</span><br><span class="line">            ret.push(Ext.Date.format(cur,&apos;H:i&apos;));</span><br><span class="line">            cur=Ext.Date.add(cur,Ext.Date.MINUTE,me.increment);</span><br><span class="line">        &#125;</span><br><span class="line">        ret.pop();</span><br><span class="line">        console.log(ret);</span><br><span class="line">        me.timeList=ret;</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * Ajax获取当前会议室时间段占用情况</span><br><span class="line">     ************/</span><br><span class="line">    ajaxGetOccupy:function()&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        //计算显示结束时间</span><br><span class="line">        var displayStop=me.dateAdd(me.displayStart,me.displayLength);</span><br><span class="line">        console.log(me.displayStart);</span><br><span class="line">        console.log(displayStop);</span><br><span class="line">		Ext.Ajax.request(&#123;</span><br><span class="line">			url: SHINEVMSHTTP +&apos;/admin/desktop/meetingorder/getoccupy&apos;,</span><br><span class="line">			params:&#123;&quot;startdate&quot;:me.displayStart,&quot;stopdate&quot;:displayStop,meeting_id:me.meeting_id,conference_room_id:me.conference_room_id&#125;,</span><br><span class="line">			success: function(response, opts) &#123;</span><br><span class="line">                var obj = Ext.decode(response.responseText);</span><br><span class="line">                me.makeLoadData(obj.items,obj.servertime);</span><br><span class="line">			&#125;,</span><br><span class="line">			failure: function(response, opts) &#123;</span><br><span class="line">                Ext.Msg.hide();</span><br><span class="line">				Ext.Msg.show(&#123;</span><br><span class="line">					title:&quot;操作提示&quot;,</span><br><span class="line">					msg:&quot;编辑失败，请检查网络！&quot;,</span><br><span class="line">					icon:Ext.Msg.ERROR,</span><br><span class="line">					buttons:Ext.Msg.OK,</span><br><span class="line">					fn:function()&#123;</span><br><span class="line">						me.store.reload();						</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;); </span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 为store生成loadData数据</span><br><span class="line">     ************/</span><br><span class="line">    makeLoadData:function(items,servertime)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var data=[];</span><br><span class="line">        var rd;</span><br><span class="line">        var curDate;</span><br><span class="line">        var svTime=new Date(servertime);</span><br><span class="line">        me.servertime=svTime;//保存服务器时间</span><br><span class="line">        for(var i=0;i&lt;me.displayLength;i++)&#123;</span><br><span class="line">            rd=&#123;&#125;;//生成每一条记录</span><br><span class="line">            curDate=me.dateAdd(me.displayStart,i);</span><br><span class="line">            rd[&apos;meetingdate&apos;]=curDate;</span><br><span class="line">            rd[&apos;displaydate&apos;]=me.dateFormat(curDate);//格式化当前日期</span><br><span class="line">            rd[&apos;timelist&apos;]=Ext.Array.map(me.timeList,function(v,i)&#123;</span><br><span class="line">                //计算时间是否过期 status 1时间过期 2被占用</span><br><span class="line">                var start=Ext.Date.parse(curDate+&apos; &apos;+v,&apos;Y-m-d H:i&apos;);</span><br><span class="line">                var stop=Ext.Date.add(start,Ext.Date.MINUTE,30);</span><br><span class="line">                var status=start&lt;svTime?1:0;</span><br><span class="line">                //计算时间是否占用</span><br><span class="line">                if(status===0)&#123;</span><br><span class="line">                    status=me.isOccupy(items,start,stop)?2:0;</span><br><span class="line">                &#125;</span><br><span class="line">                return &#123;st:v,status:status,index:i,selected:false&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            //保存结果</span><br><span class="line">            data.push(rd);</span><br><span class="line">        &#125;</span><br><span class="line">        console.log(data);</span><br><span class="line">        //store加载数据</span><br><span class="line">        me.storeLoadData(data);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 时间冲突判断。</span><br><span class="line">     ************/</span><br><span class="line">    isOccupy:function(items,start,stop)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var item;</span><br><span class="line">        var fn=function(v)&#123;</span><br><span class="line">            return Ext.Date.parse(v,&apos;Y-m-d H:i:s&apos;);</span><br><span class="line">        &#125;;</span><br><span class="line">        if(items.length&gt;0)&#123;</span><br><span class="line">            item=items[0];</span><br><span class="line">            while(start&gt;=fn(item.stoptime))&#123;</span><br><span class="line">                items.shift();</span><br><span class="line">                if(items.length==0)&#123;</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">                item=items[0];</span><br><span class="line">            &#125;</span><br><span class="line">            if(stop&lt;=fn(item.starttime))&#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * store loaddate</span><br><span class="line">     ************/</span><br><span class="line">    storeLoadData:function(data)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var dv=me.items.items[1];</span><br><span class="line">        var st=dv.store;</span><br><span class="line">        st.loadData(data);</span><br><span class="line">        me.fireEvent(&apos;storeloaddata&apos;,dv,st);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 日期翻页 </span><br><span class="line">     ************/</span><br><span class="line">    turnPage:function(direction)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var direction=direction&gt;0?1:-1;</span><br><span class="line">        var pass=me.displayStart;</span><br><span class="line">        me.displayStart=me.dateAdd(me.displayStart,direction*me.displayLength);</span><br><span class="line">        var cur=Ext.Date.parse(me.displayStart,&apos;Y-m-d&apos;);</span><br><span class="line">        //负向纠正值</span><br><span class="line">        if(direction&lt;0&amp;&amp;cur&lt;me.servertime)&#123;</span><br><span class="line">            me.displayStart=Ext.Date.format(me.servertime,&apos;Y-m-d&apos;);</span><br><span class="line">            if(me.displayStart==pass)&#123;</span><br><span class="line">                Ext.toast(&apos;不允许选择过去的时间段&apos;);</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //正向纠正值</span><br><span class="line">        var limit=Ext.Date.add(me.servertime,Ext.Date.DAY,me.orderLimit-me.displayLength+1);//最大可预定几天内的</span><br><span class="line">        if(direction&gt;0&amp;&amp;cur&gt;limit)&#123;</span><br><span class="line">            me.displayStart=Ext.Date.format(limit,&apos;Y-m-d&apos;);</span><br><span class="line">            if(me.displayStart==pass)&#123;</span><br><span class="line">                Ext.toast(&apos;只允许预约&apos;+me.orderLimit+&apos;之内的会议。&apos;);</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        me.ajaxGetOccupy();</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 设置选择样式</span><br><span class="line">     ************/</span><br><span class="line">    setSelectStyle:function(record,indexs)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        if(indexs[0]==-1)&#123;</span><br><span class="line">            for(var i=0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                record.data.timelist[i].selected= (i==indexs[1]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            for(var i=0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                record.data.timelist[i].selected= (i&gt;=indexs[0]&amp;&amp;i&lt;=indexs[1]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        record.commit();</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 设置取消样式</span><br><span class="line">     ************/</span><br><span class="line">    setUnSelectStyleByDate:function(meetingdate)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        var dv=me.items.items[1];</span><br><span class="line">        var st=dv.store;</span><br><span class="line">        st.each(function(rd)&#123;</span><br><span class="line">            if(rd.get(&apos;meetingdate&apos;)===meetingdate)&#123;//找到当前记录</span><br><span class="line">                for(var i=0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                    rd.data.timelist[i].selected= false;</span><br><span class="line">                &#125;</span><br><span class="line">                rd.commit();</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    /************</span><br><span class="line">     * 2019年1月16日</span><br><span class="line">     * 获取timeList中的index</span><br><span class="line">     ************/</span><br><span class="line">    getTimeListIndex:function(time)&#123;</span><br><span class="line">        var me=this;</span><br><span class="line">        for(var i=0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">            if(time==me.timeList[i])&#123;</span><br><span class="line">                return i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return me.timeList.length+10;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="代码改进："><a href="#代码改进：" class="headerlink" title="代码改进："></a>代码改进：</h2><h3 id="将发送给商品模块的消息独立成函数"><a href="#将发送给商品模块的消息独立成函数" class="headerlink" title="将发送给商品模块的消息独立成函数"></a>将发送给商品模块的消息独立成函数</h3><p>这样在时间选择、会议室变化之后，都会发送消息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/************</span><br><span class="line"> * 2019年1月17日</span><br><span class="line"> * 发送消息给商品管理模块</span><br><span class="line"> ************/</span><br><span class="line">sendMsgToProduct:function()&#123;</span><br><span class="line">    var me=this;</span><br><span class="line">    var count=Math.ceil(me.timeDiff(me.starttime,me.stoptime)/30)*0.5;</span><br><span class="line">    var o=&#123;commodity_id:-1,commodity_name:me.conference_room_name,commodity_price:me.conference_room_cost,count:count&#125;;</span><br><span class="line">    ShineMessageHub.fireEvent(&apos;selecttimepanelchangetime&apos;,o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    //更改会议室</span><br><span class="line">    ShineMessageHub.on(&apos;selectroompanelselectionchange&apos;,function(roomid,screen_type,template_id,data)&#123;</span><br><span class="line">        me.conference_room_id=roomid;</span><br><span class="line">        me.conference_room_name=data.conference_room_name;</span><br><span class="line">        me.conference_room_cost=data.conference_room_cost;</span><br><span class="line">        if(me.starttime&amp;&amp;me.stoptime)&#123;</span><br><span class="line">            me.sendMsgToProduct();//如果已经选择时间了，在这块，将会议室更改的消息中转出去。</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,me);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;************</span><br><span class="line"> * 2019年1月15日</span><br><span class="line"> * 时间冲突判断。</span><br><span class="line"> ************&#x2F;</span><br><span class="line">isOccupy:function(items,start,stop)&#123;</span><br><span class="line">    var me&#x3D;this;</span><br><span class="line">    var item;</span><br><span class="line">    var fn&#x3D;function(v)&#123;</span><br><span class="line">        return Ext.Date.parse(v,&#39;Y-m-d H:i:s&#39;);</span><br><span class="line">    &#125;;</span><br><span class="line">    if(items.length&gt;0)&#123;</span><br><span class="line">        item&#x3D;items[0];</span><br><span class="line">        while(start&gt;&#x3D;fn(item.stoptime))&#123;</span><br><span class="line">            items.shift();</span><br><span class="line">            if(items.length&#x3D;&#x3D;0)&#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">            item&#x3D;items[0];</span><br><span class="line">        &#125;</span><br><span class="line">        if(stop&lt;&#x3D;fn(item.starttime))&#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    return false;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 
-      
+<h3 id="页面数据重刷机制"><a href="#页面数据重刷机制" class="headerlink" title="页面数据重刷机制"></a>页面数据重刷机制</h3><p>ajaxGetOccupy数据刷新的机制。本来ajaxGetOccupy只在initComponent方法里面直接调用。但是接口连通之后，放在meetingorderhomeaddevent初始化事件中，更合理。但是考虑到每次激活该页面的时候，数据都应该刷新一次。所以又将此方法移到active事件中。但是要等到active的时候，数据才开始加载一次，第一次显示的时候特别的丑，没有任何数据，表格都没有完全建立。所以呢，原来的仍保留一份。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">initComponent:function()&#123;&#x2F;&#x2F;先执行</span><br><span class="line">        var me &#x3D; this;</span><br><span class="line">        me.applySelectTimePanel();</span><br><span class="line">        me.callParent();</span><br><span class="line">        &#x2F;&#x2F;添加会议时，设置默认项</span><br><span class="line">        ShineMessageHub.on(&quot;meetingorderhomeaddevent&quot;,function(rdData)&#123;</span><br><span class="line">            me.meetingdate &#x3D; rdData[&#39;meeting_date&#39;];</span><br><span class="line">            me.starttime &#x3D; rdData[&#39;starttime&#39;];</span><br><span class="line">            me.stoptime &#x3D; rdData[&#39;stoptime&#39;];</span><br><span class="line">            me.conference_room_id &#x3D; rdData[&#39;conference_room_id&#39;];</span><br><span class="line">            me.meeting_id &#x3D; rdData[&#39;meeting_id&#39;];</span><br><span class="line">            me.ajaxGetOccupy();&#x2F;&#x2F;仍保留一份，避免直到activate才加载数据，页面太丑了。啥都没有。</span><br><span class="line">        &#125;,me);</span><br><span class="line">        &#x2F;&#x2F;更改会议室，不在这个里面更新数据，是因为这个地方刷新太频繁了。没有必要。</span><br><span class="line">        ShineMessageHub.on(&#39;selectroompanelselectionchange&#39;,function(roomid)&#123;</span><br><span class="line">            me.conference_room_id&#x3D;roomid;</span><br><span class="line">        &#125;,me);</span><br><span class="line">        me.makeTimeList();</span><br><span class="line">        me.displayStart&#x3D;Ext.Date.format(new Date(),&#39;Y-m-d&#39;);</span><br><span class="line">    &#125;,</span><br><span class="line">    listeners:&#123;</span><br><span class="line">        &quot;afterrender&quot;:function(cmp,opt)&#123;</span><br><span class="line">            var me &#x3D; this;</span><br><span class="line">            var stData&#x3D;Ext.Array.map(me.timeList,function(v)&#123;</span><br><span class="line">                return &#123;period:v+&#39;-&#39;+me.timeAdd(v,me.increment)&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            var st&#x3D;me.down(&#39;dataview&#39;).store;</span><br><span class="line">            st.timeAdd&#x3D;me.timeAdd;</span><br><span class="line">            st.loadData(stData);</span><br><span class="line">        &#125;,</span><br><span class="line">        &#39;activate&#39;:function(cmp, eOpts)&#123;&#x2F;&#x2F;这个地方才是最好的刷新时机。</span><br><span class="line">            this.ajaxGetOccupy();</span><br><span class="line">        &#125;,</span><br><span class="line">        &#39;storeloaddata&#39;:function(dataview,store)&#123;</span><br><span class="line">            var me&#x3D;this;</span><br><span class="line">            var indexs&#x3D;[me.getTimeListIndex(me.starttime),me.getTimeListIndex(me.stoptime)];</span><br><span class="line">            store.each(function(rd)&#123;</span><br><span class="line">                if(rd.get(&#39;meetingdate&#39;)&#x3D;&#x3D;me.meetingdate)&#123;</span><br><span class="line">                    me.setSelectStyle(rd,indexs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="至此代码基本上完成。"><a href="#至此代码基本上完成。" class="headerlink" title="至此代码基本上完成。"></a>至此代码基本上完成。</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;******************</span><br><span class="line"> * 2019年1月11日</span><br><span class="line"> * 选择时间</span><br><span class="line"> * &quot;meeting_date&quot;:&quot;&quot;,&#x2F;&#x2F;开会日期</span><br><span class="line"> * &quot;starttime&quot;:&quot;&quot;,&#x2F;&#x2F;开始时间</span><br><span class="line"> * &quot;stoptime&quot;:&quot;&quot;,&#x2F;&#x2F;结束时间</span><br><span class="line"> ******************&#x2F;</span><br><span class="line">Ext.define(&#39;DesktopOrder.view.meetingorder.SelectTimePanel&#39;, &#123;</span><br><span class="line">    extend: &#39;Ext.panel.Panel&#39;,</span><br><span class="line">    xtype:&quot;selecttimepanel&quot;,</span><br><span class="line">    layout:&quot;hbox&quot;,</span><br><span class="line">    scrollable:true,</span><br><span class="line">    minValue:&#39;08:00&#39;,&#x2F;&#x2F;设置当前的最早时间</span><br><span class="line">    maxValue:&#39;22:00&#39;,&#x2F;&#x2F;设置当前的最晚时间</span><br><span class="line">    increment:30,&#x2F;&#x2F;设置时间的增长步长</span><br><span class="line">    timeList:null,&#x2F;&#x2F;左侧显示的时间段</span><br><span class="line">    displayStart:&#39;&#39;,&#x2F;&#x2F;起始展示日期 2019-01-14形式</span><br><span class="line">    displayLength:6,&#x2F;&#x2F;展示最近6天的</span><br><span class="line">    orderLimit:15,&#x2F;&#x2F;允许预定在多少天内的。</span><br><span class="line">    servertime:null,&#x2F;&#x2F;服务器时间</span><br><span class="line">    conference_room_id:0,&#x2F;&#x2F;会议室id</span><br><span class="line">    meeting_id:0,&#x2F;&#x2F;会议id</span><br><span class="line">    conference_room_name:&#39;&#39;,&#x2F;&#x2F;会议室名称</span><br><span class="line">    conference_room_cost:&#39;&#39;,&#x2F;&#x2F;会议室费用</span><br><span class="line"></span><br><span class="line">    meetingdate:&#39;&#39;,&#x2F;&#x2F;已选日期</span><br><span class="line">    starttime:&#39;&#39;,&#x2F;&#x2F;开始时间</span><br><span class="line">    stoptime:&#39;&#39;,&#x2F;&#x2F;结束时间</span><br><span class="line">    idx:-1,&#x2F;&#x2F;上次选择</span><br><span class="line">    requires: [</span><br><span class="line">        &#39;Ext.window.Toast&#39;</span><br><span class="line">    ],</span><br><span class="line">    constructor:function(config)&#123;&#x2F;&#x2F;后执行</span><br><span class="line">		var me &#x3D; this;</span><br><span class="line">        me.superclass.constructor.call(me, config); </span><br><span class="line">    &#125;,</span><br><span class="line">    initComponent:function()&#123;&#x2F;&#x2F;先执行</span><br><span class="line">        var me &#x3D; this;</span><br><span class="line">        me.callParent();</span><br><span class="line">        &#x2F;&#x2F;添加会议时，设置默认项</span><br><span class="line">        ShineMessageHub.on(&quot;meetingorderhomeaddevent&quot;,function(rdData)&#123;</span><br><span class="line">            me.meetingdate &#x3D; rdData[&#39;meeting_date&#39;];</span><br><span class="line">            me.starttime &#x3D; rdData[&#39;starttime&#39;];</span><br><span class="line">            me.stoptime &#x3D; rdData[&#39;stoptime&#39;];</span><br><span class="line">            me.conference_room_id &#x3D; rdData[&#39;conference_room_id&#39;];</span><br><span class="line">            me.meeting_id &#x3D; rdData[&#39;meeting_id&#39;];</span><br><span class="line">            me.ajaxGetOccupy();</span><br><span class="line">        &#125;,me);</span><br><span class="line">        &#x2F;&#x2F;更改会议室</span><br><span class="line">        ShineMessageHub.on(&#39;selectroompanelselectionchange&#39;,function(roomid,screen_type,template_id,data)&#123;</span><br><span class="line">            me.conference_room_id&#x3D;roomid;</span><br><span class="line">            me.conference_room_name&#x3D;data.conference_room_name;</span><br><span class="line">            me.conference_room_cost&#x3D;data.conference_room_cost;</span><br><span class="line">        &#125;,me);</span><br><span class="line">        me.makeTimeList();</span><br><span class="line">        me.displayStart&#x3D;Ext.Date.format(new Date(),&#39;Y-m-d&#39;);</span><br><span class="line">    &#125;,</span><br><span class="line">    listeners:&#123;</span><br><span class="line">        &quot;afterrender&quot;:function(cmp,opt)&#123;</span><br><span class="line">            var me &#x3D; this;</span><br><span class="line">            var stData&#x3D;Ext.Array.map(me.timeList,function(v)&#123;</span><br><span class="line">                return &#123;period:v+&#39;-&#39;+me.timeAdd(v,me.increment)&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            var st&#x3D;me.down(&#39;dataview&#39;).store;</span><br><span class="line">            st.timeAdd&#x3D;me.timeAdd;</span><br><span class="line">            st.loadData(stData);</span><br><span class="line">        &#125;,</span><br><span class="line">        &#39;activate&#39;:function(cmp, eOpts)&#123;</span><br><span class="line">            this.ajaxGetOccupy();</span><br><span class="line">        &#125;,</span><br><span class="line">        &#39;storeloaddata&#39;:function(dataview,store)&#123;</span><br><span class="line">            var me&#x3D;this;</span><br><span class="line">            var indexs&#x3D;[me.getTimeListIndex(me.starttime),me.getTimeListIndex(me.stoptime)];</span><br><span class="line">            store.each(function(rd)&#123;</span><br><span class="line">                if(rd.get(&#39;meetingdate&#39;)&#x3D;&#x3D;me.meetingdate)&#123;</span><br><span class="line">                    me.setSelectStyle(rd,indexs);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    tbar:[&#123;</span><br><span class="line">        xtype:&#39;label&#39;,</span><br><span class="line">        text:&#39;查看会议室使用情况&#39;,&#x2F;&#x2F;请更改对应的设置</span><br><span class="line">        flex:1,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&#39;black&#39;,</span><br><span class="line">            fontSize:&#39;20px&#39;,</span><br><span class="line">            lineHeight:&#39;20px&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&#39;label&#39;,</span><br><span class="line">        text:&#39;表示已被占用&#39;,&#x2F;&#x2F;请更改对应的设置</span><br><span class="line">        width:120,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&#39;red&#39;,</span><br><span class="line">            background:&#39;url(resources&#x2F;meetingorder&#x2F;images&#x2F;time&#x2F;circle.png) no-repeat  0px 0px&#x2F;16px 16px;&#39;,</span><br><span class="line">            textAlign:&#39;center&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&#39;label&#39;,</span><br><span class="line">        text:&#39;空白表格表示该会议室可以预定&#39;,&#x2F;&#x2F;请更改对应的设置</span><br><span class="line">        width:270,</span><br><span class="line">        style: &#123;</span><br><span class="line">            color:&#39;black&#39;,</span><br><span class="line">            textAlign:&#39;center&#39;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;],</span><br><span class="line">    items:[&#123;</span><br><span class="line">        xtype:&#39;dataview&#39;,</span><br><span class="line">        width:125,</span><br><span class="line">        itemSelector:&#39;tr.selecttimepanelperioditemCls&#39;,</span><br><span class="line">        store:&#123;</span><br><span class="line">            fields:[</span><br><span class="line">                &#123;name:&quot;period&quot;,type:&quot;string&quot;&#125;</span><br><span class="line">            ],</span><br><span class="line">        &#125;,</span><br><span class="line">        tpl:[</span><br><span class="line">            &#39;&lt;div class&#x3D;&quot;selecttimepanel-period-box&quot;&gt;&#39;,</span><br><span class="line">                &#39;&lt;table&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tr&gt;&lt;th&gt;时间|日期&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tpl for&#x3D;&quot;.&quot;&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tr class&#x3D;&quot;selecttimepanelperioditemCls&quot;&gt;&#39;,</span><br><span class="line">                        &#39;&lt;td&gt;&#123;period&#125;&lt;&#x2F;td&gt;&#39;,</span><br><span class="line">                    &#39;&lt;&#x2F;tr&gt;&#39;,</span><br><span class="line">                    &#39;&lt;&#x2F;tpl&gt;&#39;,</span><br><span class="line">                &#39;&lt;&#x2F;table&gt;&#39;,</span><br><span class="line">            &#39;&lt;div&gt;&#39;,</span><br><span class="line">        ],</span><br><span class="line">    &#125;,&#123;</span><br><span class="line">        xtype:&#39;dataview&#39;,</span><br><span class="line">        itemSelector:&#39;div.selecttimepanelchoseitemCls&#39;,</span><br><span class="line">        store:&#123;</span><br><span class="line">        &#125;,</span><br><span class="line">        tpl:[</span><br><span class="line">            &#39;&lt;div class&#x3D;&quot;selecttimepanel-right-box&quot;&gt;&#39;,</span><br><span class="line">                &#39;&lt;div class&#x3D;&quot;arrow left-arrow&quot;&gt;&lt;&#x2F;div&gt;&#39;,</span><br><span class="line">                &#39;&lt;tpl for&#x3D;&quot;.&quot;&gt;&#39;,</span><br><span class="line">                &#39;&lt;div class&#x3D;&quot;selecttimepanelchoseitemCls&quot;&gt;&lt;table&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tr&gt;&lt;th&gt;&#123;displaydate&#125;&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tpl for&#x3D;&quot;timelist&quot;&gt;&#39;,</span><br><span class="line">                    &#39;&lt;tr&gt;&#39;,</span><br><span class="line">                        &#39;&lt;td dataref&#x3D;&#123;index&#125; &#123;[values.selected?&quot;class&#x3D;selecttimepanel-selected&quot;:&quot;&quot;]&#125; &#123;[values.status&#x3D;&#x3D;1?&quot;class&#x3D;selecttimepanel-expired&quot;:&quot;&quot;]&#125; &#123;[values.status&#x3D;&#x3D;2?&quot;class&#x3D;selecttimepanel-occupy&quot;:&quot;&quot;]&#125;&gt;&lt;&#x2F;td&gt;&#39;,</span><br><span class="line">                    &#39;&lt;&#x2F;tr&gt;&#39;,</span><br><span class="line">                    &#39;&lt;&#x2F;tpl&gt;&#39;,</span><br><span class="line">                &#39;&lt;&#x2F;table&gt;&lt;&#x2F;div&gt;&#39;,</span><br><span class="line">                &#39;&lt;&#x2F;tpl&gt;&#39;,</span><br><span class="line">                &#39;&lt;div class&#x3D;&quot;arrow right-arrow&quot;&gt;&lt;&#x2F;div&gt;&#39;,</span><br><span class="line">            &#39;&lt;&#x2F;div&gt;&#39;,</span><br><span class="line">        ],</span><br><span class="line">        listeners:&#123;</span><br><span class="line">            &#39;containerclick&#39;:function(cmp, e, eOpts)&#123;</span><br><span class="line">                var me&#x3D;this.up(&#39;selecttimepanel&#39;);</span><br><span class="line">                &#x2F;&#x2F;添加左右箭头的点击事件</span><br><span class="line">                var clickClass&#x3D;e.target.className.trim();</span><br><span class="line">                if(clickClass&#x3D;&#x3D;&#x3D;&#39;arrow left-arrow&#39;)&#123;</span><br><span class="line">                    me.turnPage(-1);</span><br><span class="line">                &#125;</span><br><span class="line">                if(clickClass&#x3D;&#x3D;&#x3D;&#39;arrow right-arrow&#39;)&#123;</span><br><span class="line">                    me.turnPage(1);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#39;itemclick&#39;:function(cmp, record, item, index, e, eOpts)&#123;</span><br><span class="line">                var me&#x3D;this.up(&#39;selecttimepanel&#39;);</span><br><span class="line">                var idx&#x3D;e.target.getAttribute(&#39;dataref&#39;);</span><br><span class="line">                var cell;</span><br><span class="line">                if(idx)&#123;&#x2F;&#x2F;点击表格</span><br><span class="line">                    idx&#x3D;parseInt(idx);</span><br><span class="line">                    cell&#x3D;record.get(&#39;timelist&#39;)[idx];</span><br><span class="line">                    &#x2F;&#x2F;无效点，直接返回</span><br><span class="line">                    if(cell[&#39;status&#39;]&#x3D;&#x3D;1||cell[&#39;status&#39;]&#x3D;&#x3D;2)&#123;</span><br><span class="line">                        Ext.toast(&#39;当前时间段不可用。&#39;);</span><br><span class="line">                        return ;</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F;跨越点，先清除上次选择</span><br><span class="line">                    if(me.meetingdate)&#123;</span><br><span class="line">                        if(me.meetingdate!&#x3D;&#x3D;record.get(&#39;meetingdate&#39;))&#123;</span><br><span class="line">                            me.idx&#x3D;-1;</span><br><span class="line">                            me.setUnSelectStyleByDate(me.meetingdate);</span><br><span class="line">                            me.meetingdate&#x3D;record.get(&#39;meetingdate&#39;);</span><br><span class="line">                        &#125;</span><br><span class="line">                        if(me.idx&gt;-1)&#123;</span><br><span class="line">                            var i&#x3D;Math.min(me.idx,idx);</span><br><span class="line">                            var tmp&#x3D;record.get(&#39;timelist&#39;);</span><br><span class="line">                            while(++i&lt;Math.max(me.idx,idx))&#123;</span><br><span class="line">                                if(tmp[i][&#39;status&#39;])&#123;</span><br><span class="line">                                    me.idx&#x3D;-1;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F;有效点</span><br><span class="line">                    var indexs&#x3D;me.idx&gt;idx?[idx,me.idx]:[me.idx,idx];</span><br><span class="line">                    console.log(indexs);</span><br><span class="line">                    me.setSelectStyle(record,indexs);</span><br><span class="line">                    me.meetingdate&#x3D;record.get(&#39;meetingdate&#39;);</span><br><span class="line"></span><br><span class="line">                    if(indexs[0]&gt;-1)&#123;&#x2F;&#x2F;已选择两个点</span><br><span class="line">                        me.idx&#x3D;-1;</span><br><span class="line">                        me.starttime&#x3D;me.timeList[indexs[0]];</span><br><span class="line">                        me.stoptime&#x3D;me.timeAdd(me.timeList[indexs[1]],me.increment);</span><br><span class="line">                    &#125;else&#123;&#x2F;&#x2F;已选择一个点</span><br><span class="line">                        me.idx&#x3D;idx;</span><br><span class="line">                        me.starttime&#x3D;me.timeList[idx];</span><br><span class="line">                        me.stoptime&#x3D;me.timeAdd(me.timeList[idx],me.increment);</span><br><span class="line">                    &#125;</span><br><span class="line">                    &#x2F;&#x2F;保存选择</span><br><span class="line">                    ShineMessageHub.fireEvent(&#39;meetingordermenusetviewmodelevent&#39;,&#123;</span><br><span class="line">                        meeting_date:record.get(&#39;meetingdate&#39;),</span><br><span class="line">                        starttime:me.starttime,</span><br><span class="line">                        stoptime:me.stoptime</span><br><span class="line">                    &#125;);</span><br><span class="line">                    &#x2F;&#x2F;发送数据变化消息</span><br><span class="line">                    var count&#x3D;Math.ceil(me.timeDiff(me.starttime,me.stoptime)&#x2F;30)*0.5;</span><br><span class="line">                    var o&#x3D;&#123;commodity_id:-1,commodity_name:me.conference_room_name,commodity_price:me.conference_room_cost,count:count&#125;;</span><br><span class="line">                    ShineMessageHub.fireEvent(&#39;selecttimepanelchangetime&#39;,o);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;],</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月16日</span><br><span class="line">     * 计算时间差，string 08:00   返回分钟</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    timeDiff:function(min,max)&#123;</span><br><span class="line">        max&#x3D;Ext.Date.parse(&#39;2018-07-18 &#39;+max,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        min&#x3D;Ext.Date.parse(&#39;2018-07-18 &#39;+min,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        return Ext.Date.diff(min,max,Ext.Date.MINUTE);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 时间相加，单位分钟</span><br><span class="line">     * @params v string 08:00  interval 分钟</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    timeAdd:function(v,interval)&#123;</span><br><span class="line">        var st&#x3D;Ext.Date.parse(&#39;2018-07-18 &#39;+v,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var ret&#x3D;Ext.Date.add(st,Ext.Date.SECOND,interval*60);</span><br><span class="line">        return Ext.Date.format(ret,&#39;H:i&#39;);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 日期相加 </span><br><span class="line">     * @params v string 2019-01-14</span><br><span class="line">     * @params interval 天</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    dateAdd:function(v,interval)&#123;</span><br><span class="line">        var ret&#x3D;Ext.Date.add(Ext.Date.parse(v,&#39;Y-m-d&#39;),Ext.Date.DAY,interval);</span><br><span class="line">        return Ext.Date.format(ret,&#39;Y-m-d&#39;);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 解析字符串，并转换格式</span><br><span class="line">     * @params v string 2019-01-14  为1月14日</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    dateFormat:function(v,format)&#123;</span><br><span class="line">        if(!format)&#123;</span><br><span class="line">            format&#x3D;&#39;m月d日&#39;;</span><br><span class="line">        &#125;</span><br><span class="line">        var ret&#x3D;Ext.Date.parse(v,&#39;Y-m-d&#39;);</span><br><span class="line">        return Ext.Date.format(ret,format);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 生成时间序列</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    makeTimeList:function()&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var start&#x3D;Ext.Date.parse(&#39;2018-07-18 &#39;+me.minValue,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var end&#x3D;Ext.Date.parse(&#39;2018-07-18 &#39;+me.maxValue,&quot;Y-m-d H:i&quot;);</span><br><span class="line">        var cur&#x3D;start;</span><br><span class="line">        var ret&#x3D;[];</span><br><span class="line">        while(cur&lt;&#x3D;end)&#123;</span><br><span class="line">            ret.push(Ext.Date.format(cur,&#39;H:i&#39;));</span><br><span class="line">            cur&#x3D;Ext.Date.add(cur,Ext.Date.MINUTE,me.increment);</span><br><span class="line">        &#125;</span><br><span class="line">        ret.pop();</span><br><span class="line">        console.log(ret);</span><br><span class="line">        me.timeList&#x3D;ret;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * Ajax获取当前会议室时间段占用情况</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    ajaxGetOccupy:function()&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        &#x2F;&#x2F;计算显示结束时间</span><br><span class="line">        var displayStop&#x3D;me.dateAdd(me.displayStart,me.displayLength);</span><br><span class="line">        console.log(me.displayStart);</span><br><span class="line">        console.log(displayStop);</span><br><span class="line">		Ext.Ajax.request(&#123;</span><br><span class="line">			url: SHINEVMSHTTP +&#39;&#x2F;admin&#x2F;desktop&#x2F;meetingorder&#x2F;getoccupy&#39;,</span><br><span class="line">			params:&#123;&quot;startdate&quot;:me.displayStart,&quot;stopdate&quot;:displayStop,meeting_id:me.meeting_id,conference_room_id:me.conference_room_id&#125;,</span><br><span class="line">			success: function(response, opts) &#123;</span><br><span class="line">                var obj &#x3D; Ext.decode(response.responseText);</span><br><span class="line">                me.makeLoadData(obj.items,obj.servertime);</span><br><span class="line">			&#125;,</span><br><span class="line">			failure: function(response, opts) &#123;</span><br><span class="line">                Ext.Msg.hide();</span><br><span class="line">				Ext.Msg.show(&#123;</span><br><span class="line">					title:&quot;操作提示&quot;,</span><br><span class="line">					msg:&quot;编辑失败，请检查网络！&quot;,</span><br><span class="line">					icon:Ext.Msg.ERROR,</span><br><span class="line">					buttons:Ext.Msg.OK,</span><br><span class="line">					fn:function()&#123;</span><br><span class="line">						me.store.reload();						</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;); </span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月14日</span><br><span class="line">     * 为store生成loadData数据</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    makeLoadData:function(items,servertime)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var data&#x3D;[];</span><br><span class="line">        var rd;</span><br><span class="line">        var curDate;</span><br><span class="line">        var svTime&#x3D;new Date(servertime);</span><br><span class="line">        me.servertime&#x3D;svTime;&#x2F;&#x2F;保存服务器时间</span><br><span class="line">        for(var i&#x3D;0;i&lt;me.displayLength;i++)&#123;</span><br><span class="line">            rd&#x3D;&#123;&#125;;&#x2F;&#x2F;生成每一条记录</span><br><span class="line">            curDate&#x3D;me.dateAdd(me.displayStart,i);</span><br><span class="line">            rd[&#39;meetingdate&#39;]&#x3D;curDate;</span><br><span class="line">            rd[&#39;displaydate&#39;]&#x3D;me.dateFormat(curDate);&#x2F;&#x2F;格式化当前日期</span><br><span class="line">            rd[&#39;timelist&#39;]&#x3D;Ext.Array.map(me.timeList,function(v,i)&#123;</span><br><span class="line">                &#x2F;&#x2F;计算时间是否过期 status 1时间过期 2被占用</span><br><span class="line">                var start&#x3D;Ext.Date.parse(curDate+&#39; &#39;+v,&#39;Y-m-d H:i&#39;);</span><br><span class="line">                var stop&#x3D;Ext.Date.add(start,Ext.Date.MINUTE,30);</span><br><span class="line">                var status&#x3D;start&lt;svTime?1:0;</span><br><span class="line">                &#x2F;&#x2F;计算时间是否占用</span><br><span class="line">                if(status&#x3D;&#x3D;&#x3D;0)&#123;</span><br><span class="line">                    status&#x3D;me.isOccupy(items,start,stop)?2:0;</span><br><span class="line">                &#125;</span><br><span class="line">                return &#123;st:v,status:status,index:i,selected:false&#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            &#x2F;&#x2F;保存结果</span><br><span class="line">            data.push(rd);</span><br><span class="line">        &#125;</span><br><span class="line">        console.log(data);</span><br><span class="line">        &#x2F;&#x2F;store加载数据</span><br><span class="line">        me.storeLoadData(data);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 时间冲突判断。</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    isOccupy:function(items,start,stop)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var item;</span><br><span class="line">        var fn&#x3D;function(v)&#123;</span><br><span class="line">            return Ext.Date.parse(v,&#39;Y-m-d H:i:s&#39;);</span><br><span class="line">        &#125;;</span><br><span class="line">        if(items.length&gt;0)&#123;</span><br><span class="line">            item&#x3D;items[0];</span><br><span class="line">            while(start&gt;&#x3D;fn(item.stoptime))&#123;</span><br><span class="line">                items.shift();</span><br><span class="line">                if(items.length&#x3D;&#x3D;0)&#123;</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">                item&#x3D;items[0];</span><br><span class="line">            &#125;</span><br><span class="line">            if(stop&lt;&#x3D;fn(item.starttime))&#123;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * store loaddate</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    storeLoadData:function(data)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var dv&#x3D;me.items.items[1];</span><br><span class="line">        var st&#x3D;dv.store;</span><br><span class="line">        st.loadData(data);</span><br><span class="line">        me.fireEvent(&#39;storeloaddata&#39;,dv,st);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 日期翻页 </span><br><span class="line">     ************&#x2F;</span><br><span class="line">    turnPage:function(direction)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var direction&#x3D;direction&gt;0?1:-1;</span><br><span class="line">        var pass&#x3D;me.displayStart;</span><br><span class="line">        me.displayStart&#x3D;me.dateAdd(me.displayStart,direction*me.displayLength);</span><br><span class="line">        var cur&#x3D;Ext.Date.parse(me.displayStart,&#39;Y-m-d&#39;);</span><br><span class="line">        &#x2F;&#x2F;负向纠正值</span><br><span class="line">        if(direction&lt;0&amp;&amp;cur&lt;me.servertime)&#123;</span><br><span class="line">            me.displayStart&#x3D;Ext.Date.format(me.servertime,&#39;Y-m-d&#39;);</span><br><span class="line">            if(me.displayStart&#x3D;&#x3D;pass)&#123;</span><br><span class="line">                Ext.toast(&#39;不允许选择过去的时间段&#39;);</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;正向纠正值</span><br><span class="line">        var limit&#x3D;Ext.Date.add(me.servertime,Ext.Date.DAY,me.orderLimit-me.displayLength+1);&#x2F;&#x2F;最大可预定几天内的</span><br><span class="line">        if(direction&gt;0&amp;&amp;cur&gt;limit)&#123;</span><br><span class="line">            me.displayStart&#x3D;Ext.Date.format(limit,&#39;Y-m-d&#39;);</span><br><span class="line">            if(me.displayStart&#x3D;&#x3D;pass)&#123;</span><br><span class="line">                Ext.toast(&#39;只允许预约&#39;+me.orderLimit+&#39;之内的会议。&#39;);</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        me.ajaxGetOccupy();</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 设置选择样式</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    setSelectStyle:function(record,indexs)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        if(indexs[0]&#x3D;&#x3D;-1)&#123;</span><br><span class="line">            for(var i&#x3D;0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                record.data.timelist[i].selected&#x3D; (i&#x3D;&#x3D;indexs[1]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            for(var i&#x3D;0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                record.data.timelist[i].selected&#x3D; (i&gt;&#x3D;indexs[0]&amp;&amp;i&lt;&#x3D;indexs[1]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        record.commit();</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月15日</span><br><span class="line">     * 设置取消样式</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    setUnSelectStyleByDate:function(meetingdate)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        var dv&#x3D;me.items.items[1];</span><br><span class="line">        var st&#x3D;dv.store;</span><br><span class="line">        st.each(function(rd)&#123;</span><br><span class="line">            if(rd.get(&#39;meetingdate&#39;)&#x3D;&#x3D;&#x3D;meetingdate)&#123;&#x2F;&#x2F;找到当前记录</span><br><span class="line">                for(var i&#x3D;0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">                    rd.data.timelist[i].selected&#x3D; false;</span><br><span class="line">                &#125;</span><br><span class="line">                rd.commit();</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x2F;************</span><br><span class="line">     * 2019年1月16日</span><br><span class="line">     * 获取timeList中的index</span><br><span class="line">     ************&#x2F;</span><br><span class="line">    getTimeListIndex:function(time)&#123;</span><br><span class="line">        var me&#x3D;this;</span><br><span class="line">        for(var i&#x3D;0;i&lt;me.timeList.length;i++)&#123;</span><br><span class="line">            if(time&#x3D;&#x3D;me.timeList[i])&#123;</span><br><span class="line">                return i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return me.timeList.length+10;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码改进："><a href="#代码改进：" class="headerlink" title="代码改进："></a>代码改进：</h2><h3 id="将发送给商品模块的消息独立成函数"><a href="#将发送给商品模块的消息独立成函数" class="headerlink" title="将发送给商品模块的消息独立成函数"></a>将发送给商品模块的消息独立成函数</h3><p>这样在时间选择、会议室变化之后，都会发送消息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;************</span><br><span class="line"> * 2019年1月17日</span><br><span class="line"> * 发送消息给商品管理模块</span><br><span class="line"> ************&#x2F;</span><br><span class="line">sendMsgToProduct:function()&#123;</span><br><span class="line">    var me&#x3D;this;</span><br><span class="line">    var count&#x3D;Math.ceil(me.timeDiff(me.starttime,me.stoptime)&#x2F;30)*0.5;</span><br><span class="line">    var o&#x3D;&#123;commodity_id:-1,commodity_name:me.conference_room_name,commodity_price:me.conference_room_cost,count:count&#125;;</span><br><span class="line">    ShineMessageHub.fireEvent(&#39;selecttimepanelchangetime&#39;,o);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;更改会议室</span><br><span class="line">    ShineMessageHub.on(&#39;selectroompanelselectionchange&#39;,function(roomid,screen_type,template_id,data)&#123;</span><br><span class="line">        me.conference_room_id&#x3D;roomid;</span><br><span class="line">        me.conference_room_name&#x3D;data.conference_room_name;</span><br><span class="line">        me.conference_room_cost&#x3D;data.conference_room_cost;</span><br><span class="line">        if(me.starttime&amp;&amp;me.stoptime)&#123;</span><br><span class="line">            me.sendMsgToProduct();&#x2F;&#x2F;如果已经选择时间了，在这块，将会议室更改的消息中转出去。</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,me);</span><br></pre></td></tr></table></figure>
+
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
 
-      
-      
-      
+        
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/01/01/conclude/" rel="next" title="后端设计中的总结">
-                <i class="fa fa-chevron-left"></i> 后端设计中的总结
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/01/18/2019-01-18_formmenu/" rel="prev" title="提交表单设计">
+                  <i class="fa fa-chevron-left"></i> 提交表单设计
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/01/22/2019-01-22_code_better/" rel="next" title="会议预约代码改进">
+                  会议预约代码改进 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/17/2018-12-15_selectedtime/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">chaofml</p>
-              <p class="site-description motion-element" itemprop="description"></p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">70</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">3</span>
-                    <span class="site-state-item-name">标签</span>
-                  
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#会议室选择时间设计"><span class="nav-number">1.</span> <span class="nav-text">会议室选择时间设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方案分析"><span class="nav-number">1.1.</span> <span class="nav-text">方案分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dataview方案深度剖析"><span class="nav-number">1.2.</span> <span class="nav-text">dataview方案深度剖析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据格式"><span class="nav-number">1.3.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续功能"><span class="nav-number">1.4.</span> <span class="nav-text">后续功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速实现"><span class="nav-number">1.5.</span> <span class="nav-text">快速实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#先利用静态数据，快速搭建界面"><span class="nav-number">1.5.1.</span> <span class="nav-text">先利用静态数据，快速搭建界面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速搭建业务"><span class="nav-number">1.5.2.</span> <span class="nav-text">快速搭建业务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于时间冲突上面，突然又难住我了。"><span class="nav-number">1.5.3.</span> <span class="nav-text">关于时间冲突上面，突然又难住我了。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持续改进"><span class="nav-number">1.5.4.</span> <span class="nav-text">持续改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码片段"><span class="nav-number">1.6.</span> <span class="nav-text">代码片段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#页面数据重刷机制"><span class="nav-number">1.6.1.</span> <span class="nav-text">页面数据重刷机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#至此代码基本上完成。"><span class="nav-number">1.7.</span> <span class="nav-text">至此代码基本上完成。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码改进："><span class="nav-number">1.8.</span> <span class="nav-text">代码改进：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将发送给商品模块的消息独立成函数"><span class="nav-number">1.8.1.</span> <span class="nav-text">将发送给商品模块的消息独立成函数</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-        <div class="back-to-top">
-          <i class="fa fa-arrow-up"></i>
-          
-        </div>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">chaofml</span>
-
-  
-
-  
 </div>
 
 
@@ -678,122 +337,53 @@
 
 
 
-
-  <div class="footer-custom">一个业余的程序员</div>
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
-
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
 
 
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </div>
+  </footer>
 
   
-  
-    <script src="/lib/jquery/index.js?v=2.1.3"></script>
-  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
 
   
-  
-    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=6.6.0"></script>
-
-  <script src="/js/src/motion.js?v=6.6.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/affix.js?v=6.6.0"></script>
-
-  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
-<script src="/js/src/post-details.js?v=6.6.0"></script>
-
-
-
-  
-
-
-  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
-
-
-
-  
-
-
-
-  
-
-
-
-
 
 
 
@@ -807,33 +397,6 @@
 
 
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
-  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
-
-
-  
-
-  
-
-  
-
-  
 
 </body>
 </html>

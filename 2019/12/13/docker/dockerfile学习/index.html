@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="参考资料官网关于docker的资料 思考在Dockerfile里面RUN命令，那么复杂，为什么很多人都没有将其专门放到一个build.sh脚本中，然后执行呢？而都是用 \ &amp;&amp;来续行？原因是什么？访问不到环境变量？构建参数？ Demospringcloud123456789FROM 10.131.9.12:5000&#x2F;base&#x2F;jdk8-redis:1.0.0RUN echo &amp;qu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dockerfile学习">
+<meta property="og:url" content="http://example.com/2019/12/13/docker/dockerfile%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="参考资料官网关于docker的资料 思考在Dockerfile里面RUN命令，那么复杂，为什么很多人都没有将其专门放到一个build.sh脚本中，然后执行呢？而都是用 \ &amp;&amp;来续行？原因是什么？访问不到环境变量？构建参数？ Demospringcloud123456789FROM 10.131.9.12:5000&#x2F;base&#x2F;jdk8-redis:1.0.0RUN echo &amp;qu">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-13T01:41:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.137Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/12/13/docker/dockerfile%E5%AD%A6%E4%B9%A0/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>dockerfile学习 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%9D%E8%80%83"><span class="nav-number">2.</span> <span class="nav-text">思考</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Demo"><span class="nav-number">3.</span> <span class="nav-text">Demo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#springcloud"><span class="nav-number">3.1.</span> <span class="nav-text">springcloud</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#weblogic-nginx"><span class="nav-number">3.2.</span> <span class="nav-text">weblogic-nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php73"><span class="nav-number">3.3.</span> <span class="nav-text">php73</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">打包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Dockerfile%E6%8C%87%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">Dockerfile指令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FROM"><span class="nav-number">5.1.</span> <span class="nav-text">FROM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VOLUME"><span class="nav-number">5.2.</span> <span class="nav-text">VOLUME</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ADD"><span class="nav-number">5.3.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#COPY"><span class="nav-number">5.4.</span> <span class="nav-text">COPY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMD"><span class="nav-number">5.5.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ONBUILD"><span class="nav-number">5.6.</span> <span class="nav-text">ONBUILD</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARGS"><span class="nav-number">5.7.</span> <span class="nav-text">ARGS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STOPSIGNAL"><span class="nav-number">5.8.</span> <span class="nav-text">STOPSIGNAL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HEALTHCHECK"><span class="nav-number">5.9.</span> <span class="nav-text">HEALTHCHECK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#USER"><span class="nav-number">5.9.1.</span> <span class="nav-text">USER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WORKDIR"><span class="nav-number">5.9.2.</span> <span class="nav-text">WORKDIR</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E9%98%B6%E6%AE%B5%E6%9E%84%E5%BB%BA"><span class="nav-number">5.10.</span> <span class="nav-text">多阶段构建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">7.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/13/docker/dockerfile%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          dockerfile学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-13 09:41:00" itemprop="dateCreated datePublished" datetime="2019-12-13T09:41:00+08:00">2019-12-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">官网关于docker的资料</a></p>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><p>在Dockerfile里面RUN命令，那么复杂，为什么很多人都没有将其专门放到一个build.sh脚本中，然后执行呢？而都是用 \ &amp;&amp;来续行？原因是什么？访问不到环境变量？构建参数？</p>
+<h1 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h1><h2 id="springcloud"><a href="#springcloud" class="headerlink" title="springcloud"></a>springcloud</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> <span class="number">10.131</span>.<span class="number">9.12</span>:<span class="number">5000</span>/base/jdk8-redis:<span class="number">1.0</span>.<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&quot;Asia/Shanghai&quot;</span> &gt; /etc/timezone &amp;&amp; rm -rf /etc/localtime &amp;&amp; ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> pro.jar  /work/pro.jar</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> run.sh /</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> chmod +x /run.sh</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/run.sh&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>FROM   指定基础镜像，必须是第一条指令，10.131.9.12:5000/base/jdk8-redis 表示具体的位置，1.0.0即tag标签。一般指定公有的源，上面是私有源的例子。 </p>
+<p>RUN 运行命令。  利用斜杆、&amp;&amp; 拼接多条指令。</p>
+<blockquote>
+<p> 1, shell 格式： RUN &lt;命令&gt;，就像直接在命令行中输入的命令一样</p>
+<p> 2, exec 格式：RUN [“可执行文件”，“参数1”，“参数2”]，更像是函数调用中的格式</p>
+<p> 每一个RUN命令都会在 docker镜像中新建一层，所以应该尽量少用 RUN 命令，而且要在RUN 的最后要做必要的清除工作 </p>
+</blockquote>
+<p>COPY 复制文件。当前位置的文件，复制到镜像中的位置。</p>
+<blockquote>
+<p>COPY 会将原文件的各种数据都保留，比如 读、写、执行权限，可以通过 –chown=<user>:<group> 选项来改变文件的所属用户及所属组。 </p>
+</blockquote>
+<p>思考：/work/pro.jar，如果/work目录不存在，是否会报错？如果拷贝的文件不存在，是否会报错？如果镜像中，已经有该文件，是强制替换还是提醒、报错？</p>
+<p>答疑：1、对于基础镜像，如果没有该目录，COPY的时候，镜像会自动增加该目录。（已测，但权限可能保留原有的，最好增加修改权限的指令）。2、同名文件，会覆盖，不提示。但是为了确保安全，最好先删除。3、复制的源文件，如果不存在，则会报错。</p>
+<p>ADD （复制？拷贝？）</p>
+<p>高级版的COPY，会下载、会解压（tar.gz tar.xz等格式）。</p>
+<blockquote>
+<p>和 COPY 指令的功能，性质基本一致 。但是针对url、tar包，会自动处理。如： 原路径为 tar 压缩包，如果压缩文件格式为 gzip , bzip2 以及 xz 的情况下，ADD 指令将自动解压这个压缩文件到 &lt;目标路径&gt; 去，只有此种情况适合使用 ADD 指令。 </p>
+</blockquote>
+<p>CMD 指定运行的命令。格式同RUN。数组，一个数组即代表一条完整的指令。[“命令”,”参数1”,”参数2”,”参数3”]。将所有打包时需要运行的命令组合，放到run.sh文件中，+x使该文件具有可执行权限，然后运行。CMD与RUN区别： <code>RUN</code>命令在 image 文件的构建阶段执行，执行结果都会打包进入 image 文件；<code>CMD</code>命令则是在容器启动后执行。另外，一个 Dockerfile 可以包含多个<code>RUN</code>命令，但是只能有一个<code>CMD</code>命令。 </p>
+<blockquote>
+<p>命令格式也有两种，同RUN。 CMD 指令用于指定默认的容器主进程的启动命令。CMD可以启动多个进程，但是必须要有一个在前台。</p>
+</blockquote>
+<p>思考：CMD命令如何含义？是指每次镜像启动时，都要运行的指令吗？另外，CMD命令，能否有多个？</p>
+<p>run.sh文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;sh</span><br><span class="line"></span><br><span class="line">cd &#x2F;work</span><br><span class="line"></span><br><span class="line">if [ &quot;$&#123;SW_AGENT_NAME&#125;&quot; !&#x3D; &quot;&quot; ] ; then</span><br><span class="line">    java -javaagent:&#x2F;work&#x2F;agent&#x2F;skywalking-agent.jar -jar $JAVA_OPT pro.jar</span><br><span class="line">else</span><br><span class="line">    java -jar $JAVA_OPT pro.jar</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="weblogic-nginx"><a href="#weblogic-nginx" class="headerlink" title="weblogic-nginx"></a>weblogic-nginx</h2><p>Dockerfile如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> <span class="number">10.131</span>.<span class="number">9.12</span>:<span class="number">5000</span>/base/weblogic-redis-nginx-autodeploy-apm:<span class="number">2.0</span>.<span class="number">0</span></span><br><span class="line">  </span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> nginx.conf /etc/nginx</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> LANG zh_CN.utf8</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /u01/oracle/autodeploy</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> 项目目录 ./项目目录</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ./resouceDefine.py .</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> nginx &amp;&amp; ./startup.sh</span></span><br></pre></td></tr></table></figure>
+
+<p>ENV指定环境变量。</p>
+<blockquote>
+<p>如：ENV   JENKINS_HOME /opt/jenkins/data<br>RUN mkdir -p $JENKINS_HOME/plugins</p>
+</blockquote>
+<p>WORKDIR指定工作目录。此设置会影响到？复制文件？运行文件？</p>
+<p>CMD启动nginx，并运行startup.sh脚本（可能在镜像中已经存在），</p>
+<p>思考：也可以不用数组？两种形式实际有如何区别？</p>
+<p>具体参见<a href="weblogic-nginx.md">weblogic-nginx.md</a></p>
+<h2 id="php73"><a href="#php73" class="headerlink" title="php73"></a>php73</h2><p>Dockerfile如下：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> <span class="number">10.131</span>.<span class="number">9.12</span>:<span class="number">5000</span>/base/rhel_php:php73-base</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> rm -rf /yd/* &amp;&amp; yum install -y yd-php73-apm-4.1.7 php73-soap QConf php73-qconf nscd</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> nginx.conf /usr/<span class="built_in">local</span>/nginx/conf/nginx.conf</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> php.ini /usr/<span class="built_in">local</span>/php/etc/php.ini</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> httpd.conf /etc/httpd24/httpd.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> yd /yd</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> chown -R www:www /yd/*</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> run.sh /</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/run.sh&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>FORM 公司内部，基础镜像。版本：Red Hat Enterprise Linux Server release 6.7.   (cat /etc/redhat-release 而ubuntu cat /etc/os-release)</p>
+<p>RUN  2 先删除原有yd下的文件 ，删除成功后，才会安装相应的php配置。</p>
+<p>思考：yum源内部的？</p>
+<p>ADD 增加yd文件夹内容</p>
+<p>RUN 7 递归更改新增加的内容所有者的权限。</p>
+<p>EXPOSE 对外暴露80端口 【实际上基础镜像已经暴露过此端口】</p>
+<p>最后两条ADD CMD，增加run.sh文件，但是未为该文件增加可执行权限？</p>
+<p>思考：会报错吗？     CMD命令会继承或覆盖吗？</p>
+<p>其他：</p>
+<ul>
+<li><p>php-apm插件</p>
+<p><a target="_blank" rel="noopener" href="https://www.helplib.com/GitHub/article_86362">PHP监视器</a></p>
+</li>
+</ul>
+<ul>
+<li><p>nscd</p>
+<p><a target="_blank" rel="noopener" href="https://www.frostsky.com/2016/06/linux%E5%BC%80%E5%90%AFnscd%E6%9C%8D%E5%8A%A1%E7%BC%93%E5%AD%98%E5%8A%A0%E9%80%9F/">linux开启nscd服务缓存加速</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44556919">阿里DNS：NSCD-DNS缓存详解</a></p>
+</li>
+</ul>
+<p>run.sh文件如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">  </span><br><span class="line">echo &quot;Asia/Shanghai&quot; &gt; /etc/timezone</span><br><span class="line">rm -rf /etc/localtime</span><br><span class="line">ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br><span class="line"></span><br><span class="line">if [ $APP_PORT ];then</span><br><span class="line">    sed -i &quot;s/APP_PORT/$APP_PORT/g&quot; /usr/local/nginx/conf/nginx.conf</span><br><span class="line">else</span><br><span class="line">    sed -i &quot;s/APP_PORT/80/g&quot; /usr/local/nginx/conf/nginx.conf</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ $YD_SESSION_REDIS_PORT ];then</span><br><span class="line">    sed -i &quot;1416c session.save_handler = redis&quot; /usr/local/php/etc/php.ini</span><br><span class="line">    sed -i &quot;1417a session.save_path = \&quot;$YD_SESSION_REDIS_PORT\&quot;&quot; /usr/local/php/etc/php.ini</span><br><span class="line">else</span><br><span class="line">    echo &quot;Session save files&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [ $YD_PHP_APM ];then</span><br><span class="line">   echo &#x27;php_admin_value auto_prepend_file &quot;/etc/apm.php&quot;&#x27; &gt;&gt; /etc/httpd24/httpd.conf</span><br><span class="line">   echo &quot;extension=tideways.so&quot; &gt;&gt; /usr/local/php/etc/php.ini</span><br><span class="line">   echo &quot;tideways.sample_rate=100&quot; &gt;&gt; /usr/local/php/etc/php.ini</span><br><span class="line">   echo &quot;tideways.auto_prepend_library=0&quot; &gt;&gt; /usr/local/php/etc/php.ini</span><br><span class="line">else</span><br><span class="line">   echo &quot;NO PHP APM&quot;;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">touch /var/log/app.log</span><br><span class="line">chown -R www:www /var/log/app.log</span><br><span class="line">echo success &gt; /var/log/app.log</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">find /yd -name <span class="string">&quot;.*&quot;</span> | xargs rm -rf</span></span><br><span class="line"></span><br><span class="line">/usr/local/nginx/sbin/nginx</span><br><span class="line">/usr/local/apache/bin/httpd -DFOREGROUND</span><br></pre></td></tr></table></figure>
+
+<p>注意：run.sh文件最后两行，启动了nginx跟httpd服务。<font color="red">CMD启动的进程，可以启动多个进程，但是必须要有一个进程在前台。</font>最起码Pod是这样要求，否则会陷入无限的重启中。</p>
+<p>作用：设置时区。根据环境变量$APP_PORT来设置nginx端口，默认80端口。 设置php中session保存位置 $YD_SESSION_REDIS_PORT。$YD_PHP_APM变量？   创建app.log日志文件，写入成功命令。开启nginx  http服务。</p>
+<p>备注：sed操作</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 全局替换，将a替换为b。g表示全局替换 -i 表示保存文件</span></span><br><span class="line">sed -i &quot;s/a/b/g&quot;  test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定行数修改，空格分隔（或多个）</span> </span><br><span class="line">sed -i &quot;5c helloword&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 增加新行，即在第5行后增加。</span></span><br><span class="line">sed -i &quot;5a zhangsan&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 根据文件夹的后缀来替换pro.jar</span></span><br><span class="line">sed -i &quot;s/pro.jar/`ls |grep.sh$`/g&quot; run.sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> 打印5到10行的内容   -n参数  表示仅显示处理后的结果。</span></span><br><span class="line">sed -n &quot;5,10p&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查找指定内容，进行替换  \n插入新行。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果一行匹配到两处，也仍然只插入一次。 /se/d 匹配到则删除。</span></span><br><span class="line">sed -i &#x27;/se/a oneoneone\ntwotwotwo&#x27; test.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<p>nginx配置如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">user  www;</span><br><span class="line">worker_processes  auto;</span><br><span class="line"></span><br><span class="line"><span class="comment">#error_log  logs/error.log;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pid        logs/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  10240;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    access_log off;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#gzip  on;</span></span><br><span class="line">    gzip              on;</span><br><span class="line">    gzip_min_length   4096;</span><br><span class="line">    gzip_buffers      4 8k;</span><br><span class="line">    gzip_types        text/* text/css application/javascript application/x-javascript;</span><br><span class="line">    gzip_comp_level   1;</span><br><span class="line">    gzip_vary         on;</span><br><span class="line">    gzip_http_version 1.1;</span><br><span class="line"></span><br><span class="line">    upstream php &#123;</span><br><span class="line">        server 127.0.0.1:81;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        access_log   /dev/null;</span><br><span class="line">	error_log    /dev/null;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#charset koi8-r;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#access_log  logs/host.access.log  main;</span></span><br><span class="line"></span><br><span class="line">        location / &#123;</span><br><span class="line">            root   /yd;</span><br><span class="line">            index  index.php index.html index.htm;</span><br><span class="line"></span><br><span class="line">            if (!-e $request_filename) &#123;</span><br><span class="line">                proxy_pass http://php;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">#error_page  404              /404.html;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># redirect server error pages to the static page /50x.html</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        <span class="attr">location</span> = /<span class="number">50</span>x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        location ~ \.php$ &#123;</span><br><span class="line">            proxy_set_header  Host $host:APP_PORT;</span><br><span class="line">            <span class="comment">#proxy_set_header  X-Real-IP $remote_addr;</span></span><br><span class="line">            proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_pass   http://127.0.0.1:81;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>nginx实际上，代理80端口，静态文件直接处理，php请求通过负载均衡交由apache处理（81端口），或者检测到.php扩展名，通过代理proxy_pass传递到81端口。在docker镜像中，整体只对外暴露80端口。</p>
+<p>注意：APP_PORT在启动的时候，会被run.sh替换成具体的端口。</p>
+<h1 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h1><p>有了Dockerfile之后，便可以打包。手动打包命令，</p>
+<ul>
+<li>方式一：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t runoob&#x2F;ubuntu:v1 . </span><br></pre></td></tr></table></figure>
+
+<p>-t 指定标签，标签内容runoob/ubuntu:v1</p>
+<p>. 指定当前打包的目录。</p>
+<ul>
+<li>方式二：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -f &#x2F;path&#x2F;to&#x2F;a&#x2F;Dockerfile .</span><br></pre></td></tr></table></figure>
+
+<p>-f 指定Dockerfile所在目录</p>
+<ul>
+<li>方式三：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build github.com&#x2F;creack&#x2F;docker-firefox</span><br></pre></td></tr></table></figure>
+
+<p>直接从git仓库打包。实际上该仓库，主要包含一个Dockerfile文件。</p>
+<h1 id="Dockerfile指令"><a href="#Dockerfile指令" class="headerlink" title="Dockerfile指令"></a>Dockerfile指令</h1><p>如上文例子，打包指令大、小写不分区。默认全部大写，以示区分。可以使用#号进行注释。<font color="red" >#注释，必须顶行写，否则会认为命令内容。</font></p>
+<h2 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h2><p>指定基础源。</p>
+<h2 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h2><p>指定卷标。参见<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ef0f24fd0674"> https://www.jianshu.com/p/ef0f24fd0674 </a></p>
+<p> 在Dockerfile中，我们也可以使用VOLUME指令来申明contaienr中的某个目录需要映射到某个volume： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VOLUME &#x2F;foo</span><br></pre></td></tr></table></figure>
+
+<p>这表示，在docker运行时，docker会创建一个匿名的volume，并将此volume绑定到container的/foo目录中，如果container的/foo目录下已经有内容，则会将内容拷贝的volume中。也即，Dockerfile中的<font color="red"><code>VOLUME /foo</code>与<code>docker run -v /foo alpine</code></font>的效果一样。</p>
+<p>Dockerfile中的VOLUME使每次运行一个新的container时，都会为其自动创建一个匿名的volume，如果需要在不同container之间共享数据，那么我们依然需要通过<code>docker run -it -v my-volume:/foo</code>的方式将/foo中数据存放于指定的my-volume中。</p>
+<h2 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h2><p>如下，一个报错提醒。</p>
+<blockquote>
+<p>When using ADD with more than one source file, the destination must be a directory and end with a /</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ADD [--chown&#x3D;&lt;user&gt;:&lt;group&gt;] &lt;src&gt;... &lt;dest&gt;</span><br><span class="line">ADD [--chown&#x3D;&lt;user&gt;:&lt;group&gt;] [&quot;&lt;src&gt;&quot;,... &quot;&lt;dest&gt;&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>增加chown参数，避免再执行下面的命令。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">RUN</span><span class="bash"> chown -R www-data:www-data /var/www/html/</span></span><br></pre></td></tr></table></figure>
+
+<p>ADD的理解，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADD --chown&#x3D;www-data:www-data phpmyadmin&#x2F;  &#x2F;var&#x2F;www&#x2F;html&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>phpmyadmin是本地目录，<code> /var/www/html/</code>是目标目录，可以不存在，会自动创建。上面的命令含义，会将phpmyadmin文件夹下的所有目录直接拷贝到<code>/var/www/html/</code>目录下。</p>
+<p>如果是tar文件，则会自动解压，tar文件下的所有内容，直接拷贝到<code>/var/www/html/</code>。相当于，在后者的目录中，直接运行tar解压而已。</p>
+<p>如果是普通的文件，则相当于，直接拷贝到后者。</p>
+<p>终上，文件夹内，看到什么，就是什么。</p>
+<h2 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h2><p>报错如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Step 4&#x2F;8 : COPY target&#x2F;* .</span><br><span class="line">When using COPY with more than one source file, the destination must be a directory and end with a &#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>更正为 COPY target/ .</p>
+<h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p>跟ENTERPOINT命令相似，放在文件的最后一行（多个CMD只有最后一个生效），主要用来指定，容器启动后执行的命令。此命令，相当于docker run -d image:tag [命令] 后的命令。</p>
+<h2 id="ONBUILD"><a href="#ONBUILD" class="headerlink" title="ONBUILD"></a>ONBUILD</h2><p>为镜像添加触发器。触发器可以是任何指令。如父镜像中定义了ONBUILD触发器，在子镜像的构建中会执行，但是在孙子镜像中不会执行。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ONBUILD</span> <span class="keyword">ADD</span><span class="bash"> . /var/www/</span></span><br></pre></td></tr></table></figure>
+
+<p>可以使用docker inspect 命令来查看详情。</p>
+<h2 id="ARGS"><a href="#ARGS" class="headerlink" title="ARGS"></a>ARGS</h2><p>参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/hxpjava1/article/details/78446369">Dockerfile中的ARG指令详解</a></p>
+<p> Dockerfile中的ARG指令用以定义构建时需要的参数，使用格式如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ARG set_va</span><br><span class="line">ARG a_nother_name&#x3D;a_default_value  </span><br></pre></td></tr></table></figure>
+
+<p>ARG指令定义的参数，在docker build命令中以–build-arg a_name=a_value形式赋值。如果docker build命令传递的参数，在Dockerfile中没有对应的参数，将抛出警告。 如果在Dockerfile中，ARG指令定义参数之前，就有其他指令引用了参数，则参数值为空字符串。 </p>
+<p>Docker自带的如下ARG参数，可以在其他指令中直接引用:</p>
+<ul>
+<li><p>HTTP_PROXY</p>
+</li>
+<li><p>http_proxy</p>
+</li>
+<li><p>HTTPS_PROXY</p>
+</li>
+<li><p>https_proxy</p>
+</li>
+<li><p>FTP_PROXY</p>
+</li>
+<li><p>ftp_proxy</p>
+</li>
+<li><p>NO_PROXY</p>
+</li>
+<li><p>no_proxy</p>
+</li>
+</ul>
+<p>例子：</p>
+<p>下面是自己编写的nginx/lua安装的教程，注意下面的定义形式，空格、引号等。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> <span class="number">10.131</span>.<span class="number">9.12</span>:<span class="number">5000</span>/base/nginx:<span class="number">1.16</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ARG</span> NGINX_VERSION=<span class="string">&quot;1.10.3&quot;</span></span><br><span class="line"><span class="keyword">ARG</span> LuaJIT_VERSION=<span class="string">&quot;2.0.4&quot;</span></span><br><span class="line"><span class="keyword">ARG</span> KIT_VERSION=<span class="string">&quot;0.3.0&quot;</span></span><br><span class="line"><span class="keyword">ARG</span> Lua_Mod_VERSION=<span class="string">&quot;0.10.8&quot;</span></span><br><span class="line"><span class="keyword">ARG</span> LuaJIT_PATH=<span class="string">&quot;/usr/local/luajit&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> nginx-<span class="variable">$&#123;NGINX_VERSION&#125;</span>.tar.gz /tmp</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> LuaJIT-<span class="variable">$&#123;LuaJIT_VERSION&#125;</span>.tar.gz /tmp</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> ngx_devel_kit-<span class="variable">$&#123;KIT_VERSION&#125;</span>.tar.gz /opt</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> lua-nginx-module-<span class="variable">$&#123;Lua_Mod_VERSION&#125;</span>.tar.gz /opt</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /tmp/LuaJIT-<span class="variable">$&#123;LuaJIT_VERSION&#125;</span> \  </span></span><br><span class="line">    &amp;&amp; make PREFIX=$&#123;LuaJIT_PATH&#125; \</span><br><span class="line">    &amp;&amp; make install PREFIX=$&#123;LuaJIT_PATH&#125; \</span><br><span class="line">    &amp;&amp; export LUAJIT_LIB=$&#123;LuaJIT_PATH&#125;/lib \</span><br><span class="line">    &amp;&amp; export LUAJIT_INC=$&#123;LuaJIT_PATH&#125;/include/luajit-<span class="number">2.0</span> \</span><br><span class="line">    &amp;&amp; cd /tmp/nginx-$&#123;NGINX_VERSION&#125; \</span><br><span class="line">    &amp;&amp;  ./configure --prefix=/usr/local/nginx --with-http_ssl_module --with-stream_ssl_module --with-http_realip_module  --<span class="keyword">add</span><span class="bash">-module=/opt/ngx_devel_kit-<span class="variable">$&#123;KIT_VERSION&#125;</span>  --add-module=/opt/lua-nginx-module-<span class="variable">$&#123;Lua_Mod_VERSION&#125;</span>  \    </span></span><br><span class="line">    &amp;&amp;  make \</span><br><span class="line">    &amp;&amp;  make install \</span><br><span class="line">    &amp;&amp;  rm -rf /tmp/nginx-$&#123;NGINX_VERSION&#125; \</span><br><span class="line">    &amp;&amp;  rm -rf /tmp/LuaJIT-$&#123;LuaJIT_VERSION&#125; \</span><br><span class="line">    &amp;&amp;  rm -rf /opt/ngx_devel_kit-$&#123;KIT_VERSION&#125; \</span><br><span class="line">    &amp;&amp;  rm -rf /opt/lua-nginx-module-$&#123;Lua_Mod_VERSION&#125; \</span><br><span class="line">    &amp;&amp;  echo <span class="string">&quot;$&#123;LuaJIT_PATH&#125;/lib&quot;</span> &gt;&gt; /etc/ld.so.conf.d/libc.conf \</span><br><span class="line">    &amp;&amp;  echo <span class="string">&quot;$&#123;LuaJIT_PATH&#125;/include/luajit-2.0&quot;</span>  &gt;&gt; /etc/ld.so.conf.d/libc.conf \</span><br><span class="line">    &amp;&amp;  ldconfig</span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> nginx.conf /usr/<span class="built_in">local</span>/nginx/conf/nginx.conf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> lua  /yd/lua</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> demo /yd/demo</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> run.sh /</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> chmod u+x /run.sh</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/run.sh&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p>选择性构建：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">一个参数</span></span><br><span class="line">docker build -t nginx_plugin:2.3  --build-arg LuaJIT_VERSION=2.0.5 . </span><br><span class="line"><span class="meta">#</span><span class="bash">多个参数</span></span><br><span class="line">docker build -t nginx_plugin:2.3  --build-arg LuaJIT_VERSION=2.0.5  --build-arg KIT_VERSION=0.3.1 . </span><br><span class="line"><span class="meta">#</span><span class="bash"> 禁用缓存 --no-cache</span></span><br><span class="line">docker build -t nginx_plugin:2.3  --build-arg LuaJIT_VERSION=2.0.5  --build-arg KIT_VERSION=0.3.1 --no-cache . </span><br></pre></td></tr></table></figure>
+
+<p>注意，构建时，自定义的参数好像显示不出来，依然使用的是${变量命}的形式。但是，构建过程中，可以看到新建的目录等，确实有变化。<strong>重要：容易被缓存。</strong></p>
+<h2 id="STOPSIGNAL"><a href="#STOPSIGNAL" class="headerlink" title="STOPSIGNAL"></a>STOPSIGNAL</h2><p>docker在1.9之后的dockerfile中新增关键字STOPSIGNAL。在github，官网，nginx的Dockerfile中见到的。</p>
+<p>默认的stop-signal是SIGTERM，在docker stop的时候会给容器内PID为1的进程发送这个signal，通过–stop-signal可以设置自己需要的signal，主要的目的是为了让容器内的应用程序在接收到signal之后可以先做一些事情，实现容器的平滑退出，如果不做任何处理，容器将在一段时间之后强制退出，会造成业务的强制中断，这个时间默认是10s 。</p>
+<p>具体参见：<a target="_blank" rel="noopener" href="http://dockone.io/question/1333">地址</a></p>
+<h2 id="HEALTHCHECK"><a href="#HEALTHCHECK" class="headerlink" title="HEALTHCHECK"></a>HEALTHCHECK</h2><p>以下示例包含一个健康检查。另外，还有多阶段构建。</p>
+<p>（<a target="_blank" rel="noopener" href="https://github.com/statping/statping/blob/dev/Dockerfile">https://github.com/statping/statping/blob/dev/Dockerfile</a>  ）其为健康检查的一个工具。state ping的缩写。</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> statping/statping:base AS base</span><br><span class="line"><span class="keyword">ARG</span> BUILDPLATFORM</span><br><span class="line"><span class="comment"># Statping main Docker image that contains all required libraries</span></span><br><span class="line"><span class="keyword">FROM</span> alpine:latest</span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apk --no-cache add libgcc libstdc++ ca-certificates curl jq &amp;&amp; update-ca-certificates</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=base /go/bin/statping /usr/<span class="built_in">local</span>/bin/</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=base /root/sassc/bin/sassc /usr/<span class="built_in">local</span>/bin/</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> --from=base /usr/<span class="built_in">local</span>/share/ca-certificates /usr/<span class="built_in">local</span>/share/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENV</span> IS_DOCKER=true</span><br><span class="line"><span class="keyword">ENV</span> SASS=/usr/local/bin/sassc</span><br><span class="line"><span class="keyword">ENV</span> STATPING_DIR=/app</span><br><span class="line"><span class="keyword">ENV</span> PORT=<span class="number">8080</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> $PORT</span><br><span class="line"></span><br><span class="line"><span class="keyword">HEALTHCHECK</span><span class="bash"> --interval=60s --timeout=10s --retries=3 CMD curl -s <span class="string">&quot;http://localhost:<span class="variable">$PORT</span>/health&quot;</span> | jq -r -e <span class="string">&quot;.online==true&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> statping --port <span class="variable">$PORT</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="USER"><a href="#USER" class="headerlink" title="USER"></a>USER</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">USER</span> mynewuser</span><br></pre></td></tr></table></figure>
+
+<h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /home/mynewuser</span></span><br></pre></td></tr></table></figure>
+
+<p>跟docker run 中  -w的参数作用相同。</p>
+<h2 id="多阶段构建"><a href="#多阶段构建" class="headerlink" title="多阶段构建"></a>多阶段构建</h2><p>参见HEALTHCHECK中的示例。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>构建镜像有两种方式。1、进入容器，更改容器后，commit容器的变化。2、跟据Dockerfile来进行打包。</p>
+<p>Dockerfile方式构建，基于DSL(领域特定语言)的描述打包。构建过程，实际上是运行镜像，有部分指令是在构建过程中的容器中执行，如RUN ，有些可能是在容器启动有执行，如CMD、ENTERPOINT等。而ADD、COPY能将容器外部的文件添加到容器内部。</p>
+<p>构建镜像过程中，要区分真机环境跟镜像运行环境。如RUN 后的指令，实际上操作的都是容器内的文件、环境。</p>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.e-learn.cn/content/qita/2643042">docker—Dockerfile编写</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jb51.net/article/165162.htm">Docker基础教程之Dockerfile语法详解</a></li>
+</ul>
+<p>文件目录为Dockerfile所在目录</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" rel="prev" title="PHP常用函数总结">
+                  <i class="fa fa-chevron-left"></i> PHP常用函数总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/13/shell/shell/" rel="next" title="shell">
+                  shell <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

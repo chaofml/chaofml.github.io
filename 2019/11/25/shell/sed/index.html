@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="sed教程 sed是linux中，常用的文档替换工具。本文包含一些常见的Sed命令。大致，Sed的命令形式，地址限制（可选） + 命令。地址，1、数字，2、正则。命令如下。， 替换 s&#x2F;查找的内容&#x2F;替换后的内容&#x2F;   如果一行后，需要匹配多个替换，添加g 删除  1d  修改  2c some new things. 插入  2a some new things.   或  2i some new">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sed教程">
+<meta property="og:url" content="http://example.com/2019/11/25/shell/sed/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="sed教程 sed是linux中，常用的文档替换工具。本文包含一些常见的Sed命令。大致，Sed的命令形式，地址限制（可选） + 命令。地址，1、数字，2、正则。命令如下。， 替换 s&#x2F;查找的内容&#x2F;替换后的内容&#x2F;   如果一行后，需要匹配多个替换，添加g 删除  1d  修改  2c some new things. 插入  2a some new things.   或  2i some new">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-25T09:14:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.212Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/11/25/shell/sed/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>sed教程 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sed%E6%95%99%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">sed教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">参考资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">常用的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sed%E5%9C%B0%E5%9D%80%E8%8C%83%E5%9B%B4"><span class="nav-number">1.3.</span> <span class="nav-text">Sed地址范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E9%9A%94%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.5.</span> <span class="nav-text">分隔符号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%A9%BA%E9%97%B4%E3%80%81%E4%BF%9D%E6%8C%81%E7%A9%BA%E9%97%B4"><span class="nav-number">1.6.</span> <span class="nav-text">模式空间、保持空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%BE%E6%87%82%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">1.7.</span> <span class="nav-text">难懂的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sed%E4%B9%8B%E6%9B%B4%E6%8D%A2%E6%9F%90%E4%B8%80%E8%A1%8C%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">1.7.1.</span> <span class="nav-text">sed之更换某一行的内容</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/25/shell/sed/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sed教程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-25 17:14:00" itemprop="dateCreated datePublished" datetime="2019-11-25T17:14:00+08:00">2019-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="sed教程"><a href="#sed教程" class="headerlink" title="sed教程"></a>sed教程</h1><blockquote>
+<p>sed是linux中，常用的文档替换工具。本文包含一些常见的Sed命令。大致，Sed的命令形式，地址限制（可选） + 命令。地址，1、数字，2、正则。命令如下。，</p>
+<p>替换 s/查找的内容/替换后的内容/   如果一行后，需要匹配多个替换，添加g</p>
+<p>删除  1d </p>
+<p>修改  2c some new things.</p>
+<p>插入  2a some new things.   或  2i some new things. </p>
+<p>3、分隔，一般使用空格分隔，有些情况下可以省略。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/selinaniur/p/9466569.html">sed命令用法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.yiibai.com/sed/sed_regular_expressions.html">Sed正则表达式</a></li>
+</ul>
+<h2 id="常用的代码"><a href="#常用的代码" class="headerlink" title="常用的代码"></a>常用的代码</h2><p>sed，核心的操作，有删除d、插入i（a）、修改c等。结合正则、数字等匹配位置。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 全局替换，将a替换为b。g表示全局替换 -i 表示保存文件</span></span><br><span class="line">sed -i &quot;s/a/b/g&quot;  test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 指定行数修改，空格分隔（或多个）</span> </span><br><span class="line">sed -i &quot;5c helloword&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 增加新行，即在第5行后增加。</span></span><br><span class="line">sed -i &quot;5a zhangsan&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 根据文件夹的后缀来替换pro.jar</span></span><br><span class="line">sed -i &quot;s/pro.jar/`ls |grep.sh$`/g&quot; run.sh</span><br><span class="line"><span class="meta">#</span><span class="bash"> 打印5到10行的内容   -n参数  表示仅显示处理后的结果。</span></span><br><span class="line">sed -n &quot;5,10p&quot; a.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将每行复制3次。</span></span><br><span class="line">sed  -e &#x27;p&#x27; -e &#x27;p&#x27; test.txt </span><br><span class="line"><span class="meta">#</span><span class="bash"> 查找指定内容，进行替换  \n插入新行。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果一行匹配到两处，也仍然只插入一次。 /se/d 匹配到则删除。</span></span><br><span class="line">sed -i &#x27;/se/a oneoneone\ntwotwotwo&#x27; test.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 利用数字，正则来匹配位置</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1、利用数字，第1、2行进行匹配</span></span><br><span class="line">sed &quot;1,2 s/^/#/g&quot; /etc/hosts</span><br><span class="line"><span class="meta">#</span><span class="bash"> 2、利用正则来匹配位置，即fe开头的行，进行匹配替换</span></span><br><span class="line">sed &quot;/^fe/ s/^/#/g&quot; /etc/hosts  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 其他常用的命令</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> G用来增加空行</span></span><br><span class="line">sed  &quot;G;G;G&quot;  test.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>删除注释提示：</p>
+<p>好处是，能删除那些友善的提示，减少干扰，能更加直观的查看想看到的内容。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &quot;/^\s*#/d&quot; /etc/httpd24/httpd.conf</span><br></pre></td></tr></table></figure>
+<p>删除注释、空白行</p>
+<blockquote>
+<p> 更精简。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed  -e &quot;/^\s*#/d&quot; -e &quot;/^\s*$/d&quot; nginx.conf | cat -n </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面不能正确的保留到行数。下面这个正好相反。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat -n /etc/httpd24/httpd.conf  | sed  &quot;/^\s*[0-9]\+\s*#/d&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">或者</span></span><br><span class="line">cat -n /etc/httpd24/httpd.conf  | sed  &quot;/^.......\s*#/d&quot;</span><br></pre></td></tr></table></figure>
+
+<p>删除注释</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &#x27;s|//.*||g&#x27; hello.cpp</span><br></pre></td></tr></table></figure>
+
+<p>添加注释</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 行号3〜5之前添加注释</span></span><br><span class="line">sed &#x27;3,5 s/^/#/&#x27; hello.sh </span><br></pre></td></tr></table></figure>
+
+<p>php添加扩展</p>
+<h2 id="Sed地址范围"><a href="#Sed地址范围" class="headerlink" title="Sed地址范围"></a>Sed地址范围</h2><p>Sed默认默认在所有的行上面操作，但是可以通过地址，来限制，在特定的行上来操作。对地址范围，有两种表示方法，一种是数字，明确的行数，另外一种，正则表达式  即/some/形式。   地址+命令，下文即以简单的p命令来操作。</p>
+<blockquote>
+<p>以下命令形式，除了简单的p命令，其他的替换命令 s i c等都可以用。</p>
+<p>大致可以想到，Sed的命令形式，地址限制（可选） + 命令</p>
+</blockquote>
+<ul>
+<li><p>数字形式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">文本内容</span></span><br><span class="line">ext = 134</span><br><span class="line">hello = zhangsan</span><br><span class="line">good =2</span><br><span class="line">say hello world.</span><br><span class="line"><span class="meta">#</span><span class="bash">操作命令</span></span><br><span class="line"><span class="meta">#</span><span class="bash">1 基本操作</span></span><br><span class="line">sed -n &quot;1 p&quot;   test.txt  #输出ext = 134</span><br><span class="line"><span class="meta">#</span><span class="bash">2 逗号，表示从哪到哪</span></span><br><span class="line">sed -n &quot;1,3 p&quot; test.txt  #输出从1到3行。</span><br><span class="line"><span class="meta">#</span><span class="bash">3 m,+n ，表示从m行开始，的后续n行。</span></span><br><span class="line">sed -n &quot;1,+1 p&quot; test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">4 m~n 表示一个等差的行数，m m+n  m+2n m+3n，如n=2时，每隔一行。</span></span><br><span class="line">sed -n &quot;1~2 p&quot; test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">5 $表示最后一行</span></span><br><span class="line">sed -n &quot;2,$ p&quot; test.txt #打印第2到最后一行。</span><br><span class="line"><span class="meta">#</span><span class="bash"> 在文件最后添加一行。$表示最后一行，a表示添加操作，后面的是内容。3个部分用</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 空格进行分隔。<span class="variable">$a</span>直接写，会报错。</span></span><br><span class="line">sed &quot;$ a some good add&quot; test.txt  </span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>正则形式</p>
+<p>分隔符除了用 /  可以用竖线 | 。这样在路径替换的时候  就不用转义。</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">输出包含ext的行,可能有多行</span></span><br><span class="line">sed -n &quot;/ext/p&quot; test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出从哪到哪</span></span><br><span class="line">sed -n &quot;/ext/,/hello/p&quot; test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash">配合,+符号  同上</span></span><br><span class="line">sed &quot;/ext/,+1a suchuanchao&quot; test.txt</span><br><span class="line"><span class="meta">#</span><span class="bash"> 其他组合方式，待尝试</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>注意，sed的多次匹配部分需要加, </p>
+<ul>
+<li><p>开始行^</p>
+</li>
+<li><p>行尾 $</p>
+</li>
+<li><p>单个字符 。</p>
+</li>
+<li><p>配置字符集合 []   如[ab]</p>
+</li>
+<li><p>独有集[^]   如[~]</p>
+</li>
+<li><p>字符范围 [-]</p>
+</li>
+<li><p>零到一次出现 ?</p>
+</li>
+<li><p>一次或多次出现 +</p>
+</li>
+<li><p>零或多次出现  *   </p>
+</li>
+<li><p>n个重复  {n}</p>
+</li>
+<li><p>最少出现n个  {n,}</p>
+</li>
+<li><p>M到N次出现  {m,n}</p>
+</li>
+<li><p>管道   (|)  </p>
+</li>
+<li><p>字符转义</p>
+</li>
+<li><p>转移 \</p>
+</li>
+</ul>
+<h2 id="分隔符号"><a href="#分隔符号" class="headerlink" title="分隔符号"></a>分隔符号</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sed &#x27;s/a/b/g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s_a_b_g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s#a#b#g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s$a$b$g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s?a?b?g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s*a*b*g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s-a-b-g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s.a.b.g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;sXaXbXg&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;sxaxbxg&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br><span class="line">sed &#x27;s1a1b1g&#x27; &lt;&lt;&lt; &quot;haha&quot;</span><br></pre></td></tr></table></figure>
+
+<p>我们发现，好像任意字符都能成为符号。如果分隔符号出现了，那么应该转义。示例</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">sed <span class="string">&#x27;saaabag&#x27;</span> &lt;&lt;&lt; <span class="string">&quot;haha&quot;</span></span></span><br><span class="line">sed: -e expression #1,char 5: unknown option to `s&#x27;</span><br><span class="line"><span class="meta">$</span><span class="bash">sed <span class="string">&#x27;sa\aabag&#x27;</span> &lt;&lt;&lt; <span class="string">&quot;haha&quot;</span></span></span><br><span class="line">hbhb</span><br></pre></td></tr></table></figure>
+
+<h2 id="模式空间、保持空间"><a href="#模式空间、保持空间" class="headerlink" title="模式空间、保持空间"></a>模式空间、保持空间</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wanglelelihuanhuan/article/details/51591809">https://blog.csdn.net/wanglelelihuanhuan/article/details/51591809</a></p>
+<ul>
+<li>g：[address[,address]]g 将hold space中的内容拷贝到pattern space中，原来pattern space里的内容清除。</li>
+<li>G：[address[,address]]G 将hold space中的内容append到pattern space\n后。</li>
+<li>h：[address[,address]]h 将pattern space中的内容拷贝到hold space中，原来的hold space里的内容被清除。</li>
+<li>H：[address[,address]]H 将pattern space中的内容append到hold space\n后。</li>
+<li>d：[address[,address]]d 删除pattern中的所有行，并读入下一新行到pattern中。</li>
+<li>D：[address[,address]]D 删除multiline pattern中的第一行，不读入下一行。</li>
+<li>x：交换保持空间和模式空间的内容。</li>
+</ul>
+<p>一般用得比较多的就是模式空间，/partern/。</p>
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 倒序输入    模式最后1行里面，是这样的   5\n4\n3\n2\n1\n</span></span><br><span class="line">seq 1 5|sed &#x27;1!G;h;$!d&#x27; </span><br></pre></td></tr></table></figure>
+
+<p>感觉比较难，待研究。</p>
+<h2 id="难懂的代码"><a href="#难懂的代码" class="headerlink" title="难懂的代码"></a>难懂的代码</h2><ul>
+<li>标签:a、回退b</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed &#x27;:a;N;$!ba;s/a/A/g&#x27; file</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>:a</strong> 创建一个labela</li>
+<li><strong>N</strong> 将下一行读入到模式空间</li>
+<li><strong>$!</strong> 如果不是最后一行，ba跳转到label a处</li>
+<li><strong>s/a/A/</strong> 替换a为A，只替换一次<br>  有步骤1-3（即<code>:a;N;$!ba;</code>）就是为了将file全部内容读到模式空间中，然后再进行替换，这样替换就只会做一次。 </li>
+</ol>
+<p>实际上，没有起作用。</p>
+<h3 id="sed之更换某一行的内容"><a href="#sed之更换某一行的内容" class="headerlink" title="sed之更换某一行的内容"></a>sed之更换某一行的内容</h3><p>场景：希望替换掉某一行的内容，想用行数来操作，而非<code>s#原始内容#新内容#g</code>，建议的方式，<code>2d;3i新内容</code>这种格式。需要注意的是<code>2d;2a新内容</code>中种格式吧，因为已经删除掉了，无法在append进去。而<code>2a1234;2d</code>这种格式，它貌似无法正确的识别结尾。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">[root@scc ldap2mysql]# seq 1 10  &gt; test.txt</span><br><span class="line">[root@scc ldap2mysql]# cat test.txt </span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">[root@scc ldap2mysql]# sed -i  &#x27;2d;3a12345678&#x27; test.txt </span><br><span class="line">[root@scc ldap2mysql]# cat test.txt </span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">12345678</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">[root@scc ldap2mysql]# seq 1 10  &gt; test.txt</span><br><span class="line">[root@scc ldap2mysql]# sed -i &#x27;2d;2a1234&#x27; test.txt </span><br><span class="line">[root@scc ldap2mysql]# cat test.txt </span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">[root@scc ldap2mysql]# seq 1 10  &gt; test.txt</span><br><span class="line">[root@scc ldap2mysql]# sed -i &#x27;2a1234;2d&#x27; test.txt </span><br><span class="line">[root@scc ldap2mysql]# cat test.txt </span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">1234;2d</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">[root@scc ldap2mysql]# sed -i &#x27;2d;3i1234^Ctest.txt </span><br><span class="line">[root@scc ldap2mysql]# seq 1 10  &gt; test.txt</span><br><span class="line">[root@scc ldap2mysql]# sed -i &#x27;2d;3i1234&#x27; test.txt </span><br><span class="line">[root@scc ldap2mysql]# cat test.txt </span><br><span class="line">1</span><br><span class="line">1234</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/11/08/php/php%E4%B9%8Bpecl%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6/" rel="prev" title="php之pecl安装插件">
+                  <i class="fa fa-chevron-left"></i> php之pecl安装插件
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/11/28/k8s/test/" rel="next" title="test">
+                  test <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

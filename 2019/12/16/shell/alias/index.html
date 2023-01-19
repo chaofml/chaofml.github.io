@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="alias alias 使用的一些例子及技巧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="alias">
+<meta property="og:url" content="http://example.com/2019/12/16/shell/alias/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="alias alias 使用的一些例子及技巧。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic4.zhimg.com/50/v2-562a899410ddf9239c20c05700c59ebc_hd.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-51441d6ac4a5964f2ae47ec763b1b4c0_b.gif">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-ca743e1eb51a928927c8f7902adf4544_b.jpg">
+<meta property="article:published_time" content="2019-12-16T02:12:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.174Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic4.zhimg.com/50/v2-562a899410ddf9239c20c05700c59ebc_hd.jpg">
+
+
+<link rel="canonical" href="http://example.com/2019/12/16/shell/alias/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>alias | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#alias"><span class="nav-number">1.</span> <span class="nav-text">alias</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%AB%E5%90%8D%E6%98%AF%E5%95%A5%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">别名是啥？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A5%87%E6%B7%AB%E6%8A%80%E5%B7%A7"><span class="nav-number">1.2.</span> <span class="nav-text">奇淫技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%97%E5%87%BA%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">列出所有文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6-%E7%9B%AE%E5%BD%95%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.4.</span> <span class="nav-text">查看文件&#x2F;目录大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">查找文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BE%E5%BC%80%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.6.</span> <span class="nav-text">放开端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E5%BC%80%E5%90%AFHTTP%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.7.</span> <span class="nav-text">临时开启HTTP服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8%E9%A1%B9"><span class="nav-number">1.8.</span> <span class="nav-text">查看开机启动项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%97%B6%E9%97%B4"><span class="nav-number">1.9.</span> <span class="nav-text">查看当前时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BDocker%E9%95%9C%E5%83%8F%E4%BD%BF%E7%94%A8%E8%AF%A6%E6%83%85"><span class="nav-number">1.10.</span> <span class="nav-text">查看Docker镜像使用详情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B"><span class="nav-number">1.11.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%A4%96%E7%BD%91IP"><span class="nav-number">1.12.</span> <span class="nav-text">查看外网IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%AB%E5%90%8D%E8%A6%86%E7%9B%96"><span class="nav-number">1.12.1.</span> <span class="nav-text">别名覆盖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-number">1.13.</span> <span class="nav-text">写在最后</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/12/16/shell/alias/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          alias
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-16 10:12:00" itemprop="dateCreated datePublished" datetime="2019-12-16T10:12:00+08:00">2019-12-16</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h1><blockquote>
+<p>alias 使用的一些例子及技巧。</p>
+</blockquote>
+<a id="more"></a>
+
+<p><img src="https://pic4.zhimg.com/50/v2-562a899410ddf9239c20c05700c59ebc_hd.jpg" alt="让你相见恨晚的10个Linux命令别名！"></p>
+<h2 id="别名是啥？"><a href="#别名是啥？" class="headerlink" title="别名是啥？"></a>别名是啥？</h2><p>别名就是一个绰号，或者叫简写。</p>
+<h2 id="奇淫技巧"><a href="#奇淫技巧" class="headerlink" title="奇淫技巧"></a>奇淫技巧</h2><p>一般人定义别名都是这样定义的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias n=&#x27;echo HelloWorld&#x27; </span><br></pre></td></tr></table></figure>
+
+<p>今天我教大家一个更6的定义方法，保证6出水平，6出风格：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias n=&#x27;f()&#123; echo $1; &#125;; f&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>这相当于定义了一个函数f，并且在末尾调用它，看到「$1」了么？这样定义的别名可以传参！老铁觉得骚，啊呸，6不6？</p>
+<h2 id="列出所有文件"><a href="#列出所有文件" class="headerlink" title="列出所有文件"></a>列出所有文件</h2><p>ll命令想必是Linux中使用频率最高的，其实ll命令默认是ls -l –color=auto的别名，系统默认就有的，不需要自己定义，但它不够好用，我们自定义一个 推荐理由：方便，ll和la是使用频率比较高的 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alias ll=&#x27;ls -lht&#x27; #按修改时间逆序列出文件</span><br><span class="line">alias la=&#x27;ls -lhta&#x27; #按修改时间逆序列出所有文件</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">ll /usr  # ls本身后面就可以跟路径参数</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="查看文件-目录大小"><a href="#查看文件-目录大小" class="headerlink" title="查看文件/目录大小"></a>查看文件/目录大小</h2><p>当你磁盘空间满了想找出大文件此命令简直是神器！ 推荐理由：快速查看文件占用大小，路径修改方便，默认当前目录 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alias size=&#x27;f()&#123; du -sh $1* | sort -hr; &#125;; f&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">size   #当前目录</span><br><span class="line">size / #根目录</span><br></pre></td></tr></table></figure>
+
+
+
+<p>演示：</p>
+<p><img src="https://pic1.zhimg.com/v2-51441d6ac4a5964f2ae47ec763b1b4c0_b.gif" alt="img"></p>
+<h2 id="查找文件"><a href="#查找文件" class="headerlink" title="查找文件"></a>查找文件</h2><p>推荐理由：有时候传一个文件到Linux上，但不知道文件跑哪儿去了，这个命令特别有用！ 推荐指数：五星</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias sek=&#x27;f()&#123; find / -name $1; &#125;; f&#x27; # 在根目录查找文件</span><br><span class="line"># 调用示例 </span><br><span class="line">sek myfile</span><br></pre></td></tr></table></figure>
+
+
+
+<p>兄弟别名，在当前目录查找文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias sekc=&#x27;f()&#123; find ./ -name $1; &#125;; f&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">sekc myfile</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="放开端口"><a href="#放开端口" class="headerlink" title="放开端口"></a>放开端口</h2><p>当你要开放某个端口又不想查繁琐的iptables命令，此别名就非常有用了 推荐理由：快速开放端口，不要查询繁琐iptables命令，必须传端口号 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias portopen=&#x27;f()&#123; /sbin/iptables -I INPUT -p tcp --dport $1 -j ACCEPT; &#125;; f&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span> </span><br><span class="line">portopen 8080</span><br></pre></td></tr></table></figure>
+
+
+
+<p>兄弟别名，快速关闭端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alias portclose=&#x27;f()&#123; /sbin/iptables -I INPUT -p tcp --dport $1 -j DROP; &#125;; f&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span> </span><br><span class="line">portclose 8080</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="临时开启HTTP服务"><a href="#临时开启HTTP服务" class="headerlink" title="临时开启HTTP服务"></a>临时开启HTTP服务</h2><p>推荐理由：这个简直就是神器了，当你需要在某目录下载文件或快速访问html的时候，你需要它！如果访问不了需要看看端口是否开放！ 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">alias www=&#x27;f()&#123; python -m SimpleHTTPServer $1; &#125;; f&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例：</span></span><br><span class="line">www       #不传端口，默认8000</span><br><span class="line">www 8080 #8080端口开启HTTP服务</span><br></pre></td></tr></table></figure>
+
+
+
+<p>演示：</p>
+<p><img src="https://pic1.zhimg.com/v2-ca743e1eb51a928927c8f7902adf4544_b.jpg" alt="img"></p>
+<h2 id="查看开机启动项"><a href="#查看开机启动项" class="headerlink" title="查看开机启动项"></a>查看开机启动项</h2><p>推荐理由：没什么好说的，这个命令太长了，给他起个名就叫auto吧 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">alias auto=&#x27;systemctl list-unit-files --type=service | grep enabled | more&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">auto</span><br><span class="line"><span class="meta">#</span><span class="bash"> 回显如下</span></span><br><span class="line">autovt@.service                               enabled </span><br><span class="line">chronyd.service                               enabled </span><br><span class="line">crond.service                                 enabled </span><br><span class="line">getty@.service                                enabled </span><br><span class="line">iptables.service                              enabled </span><br><span class="line">--More--</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="查看当前时间"><a href="#查看当前时间" class="headerlink" title="查看当前时间"></a>查看当前时间</h2><p>推荐理由：都知道Linux下 默认查看时间是date命令，可它返回的时间格式看着想打人：Sat Dec 22 03:57:08 UTC 2018，没啥好说的，格式化后取名儿now 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">alias now=&#x27;date &quot;+%Y-%m-%d %H:%M:%S&quot;&#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">now</span><br><span class="line"><span class="meta">#</span><span class="bash"> 回显如下</span></span><br><span class="line">2018-12-22 03:59:33</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看Docker镜像使用详情"><a href="#查看Docker镜像使用详情" class="headerlink" title="查看Docker镜像使用详情"></a>查看Docker镜像使用详情</h2><p>推荐理由：有时候想看哪个docker镜像流量用的最多，docker stats命令一个一个去对比真是很蛋疼，所以有了它，你也可以按照另外的字段排序，修改-k8中的8为另外的数字，这个数字表示按照哪个字段排序 推荐指数：五星</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">alias dkrnet=&#x27;docker stats --no-stream | sort -k8 -hr | more&#x27;</span><br><span class="line"># 调用示例</span><br><span class="line">dkrnet</span><br><span class="line"># 回显如下</span><br><span class="line">f27760776941        ccc1                0.04% 49MiB / 985.3MiB 4.97% 41.2GB / 47.5GB 156GB / 14MB 14</span><br><span class="line">783353fc3522        ccc2                0.00% 5.941MiB / 985.3MiB 0.60% 14.4GB / 14.7GB 7.37GB / 0B 1</span><br><span class="line">e35fcbb46b7e        ccc3                0.00% 4.676MiB / 985.3MiB 0.47% 1.63GB / 1.6GB 3.04GB / 0B 1</span><br><span class="line">--More--</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h2><p>推荐理由：用过zip命令的都知道它有一个兄弟叫unzip，可是tar和jar没有，每次解压都不知道后面参数该怎么跟，所以给它取名儿untar或者unjar 推荐指数：四星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">alias untar=&#x27;tar xvf &#x27;</span><br><span class="line">alias unjar=&#x27;jar xvf &#x27;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 调用示例</span></span><br><span class="line">untar a.tar.gz</span><br><span class="line">unjar java.jar</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="查看外网IP"><a href="#查看外网IP" class="headerlink" title="查看外网IP"></a>查看外网IP</h2><p>推荐理由：想查看自己的外网IP？没问题！ 推荐指数：五星</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias ipe=&#x27;curl ipinfo.io/ip&#x27; </span><br></pre></td></tr></table></figure>
+
+<h3 id="别名覆盖"><a href="#别名覆盖" class="headerlink" title="别名覆盖"></a>别名覆盖</h3><p>起别名，别名如果跟原有的命令一样，则会发生别名覆盖的情况。则，使用反斜杆，来引用原有的别名。或者，直接使用绝对路径，来调用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">alias cp=&quot;cp -i&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用反斜杆来使用原来的命令</span></span><br><span class="line">\cp</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或  绝对路径</span></span><br><span class="line">/bin/cp --help</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>别名的正确使用方式是将别名写入~/.bashrc文件里面，保证下次登录还能使用，我将上面的别名来了一个汇总，老铁按需自取！</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将以下别名写出文件并退出</span></span><br><span class="line">alias ll=&#x27;ls -lht&#x27; #按修改时间逆序列出文件</span><br><span class="line">alias la=&#x27;ls -lhta&#x27; #按修改时间逆序列出所有文件</span><br><span class="line">alias size=&#x27;f()&#123; du -sh $1* | sort -hr; &#125;; f&#x27;</span><br><span class="line">alias sek=&#x27;f()&#123; find / -name $1; &#125;; f&#x27; # 在根目录查找文件</span><br><span class="line">alias sekc=&#x27;f()&#123; find ./ -name $1; &#125;; f&#x27;</span><br><span class="line">alias portopen=&#x27;f()&#123; /sbin/iptables -I INPUT -p tcp --dport $1 -j ACCEPT; &#125;; f&#x27;</span><br><span class="line">alias portclose=&#x27;f()&#123; /sbin/iptables -I INPUT -p tcp --dport $1 -j DROP; &#125;; f&#x27;</span><br><span class="line">alias www=&#x27;f()&#123; python -m SimpleHTTPServer $1; &#125;; f&#x27;</span><br><span class="line">alias auto=&#x27;systemctl list-unit-files --type=service | grep enabled | more&#x27;</span><br><span class="line">alias now=&#x27;date &quot;+%Y-%m-%d %H:%M:%S&quot;&#x27;</span><br><span class="line">alias dkrnet=&#x27;docker stats --no-stream | sort -k8 -hr | more&#x27;</span><br><span class="line">alias untar=&#x27;tar xvf &#x27;</span><br><span class="line">alias unjar=&#x27;jar xvf &#x27;</span><br><span class="line">alias ipe=&#x27;curl ipinfo.io/ip&#x27; </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 最后别忘了执行以下命令使别名生效</span></span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+              <a href="/blog/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/13/php/php%E4%B8%ADshell_exec%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%BF%9B%E7%A8%8B/" rel="prev" title="php中shell_exec实现多进程">
+                  <i class="fa fa-chevron-left"></i> php中shell_exec实现多进程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/12/16/php/%E5%87%A0%E7%A7%8D%E5%86%99%E6%96%87%E4%BB%B6%E5%AF%B9%E6%AF%94/" rel="next" title="几种写文件对比">
+                  几种写文件对比 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

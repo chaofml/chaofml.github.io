@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="这是一个用Python写的爬虫框架，并以web服务的形式，提供了创建、编辑、运行、管理任务。整体的思路还是非常不错的。以前在ubuntu上安装过，因为依赖的存在，可能并不好安装。但是，有了docker，安装瞬间不成问题。 由于提供了web界面，所有的操作都可以在web操作，熟练后，对于常见的网站，20分钟内，就能编写好爬写任务，所以，还是非常不错的。 本文简述一下使用方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pyspider">
+<meta property="og:url" content="http://example.com/2022/01/07/python/pyspider/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="这是一个用Python写的爬虫框架，并以web服务的形式，提供了创建、编辑、运行、管理任务。整体的思路还是非常不错的。以前在ubuntu上安装过，因为依赖的存在，可能并不好安装。但是，有了docker，安装瞬间不成问题。 由于提供了web界面，所有的操作都可以在web操作，熟练后，对于常见的网站，20分钟内，就能编写好爬写任务，所以，还是非常不错的。 本文简述一下使用方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/01/07/python/pyspider/pyspider.assets/pyspider-arch.png">
+<meta property="article:published_time" content="2022-01-07T10:10:07.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.165Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/01/07/python/pyspider/pyspider.assets/pyspider-arch.png">
+
+
+<link rel="canonical" href="http://example.com/2022/01/07/python/pyspider/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>pyspider | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">资源文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E6%8D%95%E6%8D%89"><span class="nav-number">3.2.</span> <span class="nav-text">异常捕捉</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">操作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E6%96%87%E4%BB%B6"><span class="nav-number">4.2.</span> <span class="nav-text">模板文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90"><span class="nav-number">4.3.</span> <span class="nav-text">解析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pyquery"><span class="nav-number">4.3.1.</span> <span class="nav-text">pyquery</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#json"><span class="nav-number">4.3.2.</span> <span class="nav-text">json</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#re"><span class="nav-number">4.3.3.</span> <span class="nav-text">re</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PhantomJS"><span class="nav-number">4.3.4.</span> <span class="nav-text">PhantomJS</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E9%9D%A2"><span class="nav-number">4.4.</span> <span class="nav-text">多级页面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E5%88%86%E7%B1%BB"><span class="nav-number">4.4.1.</span> <span class="nav-text">页面分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E4%BC%A0%E9%80%92"><span class="nav-number">4.4.2.</span> <span class="nav-text">变量传递</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">4.4.3.</span> <span class="nav-text">多返回值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E5%8F%98%E9%87%8F"><span class="nav-number">4.5.</span> <span class="nav-text">可用变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">4.6.</span> <span class="nav-text">写数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6"><span class="nav-number">4.6.1.</span> <span class="nav-text">二进制文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">4.7.</span> <span class="nav-text">结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-number">4.7.1.</span> <span class="nav-text">结构图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="nav-number">4.7.2.</span> <span class="nav-text">结构说明：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6"><span class="nav-number">4.7.3.</span> <span class="nav-text">组件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B0%83%E5%BA%A6%E5%99%A8"><span class="nav-number">4.7.3.1.</span> <span class="nav-text">调度器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%99%A8"><span class="nav-number">4.7.3.2.</span> <span class="nav-text">下载器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">4.7.3.3.</span> <span class="nav-text">处理器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Result-Worker"><span class="nav-number">4.7.3.4.</span> <span class="nav-text">Result Worker</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WebUI"><span class="nav-number">4.7.3.5.</span> <span class="nav-text">WebUI</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81"><span class="nav-number">4.7.4.</span> <span class="nav-text">数据流</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.8.</span> <span class="nav-text">任务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E4%BB%BB%E5%8A%A1%EF%BC%9A"><span class="nav-number">4.8.1.</span> <span class="nav-text">新任务：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E9%87%8D%E8%AF%95%EF%BC%9A"><span class="nav-number">4.8.2.</span> <span class="nav-text">任务重试：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.8.3.</span> <span class="nav-text">删除任务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.9.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%90%86"><span class="nav-number">4.9.1.</span> <span class="nav-text">代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#every-minutes-24-60"><span class="nav-number">4.9.2.</span> <span class="nav-text">@every(minutes&#x3D;24 * 60)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#config-age-10-24-60-60"><span class="nav-number">4.9.3.</span> <span class="nav-text">@config(age&#x3D;10 * 24 * 60 * 60)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#config-priority-2"><span class="nav-number">4.10.</span> <span class="nav-text">@config(priority&#x3D;2)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rate-brust"><span class="nav-number">4.10.1.</span> <span class="nav-text">rate&#x2F;brust</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E5%A4%84%E7%90%86"><span class="nav-number">4.11.</span> <span class="nav-text">任务处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.12.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">4.13.</span> <span class="nav-text">分布式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E5%8A%A0%E5%AF%86"><span class="nav-number">4.14.</span> <span class="nav-text">访问加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9D%9F%E5%90%8E%EF%BC%8C%E8%A7%A6%E5%8F%91"><span class="nav-number">4.15.</span> <span class="nav-text">结束后，触发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8"><span class="nav-number">4.16.</span> <span class="nav-text">存储</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#api"><span class="nav-number">5.</span> <span class="nav-text">api</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#self-crawl"><span class="nav-number">5.1.</span> <span class="nav-text">self.crawl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#age"><span class="nav-number">5.1.1.</span> <span class="nav-text">age</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#priority"><span class="nav-number">5.1.2.</span> <span class="nav-text">priority</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exetime"><span class="nav-number">5.1.3.</span> <span class="nav-text">exetime</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#retries"><span class="nav-number">5.1.4.</span> <span class="nav-text">retries</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#itag"><span class="nav-number">5.1.5.</span> <span class="nav-text">itag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#auto-recrawl"><span class="nav-number">5.1.6.</span> <span class="nav-text">auto_recrawl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#method"><span class="nav-number">5.1.7.</span> <span class="nav-text">method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#params"><span class="nav-number">5.1.8.</span> <span class="nav-text">params</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data"><span class="nav-number">5.1.9.</span> <span class="nav-text">data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#files"><span class="nav-number">5.1.10.</span> <span class="nav-text">files</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#user-agent"><span class="nav-number">5.1.11.</span> <span class="nav-text">user_agent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#headers"><span class="nav-number">5.1.12.</span> <span class="nav-text">headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cookie"><span class="nav-number">5.1.13.</span> <span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#connect-timeout"><span class="nav-number">5.1.14.</span> <span class="nav-text">connect_timeout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#timeout"><span class="nav-number">5.1.15.</span> <span class="nav-text">timeout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#allow-redirects"><span class="nav-number">5.1.16.</span> <span class="nav-text">allow_redirects</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fetch-type"><span class="nav-number">5.1.17.</span> <span class="nav-text">fetch_type</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#save"><span class="nav-number">5.1.18.</span> <span class="nav-text">save</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Response"><span class="nav-number">5.2.</span> <span class="nav-text">Response</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-url"><span class="nav-number">5.2.1.</span> <span class="nav-text">Response.url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-text"><span class="nav-number">5.2.2.</span> <span class="nav-text">Response.text</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-content"><span class="nav-number">5.2.3.</span> <span class="nav-text">Response.content</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-doc"><span class="nav-number">5.2.4.</span> <span class="nav-text">Response.doc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-etree"><span class="nav-number">5.2.5.</span> <span class="nav-text">Response.etree</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-json"><span class="nav-number">5.2.6.</span> <span class="nav-text">Response.json</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-status-code"><span class="nav-number">5.2.7.</span> <span class="nav-text">Response.status_code</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-orig-url"><span class="nav-number">5.2.8.</span> <span class="nav-text">Response.orig_url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-headers"><span class="nav-number">5.2.9.</span> <span class="nav-text">Response.headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-cookies"><span class="nav-number">5.2.10.</span> <span class="nav-text">Response.cookies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-error"><span class="nav-number">5.2.11.</span> <span class="nav-text">Response.error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-time"><span class="nav-number">5.2.12.</span> <span class="nav-text">Response.time</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-ok"><span class="nav-number">5.2.13.</span> <span class="nav-text">Response.ok</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-encoding"><span class="nav-number">5.2.14.</span> <span class="nav-text">Response.encoding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-save"><span class="nav-number">5.2.15.</span> <span class="nav-text">Response.save</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-js-script-result"><span class="nav-number">5.2.16.</span> <span class="nav-text">Response.js_script_result</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Response-raise-for-status"><span class="nav-number">5.2.17.</span> <span class="nav-text">Response.raise_for_status()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#catch-status-code-error"><span class="nav-number">5.3.</span> <span class="nav-text">@catch_status_code_error</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86%E7%AF%87"><span class="nav-number">6.</span> <span class="nav-text">原理篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#webui"><span class="nav-number">6.1.</span> <span class="nav-text">webui</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A4%E7%89%8C%E6%A1%B6%E7%AE%97%E6%B3%95"><span class="nav-number">6.2.</span> <span class="nav-text">令牌桶算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#six"><span class="nav-number">6.3.</span> <span class="nav-text">six</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E8%B7%B5%E7%AF%87"><span class="nav-number">7.</span> <span class="nav-text">实践篇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="nav-number">7.1.</span> <span class="nav-text">常用函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="nav-number">7.1.1.</span> <span class="nav-text">自定义函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8F%96%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">7.2.</span> <span class="nav-text">抓取常用的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E5%9B%9E%E8%B0%83"><span class="nav-number">7.3.</span> <span class="nav-text">智能回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B2%BE%E7%A1%AE%E5%88%86%E6%9E%90%E4%BB%BB%E5%8A%A1%E9%93%BE%E6%8E%A5"><span class="nav-number">7.4.</span> <span class="nav-text">精确分析任务链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%94%E5%9B%9E%E5%80%BC-1"><span class="nav-number">7.5.</span> <span class="nav-text">多返回值</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/07/python/pyspider/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pyspider
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-07 18:10:07" itemprop="dateCreated datePublished" datetime="2022-01-07T18:10:07+08:00">2022-01-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这是一个用Python写的爬虫框架，并以web服务的形式，提供了创建、编辑、运行、管理任务。整体的思路还是非常不错的。以前在ubuntu上安装过，因为依赖的存在，可能并不好安装。但是，有了docker，安装瞬间不成问题。</p>
+<p>由于提供了web界面，所有的操作都可以在web操作，熟练后，对于常见的网站，20分钟内，就能编写好爬写任务，所以，还是非常不错的。</p>
+<p>本文简述一下使用方式。</p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="http://docs.pyspider.org/en/latest/">http://docs.pyspider.org/en/latest/</a>    中文文档暂时没有找到</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/binux/pyspider">https://github.com/binux/pyspider</a></p>
+</li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run  --rm  -itd   --name pyspider  -p 5000:5000  saibaster/pyspider</span><br></pre></td></tr></table></figure>
+
+<p>然后在浏览器上，访问即可。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a>资源文件</h3><p>居然使用了cdnjs的css、js资源文件，需要想办法绕过去。否则可能会缺少样式。如何解决，变成本地的元素，暂未想到。</p>
+<p>下载资源脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:55235/ -o index.html</span><br><span class="line">for each in `egrep  -o &#x27;cdnjs.cloudflare.com/ajax/libs/([^&quot;]*?)&#x27; index.html | sed &#x27;s#cdnjs.cloudflare.com/ajax/libs/##&#x27;`;do</span><br><span class="line">    echo $each;</span><br><span class="line">    curdir=$&#123;each%/*&#125;</span><br><span class="line">    filename=$&#123;each##*/&#125;</span><br><span class="line">    if [ ! -d curdir ];then</span><br><span class="line">        mkdir -p &quot;static/$curdir&quot;</span><br><span class="line">    fi</span><br><span class="line">    curl -o &quot;static/$each&quot; &quot;http://cdnjs.cloudflare.com/ajax/libs/$each&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>定制docker</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> saibaster/pyspider:<span class="number">1.29</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> app.py /opt/pyspider/pyspider/webui/app.py</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> static.tar.gz  /opt/pyspider/pyspider/webui/</span></span><br></pre></td></tr></table></figure>
+
+<p>构建</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t pyspider   .</span><br></pre></td></tr></table></figure>
+
+<p>启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run  --rm  -itd   --name pyspider  -p 5000:5000  pyspider</span><br></pre></td></tr></table></figure>
+
+<p>这样，就解决了使用外部资源的问题。</p>
+<h3 id="异常捕捉"><a href="#异常捕捉" class="headerlink" title="异常捕捉"></a>异常捕捉</h3><p>遇到了中文的url，因为它默认会处理所有的url，结果遇到中文的url直接失败了，抛出异常。虽然此异常，并不会影响整体的爬取，但是呢，却无法查清楚到底是哪些任务失败了，以及无法手动处理？（只能看到重试次数）</p>
+<p>可能的结果是：导致数据爬取不完整……，这就tm太坑了吧？</p>
+<p>貌似，retry的时候，可以看到。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a>操作流程</h3><p>点新建，在右侧点编辑 代码。左侧上，点run，箭头控制，到那个层级的页面。在下面，follow中，处理具体的页面。比较好用的是web浏览，然后css选择器，会帮助自动选择。</p>
+<h3 id="模板文件"><a href="#模板文件" class="headerlink" title="模板文件"></a>模板文件</h3><p>下面是给的样本文件，从<code>on_start</code>开始，编写一级级页面爬取的回调。除了框架的功能，python语言本身的功能，都是可以用的。如<code>re</code>等等。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># Created on 2022-01-10 06:27:19</span></span><br><span class="line"><span class="comment"># Project: scc</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pyspider.libs.base_handler <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    crawl_config = &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">    @every(<span class="params">minutes=<span class="number">24</span> * <span class="number">60</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.crawl(<span class="string">&#x27;__START_URL__&#x27;</span>, callback=self.index_page)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @config(<span class="params">age=<span class="number">10</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">            self.crawl(each.attr.href, callback=self.detail_page)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @config(<span class="params">priority=<span class="number">2</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">detail_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">            <span class="string">&quot;title&quot;</span>: response.doc(<span class="string">&#x27;title&#x27;</span>).text(),</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><h4 id="pyquery"><a href="#pyquery" class="headerlink" title="pyquery"></a>pyquery</h4><p>比较常用的如下，即在模版中常用的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">    each.attr.xxx  <span class="comment"># 其他数据</span></span><br><span class="line">    each.text()   <span class="comment"># 返回文本内容</span></span><br><span class="line">    each.html()   <span class="comment"># 没有试过</span></span><br><span class="line">    each(<span class="string">&#x27;td&#x27;</span>)    <span class="comment"># 继续往下查找，</span></span><br><span class="line">    each(<span class="string">&#x27;td&#x27;</span>).text()  <span class="comment"># 如返回节点</span></span><br><span class="line">    [x.text() <span class="keyword">for</span> x <span class="keyword">in</span> each(<span class="string">&#x27;td&#x27;</span>).items()]     <span class="comment"># 继续遍历该节点</span></span><br><span class="line">    self.crawl(each.attr.href, callback=self.detail_page)</span><br></pre></td></tr></table></figure>
+
+<p><code>response.doc</code>是对pyquery(一种类似于jquery的库)的封装。可以非常方便的抽取出信息。</p>
+<p>使用正则，匹配特定的url</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">    <span class="keyword">if</span> re.match(<span class="string">&quot;http://www.imdb.com/title/tt\d+/$&quot;</span>, each.attr.href):</span><br><span class="line">        self.crawl(each.attr.href, callback=self.detail_page)</span><br></pre></td></tr></table></figure>
+
+<h4 id="json"><a href="#json" class="headerlink" title="json"></a>json</h4><p>如果是直接请求接口文件，返回的是json数据，那么，可以使用下面的方法来解析。</p>
+<p>返回的是dict对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response.json(&quot;字段&quot;)</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="re"><a href="#re" class="headerlink" title="re"></a>re</h4><h4 id="PhantomJS"><a href="#PhantomJS" class="headerlink" title="PhantomJS"></a>PhantomJS</h4><p>解析js渲染的页面。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.crawl(<span class="string">&#x27;http://www.twitch.tv/directory/game/Dota%202&#x27;</span>,</span><br><span class="line">                   fetch_type=<span class="string">&#x27;js&#x27;</span>, callback=self.index_page)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">            <span class="string">&quot;channels&quot;</span>: [&#123;</span><br><span class="line">                <span class="string">&quot;title&quot;</span>: x(<span class="string">&#x27;.title&#x27;</span>).text(),</span><br><span class="line">                <span class="string">&quot;viewers&quot;</span>: x(<span class="string">&#x27;.info&#x27;</span>).contents()[<span class="number">2</span>],</span><br><span class="line">                <span class="string">&quot;name&quot;</span>: x(<span class="string">&#x27;.info a&#x27;</span>).text(),</span><br><span class="line">            &#125; <span class="keyword">for</span> x <span class="keyword">in</span> response.doc(<span class="string">&#x27;.stream.item&#x27;</span>).items()]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用js来模拟页面的滚动效果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Handler(BaseHandler):</span><br><span class="line">    def on_start(self):</span><br><span class="line">        self.crawl(&#x27;http://www.pinterest.com/categories/popular/&#x27;,</span><br><span class="line">                   fetch_type=&#x27;js&#x27;, js_script=&quot;&quot;&quot;</span><br><span class="line">                   function() &#123;</span><br><span class="line">                       window.scrollTo(0,document.body.scrollHeight);</span><br><span class="line">                   &#125;</span><br><span class="line">                   &quot;&quot;&quot;, callback=self.index_page)</span><br><span class="line"></span><br><span class="line">    def index_page(self, response):</span><br><span class="line">        return &#123;</span><br><span class="line">            &quot;url&quot;: response.url,</span><br><span class="line">            &quot;images&quot;: [&#123;</span><br><span class="line">                &quot;title&quot;: x(&#x27;.richPinGridTitle&#x27;).text(),</span><br><span class="line">                &quot;img&quot;: x(&#x27;.pinImg&#x27;).attr(&#x27;src&#x27;),</span><br><span class="line">                &quot;author&quot;: x(&#x27;.creditName&#x27;).text(),</span><br><span class="line">            &#125; for x in response.doc(&#x27;.item&#x27;).items() if x(&#x27;.pinImg&#x27;)]</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="多级页面"><a href="#多级页面" class="headerlink" title="多级页面"></a>多级页面</h3><h4 id="页面分类"><a href="#页面分类" class="headerlink" title="页面分类"></a>页面分类</h4><p>按它的设计，任务会从上一级、往下一级流转，但是呢，有的时候，是否能设置一个智能的分类，决定网哪个层级跳转？</p>
+<p>下面 这个例子，很好的说明了，页面，往哪个回调流转，即，不要惯性认为，从某一级页面必须要流转到下一级页面。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">            <span class="keyword">if</span> re.match(<span class="string">&quot;http://www.imdb.com/title/tt\d+/$&quot;</span>, each.attr.href):</span><br><span class="line">                self.crawl(each.attr.href, callback=self.detail_page)   <span class="comment"># 到下一级</span></span><br><span class="line">        self.crawl(response.doc(<span class="string">&#x27;#right a&#x27;</span>).attr.href, callback=self.index_page) <span class="comment"># 继续</span></span><br></pre></td></tr></table></figure>
+
+<p>有一种场景：</p>
+<p>url一般都是有一定的规则的，我们可以根据url的格式，来决定，往哪个页面回调来处理。相当于，用<code>switch</code>来当个智能中转。</p>
+<p>有的时候，也可以通过多增加一层，避免在最后结果页面上，再发起爬取任务。比如，那种左边是目录页面，右遍是内容。（相当于，一个页面，经过两个任务处理。)。</p>
+<h4 id="变量传递"><a href="#变量传递" class="headerlink" title="变量传递"></a>变量传递</h4><p>从上级页面，能否往下级页面传递一些变量？这些变量貌似还不能放到类里面。即，数据是从多个页面获取到的？</p>
+<p><strong>变量绑定在reponse对象的save属性上。</strong>具体用法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@config(<span class="params">priority=<span class="number">3</span></span>)        </span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index_page2</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">            <span class="keyword">if</span> each.attr.href== <span class="string">&#x27;http://www.miibeian.gov.cn/&#x27;</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">if</span> each.text().isdigit():</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            save = &#123;</span><br><span class="line">                <span class="string">&quot;sheng&quot;</span>:response.save[<span class="string">&quot;sheng&quot;</span>],</span><br><span class="line">                <span class="string">&quot;shi&quot;</span>:response.save[<span class="string">&quot;shi&quot;</span>],</span><br><span class="line">                <span class="string">&quot;xian&quot;</span>:each.text()          </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">#print(save)</span></span><br><span class="line">            self.crawl(each.attr.href, callback=self.index_page3,save =save)</span><br></pre></td></tr></table></figure>
+
+<p>重点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 访问</span></span><br><span class="line">response.save[<span class="string">&quot;sheng&quot;</span>],</span><br><span class="line"><span class="comment"># 该接口，往下级页面传递</span></span><br><span class="line">self.crawl(each.attr.href, callback=self.index_page3,save =save)</span><br></pre></td></tr></table></figure>
+
+<h4 id="多返回值"><a href="#多返回值" class="headerlink" title="多返回值"></a>多返回值</h4><ul>
+<li>最后页面返回多条数据</li>
+</ul>
+<p>最后的详情页面，默认的是return，能否yield？如果不能yield，那么能否设置一个空的下载任务，只负责解析？</p>
+<p>官网有介绍：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@config(<span class="params">priority=<span class="number">5</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">detail_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="comment"># 错误示范，导致辞职循环的数据，默认都是最后1条。</span></span><br><span class="line">        save = &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">            <span class="string">&quot;title&quot;</span>: response.doc(<span class="string">&#x27;title&#x27;</span>).text(),</span><br><span class="line">            <span class="string">&quot;sheng&quot;</span>:response.save[<span class="string">&quot;sheng&quot;</span>],</span><br><span class="line">            <span class="string">&quot;shi&quot;</span>:response.save[<span class="string">&quot;shi&quot;</span>],</span><br><span class="line">            <span class="string">&quot;xian&quot;</span>:response.save[<span class="string">&quot;xian&quot;</span>],</span><br><span class="line">            <span class="string">&quot;xiang&quot;</span>:response.save[<span class="string">&quot;xiang&quot;</span>],</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> i, each <span class="keyword">in</span> <span class="built_in">enumerate</span>(response.doc(<span class="string">&#x27;tr.villagetr&#x27;</span>).items()):</span><br><span class="line">            <span class="comment"># 应该在此处，新建对象处理。</span></span><br><span class="line">            cun_infos = [x.text() <span class="keyword">for</span> x <span class="keyword">in</span> each(<span class="string">&quot;td&quot;</span>).items()]</span><br><span class="line">            save[<span class="string">&quot;cun_bm&quot;</span>] = cun_infos[<span class="number">0</span>]</span><br><span class="line">            save[<span class="string">&quot;cun_type&quot;</span>] = cun_infos[<span class="number">1</span>]</span><br><span class="line">            save[<span class="string">&quot;cun_name&quot;</span>] = cun_infos[<span class="number">2</span>]</span><br><span class="line">            print(save)</span><br><span class="line">            self.send_message(self.project_name, save,url=<span class="string">&quot;%s#%s&quot;</span> % (response.url, i))</span><br><span class="line">            </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_message</span>(<span class="params">self, project, msg</span>):</span></span><br><span class="line">        <span class="keyword">return</span> msg</span><br></pre></td></tr></table></figure>
+
+<p><strong>猜测：多返回值的时候，url应该是要重定义的，否则，保存的值，会被覆盖。</strong></p>
+<p>使用for循环调用<code>self.send_message</code>方法，然后定义<code>on_message</code>方法，貌似，不定义，虽然也能跑，但是无法展示出数据。</p>
+<p>官网说：As resultdb de-duplicate results by taskid(url), the latest will overwrite previous results.One workaround is using <code>send_message</code> API to make a <code>fake</code> taskid for each result.</p>
+<ul>
+<li>多个页面，都返回数据</li>
+</ul>
+<p>比如，有多个回调页面，然后呢，每个回调页面都</p>
+<h3 id="可用变量"><a href="#可用变量" class="headerlink" title="可用变量"></a>可用变量</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">self.project_name</span><br><span class="line">self.project  <span class="comment">#information about current project</span></span><br><span class="line">self.response</span><br><span class="line">self.task</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="写数据"><a href="#写数据" class="headerlink" title="写数据"></a>写数据</h3><p>写数据，可以自己实现<code>on_result</code>方法</p>
+<h4 id="二进制文件"><a href="#二进制文件" class="headerlink" title="二进制文件"></a>二进制文件</h4><p>比如要写二进制文件等等。直接写文件即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response.content  <span class="comment"># 返回的内容。直接写文件即可</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_result(self, result)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><h4 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h4><p> <img src="pyspider.assets/pyspider-arch.png" alt="pyspider"> </p>
+<h4 id="结构说明："><a href="#结构说明：" class="headerlink" title="结构说明："></a>结构说明：</h4><p>适合维护大量的抓取代码，即可以建不同的工程。每个工程的数据可能会更新，通过配置，页面能快速的更新。关于请求，可以是get、post等请求。</p>
+<p>总体来说，它是一个工程化的东西。</p>
+<p>每个部分都被称为它的一个组件。组件之间，通过消息队列来传递。并不是直接的调用。但是调度器，只有一个。</p>
+<h4 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h4><h5 id="调度器"><a href="#调度器" class="headerlink" title="调度器"></a>调度器</h5><p>通过<code>self.crawl</code>接口来调用。还实现了令牌桶算法。用来控制并发流量等等。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cjsblog/p/9379516.html">令牌桶算法介绍</a>  具体参见后面：令牌桶算法</p>
+<p>调度器，内部维护了一个任务队列。进入队列或者进入数据库中的任务，后续代码的更改，比如判断是否爬取这样的功能，后续都没有办法再控制了。</p>
+<h5 id="下载器"><a href="#下载器" class="headerlink" title="下载器"></a>下载器</h5><p>抓取页面，然后然处理器来处理。支持dataURI ,还可以使用<code>Phantomjs </code>。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fsjohnhuang/p/3903688.html">DataURI</a></p>
+<h5 id="处理器"><a href="#处理器" class="headerlink" title="处理器"></a>处理器</h5><p>负责处理数据。绑定了<code>PyQuery</code>工具，<code>response.doc</code>来调用。可以产出需要的数据，也可以产生新的任务，供下一轮处理。</p>
+<h5 id="Result-Worker"><a href="#Result-Worker" class="headerlink" title="Result Worker"></a>Result Worker</h5><p>存数据</p>
+<h5 id="WebUI"><a href="#WebUI" class="headerlink" title="WebUI"></a>WebUI</h5><p>web的前端页面。</p>
+<h4 id="数据流"><a href="#数据流" class="headerlink" title="数据流"></a>数据流</h4><ul>
+<li>点击开始时，运行脚本的<code>on_start</code>方法，该方法，会往调度器类产生任务。</li>
+<li>调度器，调度任务，on_start产生的任务，也会像正常的任务一样被调度。</li>
+<li>下载器，下载任务，并将结果返回给处理器。</li>
+<li>处理器，会处理数据，并跟据情况，产生新的任务，并通过<code>self.crawl</code>接口，发送给调度器，任务完成后，会发消息给调度器，告知消息已经完成了。有返回结果，则通过<code>result_queue</code>队列，返回。</li>
+<li>调度器，接收处理器发过来的新任务，判断，该任务是否需要重爬，如果需要，则按照优先级放到队列中。</li>
+<li>处理器，会不停的处理，……</li>
+</ul>
+<h3 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h3><p>任务4种状态：成功、失败、激活中、bad（暂未用）</p>
+<h4 id="新任务："><a href="#新任务：" class="headerlink" title="新任务："></a>新任务：</h4><p>exetime如果设置了，不到时间，不会运行 。</p>
+<p>age或itag来判断是否是新任务</p>
+<h4 id="任务重试："><a href="#任务重试：" class="headerlink" title="任务重试："></a>任务重试：</h4><p><code>retry_delay</code>跟<code>crawl_config</code>同级。定义，任务失败后，何时会再次触发。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">retry_delay = &#123;</span><br><span class="line">        <span class="number">0</span>: <span class="number">30</span>,</span><br><span class="line">        <span class="number">1</span>: <span class="number">1</span>*<span class="number">60</span>*<span class="number">60</span>,</span><br><span class="line">        <span class="number">2</span>: <span class="number">6</span>*<span class="number">60</span>*<span class="number">60</span>,</span><br><span class="line">        <span class="number">3</span>: <span class="number">12</span>*<span class="number">60</span>*<span class="number">60</span>,</span><br><span class="line">        <span class="string">&#x27;&#x27;</span>: <span class="number">24</span>*<span class="number">60</span>*<span class="number">60</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认，重试3次。</p>
+<h4 id="删除任务"><a href="#删除任务" class="headerlink" title="删除任务"></a>删除任务</h4><p>如果发现运行的爬虫不合理，则可以更改规则，但是，已进入任务库的数据，则无法处理。故手动删库，如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delete FROM &quot;taskdb_taimeiti&quot; where url not like &quot;%tmtpost.com%&quot; and process like &#x27;%index_page%&#x27;  ;</span><br></pre></td></tr></table></figure>
+
+<p>但是，调度器内的任务，暂时没有想到方法删除。（依然会被调度）</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>配置可以囟到 <code>crawl_config</code>属性上，也可以，1、在定义回调函数的时候，2、使用注解来实现。3、还可以在<code>self.crawl(each.attr.href, callback=self.index_page3,age=age)</code>时，来定义。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    crawl_config = &#123;</span><br><span class="line">        <span class="string">&#x27;headers&#x27;</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;GoogleBot&#x27;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    crawl_config = &#123;</span><br><span class="line">        <span class="string">&#x27;proxy&#x27;</span>: <span class="string">&#x27;localhost:8080&#x27;</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="every-minutes-24-60"><a href="#every-minutes-24-60" class="headerlink" title="@every(minutes=24 * 60)"></a>@every(minutes=24 * 60)</h4><p>定义任务，多少小时，重新跑一遍。一般定义在<code> on_start</code>，函数上。</p>
+<h4 id="config-age-10-24-60-60"><a href="#config-age-10-24-60-60" class="headerlink" title="@config(age=10 * 24 * 60 * 60)"></a>@config(age=10 * 24 * 60 * 60)</h4><p>定义页面多久重新，算过期。一个页面，可能已经爬取过了，下一次，再爬的时候，默认会忽略的。但是，过了age时间之后，才会重爬一次。</p>
+<h3 id="config-priority-2"><a href="#config-priority-2" class="headerlink" title="@config(priority=2)"></a>@config(priority=2)</h3><p>定义优先级，优先爬取数值小的页面。</p>
+<h4 id="rate-brust"><a href="#rate-brust" class="headerlink" title="rate/brust"></a>rate/brust</h4><p>rate定义1秒，大概取几次结果。如定义为1，则，每秒1个任务。如果<code>0.1</code>，每10秒1个任务。</p>
+<p> <code>burst</code>  搞不太明白，看了原理后，大概相当于令牌桶的容量上面是多少，多了就会丢弃。</p>
+<h3 id="任务处理"><a href="#任务处理" class="headerlink" title="任务处理"></a>任务处理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspider.database <span class="keyword">import</span> connect_database</span><br><span class="line">resultdb = connect_database(<span class="string">&quot;&lt;your resutldb connection url&gt;&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> project <span class="keyword">in</span> resultdb.projects:</span><br><span class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> resultdb.select(project):</span><br><span class="line">        <span class="keyword">assert</span> result[<span class="string">&#x27;taskid&#x27;</span>]</span><br><span class="line">        <span class="keyword">assert</span> result[<span class="string">&#x27;url&#x27;</span>]</span><br><span class="line">        <span class="keyword">assert</span> result[<span class="string">&#x27;result&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><h3 id="分布式"><a href="#分布式" class="headerlink" title="分布式"></a>分布式</h3><h3 id="访问加密"><a href="#访问加密" class="headerlink" title="访问加密"></a>访问加密</h3><p>如果服务部署在公网上，那么，还需要访问加密，并不能让人随便访问？简单的方式，增加一层nginx，然后让nginx来控制权限？或者，内置了安全访问配置如下：</p>
+<p>启动如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyspider  -c /opt/pyspider/data/config.json</span><br></pre></td></tr></table></figure>
+
+<p>配置的json</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;taskdb&quot;</span>: <span class="string">&quot;mysql+taskdb://username:password@host:port/taskdb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;projectdb&quot;</span>: <span class="string">&quot;mysql+projectdb://username:password@host:port/projectdb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;resultdb&quot;</span>: <span class="string">&quot;mysql+resultdb://username:password@host:port/resultdb&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;message_queue&quot;</span>: <span class="string">&quot;amqp://username:password@host:port/%2F&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;webui&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;username&quot;</span>: <span class="string">&quot;some_name&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;password&quot;</span>: <span class="string">&quot;some_passwd&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;need-auth&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="结束后，触发"><a href="#结束后，触发" class="headerlink" title="结束后，触发"></a>结束后，触发</h3><p>比如爬取结束后，想要触发消息。发钉钉通知等等。有些场景下，会触发。（一次性任务，任务结束。重复性任务，即every修饰的任务，每次结束都会触发。）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">on_finished </span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><h2 id="api"><a href="#api" class="headerlink" title="api"></a>api</h2><h3 id="self-crawl"><a href="#self-crawl" class="headerlink" title="self.crawl"></a>self.crawl</h3><p>至少是这样调用的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">self.crawl(each.attr.href, callback=self.detail_page)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 多个url</span></span><br><span class="line">self.crawl([x.attr.href <span class="keyword">for</span> x <span class="keyword">in</span> response.doc(<span class="string">&#x27;#right a&#x27;</span>).items()], callback=self.index_page)</span><br></pre></td></tr></table></figure>
+
+<h4 id="age"><a href="#age" class="headerlink" title="age"></a>age</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@config(<span class="params">age=<span class="number">10</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="priority"><a href="#priority" class="headerlink" title="priority"></a>priority</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">self.crawl(<span class="string">&#x27;http://www.example.org/233.html&#x27;</span>, callback=self.detail_page,</span><br><span class="line">               priority=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="exetime"><a href="#exetime" class="headerlink" title="exetime"></a>exetime</h4><p>任务不会立即执行，会在制定的exetime到了之后，才会执行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.crawl(<span class="string">&#x27;http://www.example.org/&#x27;</span>, callback=self.callback,</span><br><span class="line">               exetime=time.time()+<span class="number">30</span>*<span class="number">60</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="retries"><a href="#retries" class="headerlink" title="retries"></a>retries</h4><p>默认重试次数为3次。</p>
+<h4 id="itag"><a href="#itag" class="headerlink" title="itag"></a>itag</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> response.doc(<span class="string">&#x27;.item&#x27;</span>).items():</span><br><span class="line">        self.crawl(item.find(<span class="string">&#x27;a&#x27;</span>).attr.url, callback=self.detail_page,</span><br><span class="line">                   itag=item.find(<span class="string">&#x27;.update-time&#x27;</span>).text())</span><br></pre></td></tr></table></figure>
+
+<p>全部重爬一次。使用<code>itag</code>来标记一个版本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    crawl_config = &#123;</span><br><span class="line">        <span class="string">&#x27;itag&#x27;</span>: <span class="string">&#x27;v223&#x27;</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="auto-recrawl"><a href="#auto-recrawl" class="headerlink" title="auto_recrawl"></a>auto_recrawl</h4><p>默认false。开启的效果是：设置了age，在age到了之后，会自动的重爬页面。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.crawl(<span class="string">&#x27;http://www.example.org/&#x27;</span>, callback=self.callback,</span><br><span class="line">               age=<span class="number">5</span>*<span class="number">60</span>*<span class="number">60</span>, auto_recrawl=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="method"><a href="#method" class="headerlink" title="method"></a>method</h4><p>请求方式</p>
+<h4 id="params"><a href="#params" class="headerlink" title="params"></a>params</h4><p>请求参数，以下为两种请求效果一致。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.crawl(<span class="string">&#x27;http://httpbin.org/get&#x27;</span>, callback=self.callback,</span><br><span class="line">               params=&#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">123</span>, <span class="string">&#x27;b&#x27;</span>: <span class="string">&#x27;c&#x27;</span>&#125;)</span><br><span class="line">    self.crawl(<span class="string">&#x27;http://httpbin.org/get?a=123&amp;b=c&#x27;</span>, callback=self.callback)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="data"><a href="#data" class="headerlink" title="data"></a>data</h4><p>post的请求数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.crawl(<span class="string">&#x27;http://httpbin.org/post&#x27;</span>, callback=self.callback,</span><br><span class="line">               method=<span class="string">&#x27;POST&#x27;</span>, data=&#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">123</span>, <span class="string">&#x27;b&#x27;</span>: <span class="string">&#x27;c&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="files"><a href="#files" class="headerlink" title="files"></a>files</h4><p>上传文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;field: &#123;filename: <span class="string">&#x27;content&#x27;</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="user-agent"><a href="#user-agent" class="headerlink" title="user_agent"></a>user_agent</h4><p>用户 User-Agent</p>
+<h4 id="headers"><a href="#headers" class="headerlink" title="headers"></a>headers</h4><p>请求头。</p>
+<h4 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.crawl(url,cookies=&#123;<span class="string">&quot;key&quot;</span>: value&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="connect-timeout"><a href="#connect-timeout" class="headerlink" title="connect_timeout"></a>connect_timeout</h4><p>初始化链接超时。默认20秒。</p>
+<h4 id="timeout"><a href="#timeout" class="headerlink" title="timeout"></a>timeout</h4><p>请求页面的最大时间。最大为120秒。</p>
+<h4 id="allow-redirects"><a href="#allow-redirects" class="headerlink" title="allow_redirects"></a>allow_redirects</h4><p>是否允许重定向。默认 true，允许。</p>
+<h4 id="fetch-type"><a href="#fetch-type" class="headerlink" title="fetch_type"></a>fetch_type</h4><p>设置为js，运行抓取运行js脚本</p>
+<h4 id="save"><a href="#save" class="headerlink" title="save"></a>save</h4><p>多级页面数据传递</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">    self.crawl(<span class="string">&#x27;http://www.example.org/&#x27;</span>, callback=self.callback,</span><br><span class="line">               save=&#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">123</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span>(<span class="params">self, response</span>):</span></span><br><span class="line">    <span class="keyword">return</span> response.save[<span class="string">&#x27;a&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h3><p>Response对象的属性列表</p>
+<h4 id="Response-url"><a href="#Response-url" class="headerlink" title="Response.url"></a>Response.url</h4><p>final URL.</p>
+<h4 id="Response-text"><a href="#Response-text" class="headerlink" title="Response.text"></a>Response.text</h4><p>Content of response, in unicode.</p>
+<p>if <code>Response.encoding</code> is None and <code>chardet</code> module is available, encoding of content will be guessed.</p>
+<h4 id="Response-content"><a href="#Response-content" class="headerlink" title="Response.content"></a>Response.content</h4><p>Content of response, in bytes.</p>
+<h4 id="Response-doc"><a href="#Response-doc" class="headerlink" title="Response.doc"></a>Response.doc</h4><p>A <a target="_blank" rel="noopener" href="https://pythonhosted.org/pyquery/">PyQuery</a> object of the response’s content. Links have made as absolute by default.</p>
+<p>Refer to the documentation of PyQuery: <a target="_blank" rel="noopener" href="https://pythonhosted.org/pyquery/">https://pythonhosted.org/pyquery/</a></p>
+<p>It’s important that I will repeat, refer to the documentation of PyQuery: <a target="_blank" rel="noopener" href="https://pythonhosted.org/pyquery/">https://pythonhosted.org/pyquery/</a></p>
+<h4 id="Response-etree"><a href="#Response-etree" class="headerlink" title="Response.etree"></a>Response.etree</h4><p>A <a target="_blank" rel="noopener" href="http://lxml.de/">lxml</a> object of the response’s content.</p>
+<h4 id="Response-json"><a href="#Response-json" class="headerlink" title="Response.json"></a>Response.json</h4><p>The JSON-encoded content of the response, if any.</p>
+<h4 id="Response-status-code"><a href="#Response-status-code" class="headerlink" title="Response.status_code"></a>Response.status_code</h4><h4 id="Response-orig-url"><a href="#Response-orig-url" class="headerlink" title="Response.orig_url"></a>Response.orig_url</h4><p>If there is any redirection during the request, here is the url you just submit via <code>self.crawl</code>.</p>
+<h4 id="Response-headers"><a href="#Response-headers" class="headerlink" title="Response.headers"></a>Response.headers</h4><p>A case insensitive dict holds the headers of response.</p>
+<h4 id="Response-cookies"><a href="#Response-cookies" class="headerlink" title="Response.cookies"></a>Response.cookies</h4><h4 id="Response-error"><a href="#Response-error" class="headerlink" title="Response.error"></a>Response.error</h4><p>Messages when fetch error</p>
+<h4 id="Response-time"><a href="#Response-time" class="headerlink" title="Response.time"></a>Response.time</h4><p>Time used during fetching.</p>
+<h4 id="Response-ok"><a href="#Response-ok" class="headerlink" title="Response.ok"></a>Response.ok</h4><p>True if <code>status_code</code> is 200 and no error.</p>
+<h4 id="Response-encoding"><a href="#Response-encoding" class="headerlink" title="Response.encoding"></a>Response.encoding</h4><p>Encoding of Response.content.</p>
+<p>If Response.encoding is None, encoding will be guessed by header or content or <code>chardet</code>(if available).</p>
+<p>Set encoding of content manually will overwrite the guessed encoding.</p>
+<h4 id="Response-save"><a href="#Response-save" class="headerlink" title="Response.save"></a>Response.save</h4><p>The object saved by <a target="_blank" rel="noopener" href="http://docs.pyspider.org/en/latest/apis/self.crawl/#save"><code>self.crawl</code></a> API</p>
+<h4 id="Response-js-script-result"><a href="#Response-js-script-result" class="headerlink" title="Response.js_script_result"></a>Response.js_script_result</h4><p>content returned by JS script</p>
+<h4 id="Response-raise-for-status"><a href="#Response-raise-for-status" class="headerlink" title="Response.raise_for_status()"></a>Response.raise_for_status()</h4><p>Raise HTTPError if status code is not 200 or <code>Response.error</code> exists.</p>
+<h3 id="catch-status-code-error"><a href="#catch-status-code-error" class="headerlink" title="@catch_status_code_error"></a>@catch_status_code_error</h3><p>正常是只处响应为200的请求，加上该装饰后，可以处理其他的请求。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@catch_status_code_error  </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span>(<span class="params">self, response</span>):</span></span><br><span class="line">    <span class="comment"># 即使返回404，也会处理数据</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="原理篇"><a href="#原理篇" class="headerlink" title="原理篇"></a>原理篇</h2><h3 id="webui"><a href="#webui" class="headerlink" title="webui"></a>webui</h3><p>webui整体架构，使用了flask+jinjia2模板引擎，负责界面操作，具体的数据的crud入库，具体需要控制任务的，实际上就通过rpc交给调度器来操作。</p>
+<h3 id="令牌桶算法"><a href="#令牌桶算法" class="headerlink" title="令牌桶算法"></a>令牌桶算法</h3><p>算法可以从网上找到描述，但是，这里面实现的非常的简单。具体代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">import</span> threading <span class="keyword">as</span> _threading</span><br><span class="line"><span class="keyword">except</span> ImportError:</span><br><span class="line">    <span class="keyword">import</span> dummy_threading <span class="keyword">as</span> _threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bucket</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    traffic flow control with token bucket</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">    update_interval = <span class="number">30</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, rate=<span class="number">1</span>, burst=<span class="literal">None</span></span>):</span></span><br><span class="line">        self.rate = <span class="built_in">float</span>(rate)</span><br><span class="line">        <span class="keyword">if</span> burst <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            self.burst = <span class="built_in">float</span>(rate) * <span class="number">10</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.burst = <span class="built_in">float</span>(burst)</span><br><span class="line">        self.mutex = _threading.Lock()</span><br><span class="line">        self.bucket = self.burst</span><br><span class="line">        self.last_update = time.time()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Get the number of tokens in bucket&#x27;&#x27;&#x27;</span></span><br><span class="line">        now = time.time()</span><br><span class="line">        <span class="keyword">if</span> self.bucket &gt;= self.burst:</span><br><span class="line">            self.last_update = now</span><br><span class="line">            <span class="keyword">return</span> self.bucket</span><br><span class="line">        bucket = self.rate * (now - self.last_update)</span><br><span class="line">        self.mutex.acquire()</span><br><span class="line">        <span class="keyword">if</span> bucket &gt; <span class="number">1</span>:</span><br><span class="line">            self.bucket += bucket</span><br><span class="line">            <span class="keyword">if</span> self.bucket &gt; self.burst:</span><br><span class="line">                self.bucket = self.burst</span><br><span class="line">            self.last_update = now</span><br><span class="line">        self.mutex.release()</span><br><span class="line">        <span class="keyword">return</span> self.bucket</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span>(<span class="params">self, value</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Set number of tokens in bucket&#x27;&#x27;&#x27;</span></span><br><span class="line">        self.bucket = value</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">desc</span>(<span class="params">self, value=<span class="number">1</span></span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Use value tokens&#x27;&#x27;&#x27;</span></span><br><span class="line">        self.bucket -= value</span><br></pre></td></tr></table></figure>
+
+<p>使用，使用时，<code>get</code>先拿到token，然后，确定有，然后才会去消费<code>desc</code></p>
+<p>在任务队列中，如下使用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TaskQueue</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;Get a task from queue when bucket available&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> self.bucket.get() &lt; <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        now = time.time()</span><br><span class="line">        self.mutex.acquire()</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            task = self.priority_queue.get_nowait()</span><br><span class="line">            self.bucket.desc()</span><br><span class="line">        <span class="keyword">except</span> Queue.Empty:</span><br><span class="line">            self.mutex.release()</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        task.exetime = now + self.processing_timeout</span><br><span class="line">        self.processing.put(task)</span><br><span class="line">        self.mutex.release()</span><br><span class="line">        <span class="keyword">return</span> task.taskid</span><br></pre></td></tr></table></figure>
+
+<h3 id="six"><a href="#six" class="headerlink" title="six"></a>six</h3><p>以前见过这个库，在这个框架中，依然有six库的身影。那么，它是做什么的呢？</p>
+<p>网上查看了下，原来是封装python2、python3差异的库。soga</p>
+<h2 id="实践篇"><a href="#实践篇" class="headerlink" title="实践篇"></a>实践篇</h2><h3 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 层层传递</span></span><br><span class="line">save = &#123;</span><br><span class="line">    <span class="string">&quot;from_url&quot;</span>:response.save[<span class="string">&quot;from_url&quot;</span>] <span class="keyword">if</span> response.save <span class="keyword">else</span> <span class="string">&quot;&quot;</span> </span><br><span class="line">&#125;</span><br><span class="line">self.crawl(each.attr.href, callback=self.index_page,save = save)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 函数判断</span></span><br><span class="line"><span class="keyword">if</span> each.attr.href.startswith(<span class="string">&#x27;http://www.qishuxx.com/txt/&#x27;</span>) <span class="keyword">and</span> each.attr.href.endswith(<span class="string">&#x27;.html&#x27;</span>):</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则</span></span><br><span class="line">re.match(<span class="string">&#x27;https?://www\.starurl\.com/video/\d+.html&#x27;</span>,url)</span><br><span class="line"><span class="comment"># 正则</span></span><br><span class="line">re.match(<span class="string">&#x27;https?://(www\.)?starurl\.com/video/\d+.html&#x27;</span>,url)</span><br><span class="line"><span class="comment">#域名判断</span></span><br><span class="line">re.match(<span class="string">&#x27;https?://(.*?\.)?starturl\.com/&#x27;</span>,url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 域名判断</span></span><br><span class="line">url[:<span class="number">40</span>].find(<span class="string">&#x27;tmtpost.com&#x27;</span>)&gt;<span class="number">0</span> :</span><br><span class="line"></span><br><span class="line"><span class="comment"># 待做，域名解析、host解析，路由解析等等功能。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>待做，save用一个函数生成。</p>
+<h4 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">url = <span class="string">&#x27;starturl.com23:8000/jj&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_url</span>(<span class="params">url</span>):</span></span><br><span class="line">    <span class="keyword">if</span> url.lower().startswith(<span class="string">&#x27;http://&#x27;</span>):</span><br><span class="line">        url = url[<span class="number">7</span>:]</span><br><span class="line">        protocol = <span class="string">&quot;http&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> url.lower().startswith(<span class="string">&#x27;https://&#x27;</span>):</span><br><span class="line">        url = url[<span class="number">8</span>:]</span><br><span class="line">        protocol = <span class="string">&quot;https&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        protocol = <span class="string">&quot;http&quot;</span></span><br><span class="line">    pos = url.find(<span class="string">&#x27;/&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> pos == -<span class="number">1</span>:</span><br><span class="line">        host = url</span><br><span class="line">        queryall = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        host = url[:pos]</span><br><span class="line">        queryall = url[pos:]</span><br><span class="line">    </span><br><span class="line">    pos = host.rfind(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> pos &gt; -<span class="number">1</span>:</span><br><span class="line">        hostname = host[:pos]</span><br><span class="line">        port = host[pos+<span class="number">1</span>:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        hostname = host</span><br><span class="line">        port = <span class="number">80</span></span><br><span class="line">    pos = queryall.find(<span class="string">&#x27;?&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> pos &gt; -<span class="number">1</span>:</span><br><span class="line">        pathname = queryall[:pos]</span><br><span class="line">        params = queryall[pos:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        pathname = queryall[:]</span><br><span class="line">        params = <span class="string">&#x27;&#x27;</span></span><br><span class="line">    pos = queryall.rfind(<span class="string">&#x27;#&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> pos &gt; -<span class="number">1</span>:</span><br><span class="line">        anchor = queryall[pos:]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        anchor =<span class="string">&#x27;&#x27;</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="string">&quot;hostname&quot;</span>:hostname,</span><br><span class="line">        <span class="string">&quot;host&quot;</span>:host,</span><br><span class="line">        <span class="string">&quot;port&quot;</span>:port,</span><br><span class="line">        <span class="string">&quot;protocol&quot;</span>:protocol,</span><br><span class="line">        <span class="string">&quot;pathname&quot;</span>:pathname,</span><br><span class="line">        <span class="string">&quot;params&quot;</span>:params,</span><br><span class="line">        <span class="string">&quot;anchor&quot;</span>:anchor</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="抓取常用的方式"><a href="#抓取常用的方式" class="headerlink" title="抓取常用的方式"></a>抓取常用的方式</h3><p>nth-child</p>
+<p>对于无法区分的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;url_rar&quot;</span>: response.doc(<span class="string">&#x27;li:nth-child(1)&gt;.downButton&#x27;</span>).attr.href,</span><br><span class="line"><span class="string">&quot;url_txt&quot;</span>: response.doc(<span class="string">&#x27;li:nth-child(2)&gt;.downButton&#x27;</span>).attr.href,</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;book_info&quot;</span>: [x.text() <span class="keyword">for</span> x <span class="keyword">in</span> response.doc(<span class="string">&#x27;li.small&#x27;</span>).items() ],</span><br><span class="line"></span><br><span class="line">response.doc(<span class="string">&#x27;li&gt;em[class^=&quot;lstar&quot;]&#x27;</span>).attr[<span class="string">&#x27;class&#x27;</span>],</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">posts_buoy = response.doc(<span class="string">&#x27;.posts_buoy&#x27;</span>).prev()</span><br><span class="line">        video = <span class="string">&quot;&quot;</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">            <span class="keyword">if</span> posts_buoy.text():</span><br><span class="line">                video = posts_buoy.text()</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            posts_buoy = posts_buoy.prev()</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="智能回调"><a href="#智能回调" class="headerlink" title="智能回调"></a>智能回调</h3><p>在index_page层放一个<code>if elif elif</code>判断，用来判断，是否继续爬，或者定义一下爬取的策略，如age等等。但是，<code>each.attr.href</code>的链接，其实都是经过处理过的，默认都是以http开头，但是呢，也有外链，所以呢，需要根据情况来判断。避免爬到其他网。</p>
+<p>需要注意的是，结果提取，也有两个回调，既针对了不同的页面，编写不同的提取规则。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span>(<span class="params">BaseHandler</span>):</span></span><br><span class="line">    crawl_config = &#123;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="meta">    @every(<span class="params">minutes=<span class="number">24</span> * <span class="number">60</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">on_start</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.crawl(<span class="string">&#x27;https://www.starurl.com/&#x27;</span>, callback=self.index_page)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @config(<span class="params">age=<span class="number">10</span> * <span class="number">24</span> * <span class="number">60</span> * <span class="number">60</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">index_page</span>(<span class="params">self, response</span>):</span>    </span><br><span class="line">        <span class="keyword">for</span> each <span class="keyword">in</span> response.doc(<span class="string">&#x27;a[href^=&quot;http&quot;]&#x27;</span>).items():</span><br><span class="line">            url = each.attr.href</span><br><span class="line">            save = &#123;</span><br><span class="line">                <span class="string">&quot;from_url&quot;</span>:response.save[<span class="string">&quot;from_url&quot;</span>] <span class="keyword">if</span> response.save <span class="keyword">else</span> <span class="string">&quot;&quot;</span> </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> re.match(<span class="string">&#x27;https?://www\.starurl\.com/\d+.html&#x27;</span>,url):</span><br><span class="line">                self.crawl(each.attr.href, callback=self.detail_page,save = save)</span><br><span class="line">            <span class="keyword">elif</span> re.match(<span class="string">&#x27;https?://www\.starurl\.com/video/\d+.html&#x27;</span>,url):</span><br><span class="line">                self.crawl(each.attr.href, callback=self.video_page,save = save)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                self.crawl(each.attr.href, callback=self.index_page,save = &#123;<span class="string">&quot;from_url&quot;</span>:url&#125;)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @config(<span class="params">priority=<span class="number">2</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">detail_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">            <span class="string">&quot;title&quot;</span>: response.doc(<span class="string">&#x27;title&#x27;</span>).text(),</span><br><span class="line">        &#125;</span><br><span class="line"><span class="meta">    @config(<span class="params">priority=<span class="number">5</span></span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">video_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">            <span class="string">&quot;title&quot;</span>: response.doc(<span class="string">&#x27;title&#x27;</span>).text(),</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="精确分析任务链接"><a href="#精确分析任务链接" class="headerlink" title="精确分析任务链接"></a>精确分析任务链接</h3><p>上面直接拿到所有的链接，然后进行爬取，太宽泛了。有的时候，需要精确的从指定的url分析出url。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def index_page(self, response):</span><br><span class="line">        for each in response.doc(&#39;.module-categories &gt; .module-content &gt; ul &gt; li [href^&#x3D;&quot;http&quot;]&#39;).items():</span><br></pre></td></tr></table></figure>
+
+<h3 id="多返回值-1"><a href="#多返回值-1" class="headerlink" title="多返回值"></a>多返回值</h3><p>比如爬取的各层级的页面，都有要提取的信息，如果一般是使用<code>response.save</code>来传递，体现在最终的结果上，但是呢，也可以，不保存，因为这些数据，都放到task表中的，以后手动的从数据中库拿到这些数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">detail_page</span>(<span class="params">self, response</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i, each <span class="keyword">in</span> <span class="built_in">enumerate</span>(response.doc(<span class="string">&#x27;tr.villagetr&#x27;</span>).items()):</span><br><span class="line">        save = &#123;</span><br><span class="line">            <span class="string">&quot;url&quot;</span>: response.url,</span><br><span class="line">        &#125;</span><br><span class="line">        cun_infos = [x.text() <span class="keyword">for</span> x <span class="keyword">in</span> each(<span class="string">&quot;td&quot;</span>).items()]</span><br><span class="line">        save[<span class="string">&quot;cun_name&quot;</span>] = cun_infos[<span class="number">2</span>]</span><br><span class="line">        self.send_message(self.project_name, save,url=<span class="string">&quot;%s#%s&quot;</span> % (response.url, i))</span><br><span class="line">           </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">on_message</span>(<span class="params">self, project, msg</span>):</span></span><br><span class="line">    <span class="keyword">return</span> msg</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2022/01/06/mysql/%E7%B4%A2%E5%BC%95/" rel="prev" title="索引">
+                  <i class="fa fa-chevron-left"></i> 索引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2022/01/10/mysql/%E6%98%93%E9%94%99%E7%82%B9/" rel="next" title="Mysql易错总结">
+                  Mysql易错总结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

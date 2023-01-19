@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="input_file控件使用accept过滤 参见：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_29483485&#x2F;article&#x2F;details&#x2F;86480203 针对input type&#x3D;”file”输入框，通过accept来过滤文件类型。弊端就是，需要知道对应文件的类型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="input_file控件使用accept过滤">
+<meta property="og:url" content="http://example.com/2020/08/12/html/input_file%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8accept%E8%BF%87%E6%BB%A4/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="input_file控件使用accept过滤 参见：https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_29483485&#x2F;article&#x2F;details&#x2F;86480203 针对input type&#x3D;”file”输入框，通过accept来过滤文件类型。弊端就是，需要知道对应文件的类型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-12T13:59:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.142Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/08/12/html/input_file%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8accept%E8%BF%87%E6%BB%A4/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>input_file控件使用accept过滤 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#input-file%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8accept%E8%BF%87%E6%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">input_file控件使用accept过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">一、相关代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%99%90%E5%88%B6%E8%A7%84%E5%88%99%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">二、限制规则：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81accept%E5%B1%9E%E6%80%A7%E5%85%B7%E4%BD%93%E6%8E%A5%E5%8F%97%E7%9A%84%E7%B1%BB%E5%9E%8B%EF%BC%9A"><span class="nav-number">1.0.3.</span> <span class="nav-text">三、accept属性具体接受的类型：</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/08/12/html/input_file%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8accept%E8%BF%87%E6%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          input_file控件使用accept过滤
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-08-12 21:59:00" itemprop="dateCreated datePublished" datetime="2020-08-12T21:59:00+08:00">2020-08-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="input-file控件使用accept过滤"><a href="#input-file控件使用accept过滤" class="headerlink" title="input_file控件使用accept过滤"></a>input_file控件使用accept过滤</h1><blockquote>
+<p>参见：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29483485/article/details/86480203">https://blog.csdn.net/qq_29483485/article/details/86480203</a></p>
+<p>针对input type=”file”输入框，通过accept来过滤文件类型。弊端就是，需要知道对应文件的类型。</p>
+</blockquote>
+<a id="more"></a>
+
+<p>在文件上传控件（input type=’file’）中，可以通过accept属性实现对文件类型的过滤。</p>
+<h3 id="一、相关代码："><a href="#一、相关代码：" class="headerlink" title="一、相关代码："></a>一、相关代码：</h3><p> 下面给出对应的文件上传控件代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">id</span>=<span class="string">&quot;uploadDom&quot;</span> <span class="attr">accept</span>=<span class="string">&quot;image/jpeg,image/gif,application/msword&quot;</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的代码表示限制文件上传类型为.jpg/.gif/.doc。</p>
+<p>js代码动态控制：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> uploadDom = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;uploads&#x27;</span>);</span><br><span class="line">uploadDom.accept=<span class="string">&quot;text/javascript&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="二、限制规则："><a href="#二、限制规则：" class="headerlink" title="二、限制规则："></a>二、限制规则：</h3><p>  在文件上传控件的accept属性中，接受以下两种格式的限制符：</p>
+<ul>
+<li>文件类型，但不限制具体扩展名，如：image/*，就只要是图片就行。</li>
+<li>文件类型+具体的文件扩展类型，如：image/jpeg，使用的是MIME_TYPE类型</li>
+<li>多个MIME_TYPE类型之间用逗号分隔。</li>
+</ul>
+<h3 id="三、accept属性具体接受的类型："><a href="#三、accept属性具体接受的类型：" class="headerlink" title="三、accept属性具体接受的类型："></a>三、accept属性具体接受的类型：</h3><p>accept这个属性，只在FF，ie10和chrome中有效。</p>
+<p>以下是常用的类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">*.3gpp    audio&#x2F;3gpp， video&#x2F;3gpp    3GPP Audio&#x2F;Video</span><br><span class="line">*.ac3    audio&#x2F;ac3    AC3 Audio</span><br><span class="line">*.asf    allpication&#x2F;vnd.ms-asf    Advanced Streaming Format</span><br><span class="line">*.au    audio&#x2F;basic    AU Audio</span><br><span class="line">*.css    text&#x2F;css    Cascading Style Sheets</span><br><span class="line">*.csv    text&#x2F;csv    Comma Separated Values</span><br><span class="line">*.doc    application&#x2F;msword    MS Word Document</span><br><span class="line">*.dot    application&#x2F;msword    MS Word Template</span><br><span class="line">*.dtd    application&#x2F;xml-dtd    Document Type Definition</span><br><span class="line">*.dwg    image&#x2F;vnd.dwg    AutoCAD Drawing Database</span><br><span class="line">*.dxf    image&#x2F;vnd.dxf    AutoCAD Drawing Interchange Format</span><br><span class="line">*.gif    image&#x2F;gif    Graphic Interchange Format</span><br><span class="line">*.htm    text&#x2F;html    HyperText Markup Language</span><br><span class="line">*.html    text&#x2F;html    HyperText Markup Language</span><br><span class="line">*.jp2    image&#x2F;jp2    JPEG-2000</span><br><span class="line">*.jpe    image&#x2F;jpeg    JPEG</span><br><span class="line">*.jpeg    image&#x2F;jpeg    JPEG</span><br><span class="line">*.jpg    image&#x2F;jpeg    JPEG</span><br><span class="line">*.js    text&#x2F;javascript， application&#x2F;javascript    JavaScript</span><br><span class="line">*.json    application&#x2F;json    JavaScript Object Notation</span><br><span class="line">*.mp2    audio&#x2F;mpeg， video&#x2F;mpeg    MPEG Audio&#x2F;Video Stream， Layer II</span><br><span class="line">*.mp3    audio&#x2F;mpeg    MPEG Audio Stream， Layer III</span><br><span class="line">*.mp4    audio&#x2F;mp4， video&#x2F;mp4    MPEG-4 Audio&#x2F;Video</span><br><span class="line">*.mpeg    video&#x2F;mpeg    MPEG Video Stream， Layer II</span><br><span class="line">*.mpg    video&#x2F;mpeg    MPEG Video Stream， Layer II</span><br><span class="line">*.mpp    application&#x2F;vnd.ms-project    MS Project Project</span><br><span class="line">*.ogg    application&#x2F;ogg， audio&#x2F;ogg    Ogg Vorbis</span><br><span class="line">*.pdf    application&#x2F;pdf    Portable Document Format</span><br><span class="line">*.png    image&#x2F;png    Portable Network Graphics</span><br><span class="line">*.pot    application&#x2F;vnd.ms-powerpoint    MS PowerPoint Template</span><br><span class="line">*.pps    application&#x2F;vnd.ms-powerpoint    MS PowerPoint Slideshow</span><br><span class="line">*.ppt    application&#x2F;vnd.ms-powerpoint    MS PowerPoint Presentation</span><br><span class="line">*.rtf    application&#x2F;rtf， text&#x2F;rtf    Rich Text Format</span><br><span class="line">*.svf    image&#x2F;vnd.svf    Simple Vector Format</span><br><span class="line">*.tif    image&#x2F;tiff    Tagged Image Format File</span><br><span class="line">*.tiff    image&#x2F;tiff    Tagged Image Format File</span><br><span class="line">*.txt    text&#x2F;plain    Plain Text</span><br><span class="line">*.wdb    application&#x2F;vnd.ms-works    MS Works Database</span><br><span class="line">*.wps    application&#x2F;vnd.ms-works    Works Text Document</span><br><span class="line">*.xhtml    application&#x2F;xhtml+xml    Extensible HyperText Markup Language</span><br><span class="line">*.xlc    application&#x2F;vnd.ms-excel    MS Excel Chart</span><br><span class="line">*.xlm    application&#x2F;vnd.ms-excel    MS Excel Macro</span><br><span class="line">*.xls    application&#x2F;vnd.ms-excel    MS Excel Spreadsheet</span><br><span class="line">*.xlt    application&#x2F;vnd.ms-excel    MS Excel Template</span><br><span class="line">*.xlw    application&#x2F;vnd.ms-excel    MS Excel Workspace</span><br><span class="line">*.xml    text&#x2F;xml， application&#x2F;xml    Extensible Markup Language</span><br><span class="line">*.zip    aplication&#x2F;zip    Compressed Archive</span><br></pre></td></tr></table></figure>
+
+<p>上面，如果要过滤php文件，感觉就无能为力呢。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/08/11/php/Last-Modified/" rel="prev" title="Last-Modifie">
+                  <i class="fa fa-chevron-left"></i> Last-Modifie
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/" rel="next" title="折半插入_统计广告访问">
+                  折半插入_统计广告访问 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

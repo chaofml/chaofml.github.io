@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="大数据中常用脚本–sort（一) 大数据中常用脚本–sort（二) 1.简介1.1国际惯例按照国际惯例先来理论的介绍。 sort是在Linux里非常常用的一个命令，管排序的。工作原理：sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。在其中我们会遇到需要数值排序的，别急，慢慢来，都是干货。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据--sort">
+<meta property="og:url" content="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--sort/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="大数据中常用脚本–sort（一) 大数据中常用脚本–sort（二) 1.简介1.1国际惯例按照国际惯例先来理论的介绍。 sort是在Linux里非常常用的一个命令，管排序的。工作原理：sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按ASCII码值进行比较，最后将他们按升序输出。在其中我们会遇到需要数值排序的，别急，慢慢来，都是干货。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-31T07:55:52.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.216Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--sort/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>大数据--sort | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1.简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1%E5%9B%BD%E9%99%85%E6%83%AF%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1.1国际惯例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B8%B8%E7%94%A8%E9%80%89%E9%A1%B9"><span class="nav-number">2.</span> <span class="nav-text">2.常用选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-sort%E7%9A%84-u%E9%80%89%E9%A1%B9"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 sort的-u选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-sort%E7%9A%84-r%E9%80%89%E9%A1%B9"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 sort的-r选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-sort%E7%9A%84-o%E9%80%89%E9%A1%B9"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 sort的-o选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-sort%E7%9A%84-n%E9%80%89%E9%A1%B9"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 sort的-n选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-sort%E7%9A%84-t%E9%80%89%E9%A1%B9%E5%92%8C-k"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 sort的-t选项和-k</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-sort%E7%9A%84%E5%85%B6%E4%BB%96%E9%80%89%E9%A1%B9"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 sort的其他选项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">3.实际应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E8%BF%99%E4%B8%AA%E6%96%87%E4%BB%B6%E6%8C%89%E5%85%AC%E5%8F%B8%E7%9A%84%E5%AD%97%E6%AF%8D%E9%A1%BA%E5%BA%8F%E6%8E%92%E5%BA%8F%EF%BC%8C%E4%B9%9F%E5%B0%B1%E6%98%AF%E6%8C%89%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%9F%9F%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 这个文件按公司的字母顺序排序，也就是按第一个域进行排序：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E8%AE%A9facebook-txt%E6%8C%89%E7%85%A7%E5%85%AC%E5%8F%B8%E4%BA%BA%E6%95%B0%E6%8E%92%E5%BA%8F%EF%BC%9A"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 让facebook.txt按照公司人数排序：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%AE%A9facebook-txt%E6%8C%89%E7%85%A7%E5%85%AC%E5%8F%B8%E4%BA%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 让facebook.txt按照公司人数排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E8%AE%A9facebook-txt%E6%8C%89%E7%85%A7%E5%91%98%E5%B7%A5%E5%B7%A5%E8%B5%84%E9%99%8D%E5%BA%8F%E6%8E%92%E5%BA%8F"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 让facebook.txt按照员工工资降序排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-%E4%BB%8E%E5%85%AC%E5%8F%B8%E8%8B%B1%E6%96%87%E5%90%8D%E7%A7%B0%E7%9A%84%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%AD%97%E6%AF%8D%E5%BC%80%E5%A7%8B%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 从公司英文名称的第二个字母开始进行排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6%E5%8F%AA%E9%92%88%E5%AF%B9%E5%85%AC%E5%8F%B8%E8%8B%B1%E6%96%87%E5%90%8D%E7%A7%B0%E7%9A%84%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%AD%97%E6%AF%8D%E8%BF%9B%E8%A1%8C%E6%8E%92%E5%BA%8F"><span class="nav-number">3.6.</span> <span class="nav-text">3.6只针对公司英文名称的第二个字母进行排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-%E5%85%B3%E4%BA%8E-k%E5%92%8C-u%E8%81%94%E5%90%88%E4%BD%BF%E7%94%A8"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 关于-k和-u联合使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-8-%E8%A1%A5%E5%85%85%E7%9F%A5%E8%AF%86"><span class="nav-number">3.8.</span> <span class="nav-text">3.8 补充知识</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">4.总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--sort/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大数据--sort
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-31 15:55:52" itemprop="dateCreated datePublished" datetime="2021-05-31T15:55:52+08:00">2021-05-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80259459">大数据中常用脚本–sort（一)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80263743">大数据中常用脚本–sort（二)</a></p>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1国际惯例"><a href="#1-1国际惯例" class="headerlink" title="1.1国际惯例"></a>1.1国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
+<p>sort是在Linux里非常常用的一个命令，管排序的。工作原理：sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按<strong>ASCII码值</strong>进行比较，最后将他们按升序输出。在其中我们会遇到需要数值排序的，别急，慢慢来，都是干货。</p>
+<a id="more"></a>
+
+<h1 id="2-常用选项"><a href="#2-常用选项" class="headerlink" title="2.常用选项"></a>2.常用选项</h1><h2 id="2-1-sort的-u选项"><a href="#2-1-sort的-u选项" class="headerlink" title="2.1 sort的-u选项"></a>2.1 sort的-u选项</h2><p>它的作用很简单，就是在输出行中去除重复行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[rocrocket@rocrocket programming]$ cat seq.txt</span><br><span class="line">banana</span><br><span class="line">apple</span><br><span class="line">pear</span><br><span class="line">orange</span><br><span class="line">pear</span><br><span class="line">[rocrocket@rocrocket programming]$ sort seq.txt</span><br><span class="line">apple</span><br><span class="line">banana</span><br><span class="line">orange</span><br><span class="line">pear</span><br><span class="line">pear</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -u seq.txt</span><br><span class="line">apple</span><br><span class="line">banana</span><br><span class="line">orange</span><br><span class="line">pear</span><br></pre></td></tr></table></figure>
+
+<p>pear由于重复被-u选项无情的删除了。</p>
+<h2 id="2-2-sort的-r选项"><a href="#2-2-sort的-r选项" class="headerlink" title="2.2 sort的-r选项"></a>2.2 sort的-r选项</h2><p>sort默认的排序方式是升序，如果想改成降序，就加个-r就搞定了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[rocrocket@rocrocket programming]$ cat number.txt</span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">5</span><br><span class="line">2</span><br><span class="line">4</span><br><span class="line">[rocrocket@rocrocket programming]$ sort number.txt</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -r number.txt</span><br><span class="line">5</span><br><span class="line">4</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-sort的-o选项"><a href="#2-3-sort的-o选项" class="headerlink" title="2.3 sort的-o选项"></a>2.3 sort的-o选项</h2><p>由于sort默认是把结果输出到标准输出，所以需要用重定向才能将结果写入文件，形如sort filename &gt; newfile。但是，如果你想把排序结果输出到原文件中，用重定向可就不行了。就在这个时候，-o选项出现了，它成功的解决了这个问题，让你放心的将结果写入原文件。这或许也是-o比重定向的唯一优势所在。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[rocrocket@rocrocket programming]$ cat number.txt</span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">5</span><br><span class="line">2</span><br><span class="line">4</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -r number.txt -o number.txt</span><br><span class="line">[rocrocket@rocrocket programming]$ cat number.txt</span><br><span class="line">5</span><br><span class="line">4</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-sort的-n选项"><a href="#2-4-sort的-n选项" class="headerlink" title="2.4 sort的-n选项"></a>2.4 sort的-n选项</h2><p>遇到过10比2小的情况。我反正遇到过。出现这种情况是由于排序程序将这些数字按字符来排序了，排序程序会先比较1和2，显然1小，所以就将10放在2前面喽。这也是sort的一贯作风。这就是之前文开头说的。就要使用-n选项，来告诉sort，“要以数值来排序”！</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[rocrocket@rocrocket programming]$ cat number.txt</span><br><span class="line">1</span><br><span class="line">10</span><br><span class="line">19</span><br><span class="line">11</span><br><span class="line">2</span><br><span class="line">5</span><br><span class="line">[rocrocket@rocrocket programming]$ sort number.txt</span><br><span class="line">1</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">19</span><br><span class="line">2</span><br><span class="line">5</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -n number.txt</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">5</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">19</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-sort的-t选项和-k"><a href="#2-5-sort的-t选项和-k" class="headerlink" title="2.5 sort的-t选项和-k"></a>2.5 sort的-t选项和-k</h2><p>这个文件有三列，列与列之间用冒号隔开了，第一列表示水果类型，第二列表示水果数量，第三列表示水果价格。</p>
+<p>那么我想以水果数量来排序，也就是以第二列来排序，如何利用sort实现？</p>
+<p>幸好，sort提供了-t选项，后面可以设定间隔符。（是不是想起了cut和paste的-d选项，共鸣～～）</p>
+<p>指定了间隔符之后，就可以用-k来指定列数了。</p>
+<p>例如：我们使用冒号作为间隔符，并针对第二列来进行数值升序排序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[rocrocket@rocrocket programming]$ cat facebook.txt</span><br><span class="line">banana:30:5.5</span><br><span class="line">apple:10:2.5</span><br><span class="line">pear:90:2.3</span><br><span class="line">orange:20:3.4</span><br><span class="line">[rocrocket@rocrocket programming]$ sort -n -k 2 -t : facebook.txt</span><br><span class="line">apple:10:2.5</span><br><span class="line">orange:20:3.4</span><br><span class="line">banana:30:5.5</span><br><span class="line">pear:90:2.3</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-sort的其他选项"><a href="#2-6-sort的其他选项" class="headerlink" title="2.6 sort的其他选项"></a>2.6 sort的其他选项</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-f # 会将小写字母都转换为大写字母来进行比较，亦即忽略大小写</span><br><span class="line">-c # 会检查文件是否已排好序，如果乱序，则输出第一个乱序的行的相关信息，最后返回1</span><br><span class="line">-C # 会检查文件是否已排好序，如果乱序，不输出内容，仅返回1</span><br><span class="line">-M # 会以月份来排序，比如JAN小于FEB等等</span><br><span class="line">-b # 会忽略每一行前面的所有空白部分，从第一个可见字符开始比较。</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-实际应用"><a href="#3-实际应用" class="headerlink" title="3.实际应用"></a>3.实际应用</h1><p>数据准备：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat facebook.txt</span></span><br><span class="line">google 110 5000</span><br><span class="line">baidu 100 5000</span><br><span class="line">guge 50 3000</span><br><span class="line">sohu 100 4500</span><br></pre></td></tr></table></figure>
+
+<p>第一个域是公司名称，第二个域是公司人数，第三个域是员工平均工资。</p>
+<h2 id="3-1-这个文件按公司的字母顺序排序，也就是按第一个域进行排序："><a href="#3-1-这个文件按公司的字母顺序排序，也就是按第一个域进行排序：" class="headerlink" title="3.1 这个文件按公司的字母顺序排序，也就是按第一个域进行排序："></a>3.1 这个文件按公司的字母顺序排序，也就是按第一个域进行排序：</h2><p>（其实此处并不严格，稍后你就会知道）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -t ‘ ‘ -k 1 facebook.txt</span></span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br><span class="line">guge 50 3000</span><br><span class="line">sohu 100 4500</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-让facebook-txt按照公司人数排序："><a href="#3-2-让facebook-txt按照公司人数排序：" class="headerlink" title="3.2 让facebook.txt按照公司人数排序："></a>3.2 让facebook.txt按照公司人数排序：</h2><p>注意—此处出现了问题，那就是baidu和sohu的公司人数相同，都是100人，这个时候怎么办呢？按照默认规矩，是从第一个域开始进行升序排序，因此baidu排在了sohu前面。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -t ‘ ‘ -k 2 facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">baidu 100 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">google 110 5000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-让facebook-txt按照公司人数排序"><a href="#3-3-让facebook-txt按照公司人数排序" class="headerlink" title="3.3 让facebook.txt按照公司人数排序"></a>3.3 让facebook.txt按照公司人数排序</h2><p>人数相同的按照员工平均工资升序排序（优先级排序知识点）：</p>
+<p>注意—我们加了一个-k2 -k3就解决了问题。对滴，sort支持这种设定，就是说设定域排序的优先级，先以第2个域进行排序，如果相同，再以第3个域进行排序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -t ‘ ‘ -k 2 -k 3 facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">sohu 100 4500</span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-4-让facebook-txt按照员工工资降序排序"><a href="#3-4-让facebook-txt按照员工工资降序排序" class="headerlink" title="3.4 让facebook.txt按照员工工资降序排序"></a>3.4 让facebook.txt按照员工工资降序排序</h2><p>如果员工人数相同的，则按照公司人数升序排序（降序标示r的位置）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -t ‘ ‘ -k 3r -k 2 facebook.txt</span></span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">guge 50 3000</span><br></pre></td></tr></table></figure>
+
+<p>注意—r和-r选项的作用是一样的，就是表示逆序。因为sort默认是按照升序排序的，所以此处需要加上r表示第三个域（员工平均工资）是按照降序排序。此处你还可以加上n，就表示对这个域进行排序时，要按照数值大小进行排序，举个例子吧（知识点—去掉了最前面的-n选项，而是将它加入到了每一个-k选项中）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -t ‘ ‘ -k 3nr -k 2n facebook.txt</span></span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">guge 50 3000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-5-从公司英文名称的第二个字母开始进行排序"><a href="#3-5-从公司英文名称的第二个字母开始进行排序" class="headerlink" title="3.5 从公司英文名称的第二个字母开始进行排序"></a>3.5 从公司英文名称的第二个字母开始进行排序</h2><p>-k 1.2，这就表示对第一个域的第二个字符开始到本域的最后一个字符为止的字符串进行排序。你会发现baidu因为第二个字母是a而名列榜首。sohu和 google第二个字符都是o，但sohu的h在google的o前面，所以两者分别排在第二和第三。guge只能屈居第四了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -t ‘ ‘ -k 1.2 facebook.txt</span></span><br><span class="line">baidu 100 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">google 110 5000</span><br><span class="line">guge 50 3000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-6只针对公司英文名称的第二个字母进行排序"><a href="#3-6只针对公司英文名称的第二个字母进行排序" class="headerlink" title="3.6只针对公司英文名称的第二个字母进行排序"></a>3.6只针对公司英文名称的第二个字母进行排序</h2><p>如果相同的关于-k和-u联合使用的例子：按照员工工资进行降序排序：</p>
+<p>由于只对第二个字母进行排序，所以我们使用了-k 1.2,1.2的表示方式，表示我们“只”对第二个字母进行排序。（如果你问“我使用-k 1.2怎么不行？”，当然不行，因为你省略了End部分，这就意味着你将对从第二个字母起到本域最后一个字符为止的字符串进行排序）。对于员工工资进行排 序，我们也使用了-k 3,3，这是最准确的表述，表示我们“只”对本域进行排序，因为如果你省略了后面的3，就变成了我们“对第3个域开始到最后一个域位置的内容进行排序” 了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -t ‘ ‘ -k 1.2,1.2 -k 3,3nr facebook.txt</span></span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">guge 50 3000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-7-关于-k和-u联合使用"><a href="#3-7-关于-k和-u联合使用" class="headerlink" title="3.7 关于-k和-u联合使用"></a>3.7 关于-k和-u联合使用</h2><p>素材：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat facebook.txt</span></span><br><span class="line">google 110 5000</span><br><span class="line">baidu 100 5000</span><br><span class="line">guge 50 3000</span><br><span class="line">sohu 100 4500</span><br></pre></td></tr></table></figure>
+
+<p>当设定以公司员工域进行数值排序，然后加-u后，sohu一行就被删除了！原来-u只识别用-k设定的域，发现相同，就将后续相同的行都删除（下）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -k 2 facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">baidu 100 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">google 110 5000</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sort -n -k 2 -u facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br></pre></td></tr></table></figure>
+
+<p>这里设置了两层排序优先级的情况下，使用-u就没有删除任何行。原来-u是会权衡所有-k选项，将都相同的才会删除，只要其中有一级不同都不会轻易删除的（下）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -k 2 -k 3 -u facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">sohu 100 4500</span><br><span class="line">baidu 100 5000</span><br><span class="line">google 110 5000</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-8-补充知识"><a href="#3-8-补充知识" class="headerlink" title="3.8 补充知识"></a>3.8 补充知识</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sort -n -k 2.2,3.1 facebook.txt</span></span><br><span class="line">guge 50 3000</span><br><span class="line">baidu 100 5000</span><br><span class="line">sohu 100 4500</span><br><span class="line">google 110 5000</span><br></pre></td></tr></table></figure>
+
+<p>分析：<br>以第二个域的第二个字符开始到第三个域的第一个字符结束的部分进行排序。</p>
+<p>第一行，会提取0 3，第二行提取00 5，第三行提取00 4，第四行提取10 5。</p>
+<p>又因为sort认为0小于00小于000小于0000….</p>
+<p>因此0 3肯定是在第一个。10 5肯定是在最后一个。但为什么00 5却在00 4前面呢？（你可以自己做实验思考一下。）</p>
+<p>答案揭晓：原来“跨域的设定是个假象”，sort只会比较第二个域的第二个字符到第二个域的最后一个字符的部分，而不会把第三个域的开头字符纳入比较范围。当发现00和00相同时，sort就会自动比较第一个域去了。当然baidu在sohu前面了。</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h1><p>sort [-fbMnrtuk] [file or stdin]</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-f  #忽略大小写的差异，例如 A 与 a 视为编码相同；</span><br><span class="line">-b  #忽略最前面的空格符部分；</span><br><span class="line">-M  #以月份的名字来排序，例如 JAN, DEC 等等的排序方法；</span><br><span class="line">-n  #使用『纯数字』进行排序(默认是以文字型态来排序的)；</span><br><span class="line">-r  #反向排序；</span><br><span class="line">-u  #就是 uniq ，相同的数据中，仅出现一行代表；</span><br><span class="line">-t  #分隔符，默认是用 [tab] 键来分隔；</span><br><span class="line">-k  #以那个区间 (field) 来进行排序的意思</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+              <a href="/blog/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--cut/" rel="prev" title="大数据--cut">
+                  <i class="fa fa-chevron-left"></i> 大数据--cut
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/06/01/shell/shell_header/" rel="next" title="shell通用部分">
+                  shell通用部分 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

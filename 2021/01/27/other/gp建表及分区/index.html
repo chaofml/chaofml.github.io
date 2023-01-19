@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="gp建表及分区摘抄：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b952fe212134">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gp建表及分区">
+<meta property="og:url" content="http://example.com/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="gp建表及分区摘抄：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b952fe212134">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-27T01:26:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.150Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>gp建表及分区 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA"><span class="nav-number">1.</span> <span class="nav-text">gp建表及分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E6%8A%84"><span class="nav-number">1.0.1.</span> <span class="nav-text">摘抄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E6%B5%8B%E8%AF%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">1.0.2.</span> <span class="nav-text">自己测试的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%88%86%E5%8C%BA%E8%A1%A8"><span class="nav-number">1.0.3.</span> <span class="nav-text">转换为分区表</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          gp建表及分区
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-27 09:26:00" itemprop="dateCreated datePublished" datetime="2021-01-27T09:26:00+08:00">2021-01-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="gp建表及分区"><a href="#gp建表及分区" class="headerlink" title="gp建表及分区"></a>gp建表及分区</h1><p>摘抄：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b952fe212134">https://www.jianshu.com/p/b952fe212134</a></p>
+<a id="more"></a>
+
+<h3 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄"></a>摘抄</h3><p>以下内容，在创建分区可能有问题，并不能创建分区。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br></pre></td><td class="code"><pre><span class="line">1、创建数据库：</span><br><span class="line">create database 库名;</span><br><span class="line"></span><br><span class="line">2、删除数据库：</span><br><span class="line">drop database 库名;</span><br><span class="line"></span><br><span class="line">3、创建表：</span><br><span class="line">create table 表名(</span><br><span class="line">  id integer,</span><br><span class="line">  name text,</span><br><span class="line">  price numeric &#123;精确度较高的小数型，同mysql的decimal&#125;</span><br><span class="line">);</span><br><span class="line"> </span><br><span class="line">3-1、GP建表指定列级约束</span><br><span class="line">create table 表名(</span><br><span class="line">  id integer primary key,       &#123;主键约束&#125;</span><br><span class="line">  name text not null,           &#123;非空约束&#125;</span><br><span class="line">  price numeric check(price&gt;0), &#123;检查约束&#125;</span><br><span class="line">  type integer unique           &#123;唯一约束&#125;</span><br><span class="line">);</span><br><span class="line">【注】：主键、唯一键、随机分布不能共存</span><br><span class="line"></span><br><span class="line">3-2、声明表的分布策略</span><br><span class="line">GP的分布键作用是保证数据能够均匀分布在不同的存储节点上，充分利用并行计算带来的高性能。GP的分布策略包括HASH分布和随机分布。</span><br><span class="line">HASH分布的关键字是：distributed by(列名)</span><br><span class="line">随机分布的关键字是：distributed by randonly</span><br><span class="line"></span><br><span class="line">在创建表或者修改表定义的时候，必须使用distributed by来执行分布键，从而使数据均匀的存储在不同的segment上。</span><br><span class="line">如果指定的分布键(列名)不是主键，则无法创建(指定的列必须是主键)。</span><br><span class="line">(1)、声明hash分布</span><br><span class="line">create table 表名(</span><br><span class="line">  id integer primary key,       &#123;主键约束&#125;</span><br><span class="line">  name text not null,           &#123;非空约束&#125;</span><br><span class="line">  price numeric check(price&gt;0), &#123;检查约束&#125;</span><br><span class="line">  type integer unique           &#123;唯一约束&#125;</span><br><span class="line">)distributed by(id);</span><br><span class="line"></span><br><span class="line">(2)、声明随机分布</span><br><span class="line">create table 表名(</span><br><span class="line">  id integer primary key,       &#123;主键约束，这里就不能在声明主键约束&#125;</span><br><span class="line">  name text not null,           &#123;非空约束&#125;</span><br><span class="line">  price numeric check(price&gt;0), &#123;检查约束&#125;</span><br><span class="line">  type integer unique           &#123;唯一约束，这里就不能在声明唯一约束&#125;</span><br><span class="line">)distributed by randonly;       &#123;指定随机分布&#125;</span><br><span class="line"></span><br><span class="line">【注】：主键、唯一键、随机分布不能共存</span><br><span class="line">否则报错：ERROR:Primary key and distributed randonly are incompatible&#123;不兼容的&#125;</span><br><span class="line">【说明】：几何数据类型和自定义的数据类型不适合作为GP的分布键。如果没有适合的列可以保证数据的均匀分布，则使用随机分布</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4、分区表的特征</span><br><span class="line">(1)、对一张表作分区，实际上是创建了一张父表和多个子表</span><br><span class="line">(2)、每个分区在创建时都带有一个不同的检查约束(check)</span><br><span class="line">(3)、任何分区结构的修改或者表结构的修改都要通过父表使用partition字句结合alter table命令完成</span><br><span class="line"></span><br><span class="line">查看某张表是否为分区表：</span><br><span class="line">select count(*) from pg_partition where parrelid=&#x27;测试schema.表名&#x27;::regclass;</span><br><span class="line">结果：如果有数据就是分区表，如果无数据则不为分区表</span><br><span class="line"></span><br><span class="line">(4)、分区选择性扫描的限制</span><br><span class="line">查询计划只可以用稳定的比较运算符 = , &lt; , &gt; , &lt;= , &gt;= , &lt;&gt;</span><br><span class="line">查询计划不能识别非稳定的函数来执行选择性扫描</span><br><span class="line"></span><br><span class="line">(5)、创建和管理分区表</span><br><span class="line">分区表类型        使用场景</span><br><span class="line">range             表示一个序列范围，如日期、数字、价格等       </span><br><span class="line">list              表示一个列表，如产品名称</span><br><span class="line">【注】：主键或是唯一键必须包含表中的所有分区键</span><br><span class="line">1)、定义range类型分区表，使用start，end，every定义分区增量让GP自动创建分区</span><br><span class="line">create table test(</span><br><span class="line">    c1 integer,</span><br><span class="line">    c2 date</span><br><span class="line">)distributed by(c1) </span><br><span class="line">partition by range(c2)</span><br><span class="line">(</span><br><span class="line">start(date,&#x27;2019-09-01&#x27;)inclusive</span><br><span class="line">end(date,&#x27;2019-09-03&#x27;)exclusive</span><br><span class="line">every(interval &#x27;1 day&#x27;)</span><br><span class="line">);</span><br><span class="line">创建结果：</span><br><span class="line">test（父表）</span><br><span class="line">test_1_part_1</span><br><span class="line">test_1_part_2</span><br><span class="line">test_1_part_3</span><br><span class="line">关键字说明：</span><br><span class="line">start：    分区开始值</span><br><span class="line">end:       分区结束值</span><br><span class="line">inclusive: 表示包含左边的取值</span><br><span class="line">exclusive: 表示不包含左边的取值</span><br><span class="line">every:     表示分区范围自增长的步长</span><br><span class="line"></span><br><span class="line">2)、定义日期范围分区表，且并给每个分区表单独命名</span><br><span class="line">create table test(</span><br><span class="line">    c1 integer,</span><br><span class="line">    c2 date</span><br><span class="line">)distributed by(c1) </span><br><span class="line">partition by range(c2)</span><br><span class="line">(</span><br><span class="line">partition one start(date,&#x27;2019-09-01&#x27;)inclusive</span><br><span class="line">partition two start(date,&#x27;2019-09-02&#x27;)inclusive</span><br><span class="line">partition thr start(date,&#x27;2019-09-03&#x27;)inclusive</span><br><span class="line">end(date,&#x27;2019-09-04&#x27;)exclusive</span><br><span class="line">);</span><br><span class="line">创建结果：</span><br><span class="line">test（父表）</span><br><span class="line">test_1_par_one</span><br><span class="line">test_1_par_two</span><br><span class="line">test_1_par_thr</span><br><span class="line"></span><br><span class="line">3)、定义数字范围分区表</span><br><span class="line">create table test2(</span><br><span class="line">    id int,</span><br><span class="line">    year int</span><br><span class="line">)distributed by(id)</span><br><span class="line">partition by range(year)</span><br><span class="line">(</span><br><span class="line">statr(2014)</span><br><span class="line">end(2016)</span><br><span class="line">every(1),</span><br><span class="line">default partition extra</span><br><span class="line">);</span><br><span class="line">创建结果：</span><br><span class="line">test2（父表）</span><br><span class="line">test2_1_prt_extra</span><br><span class="line">test2_1_prt_2</span><br><span class="line">test2_1_prt_3</span><br><span class="line"></span><br><span class="line">4)、创建列表分区</span><br><span class="line">create table test2(</span><br><span class="line">    id int,</span><br><span class="line">    gender char(1)</span><br><span class="line">)distributed by(id)</span><br><span class="line">partition by list(gender)</span><br><span class="line">(</span><br><span class="line">partition boys values(&#x27;M&#x27;),</span><br><span class="line">partition girls values(&#x27;F&#x27;),</span><br><span class="line">default partition thr</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">【说明】：default partition 分区名称   的作用是是定义默认分区，在分区检查约束范围内的数据会被放到对应的分区，不在各个</span><br><span class="line">分区表检查范围内的数据都会被放入到默认分区表中</span><br><span class="line">举例：</span><br><span class="line">insert into test2 value</span><br><span class="line">(1,&#x27;M&#x27;),</span><br><span class="line">(2,&#x27;M&#x27;),</span><br><span class="line">(3,&#x27;F&#x27;),</span><br><span class="line">(4,&#x27;K&#x27;);</span><br><span class="line">select * from test2_1_prt_boys;</span><br><span class="line">结果：</span><br><span class="line">1 M</span><br><span class="line">2 M</span><br><span class="line">select * from test2_1_prt_girls;</span><br><span class="line">结果：</span><br><span class="line">3 F</span><br><span class="line">select * from test2_1_prt_thr;</span><br><span class="line">结果：&#123;K不等于M也不等与F，所以被存储到默认分区内&#125;</span><br><span class="line">4 K</span><br><span class="line"></span><br><span class="line">5)、定义多级分区表</span><br><span class="line">创建二级子分区表根据日期字段做一级分区，再根据地区列表做二级分区</span><br><span class="line">create table test2(</span><br><span class="line">    id int,</span><br><span class="line">    dates date,</span><br><span class="line">    region text</span><br><span class="line">)distributed by(id)</span><br><span class="line">partition by range(dates)</span><br><span class="line">subpartition by list(region)</span><br><span class="line">subpartition template</span><br><span class="line">    (</span><br><span class="line">    subpartition usa values(&#x27;usa&#x27;),</span><br><span class="line">    subpartition uk values(&#x27;uk&#x27;),</span><br><span class="line">    subpartition ch values(&#x27;ch&#x27;),</span><br><span class="line">    default subpartition otherRegions</span><br><span class="line">    )</span><br><span class="line">(</span><br><span class="line">    start(date,&#x27;2019-09-20&#x27;)inclusive</span><br><span class="line">    end(date,&#x27;2019-09-22&#x27;)exclusive</span><br><span class="line">    every(interaval &#x27;1 day&#x27;),</span><br><span class="line">    default partition otherDays</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">6)、查看子分区是否被扫描</span><br><span class="line">explain select * from test2;</span><br><span class="line"></span><br><span class="line">7)、交换分区(待查方法)</span><br><span class="line"></span><br><span class="line">8)、查看分区设计</span><br><span class="line">通过pg_partition视图查看分区表的设计情况</span><br><span class="line">select partitionboundry, partitiontablename, partitionname, partitionlevel, partitionrank from pg_partition;</span><br><span class="line"></span><br><span class="line">通过pg_partition_templates查看子分区模板</span><br><span class="line">select * from pg_partition_templates where tablename=&#x27;test2&#x27;;</span><br><span class="line"></span><br><span class="line">通过pg_partition_columns查看分区键</span><br><span class="line">select * from pg_partition_columns where tablename=&#x27;test2&#x27;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(6)、维护分区表</span><br><span class="line">分区表的维护包括添加新分区，重命名，拆分，模板修改和删除分区等</span><br><span class="line">1)、添加新分区&#123;原分区表中如果默认存在分区需要先drop掉默认分区&#125;</span><br><span class="line">alter table test2 drop default partition;</span><br><span class="line">alter table test2 add partition 分区名  start(&#x27;2019-09-20&#x27;::date) end(&#x27;2019-09-30&#x27;::date);</span><br><span class="line">分区名如：p20200317</span><br><span class="line"></span><br><span class="line">1-1)、创建一个新的空分区：</span><br><span class="line">create table 分区表名_y2008m02 partition OF 源表</span><br><span class="line">    for values from (&#x27;2008-02-01&#x27;) TO (&#x27;2008-03-01&#x27;)</span><br><span class="line">    TABLESPACE fasttablespace;</span><br><span class="line"></span><br><span class="line">2、重命名分区&#123;修改父表信息、会影响所有的分区表&#125;</span><br><span class="line">alter table test2 rename to test22;</span><br><span class="line"></span><br><span class="line">3)、只修改分区名称&#123;for(&#x27;2019-09-20&#x27;)填写分区键的值这里即指test22_1_prt_4这个分区表&#125;</span><br><span class="line">alter table test22 rename partition for(&#x27;2019-09-20&#x27;) to change_par;</span><br><span class="line">结果：test22_1_prt_4-&gt;改名为test22_1_prt_change_par</span><br><span class="line"></span><br><span class="line">4)、删除分区</span><br><span class="line">alter table schema.test22 drop default partition;  删除默认分区</span><br><span class="line">alter table schema.test22 drop partition if exists &quot;partitionName&quot;;</span><br><span class="line"></span><br><span class="line">5)、清空分区数据</span><br><span class="line">alter table test22 truncate partition for(rand(1));</span><br><span class="line"></span><br><span class="line">6)、修改子分区模板</span><br><span class="line">alter table test22 set subpartition template</span><br><span class="line">(</span><br><span class="line">    subpartition usa value(&#x27;usa&#x27;),</span><br><span class="line">    subpartition africa value(&#x27;africa&#x27;),</span><br><span class="line">    default subpartition other</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">7)、拆分分区</span><br><span class="line">alter table 分区表名 split partition p20120105分区名 at((&#x27;2012-01-06&#x27;::date)) into </span><br><span class="line">(PARTITION p20120105(分区名) ,PARTITION p20120106(分区名) );</span><br><span class="line"></span><br><span class="line">8)、交换分区</span><br><span class="line">alter table 分区表名 exchange partition p20120102(分区名) with table 新分区表名;</span><br><span class="line"></span><br><span class="line">5、数据的存储方式</span><br><span class="line">推存储(heap)：适合数据经常变化的小表</span><br><span class="line">只追加存储(Append-Only)&#123;即AO表&#125;：适合大表，通常是批量装载数且只进行只读查询操作</span><br><span class="line">默认的建表存储模式为堆存储。</span><br><span class="line"></span><br><span class="line">创建堆存储表(heap)：</span><br><span class="line">create table test(id int)distributed by(id);</span><br><span class="line"></span><br><span class="line">创建AO表：</span><br><span class="line">create table test(</span><br><span class="line">    id int,</span><br><span class="line">    name text not null,</span><br><span class="line">    sex text not null check(sex in(&#x27;male&#x27;,&#x27;famale&#x27;))</span><br><span class="line">)with (appendonly=true)</span><br><span class="line">distributed by(id);</span><br><span class="line">【注】：AO表不支持主键、唯一约束</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">6、快速建表</span><br><span class="line">(1)、在创建表的时候，如果要创建一张结构一模一样的表，可以利用create table like命令，但是创建表后的一些特殊属性并不会一样。如压缩、只增加(appendonly)属性等。</span><br><span class="line">如果不指定分布键，则默认分布键与源表一样</span><br><span class="line">create table test2 (like test1) distributed by(id);</span><br><span class="line">&#123;注：使用create table like命令创建的表不带数据的，且(like 源表)得加上括号&#125;</span><br><span class="line"></span><br><span class="line">(2)、根据查询结果创建表，使用create table as 或 select into命令</span><br><span class="line">create table as 和 select into命令功能一样，但select into语法简单且不能手动指定分布键，只能使用默认的分布键</span><br><span class="line">&#123;创建test2表&#125;</span><br><span class="line">方式一:</span><br><span class="line">create table test2 as select id,name from test1 distributed by(id);</span><br><span class="line">方式二：</span><br><span class="line">select id,name into test1 from test2;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">7、创建列存表</span><br><span class="line">选择列存储或行存储的场景：</span><br><span class="line">(1)、表中的数据需要做更新操作，选择行存储</span><br><span class="line">(2)、如果表经常有insert操作，选择行存储</span><br><span class="line">(3)、如果在select和where中涉及表的全部或大部分列时，选择行存储</span><br><span class="line">(4)、如果在where和having中对单列做聚合操作且返回少量的行，选择列存储</span><br><span class="line">(5)、行存储对于列多或行尺寸相对少的表更高效</span><br><span class="line">(6)、列存储只在访问宽表的少量列的查询中性能更高</span><br><span class="line">(7)、列存储根据有压缩优势</span><br><span class="line">(8)、默认情况下，表是按行存储的方式存储</span><br><span class="line">(9)、列存储必须是AO表，否则无法创建成功，使用with(orientation=column)指定为列存储</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line">create table test(</span><br><span class="line">    id integer,</span><br><span class="line">    name text not null</span><br><span class="line">)with(orientation=column,appendonly=true)</span><br><span class="line">distributed by(id)</span><br><span class="line"></span><br><span class="line">8、创建压缩表</span><br><span class="line">表压缩的目的是为了减少占用存储空间，用于数据仓库中的事实表。不经常进行数据和表结构的操作。压缩表必须是AO表。</span><br><span class="line">GP数据库的压缩方式分为：表级压缩、列级压缩</span><br><span class="line"></span><br><span class="line">行存储： 表级压缩，列级压缩  压缩算法：ZLIB、QUICKLZ</span><br><span class="line">列存储： 表级压缩，列级压缩  压缩算法：RLE_TYPE、ZLIB、QUICKLZ</span><br><span class="line"></span><br><span class="line">(1)、表级压缩</span><br><span class="line">get_ao_distribution(表名)        查看AO表的分布情况</span><br><span class="line">get_ao_compression_ratio(表名)   查看AO表的压缩率</span><br><span class="line">pg_total_relation_size(表名)     查看AO表的占用空间大小（通常和函数pg_size_pretty()连用）</span><br><span class="line"></span><br><span class="line">查看AO表test1的分布情况</span><br><span class="line">select get_ao_distribution(test1);</span><br><span class="line"></span><br><span class="line">查看AO表test1的压缩率</span><br><span class="line">select get_ao_compression_ratio(test1);</span><br><span class="line"></span><br><span class="line">查看AO表test1的占用空间大小</span><br><span class="line">select pg_size_pretty(pg_total_relation_size(test1));</span><br><span class="line"></span><br><span class="line">(2)、创建压缩表（表级压缩）</span><br><span class="line">create table test1(</span><br><span class="line">    id integer,</span><br><span class="line">    name text not null</span><br><span class="line">)with(appendonly=true,compression=&#x27;zlib&#x27;)</span><br><span class="line">distributed by(id);</span><br><span class="line"></span><br><span class="line">3)、创建压缩表（列级压缩）</span><br><span class="line">create table test1(</span><br><span class="line">    id integer encoding(compression=&#x27;zlib&#x27;),</span><br><span class="line">    name text not null encoding(compression=&#x27;quickly&#x27;),</span><br><span class="line">    sex text not null encoding(compression=null)</span><br><span class="line">)with(appendonly=true,orientation=column)</span><br><span class="line">distributed by(id);</span><br><span class="line">【注】：创建压缩表，同时使用了表级压缩和列级压缩，列级压缩会覆盖表级压缩的设置</span><br><span class="line"></span><br><span class="line">9、数据加载</span><br><span class="line">1000，0000条记录加载到数据库表</span><br><span class="line">\copy test22 from &#x27;/data/test.csv&#x27; with delimeter &#x27;,&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="自己测试的例子"><a href="#自己测试的例子" class="headerlink" title="自己测试的例子"></a>自己测试的例子</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">test</span>(</span><br><span class="line">    c1 <span class="built_in">integer</span>,</span><br><span class="line">    c2 <span class="built_in">date</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">distributed</span> <span class="keyword">by</span>(c1) </span><br><span class="line"><span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">range</span>(c2)</span><br><span class="line">(</span><br><span class="line"><span class="keyword">partition</span> one <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-01&#x27;</span>)inclusive ,</span><br><span class="line"><span class="keyword">partition</span> two <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-02&#x27;</span>)inclusive ,</span><br><span class="line"><span class="keyword">partition</span> thr <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-03&#x27;</span>)inclusive </span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">---例子2</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test2(</span><br><span class="line">    c1 <span class="built_in">integer</span>,</span><br><span class="line">    c2 <span class="built_in">date</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">distributed</span> <span class="keyword">by</span>(c1) </span><br><span class="line"><span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">range</span>(c2)</span><br><span class="line">(</span><br><span class="line"><span class="keyword">partition</span> one <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-01&#x27;</span>)inclusive ,</span><br><span class="line"><span class="keyword">partition</span> two <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-02&#x27;</span>)inclusive ,</span><br><span class="line"><span class="keyword">partition</span> thr <span class="keyword">start</span> ( <span class="string">&#x27;2019-09-03&#x27;</span>)inclusive <span class="keyword">end</span>(<span class="string">&#x27;2019-09-04&#x27;</span>)exclusive</span><br><span class="line">);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="转换为分区表"><a href="#转换为分区表" class="headerlink" title="转换为分区表"></a>转换为分区表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">------普通表 转 分区表 -------</span><br><span class="line">&#x3D;&#x3D;&gt;CREATE TABLE sales2 (LIKE sales)</span><br><span class="line">   PARTITION BY RANGE (date)</span><br><span class="line">   ( START (date &#39;2008-01-01&#39;) INCLUSIVE</span><br><span class="line">     END (date &#39;2009-01-01&#39;) EXCLUSIVE</span><br><span class="line">     EVERY (INTERVAL &#39;1 month&#39;) );</span><br><span class="line">&#x3D;&#x3D;&gt;INSERT INTO sales2 SELECT * FROM sales;</span><br><span class="line">&#x3D;&#x3D;&gt;DROP TABLE sales;</span><br><span class="line">&#x3D;&#x3D;&gt;ALTER TABLE sales2 RENAME TO sales;</span><br><span class="line">&#x3D;&#x3D;&gt;GRANT ALL PRIVILEGES ON sales TO admin;</span><br><span class="line">&#x3D;&#x3D;&gt;GRANT SELECT ON sales TO guest;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/" rel="prev" title="删除重复记录保留1条">
+                  <i class="fa fa-chevron-left"></i> 删除重复记录保留1条
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/27/python/celery%E5%88%9D%E6%8E%A2/" rel="next" title="celery初探">
+                  celery初探 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

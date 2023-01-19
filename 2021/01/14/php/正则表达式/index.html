@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="正则表达式php中的正则表达式，有几个已preg开头的函数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="http://example.com/2021/01/14/php/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="正则表达式php中的正则表达式，有几个已preg开头的函数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-14T08:13:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.162Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/01/14/php/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>正则表达式 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2%EF%BC%9A"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8"><span class="nav-number">1.2.</span> <span class="nav-text">延伸</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/14/php/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          正则表达式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-14 16:13:00" itemprop="dateCreated datePublished" datetime="2021-01-14T16:13:00+08:00">2021-01-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><p>php中的正则表达式，有几个已preg开头的函数。</p>
+<a id="more"></a>
+
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><ul>
+<li><p>preg_match</p>
+<p>进行匹配，匹配到一个结果就行了。个人感觉，跟str_replace替换的参数顺序差不多。</p>
+<p>该函数有返回值，返回0或1。其中，第3个参数，用来接收返匹配结果值的。如果不需要，则可以省略。</p>
+</li>
+<li><p>preg_match_all</p>
+<p>同preg_match，但是在匹配到第一个结果后，还会接着匹配后续的。</p>
+</li>
+<li><p>preg_split</p>
+<p>可以进行分隔。比如不规则的csv文件，则可以使用这个符号来进行分隔。用法类似与explode。</p>
+</li>
+</ul>
+<p>上面的这些函数，其实都需要正则表达式的pattern参数。则该参数，是用字符来表达的。所以，可能有下面两种形式：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;/正则表达式/&quot;</span></span><br><span class="line"><span class="string">&#x27;/正则表达式/&#x27;</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="variable">$p1</span>=<span class="string">&quot;/&lt;tr class=\&quot;.*?&gt;.*?&lt;\/tr&gt;/&quot;</span></span><br><span class="line"><span class="variable">$p2</span>=<span class="string">&#x27;/&lt;tr class=&quot;.*?&gt;.*?&lt;\/tr&gt;/&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是差别还是挺大的，因为两中字符串内的转义符号支持情况不同。p1跟p2其实想表达的是同一个意思，但是，双引号内，需要对部分内容进行转义，结果更复杂一些。</p>
+<p>php语法里面支持转义，而正则表达式里面也有一些类似转义的符号，两者肯定会打架。我记得表示是用<code>r</code>前缀来减少二者的叠加。</p>
+<p>所以，我觉得，如果想正则表达式简单一些，能用单引号，尽量用。</p>
+<h3 id="场景1："><a href="#场景1：" class="headerlink" title="场景1："></a>场景1：</h3><p>为了解析html文件中的table，但是手里面又懒得找相关的dom解析工具。所以，选择了功能强大的正则表达式。</p>
+<p>匹配<code>tr</code>标签如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">tr</span>(<span class="params"><span class="variable">$text</span></span>)</span>&#123;</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/&lt;tr class=&quot;.*?&gt;(.*?)&lt;\/tr&gt;/&#x27;</span>,<span class="variable">$text</span>,<span class="variable">$result</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$result</span>[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>说明：</strong></p>
+<ul>
+<li><code>.*?</code>其实是为了避免贪婪匹配。如 <code>&#39;/&lt;tr class=&quot;.*&gt;</code>，进行了贪婪匹配，匹配到最大的行。本来有10个结果，未进行限制，则贪婪匹配，结果只有一个。</li>
+<li><code>(.*?)</code>使用了括号表达式。正因为使用括号，匹配到的结果，放到了<code>$result[1]</code>。</li>
+<li><code>\/</code> 本意是想使用斜杆，但是由于跟正则表达式原有的有冲突，需要用反斜杆进行转义。</li>
+<li>在测试正则表达式的过程中，可以写一段，试一段结果。</li>
+</ul>
+<p>匹配<code>td</code>标签如下：</p>
+<blockquote>
+<p>其中增加了一个map函数。</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">td</span>(<span class="params"><span class="variable">$text</span></span>)</span>&#123;</span><br><span class="line">    preg_match_all(<span class="string">&#x27;/&lt;td.*?&gt;(.*?)&lt;\/td&gt;/&#x27;</span>,<span class="variable">$text</span>,<span class="variable">$result</span>);</span><br><span class="line">    <span class="keyword">return</span> array_map(<span class="string">&#x27;trim&#x27;</span>,<span class="variable">$result</span>[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，由于table又比较多，我又懒得用正则匹配，所以使用了substr，多行文本效果不好，我又进行了替换：</p>
+<blockquote>
+<p>替换掉换行符号（我测试的例子，居然有两种格式），如果不替换，则也出不来结果。我猜测句号点，好像不包括换行符号。然后我测试使用 [.|\n|\r\n]来代替原有的点，好像也不行。单、双引号也试过了。</p>
+<p>能不用替换换行符就能替换的方法，我还没有找到。</p>
+</blockquote>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//从 class=&quot;EOS_table&quot;&gt; 开始截取</span></span><br><span class="line"><span class="variable">$find</span> = strpos(<span class="variable">$cont</span>,<span class="string">&#x27;class=&quot;EOS_table&quot;&gt;&#x27;</span>);</span><br><span class="line"><span class="variable">$cont</span> = substr(<span class="variable">$cont</span>,<span class="variable">$find</span>,<span class="number">-1</span>);</span><br><span class="line"><span class="comment">//多行文本，正则好像不能很好的识别</span></span><br><span class="line"><span class="variable">$cont</span> = strtr(<span class="variable">$cont</span>,[<span class="string">&quot;\r\n&quot;</span>=&gt;<span class="string">&#x27;&#x27;</span>,<span class="string">&quot;\n&quot;</span>=&gt;<span class="string">&#x27;&#x27;</span>]);</span><br></pre></td></tr></table></figure>
+
+<h3 id="场景2："><a href="#场景2：" class="headerlink" title="场景2："></a>场景2：</h3><p>利用正则，忽略不是纯单号的运单。如果没有，则返回空结果。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 去掉运单号中的字母。</span></span><br><span class="line"><span class="variable">$mailnoMatch</span>=[];</span><br><span class="line">\preg_match(<span class="string">&#x27;/\d+/&#x27;</span>,<span class="variable">$mailno</span>,<span class="variable">$mailnoMatch</span>);</span><br><span class="line"><span class="keyword">if</span>(!count(<span class="variable">$mailnoMatch</span>))&#123;</span><br><span class="line">    Log::log(<span class="string">&#x27;redis内的单号格式不正确 &#x27;</span>.<span class="variable">$record</span> .<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h2><p>通过前面的table解析成二维数组的方式，我觉得，作为一个程序员，需要掌握这种基础的表达结果。是那种刻到脑子里面的那种。具体参见 array.md。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/08/other/csv%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" rel="prev" title="csv文件格式">
+                  <i class="fa fa-chevron-left"></i> csv文件格式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/01/14/php/array/" rel="next" title="array">
+                  array <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

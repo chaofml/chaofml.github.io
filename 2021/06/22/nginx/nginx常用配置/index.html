@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="记录一下，自己常用的nginx配置，安全配置等。比如，解决跨域问题，解决配置多个虚拟的主机，以及端口代理等功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx常用配置">
+<meta property="og:url" content="http://example.com/2021/06/22/nginx/nginx%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="记录一下，自己常用的nginx配置，安全配置等。比如，解决跨域问题，解决配置多个虚拟的主机，以及端口代理等功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-22T06:45:03.000Z">
+<meta property="article:modified_time" content="2022-08-08T03:00:12.346Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/06/22/nginx/nginx%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>nginx常用配置 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">多个虚拟主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">代理缓存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E4%BB%A3%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">端口代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">5.</span> <span class="nav-text">负载均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E9%89%B4%E6%9D%83"><span class="nav-number">6.</span> <span class="nav-text">访问鉴权</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3"><span class="nav-number"></span> <span class="nav-text">问题及解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E3%80%81%E5%89%8D%E7%BC%80%E5%8C%B9%E9%85%8D%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">正则、前缀匹配顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ipv6"><span class="nav-number">2.</span> <span class="nav-text">ipv6</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/22/nginx/nginx%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          nginx常用配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-22 14:45:03" itemprop="dateCreated datePublished" datetime="2021-06-22T14:45:03+08:00">2021-06-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-08-08 11:00:12" itemprop="dateModified" datetime="2022-08-08T11:00:12+08:00">2022-08-08</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>记录一下，自己常用的nginx配置，安全配置等。比如，解决跨域问题，解决配置多个虚拟的主机，以及端口代理等功能。</p>
+<a id="more"></a>
+
+
+
+<h3 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h3><p>增加一个解决跨域问题的配置，这样使js能直接访问到其他server的api。当然，也可以在<code>php</code>代码里面设置响应头，也是一样的原理。</p>
+<p>示例如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> /loc/ &#123;</span><br><span class="line">    <span class="attribute">if</span> ($request_method = <span class="string">&#x27;OPTIONS&#x27;</span>) &#123;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span> <span class="string">&#x27;*&#x27;</span> always;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Allow-Credentials&#x27;</span> <span class="string">&#x27;true&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Allow-Methods&#x27;</span> <span class="string">&#x27;GET, POST, PATCH, DELETE, PUT, OPTIONS&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Allow-Headers&#x27;</span> <span class="string">&#x27;DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,  Access-Control-Expose-Headers, Token, Authorization&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Max-Age&#x27;</span> <span class="number">1728000</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Content-Type&#x27;</span> <span class="string">&#x27;text/plain charset=UTF-8&#x27;</span>;</span><br><span class="line">        <span class="attribute">add_header</span> <span class="string">&#x27;Content-Length&#x27;</span> <span class="number">0</span>;</span><br><span class="line">        <span class="attribute">return</span> <span class="number">204</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="attribute">add_header</span> <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span> <span class="string">&#x27;*&#x27;</span> always;</span><br><span class="line">    <span class="attribute">proxy_pass</span> http://10.20.24.223:8005/;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>思考：</p>
+<p>如果我想动态的增加nginx的代理设置，怎么做呢？nginx的lua是否能成为一个方式呢？</p>
+<h3 id="多个虚拟主机"><a href="#多个虚拟主机" class="headerlink" title="多个虚拟主机"></a>多个虚拟主机</h3><p>每次增加，需要按顺序执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先测试nginx配置是否正确。</span></span><br><span class="line">nginx -t</span><br><span class="line"><span class="meta">#</span><span class="bash"> 上一步，正确后，再重启nginx</span></span><br><span class="line">nginx -s reload</span><br><span class="line"><span class="meta">#</span><span class="bash"> 综合</span></span><br><span class="line">nginx -t &amp;&amp; nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p>具体的配置过程如下：</p>
+<ul>
+<li><p>nginx.conf</p>
+<p>需要先改造一下nginx.conf入口配置，增加include导入功能。</p>
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">http&#123;</span><br><span class="line">	server&#123;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment"># 在http模块的最后一行，增加如下代码，加载vhost的虚拟主机配置。</span></span><br><span class="line">    <span class="attribute">include</span> vhost/<span class="regexp">*.conf</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>vhost/gogs_ssl.conf</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">server_name</span> gogs.chaofml.cn;</span><br><span class="line">        <span class="attribute">listen</span> <span class="number">443</span> default ssl;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_certificate</span> /usr/local/nginx/ssl/server.crt;</span><br><span class="line">        <span class="attribute">ssl_certificate_key</span> /usr/local/nginx/ssl/server.key;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">1m</span>; </span><br><span class="line">        <span class="attribute">ssl_session_timeout</span> <span class="number">5m</span>;</span><br><span class="line">        <span class="attribute">ssl_protocols</span> SSLv2 SSLv3 TLSv1;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">ssl_ciphers</span> HIGH:!aNULL:!MD5;</span><br><span class="line">        <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">location</span> /</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>  http://localhost:9000;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>vhost/php_apache_8088.conf</p>
+<p>注意下面的<code>listen 443 ssl;</code>没有加<code>default</code>字段，好像是因为一个端口（如443端口），只能有一个默认吧。</p>
+<p>如果访问不存在的url，则优先访问<code>default</code>指定的server。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">server</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span> url.chaofml.cn;</span><br><span class="line">    <span class="attribute">index</span> index.php index.html index.htm;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span> ssl;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_certificate</span> /usr/local/nginx/ssl/server.crt;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /usr/local/nginx/ssl/server.key;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_session_cache</span> shared:SSL:<span class="number">1m</span>;</span><br><span class="line">    <span class="attribute">ssl_session_timeout</span> <span class="number">5m</span>;</span><br><span class="line">    <span class="attribute">ssl_protocols</span> SSLv2 SSLv3 TLSv1;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">ssl_ciphers</span> HIGH:!aNULL:!MD5;</span><br><span class="line">    <span class="attribute">ssl_prefer_server_ciphers</span> <span class="literal">on</span>;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">proxy_pass</span>  http://localhost:8088;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ .*\.(gif|jpg|jpeg|png|bmp|swf)$</span> &#123;</span><br><span class="line">        <span class="attribute">expires</span>      <span class="number">30d</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ .*\.(js|css)?$</span> &#123;</span><br><span class="line">        <span class="attribute">expires</span>      <span class="number">12h</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ /.well-known</span> &#123;</span><br><span class="line">        <span class="attribute">allow</span> all;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ /\.</span> &#123;</span><br><span class="line">        <span class="attribute">deny</span> all;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代理缓存优化"><a href="#代理缓存优化" class="headerlink" title="代理缓存优化"></a>代理缓存优化</h3><p>下面有很多跟proxy代理有关的指令。</p>
+<p>比如：<code>proxy_set_header Host $http_host:8080;</code> ，可以让代理的后端地址，能正确的感应到访问的地址（填写的是nginx的访问信息。比如nginx + apache组合，在重定向的时候，url不正确等。（是服务器内部的重定向，但是socat为啥就可以了？）</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">34902</span>;</span><br><span class="line">    <span class="attribute">listen</span>       [::]:<span class="number">34902</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  myblog.chaofml.cn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">#include /etc/nginx/default.d/*.conf;</span></span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">proxy_set_header</span> Host $http_host;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>   X-Real-IP $remote_addr;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>   X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">proxy_connect_timeout</span> <span class="number">30</span>;</span><br><span class="line">        <span class="attribute">proxy_send_timeout</span> <span class="number">60</span>;</span><br><span class="line">        <span class="attribute">proxy_read_timeout</span> <span class="number">60</span>;</span><br><span class="line"></span><br><span class="line">        <span class="attribute">proxy_buffering</span> <span class="literal">on</span>;</span><br><span class="line">        <span class="attribute">proxy_buffer_size</span> <span class="number">32k</span>;</span><br><span class="line">        <span class="attribute">proxy_buffers</span> <span class="number">4</span> <span class="number">128k</span>;</span><br><span class="line">        <span class="attribute">proxy_busy_buffers_size</span> <span class="number">256k</span>;</span><br><span class="line">        <span class="attribute">proxy_max_temp_file_size</span> <span class="number">256k</span>;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://localhost:40198;</span><br><span class="line">        <span class="attribute">proxy_redirect</span> default;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="端口代理"><a href="#端口代理" class="headerlink" title="端口代理"></a>端口代理</h3><p>在与http平级的位置（即根空间），添加如下代码：</p>
+<blockquote>
+<p>可以命令upstream。之前领导说代理ldap，我知道是代理socket，以为nginx不能代理，故采用了socat软件来代理。</p>
+</blockquote>
+<p>参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/knowledgesea/p/6497783.html">https://www.cnblogs.com/knowledgesea/p/6497783.html</a></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">stream&#123; </span><br><span class="line"><span class="comment">#    upstream abc&#123; </span></span><br><span class="line"><span class="comment">#        server 172.18.8.196:11911; </span></span><br><span class="line"><span class="comment">#    &#125; </span></span><br><span class="line">    server&#123; </span><br><span class="line">        <span class="attribute">listen</span> <span class="number">22023</span>; </span><br><span class="line">        <span class="attribute">proxy_pass</span> localhost:<span class="number">22022</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试，代理ssh功能，并查看 /var/log/secure日志，发现如下即说明成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Aug 18 18:27:23 VM_0_15_centos sshd[8203]: Accepted password for root from 127.0.0.1 port 59218 ssh2</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>核心是，配置一个upstream，但是，记得不要在upstream中添加协议，如<code>http</code>，然后在具体匹配的路径中，指明代理的地址，记住，此时，增加协议名称。如下：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">upstream</span> backend &#123;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">10.172.42.15:8009</span>;</span><br><span class="line">    <span class="attribute">server</span> <span class="number">10.172.41.206:8009</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> / &#123;</span><br><span class="line">    <span class="comment"># 这里省去了其他指令</span></span><br><span class="line">    <span class="attribute">proxy_pass</span> http://backend;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="访问鉴权"><a href="#访问鉴权" class="headerlink" title="访问鉴权"></a>访问鉴权</h3><p>授权才能访问。</p>
+<p>略。</p>
+<h2 id="问题及解决"><a href="#问题及解决" class="headerlink" title="问题及解决"></a>问题及解决</h2><h3 id="正则、前缀匹配顺序"><a href="#正则、前缀匹配顺序" class="headerlink" title="正则、前缀匹配顺序"></a>正则、前缀匹配顺序</h3><p>需求：云课堂部署的php项目，需要有些目录禁止访问。如<code>/backend/web</code>放行，但是，其他以<code>/backend/</code>开头的均要拦截，其他的还有<code>/frontend/web</code>等。此外，php设有正则匹配<code>.php</code>结尾的url。 需要解决的问题：1、原有正则的优先级会大于前缀匹配。2、怎么样才能禁止访问一个目录，但放行部分子目录呢？</p>
+<p>背景知识：默认情况下，匹配顺序，正则优先于前缀匹配，跟位置无关。但，需要调整顺序时。则：首先，前缀匹配，可以改写成正则匹配，然后，调整顺序，保证原来的前缀匹配顺序在前。</p>
+<p>正则匹配，根据配置的顺序，只要成功匹配一次，后续的其他正则、前缀匹配，均不会再进行匹配了。</p>
+<p>禁止访问本来想用文件权限来限制，但是，后来仔细想想，有弊端：<strong>文件权限虽然能限制访问，但是会导致无法读，即类库文件时，无法访问。</strong></p>
+<ul>
+<li>方案1</li>
+</ul>
+<blockquote>
+<p>采用了逐一列举的方式，即，逐一屏蔽而级目录。（缺点：后期增加的目录，可能需要手工调整）</p>
+</blockquote>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 最终配置，将前缀匹配更改为  正则匹配，并注意顺序。</span></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* ^/vendor/*</span> &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">    <span class="attribute">proxy_set_header</span>  Host $host:APP_PORT;</span><br><span class="line">    <span class="comment">#proxy_set_header  X-Real-IP $remote_addr;</span></span><br><span class="line">    <span class="attribute">proxy_set_header</span>  X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    <span class="attribute">proxy_pass</span>   http://127.0.0.1:81;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>即：变更如下，并调整了顺序。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-        location  /api/config &#123;</span><br><span class="line">+        location ~* ^/api/config/* &#123;</span><br><span class="line">             <span class="attribute">deny</span> all;</span><br><span class="line">         &#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：针对一级目录下只有部分而级</p>
+<ul>
+<li>方案2</li>
+</ul>
+<blockquote>
+<p>针对问题2，采用了正则方式，零宽断言来解决。<strong>注意点：正则中如有{}，则需要整体用引号包裹，避免语法分析歧义。</strong></p>
+</blockquote>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 错误，/backend/web/ 被禁止   （0次匹配？？？转换零宽断言）</span></span><br><span class="line">location ~* &quot;^/backend/(web)&#123;0&#125;&quot; &#123; deny all;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 只匹配一个二级目录</span></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* &quot;^/backend/(?!web/)&quot;</span> &#123; <span class="attribute">deny</span> all;&#125;</span><br><span class="line"><span class="comment"># 匹配多个二级目录</span></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* ^/backend/(?!(web|web1))</span> &#123;</span><br><span class="line">    <span class="attribute">deny</span> all;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="ipv6"><a href="#ipv6" class="headerlink" title="ipv6"></a>ipv6</h3><p>问题描述：</p>
+<blockquote>
+<p>2022/08/03 14:54:09 [error] 16806#16806: *3737 connect() failed (111: Connection refused) while connecting to upstream, </p>
+</blockquote>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 34902 为vhost的端口，从错误日志中，发现有连接拒绝，无一例外，上游都指定为 [::1]:</span></span><br><span class="line"><span class="attribute">grep</span> <span class="number">34902</span> /var/log/nginx/error.log |grep <span class="string">&#x27;Connection refused&#x27;</span> |grep -v <span class="string">&#x27;[::1]:&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>问题解决： <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2a3d18043a25">https://www.jianshu.com/p/2a3d18043a25</a></p>
+<p>解决办法：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">proxy_pass</span> http://localhost:40198;  <span class="comment">#可能为Ipv4  ipv6 </span></span><br><span class="line"><span class="attribute">proxy_pass</span> http://127.0.0.1:40198; <span class="comment"># 强制更改为ip v4 </span></span><br></pre></td></tr></table></figure>
+
+<p>重启后，观察，貌似没有类似的错误了。</p>
+<p>环境信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> nginx ipv4  ipv6都开启了</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 而upstream没有，是以  docker run .... -p 127.0.0.1:40198:80   方式</span></span><br><span class="line">netstat -tnlp |grep -i listen</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/nginx/" rel="tag"># nginx</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/06/21/js/js%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%88%86%E7%BB%84/" rel="prev" title="js正则表达式分组">
+                  <i class="fa fa-chevron-left"></i> js正则表达式分组
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/06/22/mysql/sql%E8%BF%98%E8%83%BD%E8%BF%99%E6%A0%B7%E5%86%99/" rel="next" title="sql还能这样写">
+                  sql还能这样写 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

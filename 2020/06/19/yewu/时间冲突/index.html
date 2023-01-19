@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="时间冲突 本文结束时间冲突的算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="时间冲突">
+<meta property="og:url" content="http://example.com/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="时间冲突 本文结束时间冲突的算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81.assets/1592558199728.png">
+<meta property="article:published_time" content="2020-06-19T08:57:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.222Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="业务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81.assets/1592558199728.png">
+
+
+<link rel="canonical" href="http://example.com/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>时间冲突 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81"><span class="nav-number">1.</span> <span class="nav-text">时间冲突</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B5%B7%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">起源</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%9A%E8%AE%AE%E9%A2%84%E7%BA%A6%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E7%AE%97%E6%B3%95"><span class="nav-number">2.1.1.</span> <span class="nav-text">会议预约中使用的算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E7%89%88%E6%9C%AC%E4%B8%80"><span class="nav-number">2.1.2.</span> <span class="nav-text">优化版本一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E7%89%88%E6%9C%AC%E4%BA%8C"><span class="nav-number">2.1.3.</span> <span class="nav-text">优化版本二</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          时间冲突
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-19 16:57:00" itemprop="dateCreated datePublished" datetime="2020-06-19T16:57:00+08:00">2020-06-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="时间冲突"><a href="#时间冲突" class="headerlink" title="时间冲突"></a>时间冲突</h1><blockquote>
+<p>本文结束时间冲突的算法。</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h1><p>做个两个类似的项目，第一个是会议，第二个是广告。相同需求，已占用的时间段，不可用，即判断时间冲突。在做广告项目的时候，有了新想法，单独记录一下。</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>以下假设开始时间是12、结束时间14号。假设数据库的数据都是合法的，即开始时间&lt;=结束时间。选择的时间段，也是合法的时间，也是开始&lt;=结束。</p>
+<p>选择时间段12~14，即12、13、14这三天被占用。包含边界。</p>
+<p>先讲述最差的算法，再慢慢迭代算法。</p>
+<p>大概穷举出以下情况：</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>12之前</th>
+<th>12~14之间</th>
+<th>14之后</th>
+<th>冲突</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>开始结束</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>开始</td>
+<td>结束</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td>3</td>
+<td>开始</td>
+<td></td>
+<td>结束</td>
+<td>√</td>
+</tr>
+<tr>
+<td>4</td>
+<td></td>
+<td>开始结束</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td>开始</td>
+<td>结束</td>
+<td>√</td>
+</tr>
+<tr>
+<td>6</td>
+<td></td>
+<td></td>
+<td>开始结束</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>从上表可是看出，判断不冲突的条件最为简单，即结束&gt;12或者开始&lt;14，那么肯定不冲突，除此以外，都冲突。（但是怎么转化为独立面）</p>
+<p>判断冲突，情况3最容易忽略。</p>
+<h3 id="会议预约中使用的算法"><a href="#会议预约中使用的算法" class="headerlink" title="会议预约中使用的算法"></a>会议预约中使用的算法</h3><p>是否时间冲突，核心是判断数据库内是否有1条记录，与12<del>14的时间段有重叠。所以呢，查出的数据，1、要么开始在12</del>14号之间，2、要么结束在12~14号之间，3、要么，开始&gt;12且结束&gt;14（针对表格情况3）。</p>
+<p>所以上面三种条件的关系是： 条件1 or 条件2  or 条件3。</p>
+<h3 id="优化版本一"><a href="#优化版本一" class="headerlink" title="优化版本一"></a>优化版本一</h3><p>可以这么考虑，要么  一调记录的开始  在12~14之间，要么12在开始、结束之间。简单理解，要么我（时间段一）的开始在你（时间段二）之间，要么你的开始在我之间。</p>
+<p>所以，上面两种的条件，：条件1 or 条件2</p>
+<p>上面的版本是同事，想出来的，我顿时觉得很不错，算法好多了。</p>
+<h3 id="优化版本二"><a href="#优化版本二" class="headerlink" title="优化版本二"></a>优化版本二</h3><p>其实最开始想的是，判断时间冲突不好判断，但是判断时间不冲突好判断（从对立面考虑）。即如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">开始  &gt; 14  或   结束 &lt; 12</span><br></pre></td></tr></table></figure>
+
+<p>但是上面要取反才行。所以在查询的时候，大概要这么写</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> meeting <span class="keyword">where</span> <span class="keyword">not</span> (<span class="keyword">start</span>&gt; <span class="number">14</span> <span class="keyword">or</span> <span class="keyword">end</span> &lt; <span class="number">12</span>)</span><br></pre></td></tr></table></figure>
+
+<p>但是，对于逻辑的运算，我可能有点差，不敢优化上面的代码，后来，我试了一下逻辑合并，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">not ( start &gt; 14   or end &lt; 12 )</span><br><span class="line">好像等价于</span><br><span class="line">not (start &gt; 14)  and   not (end &lt; 12 )</span><br><span class="line">好像就是</span><br><span class="line">start &lt;&#x3D;14  and end &gt;&#x3D; 12</span><br></pre></td></tr></table></figure>
+
+<p>这样判断冲突就简化为下面的sql</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> meeting <span class="keyword">where</span> <span class="keyword">start</span>&lt;=<span class="number">14</span> <span class="keyword">and</span> <span class="keyword">end</span>&gt;=<span class="number">12</span> <span class="keyword">limit</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>即，只要能查出来一个id，则表示存在冲突的会议。这样一下精简了非常多。当然，上面的前提是<code>开始&lt;=结束时间</code> 。但是好处是：1、精简了判断，2、or变成了and  效率提高了。</p>
+<p>然后尝试画了一个图，好像确实能行。</p>
+<p><img src="%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81.assets/1592558199728.png" alt="1592558199728"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E4%B8%9A%E5%8A%A1/" rel="tag"># 业务</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/06/16/mysql/%E6%8E%92%E5%BA%8F012%E5%B0%861%E6%8E%92%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2/" rel="prev" title="排序012将1排在最前面">
+                  <i class="fa fa-chevron-left"></i> 排序012将1排在最前面
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/06/22/redis/redis/" rel="next" title="redis">
+                  redis <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="redis redis中常见的操作合集。奇怪的是，php手册中并没有该库的说明，不过好在，php中的redis扩展，跟redis命令相差不大。另外，IDE中增加插件，可以有相关的提示。  其他文章参考：https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43910923&#x2F;article&#x2F;details&#x2F;88693561">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis">
+<meta property="og:url" content="http://example.com/2020/06/22/redis/redis/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="redis redis中常见的操作合集。奇怪的是，php手册中并没有该库的说明，不过好在，php中的redis扩展，跟redis命令相差不大。另外，IDE中增加插件，可以有相关的提示。  其他文章参考：https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_43910923&#x2F;article&#x2F;details&#x2F;88693561">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-22T07:43:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.165Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/06/22/redis/redis/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>redis | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#redis"><span class="nav-number">1.</span> <span class="nav-text">redis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.2.</span> <span class="nav-text">连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="nav-number">1.2.1.</span> <span class="nav-text">测试连通性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#keys%E5%8F%8A%E9%80%9A%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">1.3.</span> <span class="nav-text">keys及通用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">1.3.1.</span> <span class="nav-text">过期时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%A4%A7%E7%B1%BB%E5%9E%8B%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">五大类型操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">1.4.1.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash"><span class="nav-number">1.4.2.</span> <span class="nav-text">hash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list"><span class="nav-number">1.4.3.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">1.4.4.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zset"><span class="nav-number">1.4.5.</span> <span class="nav-text">zset</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E6%93%8D%E4%BD%9C"><span class="nav-number">1.5.</span> <span class="nav-text">高级操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.</span> <span class="nav-text">发布订阅模型</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/22/redis/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-22 15:43:00" itemprop="dateCreated datePublished" datetime="2020-06-22T15:43:00+08:00">2020-06-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="redis"><a href="#redis" class="headerlink" title="redis"></a>redis</h1><blockquote>
+<p>redis中常见的操作合集。奇怪的是，php手册中并没有该库的说明，不过好在，php中的redis扩展，跟redis命令相差不大。另外，IDE中增加插件，可以有相关的提示。</p>
+</blockquote>
+<p>其他文章参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43910923/article/details/88693561">https://blog.csdn.net/weixin_43910923/article/details/88693561</a></p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/redis/redis-tutorial.html">菜鸟教程Redis</a></li>
+</ul>
+<h2 id="连接"><a href="#连接" class="headerlink" title="连接"></a>连接</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">&#x27;REDIS_HOST&#x27;</span>, <span class="string">&#x27;10.19.185.19&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;REDIS_PORT&#x27;</span>, <span class="number">7013</span>);</span><br><span class="line">define(<span class="string">&#x27;REDIS_PASS&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cache</span>(<span class="params"></span>) :\<span class="title">Redis</span></span>&#123;</span><br><span class="line">    <span class="built_in">static</span> <span class="variable">$redis</span> ;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="variable">$redis</span>))&#123;</span><br><span class="line">        <span class="variable">$redis</span> = <span class="keyword">new</span> \Redis();</span><br><span class="line">        <span class="variable">$redis</span>-&gt;connect(REDIS_HOST, REDIS_PORT);</span><br><span class="line">        <span class="variable">$redis</span>-&gt;auth(REDIS_PASS);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$redis</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$redis</span> = cache();</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试连通性"><a href="#测试连通性" class="headerlink" title="测试连通性"></a>测试连通性</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//检查连接状态</span></span><br><span class="line"><span class="variable">$status</span> = <span class="variable">$redis</span>-&gt;ping();</span><br><span class="line">var_dump(<span class="variable">$status</span>);  <span class="comment">//true为连接</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="keys及通用操作"><a href="#keys及通用操作" class="headerlink" title="keys及通用操作"></a>keys及通用操作</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用*来进行模糊查找keys 如image*，即以image开头的</span></span><br><span class="line"><span class="variable">$keys</span> = <span class="variable">$redis</span>-&gt;keys(<span class="string">&#x27;*&#x27;</span>);</span><br><span class="line">var_dump(<span class="variable">$keys</span>);</span><br><span class="line"><span class="comment">//删除key</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;del(<span class="string">&#x27;myset&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="过期时间"><a href="#过期时间" class="headerlink" title="过期时间"></a>过期时间</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单位 秒</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;expire(<span class="string">&#x27;helloworld&#x27;</span>,<span class="number">20</span>);</span><br><span class="line"><span class="variable">$redis</span>-&gt;ttl(<span class="string">&#x27;smsphoneid&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="五大类型操作"><a href="#五大类型操作" class="headerlink" title="五大类型操作"></a>五大类型操作</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>实现计数功能</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$redis</span>-&gt;set(<span class="string">&#x27;age&#x27;</span>,<span class="number">1</span>);</span><br><span class="line"><span class="variable">$redis</span>-&gt;incr(<span class="string">&#x27;age&#x27;</span>);</span><br><span class="line"><span class="variable">$age</span> = <span class="variable">$redis</span>-&gt;get(<span class="string">&#x27;age&#x27;</span>);</span><br><span class="line">var_dump(<span class="variable">$age</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$age</span> = <span class="variable">$redis</span>-&gt;incrBy(<span class="string">&#x27;age&#x27;</span>,<span class="number">10</span>); <span class="comment">//指定增加多少</span></span><br><span class="line"><span class="variable">$age</span> = <span class="variable">$redis</span>-&gt;decr(<span class="string">&#x27;age&#x27;</span>); <span class="comment">//每次减一，如果增加第二参数，等效于decrBy</span></span><br><span class="line"><span class="variable">$age</span> = <span class="variable">$redis</span>-&gt;decrBy(<span class="string">&#x27;age&#x27;</span>,<span class="number">10</span>); <span class="comment">//负数等于相反操作incrBy</span></span><br></pre></td></tr></table></figure>
+
+<p>存储二进制</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//直接存储图片测试</span></span><br><span class="line"><span class="variable">$png</span> = file_get_contents(<span class="string">&#x27;1.png&#x27;</span>);</span><br><span class="line"><span class="variable">$redis</span>-&gt;set(<span class="string">&#x27;png&#x27;</span>,<span class="variable">$png</span>);</span><br><span class="line"><span class="variable">$bin</span> = <span class="variable">$redis</span>-&gt;get(<span class="string">&#x27;png&#x27;</span>);</span><br><span class="line">file_put_contents(<span class="string">&#x27;1.new.png&#x27;</span>,<span class="variable">$bin</span>);</span><br></pre></td></tr></table></figure>
+
+<p>操作合集</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置键值：成功返回true，否则返回false，键值不存在则新建，否则覆盖</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;set(<span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;hello world!&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//从左往右第五个字符开始替换为另一指定字符串，成功返回替换后新字符串的长度。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;setRange(<span class="string">&#x27;string&#x27;</span>,<span class="number">6</span>, <span class="string">&#x27;1111&#x27;</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">//截取字符串里指定key对应的value里的第一个到第七个字符。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;getRange(<span class="string">&#x27;string&#x27;</span>, <span class="number">0</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//添加键，返回旧键值：若key不存在则创建键值，返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;getSet(<span class="string">&#x27;ad&#x27;</span>, <span class="string">&#x27;hi man&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//一次设置多个键值对：成功返回true</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;mset([<span class="string">&#x27;name&#x27;</span> =&gt; <span class="string">&#x27;jet&#x27;</span>, <span class="string">&#x27;age&#x27;</span> =&gt; <span class="number">18</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//一次获取多个key的值：返回一个键值对数组，其中不存在的key值为false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;mget([<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个具有时间限制的键值，过期则删除，秒为单位，成功返回true</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;setex(<span class="string">&#x27;name&#x27;</span>, <span class="number">10</span>, <span class="string">&#x27;jetwu&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建一个具有时间限制的键值，过期则删除，毫秒为单位，成功返回true</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;psetex(<span class="string">&#x27;name&#x27;</span>, <span class="number">10</span>, <span class="string">&#x27;jetwu&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//key的值不存在时，添加key并返回true，key存在返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;setnx(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;boby&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//setnx命令的批量操作。只有在给定所有key都不存在的时候才能设置成功，只要其中一个key存在，所有key都无法设置成功。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;msetnx([<span class="string">&#x27;name&#x27;</span> =&gt; <span class="string">&#x27;11&#x27;</span>, <span class="string">&#x27;name1&#x27;</span> =&gt; <span class="string">&#x27;22&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取指定key存储的字符串的长度，key不存在返回0，不为字符串返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;strlen(<span class="string">&#x27;name&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将指定key存储的数字值增加1。若key不存在会先初始化为0再增加1，若key存储的不是整数值则返回false。成功返回key新值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;incr(<span class="string">&#x27;name&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//给指定key存储的数字值增加指定增量值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;incrBy(<span class="string">&#x27;age&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//给指定key存储的数字值增加指定浮点数增量。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;incrByFloat(<span class="string">&#x27;age&#x27;</span>, <span class="number">1.5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将指定key存储的数字值减一。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;decr(<span class="string">&#x27;age&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将指定key存储的数字值减去指定减量值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;decrBy(<span class="string">&#x27;age&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//为指定key值尾部添加字符，返回值得长度，若key不存在则创建</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;append(<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;haha&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取键值：成功返回String类型键值，若key不存在或不是String类型则返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;get(<span class="string">&#x27;name&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="hash"><a href="#hash" class="headerlink" title="hash"></a>hash</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//为user表中的字段赋值。成功返回1，失败返回0。若user表不存在会先创建表再赋值，若字段已存在会覆盖旧值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hSet(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;222&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取user表中指定字段的值。若user表不存在则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hGet(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;realname&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//查看user表的某个字段是否存在，存在返回true，否则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hExists(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;realname&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除user表的一个字段，不支持删除多个字段。成功返回1，否则返回0。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hDel(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;222&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//同时设置某个user表的多个字段值。成功返回true。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hMset(<span class="string">&#x27;user&#x27;</span>, [<span class="string">&#x27;name&#x27;</span> =&gt; <span class="string">&#x27;jet&#x27;</span>, <span class="string">&#x27;age&#x27;</span> =&gt; <span class="number">18</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//同时获取某个user表的多个字段值。其中不存在的字段值为false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hMget(<span class="string">&#x27;user&#x27;</span>, [<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取某个user表所有的字段和值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hGetAll(<span class="string">&#x27;user&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取某个user表所有字段名。user表不存在时返回空数组，key不为user表时返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hKeys(<span class="string">&#x27;user&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取某个user表所有字段值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hVals(<span class="string">&#x27;user&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//为user表中不存在的字段赋值。若user表不存在则先创建，若字段已存在则不做任何操作。设置成功返回true，否则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hSetNx(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;realname&#x27;</span>, <span class="string">&#x27;jetwu&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取某个user表的字段数量。若user表不存在返回0，若user不是hash表则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hLen(<span class="string">&#x27;user&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//为user表中的指定字段加上指定的数值，若user表不存在则先创建，若字段不存在则先初始化值为0再进行操作，若字段值为字符串则返回false。设置成功返回字段新值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hIncrBy(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//为user表中的指定字段加上指定浮点数值。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;hIncrBy(<span class="string">&#x27;user&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="number">1.5</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p>list能实现出队列、栈的功能。下面的方式，可以模拟出生产者、消费者队列。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//生产者将数据推到队列中</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lpush(<span class="string">&#x27;print_records&#x27;</span>,<span class="string">&#x27;12&#x27;</span>,<span class="string">&#x27;123&#x27;</span>);</span><br><span class="line"><span class="variable">$len</span> = <span class="variable">$redis</span>-&gt;lLen(<span class="string">&#x27;print_records&#x27;</span>);<span class="comment">//长度</span></span><br><span class="line">var_dump(<span class="variable">$len</span>);</span><br><span class="line"><span class="comment">//消费者从另外一端消费数据，pop后redis内的数据消失</span></span><br><span class="line">var_dump(<span class="variable">$redis</span>-&gt;rPop(<span class="string">&#x27;print_records&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>常见操作</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* List操作</span></span><br><span class="line"><span class="comment">* 列表操作</span></span><br><span class="line"><span class="comment">* 可理解为数组操作</span></span><br><span class="line"><span class="comment">* 插入、删除数据按照一定规律排列的</span></span><br><span class="line"><span class="comment">* 元素可重复</span></span><br><span class="line"><span class="comment">* 适用于队列</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//在列表头部插入一个值one，当列表不存在时自动创建一个列表，key1为列表名</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lpush(<span class="string">&quot;key1&quot;</span>, <span class="string">&quot;one&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在列表尾部插入一个值two，当列表不存在时自动创建一个列表，key1为列表名</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;rPush(<span class="string">&quot;key1&quot;</span>,<span class="string">&quot;two&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将一个插入已存在的列表头部，列表不存在时操作无效</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;rPushx(<span class="string">&quot;key1&quot;</span>,<span class="string">&quot;1&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除列表的第一个元素并返回列表和列表的第一个元素，当key1不存在或不是列表则返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lPop(<span class="string">&#x27;key1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除列表的最后一个元素并返回列表和列表的最后一个元素，当key1不存在或不是列表则返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;rPop(<span class="string">&#x27;key1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除并或取列表的第一个元素，如果没有元素则会阻塞直到等待超时</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;blPop(<span class="string">&#x27;asd&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除并或取列表的最后一个元素，如果没有元素则会阻塞直到等待超时</span></span><br><span class="line"><span class="variable">$ret</span> = <span class="variable">$redis</span>-&gt;brPop(<span class="string">&#x27;asd&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//移除列表key1中最后一个元素，将其插入另一个列表asd头部，并返回这个元素。若源列表没有元素则返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;rpoplpush(<span class="string">&#x27;key1&#x27;</span>, <span class="string">&#x27;asd&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//移除列表key1中最后一个元素，将其插入另一个列表asd头部，并返回这个元素。如果列表没有元素则会阻塞列表直到超时,超时返回false。</span></span><br><span class="line"><span class="variable">$ret</span> = <span class="variable">$redis</span>-&gt;brpoplpush(<span class="string">&#x27;key1&#x27;</span>, <span class="string">&#x27;asd&#x27;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回列表长度</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lLen(<span class="string">&#x27;key1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过索引 (也就是下标key) 获取列表中的元素，如果没有该索引，则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lindex(<span class="string">&#x27;key1&#x27;</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过索引修改列表中元素的值，如果没有该索引，则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lSet(<span class="string">&#x27;key1&#x27;</span>, <span class="number">2</span>, <span class="string">&#x27;1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//在列表key1中指定元素six前面或后面插入元素。若指定元素不在列表中，或列表不存在时，不执行任何操作</span></span><br><span class="line"><span class="comment">//Redis::AFTER插入元素后面    Redis::BEFORE插入元素前面</span></span><br><span class="line"><span class="comment">//返回值：插入成功返回插入后列表元素个数，若key1不存在返回0，若key1不是列表返回false</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lInsert(<span class="string">&#x27;key1&#x27;</span>, Redis::BEFORE, <span class="string">&#x27;one&#x27;</span>, <span class="string">&#x27;1&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据第三个参数（count），删除掉相对的value</span></span><br><span class="line"><span class="comment">//count &gt; 0 : 从表头开始向表尾搜索，移除与value相等的元素，数量为count。</span></span><br><span class="line"><span class="comment">//count &lt; 0 : 从表尾开始向表头搜索，移除与value相等的元素，数量为count的绝对值。</span></span><br><span class="line"><span class="comment">//count = 0 : 移除表中所有与value相等的值。</span></span><br><span class="line"><span class="comment">//返回实际删除元素个数</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lrem(<span class="string">&#x27;key1&#x27;</span>, <span class="string">&#x27;1&#x27;</span>, <span class="number">-2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//对一个列表进行截取，只保留指定区间 (如：下标1到10) 的元素，其他元素都删除。成功返回true。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;ltrim(<span class="string">&#x27;key1&#x27;</span>, <span class="number">1</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取存储的数据并输出列表下标0到5的数据</span></span><br><span class="line"><span class="comment">// 0为开始查询的列表里的第一个元素，-1则为最后一个元素</span></span><br><span class="line"><span class="comment">// 5代表查询5条数据，当5为-1时则查看所有数据,</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;lrange(<span class="string">&quot;key1&quot;</span>, <span class="number">0</span> ,<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>集合。集合的特点，没有重复的数据。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Set操作</span></span><br><span class="line"><span class="comment"> * 集合命令</span></span><br><span class="line"><span class="comment"> * 保证数据的唯一</span></span><br><span class="line"><span class="comment"> * 不保证顺序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//将一个元素加入集合，已经存在集合中的元素则忽略。若集合不存在则先创建，若key不是集合类型则返回false，若元素已存在返回0，插入成功返回1。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sAdd(<span class="string">&#x27;set3&#x27;</span>, <span class="string">&#x27;11&#x27;</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//返回集合中所有成员。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sMembers(<span class="string">&#x27;set3&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//判断集合里是否存在指定元素，是返回true，否则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sismember(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回集合中元素的数量。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;scard(<span class="string">&#x27;set&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//随机删除并返回集合里的一个元素。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sPop(<span class="string">&#x27;set&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//随机返回（n）个集合内的元素，由第二个参数决定返回多少个</span></span><br><span class="line"><span class="comment">//如果 n 大于集合内元素的个数则返回整个集合</span></span><br><span class="line"><span class="comment">//如果 n 是负数时随机返回 n 的绝对值，数组内的元素会重复出现</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sRandMember(<span class="string">&#x27;set&#x27;</span>, <span class="number">-20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除集合中指定的一个元素，元素不存在返回0。删除成功返回1，否则返回0。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;srem(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//模糊搜索相对的元素，</span></span><br><span class="line"><span class="comment">//参数：key，迭代器变量，匹配值，每次返回元素数量（默认为10个）</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sscan(<span class="string">&#x27;set&#x27;</span>, <span class="variable">$it</span>, <span class="string">&#x27;s*&#x27;</span>, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将指定一个源集合里的值移动到一个目的集合。成功返回true，失败或者源集合值不存在时返回false。</span></span><br><span class="line"><span class="comment">//参数：源集合，目标集合，移动的元素</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sMove(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>, <span class="string">&#x27;sdf4&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//以第一个集合为标准，后面的集合对比，返回差集</span></span><br><span class="line"> <span class="variable">$redis</span>-&gt;sDiff(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>,<span class="string">&#x27;set3&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//参数：第一个参数为目标集合，存储缺少的值（三个集合相加，同样字段覆盖，组合成一个新的集合）返回第一个参数所增加的值的个数。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sDiffStore(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set3&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回所有集合的相同值，必须所有集合都有，不存在的集合视为空集。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sInter(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set3&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//参数：第一个参数为目标集合，存储后面集合的交集</span></span><br><span class="line"><span class="comment">//若目的集合已存在则覆盖它。返回交集元素个数，否则返回储存的交集</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sInterStore(<span class="string">&#x27;set4&#x27;</span>, <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set3&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//把所有集合合并在一起并返回</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sUnion(<span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>, <span class="string">&#x27;set3&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//以第一个集合为目标，把后面的集合合并在一起，存储到第一个集合里面，如果已经存在则覆盖掉，并返回并集的个数</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;sUnionStore(<span class="string">&#x27;set4&#x27;</span>, <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;set2&#x27;</span>, <span class="string">&#x27;set3&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="zset"><a href="#zset" class="headerlink" title="zset"></a>zset</h3><p>有序集合。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* Zset操作</span></span><br><span class="line"><span class="comment">* sorted set操作</span></span><br><span class="line"><span class="comment">* 有序集合</span></span><br><span class="line"><span class="comment">* sorted set 它在set的基础上增加了一个顺序属性，这一属性在修改添加元素的时候可以指定，每次指定后，zset会自动从新按新的值调整顺序</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//将一个或多个元素插入到集合里面，默认从尾部开始插入</span></span><br><span class="line"><span class="comment">//如果要在头部插入，则找一个元素，在元素后面添加一个你需要插入的元素即可</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zAdd(<span class="string">&#x27;sorted1&#x27;</span>,<span class="number">100</span>,<span class="string">&#x27;坑啊&#x27;</span>,<span class="number">98.999</span>,<span class="number">99</span>,<span class="number">90</span>,<span class="number">90</span>,<span class="number">80</span>,<span class="number">80</span>,<span class="number">60</span>,<span class="number">60</span>,<span class="number">70</span>,<span class="number">70</span>);</span><br><span class="line"><span class="comment">// $redis-&gt;zAdd(&#x27;集合&#x27;,浮点数（元素）,&#x27;key&#x27;，(插入头部的数据)，key);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定区间内的成员。成员按分数值递增排序，分数值相同的则按字典序来排序。</span></span><br><span class="line"><span class="comment">//参数：第四个参数表示是否返回各个元素的分数值，默认为false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRange(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定区间内的成员。成员按分数值递减排序，分数值相同的则按字典序的倒序来排序。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zReverseRange(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定分数区间的成员列表，按分数值递增排序</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRangeByScore(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">10</span>, <span class="number">99</span>);</span><br><span class="line"><span class="comment">//自定义返回的序集返回起始位置及条数</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRangeByScore(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">0</span>,<span class="number">90</span>,[<span class="string">&#x27;limit&#x27;</span> =&gt;[<span class="number">0</span>,<span class="number">2</span>]]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回有序集中指定分数区间的成员列表，按分数值递减排序，分数值相同的则按字典序的倒序来排序。注意，区间表示的时候大值在前，小值在后。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRevRangeByScore(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">100</span>, <span class="number">90</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//迭代有序集合中的元素。</span></span><br><span class="line"><span class="comment">//可理解为查找指定的值，将元素修改为float类型</span></span><br><span class="line"><span class="comment">//返回值：[元素名=&gt;分数值,,..]</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zscan(<span class="string">&#x27;sorted&#x27;</span>, <span class="variable">$it</span>, <span class="number">100</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回指定有序集的元素数量,序集的长度。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zCard(<span class="string">&#x27;sorted&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定分数区间的成员数量。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zCount(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">90</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定成员的分数值。若成员不存在则返回false。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zScore(<span class="string">&#x27;sorted&#x27;</span>, <span class="string">&#x27;math&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定成员元素的大小排名，按分数值递增排序。分数值最小者排名为0。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRank(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">60</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回有序集中指定成员元素的排名，按分数值递减排序。分数值最大者排名为0。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRevRank(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">70</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除有序集中的一个或多个成员，忽略不存在的成员。返回删除的元素个数。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRem(<span class="string">&#x27;sorted&#x27;</span>, <span class="string">&#x27;chemistry&#x27;</span>, <span class="string">&#x27;English&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除有序集中指定排名区间的所有成员,返回删除元素个数</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRemRangeByRank(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">0</span>, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除有序集中指定分数值区间的所有成员，返回删除元素的个数</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zRemRangeByScore(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">80</span>, <span class="number">90</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//对有序集中指定成员的分数值增加指定增量值。若为负数则做减法，若有序集不存在则先创建，若有序集中没有对应成员则先添加，最后再操作。</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zIncrBy(<span class="string">&#x27;sorted&#x27;</span>, <span class="number">2</span>, <span class="string">&#x27;Chinese&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算给定一个或多个有序集的交集，元素相加，并将其存储到目的有序集中</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zinterstore(<span class="string">&#x27;zset3&#x27;</span>,[<span class="string">&#x27;sorted&#x27;</span>,<span class="string">&#x27;sorted1&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//计算给定一个或多个有序集的并集，元素相加，并将其存储到目的有序集中</span></span><br><span class="line"><span class="variable">$redis</span>-&gt;zunionstore(<span class="string">&#x27;zset3&#x27;</span>,[<span class="string">&#x27;sorted&#x27;</span>, <span class="string">&#x27;sorted1&#x27;</span>]);</span><br></pre></td></tr></table></figure>
+
+<h2 id="高级操作"><a href="#高级操作" class="headerlink" title="高级操作"></a>高级操作</h2><h3 id="发布订阅模型"><a href="#发布订阅模型" class="headerlink" title="发布订阅模型"></a>发布订阅模型</h3><p>不知道为啥，不到1分钟，订阅者的脚本就挂了。使用了长连接，还是一样。建立长连接，pconnect。</p>
+<p>发布、订阅的公用代码，连接redis代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 2020-06-22 14:32:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line">define(<span class="string">&#x27;REDIS_HOST&#x27;</span>, <span class="string">&#x27;10.19.185.19&#x27;</span>);</span><br><span class="line">define(<span class="string">&#x27;REDIS_PORT&#x27;</span>, <span class="number">7013</span>);</span><br><span class="line">define(<span class="string">&#x27;REDIS_PASS&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cache</span>(<span class="params"></span>) :\<span class="title">Redis</span></span>&#123;</span><br><span class="line">    <span class="built_in">static</span> <span class="variable">$redis</span> ;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="variable">$redis</span>))&#123;</span><br><span class="line">        <span class="variable">$redis</span> = <span class="keyword">new</span> \Redis();</span><br><span class="line">        <span class="variable">$redis</span>-&gt;connect(REDIS_HOST, REDIS_PORT);</span><br><span class="line">        <span class="variable">$redis</span>-&gt;auth(REDIS_PASS);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$redis</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$redis</span> = cache();</span><br></pre></td></tr></table></figure>
+
+<p>订阅者</p>
+<p><strong>必须要使用pconnect来建立长连接，可是为啥还是会挂</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$res</span> = <span class="variable">$redis</span>-&gt;pconnect(<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">6379</span>,<span class="number">0</span>);  <span class="comment">//必须要使用一个长连接。</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$redis</span>-&gt;subscribe([<span class="string">&#x27;hello&#x27;</span>],<span class="string">&#x27;callback&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params"><span class="variable">$instance</span>, <span class="variable">$channelName</span>, <span class="variable">$message</span></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$channelName</span>,<span class="string">&#x27;=====&gt;&#x27;</span>,<span class="variable">$message</span>,PHP_EOL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发布者</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$redis</span>-&gt;publish(<span class="string">&#x27;hello&#x27;</span>,<span class="string">&#x27;hello world&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2020/06/19/yewu/%E6%97%B6%E9%97%B4%E5%86%B2%E7%AA%81/" rel="prev" title="时间冲突">
+                  <i class="fa fa-chevron-left"></i> 时间冲突
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2020/06/24/shell/%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/" rel="next" title="后台执行">
+                  后台执行 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

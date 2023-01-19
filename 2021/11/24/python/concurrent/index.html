@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="concurrent的库，在多进程、多线程方面，进行了更高的抽象，可以非常方便的从多线程切换到多进程等，在多进程模式下，没有GIL全局锁的限制。这样，感觉python还非常不错，至少比php，自己从底层来搞这些方便多了，标准库真的是好用。 设置的work量可以比任务数多，也可以少，不一定非要相等。这样，能重份得利用。 既然submit返回的对象是一种封装，那它应该也会耗费内存。如果有上亿的任务？那">
+<meta property="og:type" content="article">
+<meta property="og:title" content="concurrent">
+<meta property="og:url" content="http://example.com/2021/11/24/python/concurrent/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="concurrent的库，在多进程、多线程方面，进行了更高的抽象，可以非常方便的从多线程切换到多进程等，在多进程模式下，没有GIL全局锁的限制。这样，感觉python还非常不错，至少比php，自己从底层来搞这些方便多了，标准库真的是好用。 设置的work量可以比任务数多，也可以少，不一定非要相等。这样，能重份得利用。 既然submit返回的对象是一种封装，那它应该也会耗费内存。如果有上亿的任务？那">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-24T02:05:17.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.163Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/11/24/python/concurrent/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>concurrent | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#submit"><span class="nav-number">2.1.</span> <span class="nav-text">submit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%97%B6%E6%95%88"><span class="nav-number">2.2.</span> <span class="nav-text">测试时效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">一般的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">2.4.</span> <span class="nav-text">map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%A1%E4%BD%8F%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA"><span class="nav-number">2.4.1.</span> <span class="nav-text">卡住效果演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E7%9B%B4%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="nav-number">2.4.2.</span> <span class="nav-text">更直接方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProcessPoolExecutor"><span class="nav-number">2.5.</span> <span class="nav-text">ProcessPoolExecutor</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/24/python/concurrent/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          concurrent
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-24 10:05:17" itemprop="dateCreated datePublished" datetime="2021-11-24T10:05:17+08:00">2021-11-24</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>concurrent的库，在多进程、多线程方面，进行了更高的抽象，可以非常方便的从多线程切换到多进程等，在多进程模式下，没有GIL全局锁的限制。这样，感觉python还非常不错，至少比php，自己从底层来搞这些方便多了，标准库真的是好用。</p>
+<p>设置的work量可以比任务数多，也可以少，不一定非要相等。这样，能重份得利用。</p>
+<p>既然<code>submit</code>返回的对象是一种封装，那它应该也会耗费内存。如果有上亿的任务？那这些返回的对象本身也会占据大量的内存吧？</p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/concurrent.futures.html">https://docs.python.org/zh-cn/3/library/concurrent.futures.html</a></li>
+</ul>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="submit"><a href="#submit" class="headerlink" title="submit"></a>submit</h3><p>submit后会立即返回一个对象，类似与js的promise对象一样。调用<code>result()</code>方法时，才会卡住。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">1</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    future = executor.submit(<span class="built_in">pow</span>, <span class="number">2</span>, <span class="number">10</span>) <span class="comment"># 会直接返回结果</span></span><br><span class="line">    print(future.result())  <span class="comment"># 这一步，才会取结果 </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="测试时效"><a href="#测试时效" class="headerlink" title="测试时效"></a>测试时效</h3><p>测试各部分代码执行速度，submit本身不耗费时间，取结果才耗费。如下 ：</p>
+<p><code>executor.submit</code>提交了，也开始执行了，但是不会被卡住。主线程会继续往下走。只有在调用<code>result()</code>方法时，才会被卡住。如果有一个任务，卡得很久，那么主线程就会被卡很久，其他的线程并不会卡住，还在执行任务，完成一个，执行下一个。等主线程卡的大任务结束了，调用其他其他任务的<code>result</code>，会立马返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task</span>():</span></span><br><span class="line">    time.sleep(<span class="number">5</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">6</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">1</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    print(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line">    a = executor.submit(task) <span class="comment"># 直接返回，结果会在 调用result方法的时候，卡在那</span></span><br><span class="line">    print(<span class="string">&#x27;after submit&#x27;</span>) </span><br><span class="line">    time.sleep(<span class="number">4</span>) <span class="comment"># 上面提交了，可能也执行了，但是不会被卡住</span></span><br><span class="line">    print(<span class="string">&#x27;%s %s&#x27;</span>%(time.time(),a.result()))   <span class="comment"># 可以  a以及执行了，但是调用result，会卡在这。 </span></span><br><span class="line">    print(<span class="string">&#x27;get result&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="一般的用法"><a href="#一般的用法" class="headerlink" title="一般的用法"></a>一般的用法</h3><p>提交的任务超过线程总数时，这是一般的用法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">10</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    print(<span class="string">&#x27;start&#x27;</span>)</span><br><span class="line">    result = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        result.append(executor.submit(task))</span><br><span class="line">    print(<span class="string">&#x27;after submit&#x27;</span>)</span><br><span class="line">    print([x.result() <span class="keyword">for</span> x <span class="keyword">in</span> result]) </span><br><span class="line">    print(<span class="string">&#x27;get result&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="map"><a href="#map" class="headerlink" title="map"></a>map</h3><p>map，其实相当于对submit的封装，原来需要先遍历，然后收集 submit的结果，然后再对submit的结果进行调<code>result</code>方法获取结果。封装在一起了。</p>
+<p>整体结果是有序的。</p>
+<p>估计让任务随机延时，但是最终的结果，还是有序的。这对保证整体有序还是非常有帮助的。有些任务延时较长，卡完后，但是后面的任务会立马输出结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">taskn</span>(<span class="params">n</span>):</span></span><br><span class="line">    delay = random.randint(<span class="number">1</span>,<span class="number">10</span>)</span><br><span class="line">    time.sleep(delay)</span><br><span class="line">    <span class="comment"># time.sleep(5)</span></span><br><span class="line">    <span class="keyword">return</span> n</span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">10</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    result = executor.<span class="built_in">map</span>(taskn,<span class="built_in">range</span>(<span class="number">100</span>))</span><br><span class="line">    print(result)</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> result:</span><br><span class="line">        print(<span class="string">&#x27;%s %s&#x27;</span>%(time.time(),item))</span><br></pre></td></tr></table></figure>
+
+<h4 id="卡住效果演示"><a href="#卡住效果演示" class="headerlink" title="卡住效果演示"></a>卡住效果演示</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nowtime</span>():</span></span><br><span class="line">    <span class="keyword">return</span> time.strftime(<span class="string">&#x27;%H:%M:%S&#x27;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">taskn</span>(<span class="params">n</span>):</span></span><br><span class="line">    start = nowtime()</span><br><span class="line">    delay = n%<span class="number">10</span></span><br><span class="line">    time.sleep(delay)</span><br><span class="line">    end = nowtime()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;id:%d  领取时间：%s  返回时间：%s 延时时间：%s&#x27;</span>%(n,start,end,delay)</span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">10</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    result = executor.<span class="built_in">map</span>(taskn,<span class="built_in">range</span>(<span class="number">100</span>))</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> result:</span><br><span class="line">        print(<span class="string">&#x27;打印时间：%s %s&#x27;</span>%(nowtime(),item))</span><br></pre></td></tr></table></figure>
+
+<h4 id="更直接方式"><a href="#更直接方式" class="headerlink" title="更直接方式"></a>更直接方式</h4><p>直接让id=1的任务延时100秒，这个时候，它会卡住整个任务，当他完成了，其他的任务也早已完成了。故，会立马全部输出。这个更能看出这个库的作用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> concurrent.futures <span class="keyword">import</span> ThreadPoolExecutor</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nowtime</span>():</span></span><br><span class="line">    <span class="keyword">return</span> time.strftime(<span class="string">&#x27;%H:%M:%S&#x27;</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">taskn</span>(<span class="params">n</span>):</span></span><br><span class="line">    start = nowtime()</span><br><span class="line">    delay = n%<span class="number">10</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        delay = <span class="number">100</span></span><br><span class="line">    time.sleep(delay)</span><br><span class="line">    end = nowtime()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;id:%d  领取时间：%s  返回时间：%s 延时时间：%s&#x27;</span>%(n,start,end,delay)</span><br><span class="line"><span class="keyword">with</span> ThreadPoolExecutor(max_workers=<span class="number">10</span>) <span class="keyword">as</span> executor:</span><br><span class="line">    result = executor.<span class="built_in">map</span>(taskn,<span class="built_in">range</span>(<span class="number">100</span>))</span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> result:</span><br><span class="line">        print(<span class="string">&#x27;打印时间：%s %s&#x27;</span>%(nowtime(),item))</span><br></pre></td></tr></table></figure>
+
+<h3 id="ProcessPoolExecutor"><a href="#ProcessPoolExecutor" class="headerlink" title="ProcessPoolExecutor"></a>ProcessPoolExecutor</h3><p>将上面的结果换成<code>ProcessPoolExecutor</code>，即可切换成多进程的方式。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/11/23/other/vs%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5/" rel="prev" title="vscode代码片段">
+                  <i class="fa fa-chevron-left"></i> vscode代码片段
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/11/24/docker/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA/" rel="next" title="docker优雅退出">
+                  docker优雅退出 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

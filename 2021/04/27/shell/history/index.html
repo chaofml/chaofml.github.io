@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="本文转载自于网络，主要是对history的使用、来进行总结。通过history方便的找到以前执行过的命令，快速执行。也可以做审查。另外，通过history的记录，可以方便的学习别人的操作记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="history">
+<meta property="og:url" content="http://example.com/2021/04/27/shell/history/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="本文转载自于网络，主要是对history的使用、来进行总结。通过history方便的找到以前执行过的命令，快速执行。也可以做审查。另外，通过history的记录，可以方便的学习别人的操作记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/04/27/shell/history/history.assets/SVeMl883yzzxQd.png">
+<meta property="article:published_time" content="2021-04-27T03:37:17.000Z">
+<meta property="article:modified_time" content="2022-03-17T03:42:22.212Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/27/shell/history/history.assets/SVeMl883yzzxQd.png">
+
+
+<link rel="canonical" href="http://example.com/2021/04/27/shell/history/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>history | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">1 基本原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">2 使用详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">（一）基础用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E9%87%8D%E5%A4%8D%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">（二）重复执行命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E6%90%9C%E7%B4%A2%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4"><span class="nav-number">2.3.</span> <span class="nav-text">（三）搜索历史命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89%E4%BA%A4%E4%BA%92%E5%BC%8F%E6%90%9C%E7%B4%A2%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4"><span class="nav-number">2.4.</span> <span class="nav-text">（四）交互式搜索历史命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%BA%94%EF%BC%89%E9%87%8D%E5%A4%8D%E6%89%A7%E8%A1%8C%E4%B8%8A%E6%9D%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">2.5.</span> <span class="nav-text">（五）重复执行上条命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E5%85%AD%EF%BC%89%E6%98%BE%E7%A4%BA%E6%97%B6%E9%97%B4%E6%88%B3"><span class="nav-number">2.6.</span> <span class="nav-text">（六）显示时间戳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%B8%83%EF%BC%89%E6%8E%A7%E5%88%B6%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E6%80%BB%E6%95%B0"><span class="nav-number">2.7.</span> <span class="nav-text">（七）控制历史记录总数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E5%85%AB%EF%BC%89%E6%9B%B4%E6%94%B9%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E6%96%87%E4%BB%B6%E5%90%8D"><span class="nav-number">2.8.</span> <span class="nav-text">（八）更改历史记录文件名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E4%B9%9D%EF%BC%89%E7%A6%81%E7%94%A8%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95"><span class="nav-number">2.9.</span> <span class="nav-text">（九）禁用历史记录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E5%8D%81%EF%BC%89%E9%BB%91%E5%AE%A2%E5%BF%85%E7%9F%A5%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="nav-number">2.10.</span> <span class="nav-text">（十）黑客必知的一个小技巧</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E6%80%BB%E7%BB%93%E6%97%B6%E9%97%B4"><span class="nav-number">3.</span> <span class="nav-text">3 总结时间</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/27/shell/history/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          history
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-27 11:37:17" itemprop="dateCreated datePublished" datetime="2021-04-27T11:37:17+08:00">2021-04-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 11:42:22" itemprop="dateModified" datetime="2022-03-17T11:42:22+08:00">2022-03-17</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文转载自于网络，主要是对history的使用、来进行总结。通过history方便的找到以前执行过的命令，快速执行。也可以做审查。另外，通过history的记录，可以方便的学习别人的操作记录。</p>
+<a id="more"></a>
+
+
+
+<h1 id="1-基本原理"><a href="#1-基本原理" class="headerlink" title="1 基本原理"></a><strong>1 基本原理</strong></h1><p><img src="history.assets/SVeMl883yzzxQd.png" alt="谁动了我的 Linux？原来 history 这么强大"></p>
+<p>Linux 命令的历史记录，会持久化存储，默认位置是当前用户家目录的 <code>.bash_history</code>文件。</p>
+<p>当 Linux 系统启动一个 Shell 时，Shell 会从 <code>.bash_history</code>文件中，读取历史记录，存储在相应内存的缓冲区中。</p>
+<p>我们平时所操作的 Linux 命令，都会记录在缓冲区中。包括 <code>history</code>命令所执行的历史命令管理，都是在操作缓冲区，而不是直接操作 .bash_history 文件。</p>
+<p>当我们退出 Shell，比如按下 Ctrl+D 时，Shell 进程会把历史记录缓冲区的内容，写回到 <code>.bash_history</code>文件中去。</p>
+<h1 id="2-使用详解"><a href="#2-使用详解" class="headerlink" title="2 使用详解"></a><strong>2 使用详解</strong></h1><p>清楚了 <code>history</code>的基本原理，我们来具体学习一下如何使用它。</p>
+<h2 id="（一）基础用法"><a href="#（一）基础用法" class="headerlink" title="（一）基础用法"></a><strong>（一）基础用法</strong></h2><p>直接输入 history 命令，可以看到最近操作的所有命令都显示出来了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">history  # 输出全部的历史记录</span><br></pre></td></tr></table></figure>
+
+<p>有时候我不需要显示所有的历史命令，只显示最后的 10 条历史记录，可以在命令后加数字 <code>N</code>即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">history 10</span><br><span class="line">history |tail  -10  # 以前喜欢这样用</span><br></pre></td></tr></table></figure>
+
+<p>正常情况下，只有在 Shell 正常退出时，才会将缓冲区内容保存到文件。如果你想主动保存缓冲区的历史记录，执行 <code>-w</code>选项即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">history -w</span><br></pre></td></tr></table></figure>
+
+<p>当然，如果你执行了一些敏感的命令操作，可以执行 <code>-c</code>将缓冲区内容直接删除</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">history -c</span><br></pre></td></tr></table></figure>
+
+<p>备注： 删除的是缓存区的命令行，并非文件内的。</p>
+<h2 id="（二）重复执行命令"><a href="#（二）重复执行命令" class="headerlink" title="（二）重复执行命令"></a><strong>（二）重复执行命令</strong></h2><p>如果要重复执行一些命令，可以使用 <code>!</code>来快速执行重复的命令。</p>
+<p>举个例子，重复执行第 1024 历史命令，可以执行如下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!1024</span><br></pre></td></tr></table></figure>
+
+<p><code>1024</code>这个编号可以通过 history 查看哦</p>
+<p>重复执行上一条命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!!</span><br></pre></td></tr></table></figure>
+
+<p>重复执行倒数第 6 条历史命令，可以通过负数表示，<code>-6</code>表示倒数第 6 条记录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!-6</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="（三）搜索历史命令"><a href="#（三）搜索历史命令" class="headerlink" title="（三）搜索历史命令"></a><strong>（三）搜索历史命令</strong></h2><p>有时候，需要重复执行某字符串开头的最后一个命令，同样可以通过 ! 来操作，然后按 Enter 执行即可</p>
+<p>比如，刚才执行了一个很长命令，只记录命令开头是 <code>curl</code>，这时就可以通过<code>!curl</code>快速执行该命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!curl</span><br></pre></td></tr></table></figure>
+
+<p>这个用法很高效，但存在不安全因素，因为有可能执行的命令不是你想要执行的，那就坏事了。可以通过 <code>:p</code>来安全地执行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!curl:pcurl www.sina.com.cn</span><br></pre></td></tr></table></figure>
+
+<p>加上 <code>:p</code>后，只是打印出了搜索到的命令，如果要执行，请按 Up 键，然后回车即可。</p>
+<p>如果你只知道某条命令包含了 <code>x</code>信息，不是以<code>x</code>开头，同样可以通过<code>?</code>来执行包含字符串的命令</p>
+<h2 id="（四）交互式搜索历史命令"><a href="#（四）交互式搜索历史命令" class="headerlink" title="（四）交互式搜索历史命令"></a><strong>（四）交互式搜索历史命令</strong></h2><p>在 Linux 搜索历史命令，还可以通过交互式的搜索方式，简直高效直接。在命令行输入 <code>Ctrl+R</code>后，进入交互界面，键入需要搜索的关键字，如果匹配到多条命令，可以多次键入<code>Ctrl+R</code>来切换上一条匹配的命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(reverse-i-search)&#96;sina&#39;: echo sina</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，我输入了 sina 后，就自动匹配到最近一次和 sina 匹配的命令，这时按下回车就可以执行该命令。</p>
+<h2 id="（五）重复执行上条命令"><a href="#（五）重复执行上条命令" class="headerlink" title="（五）重复执行上条命令"></a><strong>（五）重复执行上条命令</strong></h2><p>在这里总结下多种重复执行上条命令的方式，你可以选择一种自己喜欢的就可以啦</p>
+<ul>
+<li><code>!!</code></li>
+<li><code>!-1</code></li>
+<li><code>Ctrl+p</code></li>
+<li><code>Up</code></li>
+<li><code>Ctrl+R</code></li>
+</ul>
+<h2 id="（六）显示时间戳"><a href="#（六）显示时间戳" class="headerlink" title="（六）显示时间戳"></a><strong>（六）显示时间戳</strong></h2><p>有时候需要对 Linux 系统做审计，那为历史记录添加时间戳，显示非常有用。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HISTTIMEFORMAT=&#x27;%F %T &#x27;</span><br><span class="line">history </span><br></pre></td></tr></table></figure>
+
+<p>可以看到，历史记录已经显示了时间戳。其实这些对于审计需求，还不够，可以加上更详细的信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">export HISTTIMEFORMAT=&quot;%F %T `who -u am i 2&gt;/dev/| awk &#x27;&#123;print $NF&#125;&#x27;|sed \-e &#x27;s/[()]//g&#x27;` `whoami` &quot; </span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出大概如下面的结果</span></span><br><span class="line">6 2021-04-18 16:07:48 113.200.44.237 root ls </span><br><span class="line">7 2021-04-18 16:07:59 113.200.44.237 root pwd </span><br><span class="line">8 2021-04-18 16:08:14 113.200.44.237 root history</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="（七）控制历史记录总数"><a href="#（七）控制历史记录总数" class="headerlink" title="（七）控制历史记录总数"></a><strong>（七）控制历史记录总数</strong></h2><p>默认情况下，Linux 系统最多存储 1000 条历史记录，可以通过 <code>HISTSIZE</code>环境变量查看</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $HISTSIZE1000</span><br></pre></td></tr></table></figure>
+
+<p>对于需要做审计的场景，1000 条历史记录可能会太少了，我们可以修改为合适的值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export HISTSIZE=10000</span><br></pre></td></tr></table></figure>
+
+<p>注意，<code>HISTSIZE</code>变量只能控制缓冲区中的历史记录数量，如果需要控制<code>.bash_history</code>文件存储的最大记录数，可以通过<code>HISTFILESIZE</code>进行控制</p>
+<p>上述命令行修改只在当前 Shell 环境生效，如果需要永久生效，需要写入配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;export HISTSIZE=10000&quot; &gt;&gt; ~/.bash_profile</span><br><span class="line">echo &quot;export HISTFILESIZE=200000&quot; &gt;&gt; ~/.bash_profile</span><br><span class="line">source ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="（八）更改历史记录文件名"><a href="#（八）更改历史记录文件名" class="headerlink" title="（八）更改历史记录文件名"></a><strong>（八）更改历史记录文件名</strong></h2><p>有时，为了方便管理和备份，需要更改历史记录文件的路径和名称。简单，同样可以通过环境变量 <code>HISTFILE</code>更改它的文件名称</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;export HISTFILE=/data/backup/chopin.bash_history&quot; &gt;&gt; ~/.bash_profile</span><br><span class="line">souce ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="（九）禁用历史记录"><a href="#（九）禁用历史记录" class="headerlink" title="（九）禁用历史记录"></a><strong>（九）禁用历史记录</strong></h2><p>处于某种特殊环境，我们需要禁用历史记录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;export HISTSIZE=0&quot; &gt;&gt; ~/.bash_profile</span><br><span class="line">echo &quot;export HISTFILESIZE=0&quot; &gt;&gt; ~/.bash_profile</span><br><span class="line">source ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<p>哈哈，直接把上述两个变量的值设置为 <code>0</code>，就实现了禁用历史记录的功能</p>
+<h2 id="（十）黑客必知的一个小技巧"><a href="#（十）黑客必知的一个小技巧" class="headerlink" title="（十）黑客必知的一个小技巧"></a><strong>（十）黑客必知的一个小技巧</strong></h2><p>最后分享一个不为人知的，黑客必知的小技巧。</p>
+<p>在命令前额外多加一个空格，这样的命令是不会被记录到历史记录的，感觉是不是很酷</p>
+<p>这个技巧如果在你的系统不管用，请查看下环境变量 <code>HISTCONTROL</code>是否包含<code>ignorespace</code>，貌似 centos 系统默认没有设置这个值。</p>
+<h1 id="3-总结时间"><a href="#3-总结时间" class="headerlink" title="3 总结时间"></a><strong>3 总结时间</strong></h1><p>在 Linux 系统，history 命令可以非常方便，帮助我们管理历史命令，平时我们命令都会先记录在缓存区，在 Shell 退出时才会记录到文件中。</p>
+<p>history 命令提供了很方便的管理功能，合理去配置和管理历史记录，可以让你的 Linux 系统更加健壮和安全。</p>
+<p>好了，老规矩，贴心的肖哥还是来总结一下 history 命令常用方法</p>
+<ul>
+<li><code>history n</code>：只显示最近的 n 条历史记录</li>
+<li><code>history -c</code>：清除缓存区中的历史记录</li>
+<li><code>history -w</code>：将缓存区的历史记录保存到文件</li>
+<li><code>history -d N</code>：删除第 N 条历史记录</li>
+</ul>
+<p>几种重复执行命令的方法：!!、!-1、!N、!string 等交互式历史命令搜索，请使用 Ctrl+R 快捷键合适使用几个相关的环境变量，让你的 Linux 系统更安全：</p>
+<ul>
+<li><code>HISTSIZE</code>：控制缓冲区历史记录的最大个数</li>
+<li><code>HISTFILESIZE</code>：控制历史记录文件中的最大个数</li>
+<li><code>HISTIGNORE</code>：设置哪些命令不记录到历史记录</li>
+<li><code>HISTTIMEFORMAT</code>：设置历史命令显示的时间格式</li>
+<li><code>HISTCONTROL</code>：扩展的控制选项</li>
+</ul>
+<p>如果在生产环境，这些环境变量需要持久化到配置文件 <code>~/.bash_profile</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">export HISTCONTROL=ignoreboth</span><br><span class="line"><span class="meta">#</span><span class="bash"> ignorespace: 忽略空格开头的命令</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ignoredups: 忽略连续重复命令</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ignoreboth: 表示上述两个参数都设置</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置追加而不是覆盖<span class="built_in">shopt</span> -s histappend</span></span><br><span class="line">export HISTSIZE=1000</span><br><span class="line">export HISTFILESIZE=200000</span><br><span class="line">export HISTTIMEFORMAT=&quot;%F %T &quot;</span><br><span class="line">export HISTIGNORE=&quot;ls:history&quot;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/04/25/shell/%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/" rel="prev" title="命令解析">
+                  <i class="fa fa-chevron-left"></i> 命令解析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/04/27/shell/for/" rel="next" title="for">
+                  for <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

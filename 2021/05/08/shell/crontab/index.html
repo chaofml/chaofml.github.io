@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="程序部署在Linux系统之中，很可能会用到crontab，但是呢，写好的定时任务，可能因为种种错误方式，并没有按着预定的方式运行，如何写出正确的、健壮的定时任务。做一下总结。 入门原则 1、执行的时候，先cd到目录，最稳妥，防止引入了相对变量的文件路径。 2、加上环境变量，尤其是PATH，有时，居然连&#x2F;usr&#x2F;local&#x2F;bin都不在环境变量中。故，最好自己设置一下。 3、测试，测试的时候，跳到c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crontab">
+<meta property="og:url" content="http://example.com/2021/05/08/shell/crontab/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="程序部署在Linux系统之中，很可能会用到crontab，但是呢，写好的定时任务，可能因为种种错误方式，并没有按着预定的方式运行，如何写出正确的、健壮的定时任务。做一下总结。 入门原则 1、执行的时候，先cd到目录，最稳妥，防止引入了相对变量的文件路径。 2、加上环境变量，尤其是PATH，有时，居然连&#x2F;usr&#x2F;local&#x2F;bin都不在环境变量中。故，最好自己设置一下。 3、测试，测试的时候，跳到c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/05/08/shell/crontab/crontab.assets/6101555-2967c041daa6b75a.webp">
+<meta property="article:published_time" content="2021-05-08T00:56:13.000Z">
+<meta property="article:modified_time" content="2022-03-22T07:30:03.602Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/05/08/shell/crontab/crontab.assets/6101555-2967c041daa6b75a.webp">
+
+
+<link rel="canonical" href="http://example.com/2021/05/08/shell/crontab/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>crontab | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%88%99"><span class="nav-number">1.1.</span> <span class="nav-text">原则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">编写格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">脚本示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E8%84%9A%E6%9C%AC%E5%90%AF%E5%8A%A8%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="nav-number">1.4.</span> <span class="nav-text">定时脚本启动的不同</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">定时格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crontab-e"><span class="nav-number">3.</span> <span class="nav-text">crontab -e</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#crontab-l"><span class="nav-number">4.</span> <span class="nav-text">crontab -l</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0%E6%8E%92%E6%9F%A5"><span class="nav-number">7.</span> <span class="nav-text">原因排查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E7%A4%BA%E4%BE%8B"><span class="nav-number">7.1.</span> <span class="nav-text">错误示例</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/08/shell/crontab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          crontab
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-08 08:56:13" itemprop="dateCreated datePublished" datetime="2021-05-08T08:56:13+08:00">2021-05-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-22 15:30:03" itemprop="dateModified" datetime="2022-03-22T15:30:03+08:00">2022-03-22</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/blog/categories/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>程序部署在Linux系统之中，很可能会用到crontab，但是呢，写好的定时任务，可能因为种种错误方式，并没有按着预定的方式运行，如何写出正确的、健壮的定时任务。做一下总结。</p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><h3 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h3><ul>
+<li>1、执行的时候，先cd到目录，最稳妥，防止引入了相对变量的文件路径。</li>
+<li>2、加上环境变量，尤其是<code>PATH</code>，有时，居然连<code>/usr/local/bin</code>都不在环境变量中。故，最好自己设置一下。</li>
+<li>3、测试，测试的时候，跳到<code>cd /</code>路径，再执行，看看能否正常执行。</li>
+<li>4、测试的时候，直接清空 PATH，只加有关的PATH。（待验证）</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="编写格式"><a href="#编写格式" class="headerlink" title="编写格式"></a>编写格式</h3><p>我们假定，脚本执行的时候，没有任何环境变量，没有直接<code>cd </code>到项目目录中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先进入目录，再执行，都加上绝对路径</span></span><br><span class="line">40 17 * * * cd /yd/td/shell &amp;&amp; /usr/local/php73/bin/php summary.php</span><br><span class="line"><span class="meta">#</span><span class="bash"> 下载</span></span><br><span class="line">*/5 * * * * /bin/curl -s http://repo.yundasys.com/shell/nvme/nvme_status.sh|bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 日志输出到文件   错误重定向到 标准输出中 注意是追加模式</span></span><br><span class="line">01 00 * * * /yd/td2/shell/import_job.sh &gt;&gt; /yd/td2/runtime/cron/log.txt 2&gt;&amp;1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或者直接丢弃</span></span><br><span class="line">* * * * * /usr/local/gse/agent/bin/gsectl watch &gt;/dev/null 2&gt;&amp;1</span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是，如果要分隔文件呢？  下面直接执行就可以，但是，却</span></span><br><span class="line">/yd/td2/shell/main.sh &gt;&gt; /yd/td2/runtime/cron/log`/usr/bin/date +%Y%m%d%H%M%S`.txt 2&gt;&amp;1</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果错误、标准输出，写到不同的文件中，</span></span><br><span class="line">25 */2 * * * /bin/bash /etc/titanagent/agent_update.sh &gt;&gt; /var/log/titanagent/check.o.log 2&gt;&gt; /var/log/titanagent/check.e.log</span><br></pre></td></tr></table></figure>
+
+<h3 id="脚本示例"><a href="#脚本示例" class="headerlink" title="脚本示例"></a>脚本示例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2021年8月10日  脚本导入任务</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 01 00 * * * /path/to/myshell.sh &gt;&gt; /path/to/log.txt 2&gt;&amp;1</span></span><br><span class="line">BASEDIR=$(cd `dirname $0`;pwd)</span><br><span class="line">cd $BASEDIR</span><br><span class="line">source /root/.bash_profile</span><br><span class="line">export PATH=/usr/local/bin/:/usr/local/greenplum-db/bin/:$PATH</span><br><span class="line"></span><br><span class="line">logmsg()&#123;</span><br><span class="line">    echo &quot;`date &#x27;+%Y-%m-%d %H:%M:%S&#x27;` $1&quot; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="定时脚本启动的不同"><a href="#定时脚本启动的不同" class="headerlink" title="定时脚本启动的不同"></a>定时脚本启动的不同</h3><p>定时脚本，在执行的时候，并不会加载一些环境变量的脚本。查阅下面文章。</p>
+<p> <img src="crontab.assets/6101555-2967c041daa6b75a.webp" alt="img"> </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/gaojing2240/article/details/103908656">https://blog.csdn.net/gaojing2240/article/details/103908656</a></p>
+<h2 id="定时格式"><a href="#定时格式" class="headerlink" title="定时格式"></a>定时格式</h2><blockquote>
+<p>分 时 日 月 周</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 每分钟执行一次</span></span><br><span class="line">* * * * *</span><br><span class="line"><span class="meta">#</span><span class="bash"> 每半小时执行一次</span></span><br><span class="line">*/30 * * * *</span><br><span class="line"><span class="meta">#</span><span class="bash"> 周末中午12点执行</span></span><br><span class="line">0 12 * * 6,7</span><br><span class="line"><span class="meta">#</span><span class="bash"> 工作日，凌晨两点执行</span></span><br><span class="line">0 2 * * 1-5</span><br><span class="line"><span class="meta">#</span><span class="bash"> 两点到4点，12点到16点的整点执行一次</span></span><br><span class="line">0 2-4,12-16 * * *</span><br></pre></td></tr></table></figure>
+
+<p>符号说明</p>
+<p><code>/</code> ，表示每，设置步长。</p>
+<p><code>-</code>，表示范围，能与<code>,</code>联合使用。</p>
+<p><code>,</code>，多个值或范围用逗号分隔。</p>
+<p>以分钟为示例，复杂的组合如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/3,4,5,8,50-59</span><br></pre></td></tr></table></figure>
+
+<p>FeHelper的定时工具，用来调试还不错。</p>
+<h2 id="crontab-e"><a href="#crontab-e" class="headerlink" title="crontab -e"></a>crontab -e</h2><p>使用<code>crontab -e</code>的方式，来编辑定时任务。不同的用户，对应的不同的定时任务。运行任务时，以该用户的角色、权限来运行脚本。</p>
+<p>关于权限与安全，比如，以root方式运行/mytest.sh，假入该脚本权限为<code>0777</code>，那么普通用户通过修改该脚本，添加特殊指令，并等待定期以root触发，然后很可能权限会泄漏。</p>
+<p>关于环境变量，很有脚本运行的时候，会缺少相关的环境变量。另外，最好先cd到执行的目录中。</p>
+<p>示例：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 先<span class="built_in">cd</span>到脚本文件目录，然后使用php的全路径来运行脚本，虽然环境变量中有php的路径</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 但是，crontab运行时，缺找不到。</span></span><br><span class="line">0 9 * * 1 cd /yd/td2/shell &amp;&amp; /usr/local/bin/php diskstatus.php</span><br></pre></td></tr></table></figure>
+
+<p>要不要先cd到目录中，再执行，这个要看，php文件，如果它中使用相对文件路径引用其他文件，所以，最好先cd到目录中。</p>
+<p>环境变量，可能shell中运行缺时找不到。</p>
+<p>之前遇到的一个问题是：hexo博客，也是环境变量上中不到相关的程序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 用<span class="built_in">alias</span>解决</span></span><br><span class="line">alias php=&#x27;/usr/local/bin/php&#x27;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用变量的方式</span></span><br><span class="line">phpbin=&#x27;/usr/local/bin/php&#x27;</span><br><span class="line"><span class="meta">$</span><span class="bash">phpbin test.php</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 环境变量PATH 自己增加</span></span><br><span class="line">PATH</span><br></pre></td></tr></table></figure>
+
+<h2 id="crontab-l"><a href="#crontab-l" class="headerlink" title="crontab -l"></a>crontab -l</h2><p>查看已有哪些定时任务。</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在我的ubuntu上看到定时任务上面有如下配置，可以作为脚本运行时的配置参考。如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line">HOME=/tmp</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>定时任务存放的地方（centos)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;var&#x2F;spool&#x2F;cron&#x2F;root</span><br></pre></td></tr></table></figure>
+
+<p>貌似，也可以直接通过修改该文件，来增加定时任务。</p>
+<p>日志</p>
+<blockquote>
+<p>所有用户的日志都在这个里面，如果脚本无法执行，可以查看该文件，确定无法执行的原因。但是，需要root权限。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/log/cron</span><br><span class="line">ls /var/log/cron*</span><br></pre></td></tr></table></figure>
+
+<p>邮件</p>
+<blockquote>
+<p>当crond执行任务失败时会给用户发一封邮件。（如何开启？），可能有详细的失败日志。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi &#x2F;var&#x2F;spool&#x2F;mail&#x2F;root</span><br></pre></td></tr></table></figure>
+
+<p>日志文件重定向</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 6 * * * $HOME/for_crontab/myshell.sh &gt;&gt; $HOME/for_crontab/mylog.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<h2 id="原因排查"><a href="#原因排查" class="headerlink" title="原因排查"></a>原因排查</h2><p>首先，先将原来定时任务执行频率调整更低，如<code>* * * * *</code>，然后调试。</p>
+<p>执行执行定时任务的脚本，看是否能执行。（能执行，而定时任务下不能执行，可能是某些环境变量缺失。如，简写的php命令不识别。）</p>
+<p>查看错误日志。找到原因描述。</p>
+<h3 id="错误示例"><a href="#错误示例" class="headerlink" title="错误示例"></a>错误示例</h3><p>定时任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/30 * * * * /path/to/hexo_blog.sh &gt;  /path/to/hexo.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>错误的代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">alias node=&quot;/usr/local/node/bin/node&quot;</span><br><span class="line">alias hexo=&quot;/usr/local/node/bin/hexo&quot;</span><br><span class="line">cd /home/nodejs/blog/source/_posts/</span><br><span class="line">refresh()&#123;</span><br><span class="line">    git checkout master</span><br><span class="line">    git branch -D md</span><br><span class="line">    git pull</span><br><span class="line">    git checkout md</span><br><span class="line">    git pull</span><br><span class="line">    git merge master --no-edit</span><br><span class="line">    cd ../..</span><br><span class="line">    echo &quot;$(date)&quot; &gt;&gt; log.txt</span><br><span class="line">    hexo g</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">refresh</span><br></pre></td></tr></table></figure>
+
+<p>修改后的代码：</p>
+<blockquote>
+<p>主要增加了脚本的类型，然后增加了环境变量，貌似node中调用的其他命令依赖了环境变量PATH。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">export PATH=/usr/local/bin:/usr/local/node/bin:$PATH</span><br><span class="line">echo $PATH</span><br><span class="line">alias node=&quot;/usr/local/node/bin/node&quot;</span><br><span class="line">alias hexo=&quot;/usr/local/node/bin/hexo&quot;</span><br><span class="line">cd /home/nodejs/blog/source/_posts/</span><br><span class="line">refresh()&#123;</span><br><span class="line">    git checkout master</span><br><span class="line">    git branch -D md</span><br><span class="line">    git pull</span><br><span class="line">    git checkout md</span><br><span class="line">    git pull</span><br><span class="line">    git merge master --no-edit</span><br><span class="line">    cd ../..</span><br><span class="line">    echo &quot;$(date)&quot; &gt;&gt; log.txt</span><br><span class="line">    hexo g</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">refresh</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/blog/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2021/04/29/shell/%E6%9D%A1%E4%BB%B6%E6%B5%8B%E8%AF%95/" rel="prev" title="条件测试">
+                  <i class="fa fa-chevron-left"></i> 条件测试
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2021/05/13/shell/%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/" rel="next" title="权限问题">
+                  权限问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

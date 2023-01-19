@@ -1,640 +1,293 @@
 <!DOCTYPE html>
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.8.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
 
 
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
-
-
-
-
-
-
-
-
-
-<script id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Pisces',
-    version: '6.6.0',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
-    fastclick: false,
-    lazyload: false,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-  
-
-
-
-
-  <meta name="description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;amp;$row)&amp;#123;			if(!isset($">
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/blog/","images":"/blog/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;$row)&amp;#123;			if(!isset($">
 <meta property="og:type" content="article">
 <meta property="og:title" content="树形结构">
-<meta property="og:url" content="http://yoursite.com/2019/05/07/树形结构/index.html">
-<meta property="og:site_name" content="静谧花园">
-<meta property="og:description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;amp;$row)&amp;#123;			if(!isset($">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-27T13:23:49.796Z">
+<meta property="og:url" content="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;$row)&amp;#123;			if(!isset($">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-07T04:12:00.000Z">
+<meta property="article:modified_time" content="2020-12-21T08:54:58.190Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="树形结构">
-<meta name="twitter:description" content="树形结构针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。 如下，对树级的data进行遍历，但是开销略大。 123456789public static function setRemark(&amp;amp;$data,$pid,$remark)&amp;#123;		foreach($data as &amp;amp;$row)&amp;#123;			if(!isset($">
 
 
+<link rel="canonical" href="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
 
 
-
-
-  <link rel="canonical" href="http://yoursite.com/2019/05/07/树形结构/">
-
-
-
-<script id="page.configurations">
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
-
-  <title>树形结构 | 静谧花园</title>
+<title>树形结构 | 超凡魔力</title>
   
-
-
-
-
-
-
-
-
-
 
 
 
   <noscript>
   <style>
-    .use-motion .motion-element,
-    .use-motion .brand,
-    .use-motion .menu-item,
-    .sidebar-inner,
-    .use-motion .post-block,
-    .use-motion .pagination,
-    .use-motion .comments,
-    .use-motion .post-header,
-    .use-motion .post-body,
-    .use-motion .collection-title { opacity: initial; }
+  body { margin-top: 2rem; }
 
-    .use-motion .logo,
-    .use-motion .site-title,
-    .use-motion .site-subtitle {
-      opacity: initial;
-      top: initial;
-    }
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
 
-    .use-motion .logo-line-before i { left: initial; }
-    .use-motion .logo-line-after i { right: initial; }
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
   </style>
 </noscript>
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">静谧花园</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-    
-      
-        <p class="site-subtitle">君子善思，善假于物。</p>
-      
-    
-    
-  </div>
-
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <button aria-label="切换导航栏">
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
 
 
-<nav class="site-nav">
-  
-    <ul id="menu" class="menu">
-      
-        
-        
-        
-          
-          <li class="menu-item menu-item-home">
 
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-about">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-tags">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
-
-  </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
-    
-      
-    
-
-    
-
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
-
-  </li>
-
-      
-      
-    </ul>
-  
-
-  
-
-  
-</nav>
-
-
-
-  
 
 
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">树形结构</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives">
+          <span class="site-state-item-count">357</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/blog/tags/">
+        <span class="site-state-item-count">97</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-            
+    <div class="main-inner post posts-expand">
 
-          
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
-    
 
   
 
-  
+
+<div class="post-block">
   
   
 
-  
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/05/07/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/">
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/树形结构/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/images/avatar.gif">
       <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="静谧花园">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
     </span>
-
-    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          树形结构
+        </h1>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">树形结构
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              
-            
-          </h1>
-        
+      <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+08:00">2019-05-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-21 16:54:58" itemprop="dateModified" datetime="2020-12-21T16:54:58+08:00">2020-12-21</time>
+      </span>
 
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-07 12:12:00" itemprop="dateCreated datePublished" datetime="2019-05-07T12:12:00+08:00">2019-05-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-08-27 21:23:49" itemprop="dateModified" datetime="2019-08-27T21:23:49+08:00">2019-08-27</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+  
+</div>
 
         </div>
       </header>
-    
 
     
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
         <h1 id="树形结构"><a href="#树形结构" class="headerlink" title="树形结构"></a>树形结构</h1><p>针对树级结构，常用的策略就是递归，另外一种，就是组装成字段。然后从字段里面读字段，这样可以减少递归。</p>
 <p>如下，对树级的data进行遍历，但是开销略大。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static function setRemark(&amp;$data,$pid,$remark)&#123;</span><br><span class="line">		foreach($data as &amp;$row)&#123;</span><br><span class="line">			if(!isset($row-&gt;parentid)) continue;</span><br><span class="line">			if($row-&gt;parentid == $pid)&#123;</span><br><span class="line">				$row-&gt;remark=$remark.&apos;&gt;&apos;.$row-&gt;name;//设置remark  分割 &gt;</span><br><span class="line">				self::setRemark($data,$row-&gt;id,$row-&gt;remark);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static function setRemark(&amp;$data,$pid,$remark)&#123;</span><br><span class="line">		foreach($data as &amp;$row)&#123;</span><br><span class="line">			if(!isset($row-&gt;parentid)) continue;</span><br><span class="line">			if($row-&gt;parentid &#x3D;&#x3D; $pid)&#123;</span><br><span class="line">				$row-&gt;remark&#x3D;$remark.&#39;&gt;&#39;.$row-&gt;name;&#x2F;&#x2F;设置remark  分割 &gt;</span><br><span class="line">				self::setRemark($data,$row-&gt;id,$row-&gt;remark);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
 <p>例外一种，就是想将数组保存成map，或者关联数组，如下代码：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cityList =[];<span class="comment">//_city中的对象</span></span><br><span class="line">	<span class="keyword">var</span> cityCode =item.substring(<span class="number">0</span>,<span class="number">6</span>);</span><br><span class="line">	<span class="keyword">var</span> cur  = _city[cityCode];</span><br><span class="line">	cityList.push(cur);</span><br><span class="line">	<span class="keyword">while</span>(cur.pid!==<span class="string">'0'</span>)&#123;</span><br><span class="line">		<span class="comment">//前进一步</span></span><br><span class="line">		cur=_city[cur.pid];</span><br><span class="line">		cityList.push(cur);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//取反顺序，即由根节点往下</span></span><br><span class="line">	cityList.reverse();</span><br><span class="line">	city= cityList.map(<span class="function"><span class="params">x</span>=&gt;</span>x.name).join(<span class="string">' '</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cityList =[];<span class="comment">//_city中的对象</span></span><br><span class="line">	<span class="keyword">var</span> cityCode =item.substring(<span class="number">0</span>,<span class="number">6</span>);</span><br><span class="line">	<span class="keyword">var</span> cur  = _city[cityCode];</span><br><span class="line">	cityList.push(cur);</span><br><span class="line">	<span class="keyword">while</span>(cur.pid!==<span class="string">&#x27;0&#x27;</span>)&#123;</span><br><span class="line">		<span class="comment">//前进一步</span></span><br><span class="line">		cur=_city[cur.pid];</span><br><span class="line">		cityList.push(cur);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//取反顺序，即由根节点往下</span></span><br><span class="line">	cityList.reverse();</span><br><span class="line">	city= cityList.map(<span class="function"><span class="params">x</span>=&gt;</span>x.name).join(<span class="string">&#x27; &#x27;</span>);</span><br></pre></td></tr></table></figure>
+
 <p>php的代码示例</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//机构管理</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StatisticsUtils</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> $organizationData;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> $organizationPath;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**********	</span></span><br><span class="line"><span class="comment">		2018/7/23</span></span><br><span class="line"><span class="comment">		显示机构列表名称</span></span><br><span class="line"><span class="comment">	*********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">hospital</span><span class="params">($params)</span></span>&#123;</span><br><span class="line">		$db = Zend_Registry::get(<span class="string">'db'</span>); </span><br><span class="line">		$structureId = $params[<span class="string">'structure_id'</span>];	<span class="comment">//structure_id</span></span><br><span class="line">		$searchDateKey = <span class="keyword">isset</span>($params[<span class="string">'searchDateKey'</span>])?$params[<span class="string">'searchDateKey'</span>]:<span class="number">1</span>;</span><br><span class="line">		$startdate =  date(<span class="string">"Y-m-d 00:00:00"</span>,strtotime($params[<span class="string">'start_date'</span>])); </span><br><span class="line">		$stopdate =  date(<span class="string">"Y-m-d 23:59:59"</span>,strtotime($params[<span class="string">'stop_date'</span>]));		</span><br><span class="line"></span><br><span class="line">		<span class="comment">//时间</span></span><br><span class="line">		$where = <span class="string">""</span>;</span><br><span class="line">		<span class="keyword">if</span>($searchDateKey==<span class="number">1</span>)&#123;<span class="comment">//预约日期</span></span><br><span class="line">			$where=<span class="string">" and ( c.conversation_schedule_date between '$startdate' and '$stopdate' )"</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;<span class="comment">//下单日期</span></span><br><span class="line">			$where=<span class="string">" and ( ct.pay_time between '$startdate' and '$stopdate' )"</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//查询内容  "专家医生"; </span></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">isset</span>($params[<span class="string">'doctor'</span>]))&#123;</span><br><span class="line">			$schedule_ids =$db-&gt;fetchCol(<span class="string">'select schedule_id from schedule where user_id =:id'</span>,<span class="keyword">array</span>(<span class="string">'id'</span>=&gt;$params[<span class="string">'doctor'</span>]));	</span><br><span class="line">			<span class="keyword">if</span>(count($schedule_ids))&#123;<span class="comment">//查找到医生的排班</span></span><br><span class="line">				$where .= $db-&gt;quoteInto(<span class="string">'and ct.schedule_id IN(?)'</span>, $schedule_ids);</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;<span class="comment">//否则直接返回空结果集</span></span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">array</span>();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$sql= <span class="string">"SELECT ct.organization_id,conversation_schedule_date,pay_price  FROM conversation_treatment AS ct  "</span>.</span><br><span class="line">				<span class="string">"LEFT JOIN conversation AS c ON ct.conversation_id = c.conversation_id  "</span>.</span><br><span class="line">				<span class="string">"WHERE  "</span>.</span><br><span class="line">				<span class="string">"	ct.treatment_type = 1  "</span>. <span class="comment">//门诊</span></span><br><span class="line">				<span class="string">"AND c.conversation_type = 2  "</span>. <span class="comment">//医疗</span></span><br><span class="line">				<span class="string">"AND c.structure_id = $structureId   "</span>.<span class="comment">//当前机构</span></span><br><span class="line">				<span class="string">" $where ORDER BY ct.conversation_id ASC  "</span>;</span><br><span class="line">		<span class="comment">// echo $sql;exit;</span></span><br><span class="line">		$res = $db-&gt;query($sql);</span><br><span class="line">		</span><br><span class="line">		$rows = $res-&gt;fetchAll();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//对数据进行统计分析</span></span><br><span class="line">		$groupM = <span class="keyword">self</span>::getOrganization($structureId);</span><br><span class="line">		$data = <span class="keyword">array</span>();  <span class="comment">//data ['organization_id']['date'][]</span></span><br><span class="line">		<span class="keyword">foreach</span>($rows <span class="keyword">as</span> $k=&gt;$row)&#123;</span><br><span class="line">			$oid =$groupM[$row[<span class="string">'organization_id'</span>]];</span><br><span class="line">			$date = $row[<span class="string">'conversation_schedule_date'</span>];</span><br><span class="line">			<span class="keyword">if</span>(!<span class="keyword">isset</span>($data[$oid]))&#123;</span><br><span class="line">				$data[$oid]=<span class="keyword">array</span>();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(!<span class="keyword">isset</span>($data[$oid][$date]))&#123;</span><br><span class="line">				$data[$oid][$date]=<span class="keyword">array</span>(<span class="string">'price'</span>=&gt;<span class="number">0</span>,<span class="string">'count'</span>=&gt;<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//统计</span></span><br><span class="line">			$data[$oid][$date][<span class="string">'price'</span>]+=$row[<span class="string">'pay_price'</span>];</span><br><span class="line">			$data[$oid][$date][<span class="string">'count'</span>]+=<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		$result =<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>($data <span class="keyword">as</span> $oid=&gt;$oidArr)&#123;</span><br><span class="line">			<span class="keyword">foreach</span>($oidArr <span class="keyword">as</span> $date=&gt;$dateArr)&#123;</span><br><span class="line">				$basehospital = <span class="keyword">self</span>::$organizationData[$oid];</span><br><span class="line">				<span class="comment">// &#123;'date':'2019-07-01','basehospital':'华山医院','price':'11','count':'1'&#125;,</span></span><br><span class="line">				$result[]=<span class="keyword">array</span>(<span class="string">'date'</span>=&gt;$date,<span class="string">'basehospital'</span>=&gt;$basehospital,<span class="string">'price'</span>=&gt;$dateArr[<span class="string">'price'</span>],<span class="string">'count'</span>=&gt;$dateArr[<span class="string">'count'</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//排序</span></span><br><span class="line">		<span class="function"><span class="keyword">function</span> <span class="title">cmp</span><span class="params">($a,$b)</span></span>&#123;</span><br><span class="line">			<span class="keyword">if</span>($a[<span class="string">'date'</span>]==$b[<span class="string">'date'</span>])&#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> date($a[<span class="string">'date'</span>])&gt;date($b[<span class="string">'date'</span>])?<span class="number">1</span>:<span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		usort($result,<span class="string">'cmp'</span>);</span><br><span class="line">		<span class="keyword">return</span> $result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/****************</span></span><br><span class="line"><span class="comment">	 * 2019年7月5日</span></span><br><span class="line"><span class="comment">	 * 返回每个组织所归属的医院的map</span></span><br><span class="line"><span class="comment">	 ****************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getOrganization</span><span class="params">($structureId)</span></span>&#123;</span><br><span class="line">		$db = Zend_Registry::get(<span class="string">'db'</span>); </span><br><span class="line">		$rows=$db-&gt;fetchAll(<span class="string">'select organization_id id ,organization_parent_id pid,organization_name name from  organization where structure_id =:id;'</span>,<span class="keyword">array</span>(<span class="string">'id'</span>=&gt;$structureId));</span><br><span class="line">		<span class="keyword">self</span>::$organizationData = array_column($rows,<span class="string">'name'</span>,<span class="string">'id'</span>);</span><br><span class="line">		$mapping = array_column($rows,<span class="string">'pid'</span>,<span class="string">'id'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// echo json_encode($mapping );exit;</span></span><br><span class="line">		$result=<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>($mapping <span class="keyword">as</span> $id=&gt;$pid)&#123;</span><br><span class="line">			$cur=$pid;</span><br><span class="line">			$path=<span class="keyword">array</span>($pid);</span><br><span class="line">			<span class="keyword">while</span>($cur&gt;<span class="number">0</span>)&#123;</span><br><span class="line">				<span class="comment">// var_dump($cur);</span></span><br><span class="line">				$cur=$mapping[$cur];</span><br><span class="line">				$path[]=$cur;</span><br><span class="line">				<span class="keyword">if</span>(count($path)&gt;<span class="number">20</span>)&#123;</span><br><span class="line">					<span class="keyword">die</span>(<span class="string">"maximum recursion depth exceeded "</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			$result[$id]=join(<span class="string">','</span>,$path);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">self</span>::$organizationPath = $result;</span><br><span class="line">		$data = <span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>($result <span class="keyword">as</span> $k=&gt;$v)&#123;</span><br><span class="line">			$tmp = explode(<span class="string">','</span>,$v);</span><br><span class="line">			$len = count($tmp);</span><br><span class="line">			<span class="keyword">if</span>($len&gt;<span class="number">1</span>)&#123;</span><br><span class="line">				$data[$k]=$tmp[$len<span class="number">-2</span>];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> $data;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/****************</span></span><br><span class="line"><span class="comment">	 * 2019年7月8日</span></span><br><span class="line"><span class="comment">	 * 获取医院</span></span><br><span class="line"><span class="comment">	 ****************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getHospital</span><span class="params">($params)</span></span>&#123;</span><br><span class="line">		$db = Zend_Registry::get(<span class="string">'db'</span>); </span><br><span class="line">		$rows=$db-&gt;fetchAll(<span class="string">'select organization_id value ,organization_name name from  organization where structure_id =:id and organization_parent_id = 0;'</span>,<span class="keyword">array</span>(<span class="string">'id'</span>=&gt;$params[<span class="string">'structure_id'</span>]));</span><br><span class="line">		$option =  <span class="keyword">isset</span>($params[<span class="string">'option'</span>]) ? <span class="string">'请选择机构'</span>:<span class="string">'全部机构'</span>;</span><br><span class="line">		<span class="keyword">return</span> array_merge(<span class="keyword">array</span>(<span class="keyword">array</span>(<span class="string">'name'</span>=&gt;$option,<span class="string">'value'</span>=&gt;<span class="number">-1</span>)),$rows);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/************</span></span><br><span class="line"><span class="comment">	 * 2019年7月8日</span></span><br><span class="line"><span class="comment">	 * 获取指定医院的医生</span></span><br><span class="line"><span class="comment">	 ************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getDoctor</span><span class="params">($params)</span></span>&#123;</span><br><span class="line">		$db = Zend_Registry::get(<span class="string">'db'</span>); </span><br><span class="line">		$structureId = $params[<span class="string">'structure_id'</span>];</span><br><span class="line">		$id  = $params[<span class="string">'hospital_id'</span>];</span><br><span class="line"></span><br><span class="line">		$org = <span class="keyword">self</span>::getOrganization($structureId);</span><br><span class="line">		$orgIds=<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>($org <span class="keyword">as</span> $k=&gt;$val)&#123;</span><br><span class="line">			<span class="keyword">if</span>($val == $id)&#123;</span><br><span class="line">				$orgIds[]=$k;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		$orgIds[]=$id;</span><br><span class="line">		$where = $db-&gt;quoteInto(<span class="string">'organization_id in (?)'</span>,$orgIds);</span><br><span class="line">		$rows=$db-&gt;fetchAll(<span class="string">"select user.user_id,user_name from user left join user_extend on user.user_id = user_extend.user_id where $where"</span>);</span><br><span class="line">		<span class="keyword">return</span> $rows;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-      
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//机构管理</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StatisticsUtils</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="variable">$organizationData</span>;</span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="variable">$organizationPath</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">/**********	</span></span><br><span class="line"><span class="comment">		2018/7/23</span></span><br><span class="line"><span class="comment">		显示机构列表名称</span></span><br><span class="line"><span class="comment">	*********/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">hospital</span>(<span class="params"><span class="variable">$params</span></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$db</span> = Zend_Registry::get(<span class="string">&#x27;db&#x27;</span>); </span><br><span class="line">		<span class="variable">$structureId</span> = <span class="variable">$params</span>[<span class="string">&#x27;structure_id&#x27;</span>];	<span class="comment">//structure_id</span></span><br><span class="line">		<span class="variable">$searchDateKey</span> = <span class="keyword">isset</span>(<span class="variable">$params</span>[<span class="string">&#x27;searchDateKey&#x27;</span>])?<span class="variable">$params</span>[<span class="string">&#x27;searchDateKey&#x27;</span>]:<span class="number">1</span>;</span><br><span class="line">		<span class="variable">$startdate</span> =  date(<span class="string">&quot;Y-m-d 00:00:00&quot;</span>,strtotime(<span class="variable">$params</span>[<span class="string">&#x27;start_date&#x27;</span>])); </span><br><span class="line">		<span class="variable">$stopdate</span> =  date(<span class="string">&quot;Y-m-d 23:59:59&quot;</span>,strtotime(<span class="variable">$params</span>[<span class="string">&#x27;stop_date&#x27;</span>]));		</span><br><span class="line"></span><br><span class="line">		<span class="comment">//时间</span></span><br><span class="line">		<span class="variable">$where</span> = <span class="string">&quot;&quot;</span>;</span><br><span class="line">		<span class="keyword">if</span>(<span class="variable">$searchDateKey</span>==<span class="number">1</span>)&#123;<span class="comment">//预约日期</span></span><br><span class="line">			<span class="variable">$where</span>=<span class="string">&quot; and ( c.conversation_schedule_date between &#x27;<span class="subst">$startdate</span>&#x27; and &#x27;<span class="subst">$stopdate</span>&#x27; )&quot;</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;<span class="comment">//下单日期</span></span><br><span class="line">			<span class="variable">$where</span>=<span class="string">&quot; and ( ct.pay_time between &#x27;<span class="subst">$startdate</span>&#x27; and &#x27;<span class="subst">$stopdate</span>&#x27; )&quot;</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//查询内容  &quot;专家医生&quot;; </span></span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$params</span>[<span class="string">&#x27;doctor&#x27;</span>]))&#123;</span><br><span class="line">			<span class="variable">$schedule_ids</span> =<span class="variable">$db</span>-&gt;fetchCol(<span class="string">&#x27;select schedule_id from schedule where user_id =:id&#x27;</span>,<span class="keyword">array</span>(<span class="string">&#x27;id&#x27;</span>=&gt;<span class="variable">$params</span>[<span class="string">&#x27;doctor&#x27;</span>]));	</span><br><span class="line">			<span class="keyword">if</span>(count(<span class="variable">$schedule_ids</span>))&#123;<span class="comment">//查找到医生的排班</span></span><br><span class="line">				<span class="variable">$where</span> .= <span class="variable">$db</span>-&gt;quoteInto(<span class="string">&#x27;and ct.schedule_id IN(?)&#x27;</span>, <span class="variable">$schedule_ids</span>);</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;<span class="comment">//否则直接返回空结果集</span></span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">array</span>();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="variable">$sql</span>= <span class="string">&quot;SELECT ct.organization_id,conversation_schedule_date,pay_price  FROM conversation_treatment AS ct  &quot;</span>.</span><br><span class="line">				<span class="string">&quot;LEFT JOIN conversation AS c ON ct.conversation_id = c.conversation_id  &quot;</span>.</span><br><span class="line">				<span class="string">&quot;WHERE  &quot;</span>.</span><br><span class="line">				<span class="string">&quot;	ct.treatment_type = 1  &quot;</span>. <span class="comment">//门诊</span></span><br><span class="line">				<span class="string">&quot;AND c.conversation_type = 2  &quot;</span>. <span class="comment">//医疗</span></span><br><span class="line">				<span class="string">&quot;AND c.structure_id = <span class="subst">$structureId</span>   &quot;</span>.<span class="comment">//当前机构</span></span><br><span class="line">				<span class="string">&quot; <span class="subst">$where</span> ORDER BY ct.conversation_id ASC  &quot;</span>;</span><br><span class="line">		<span class="comment">// echo $sql;exit;</span></span><br><span class="line">		<span class="variable">$res</span> = <span class="variable">$db</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line">		</span><br><span class="line">		<span class="variable">$rows</span> = <span class="variable">$res</span>-&gt;fetchAll();</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//对数据进行统计分析</span></span><br><span class="line">		<span class="variable">$groupM</span> = <span class="built_in">self</span>::getOrganization(<span class="variable">$structureId</span>);</span><br><span class="line">		<span class="variable">$data</span> = <span class="keyword">array</span>();  <span class="comment">//data [&#x27;organization_id&#x27;][&#x27;date&#x27;][]</span></span><br><span class="line">		<span class="keyword">foreach</span>(<span class="variable">$rows</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$row</span>)&#123;</span><br><span class="line">			<span class="variable">$oid</span> =<span class="variable">$groupM</span>[<span class="variable">$row</span>[<span class="string">&#x27;organization_id&#x27;</span>]];</span><br><span class="line">			<span class="variable">$date</span> = <span class="variable">$row</span>[<span class="string">&#x27;conversation_schedule_date&#x27;</span>];</span><br><span class="line">			<span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$oid</span>]))&#123;</span><br><span class="line">				<span class="variable">$data</span>[<span class="variable">$oid</span>]=<span class="keyword">array</span>();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(!<span class="keyword">isset</span>(<span class="variable">$data</span>[<span class="variable">$oid</span>][<span class="variable">$date</span>]))&#123;</span><br><span class="line">				<span class="variable">$data</span>[<span class="variable">$oid</span>][<span class="variable">$date</span>]=<span class="keyword">array</span>(<span class="string">&#x27;price&#x27;</span>=&gt;<span class="number">0</span>,<span class="string">&#x27;count&#x27;</span>=&gt;<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//统计</span></span><br><span class="line">			<span class="variable">$data</span>[<span class="variable">$oid</span>][<span class="variable">$date</span>][<span class="string">&#x27;price&#x27;</span>]+=<span class="variable">$row</span>[<span class="string">&#x27;pay_price&#x27;</span>];</span><br><span class="line">			<span class="variable">$data</span>[<span class="variable">$oid</span>][<span class="variable">$date</span>][<span class="string">&#x27;count&#x27;</span>]+=<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="variable">$result</span> =<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>(<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$oid</span>=&gt;<span class="variable">$oidArr</span>)&#123;</span><br><span class="line">			<span class="keyword">foreach</span>(<span class="variable">$oidArr</span> <span class="keyword">as</span> <span class="variable">$date</span>=&gt;<span class="variable">$dateArr</span>)&#123;</span><br><span class="line">				<span class="variable">$basehospital</span> = <span class="built_in">self</span>::<span class="variable">$organizationData</span>[<span class="variable">$oid</span>];</span><br><span class="line">				<span class="comment">// &#123;&#x27;date&#x27;:&#x27;2019-07-01&#x27;,&#x27;basehospital&#x27;:&#x27;华山医院&#x27;,&#x27;price&#x27;:&#x27;11&#x27;,&#x27;count&#x27;:&#x27;1&#x27;&#125;,</span></span><br><span class="line">				<span class="variable">$result</span>[]=<span class="keyword">array</span>(<span class="string">&#x27;date&#x27;</span>=&gt;<span class="variable">$date</span>,<span class="string">&#x27;basehospital&#x27;</span>=&gt;<span class="variable">$basehospital</span>,<span class="string">&#x27;price&#x27;</span>=&gt;<span class="variable">$dateArr</span>[<span class="string">&#x27;price&#x27;</span>],<span class="string">&#x27;count&#x27;</span>=&gt;<span class="variable">$dateArr</span>[<span class="string">&#x27;count&#x27;</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//排序</span></span><br><span class="line">		<span class="function"><span class="keyword">function</span> <span class="title">cmp</span>(<span class="params"><span class="variable">$a</span>,<span class="variable">$b</span></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="variable">$a</span>[<span class="string">&#x27;date&#x27;</span>]==<span class="variable">$b</span>[<span class="string">&#x27;date&#x27;</span>])&#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> date(<span class="variable">$a</span>[<span class="string">&#x27;date&#x27;</span>])&gt;date(<span class="variable">$b</span>[<span class="string">&#x27;date&#x27;</span>])?<span class="number">1</span>:<span class="number">-1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		usort(<span class="variable">$result</span>,<span class="string">&#x27;cmp&#x27;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/****************</span></span><br><span class="line"><span class="comment">	 * 2019年7月5日</span></span><br><span class="line"><span class="comment">	 * 返回每个组织所归属的医院的map</span></span><br><span class="line"><span class="comment">	 ****************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getOrganization</span>(<span class="params"><span class="variable">$structureId</span></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$db</span> = Zend_Registry::get(<span class="string">&#x27;db&#x27;</span>); </span><br><span class="line">		<span class="variable">$rows</span>=<span class="variable">$db</span>-&gt;fetchAll(<span class="string">&#x27;select organization_id id ,organization_parent_id pid,organization_name name from  organization where structure_id =:id;&#x27;</span>,<span class="keyword">array</span>(<span class="string">&#x27;id&#x27;</span>=&gt;<span class="variable">$structureId</span>));</span><br><span class="line">		<span class="built_in">self</span>::<span class="variable">$organizationData</span> = array_column(<span class="variable">$rows</span>,<span class="string">&#x27;name&#x27;</span>,<span class="string">&#x27;id&#x27;</span>);</span><br><span class="line">		<span class="variable">$mapping</span> = array_column(<span class="variable">$rows</span>,<span class="string">&#x27;pid&#x27;</span>,<span class="string">&#x27;id&#x27;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// echo json_encode($mapping );exit;</span></span><br><span class="line">		<span class="variable">$result</span>=<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>(<span class="variable">$mapping</span> <span class="keyword">as</span> <span class="variable">$id</span>=&gt;<span class="variable">$pid</span>)&#123;</span><br><span class="line">			<span class="variable">$cur</span>=<span class="variable">$pid</span>;</span><br><span class="line">			<span class="variable">$path</span>=<span class="keyword">array</span>(<span class="variable">$pid</span>);</span><br><span class="line">			<span class="keyword">while</span>(<span class="variable">$cur</span>&gt;<span class="number">0</span>)&#123;</span><br><span class="line">				<span class="comment">// var_dump($cur);</span></span><br><span class="line">				<span class="variable">$cur</span>=<span class="variable">$mapping</span>[<span class="variable">$cur</span>];</span><br><span class="line">				<span class="variable">$path</span>[]=<span class="variable">$cur</span>;</span><br><span class="line">				<span class="keyword">if</span>(count(<span class="variable">$path</span>)&gt;<span class="number">20</span>)&#123;</span><br><span class="line">					<span class="keyword">die</span>(<span class="string">&quot;maximum recursion depth exceeded &quot;</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="variable">$result</span>[<span class="variable">$id</span>]=join(<span class="string">&#x27;,&#x27;</span>,<span class="variable">$path</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">self</span>::<span class="variable">$organizationPath</span> = <span class="variable">$result</span>;</span><br><span class="line">		<span class="variable">$data</span> = <span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>(<span class="variable">$result</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$v</span>)&#123;</span><br><span class="line">			<span class="variable">$tmp</span> = explode(<span class="string">&#x27;,&#x27;</span>,<span class="variable">$v</span>);</span><br><span class="line">			<span class="variable">$len</span> = count(<span class="variable">$tmp</span>);</span><br><span class="line">			<span class="keyword">if</span>(<span class="variable">$len</span>&gt;<span class="number">1</span>)&#123;</span><br><span class="line">				<span class="variable">$data</span>[<span class="variable">$k</span>]=<span class="variable">$tmp</span>[<span class="variable">$len</span><span class="number">-2</span>];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$data</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/****************</span></span><br><span class="line"><span class="comment">	 * 2019年7月8日</span></span><br><span class="line"><span class="comment">	 * 获取医院</span></span><br><span class="line"><span class="comment">	 ****************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getHospital</span>(<span class="params"><span class="variable">$params</span></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$db</span> = Zend_Registry::get(<span class="string">&#x27;db&#x27;</span>); </span><br><span class="line">		<span class="variable">$rows</span>=<span class="variable">$db</span>-&gt;fetchAll(<span class="string">&#x27;select organization_id value ,organization_name name from  organization where structure_id =:id and organization_parent_id = 0;&#x27;</span>,<span class="keyword">array</span>(<span class="string">&#x27;id&#x27;</span>=&gt;<span class="variable">$params</span>[<span class="string">&#x27;structure_id&#x27;</span>]));</span><br><span class="line">		<span class="variable">$option</span> =  <span class="keyword">isset</span>(<span class="variable">$params</span>[<span class="string">&#x27;option&#x27;</span>]) ? <span class="string">&#x27;请选择机构&#x27;</span>:<span class="string">&#x27;全部机构&#x27;</span>;</span><br><span class="line">		<span class="keyword">return</span> array_merge(<span class="keyword">array</span>(<span class="keyword">array</span>(<span class="string">&#x27;name&#x27;</span>=&gt;<span class="variable">$option</span>,<span class="string">&#x27;value&#x27;</span>=&gt;<span class="number">-1</span>)),<span class="variable">$rows</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/************</span></span><br><span class="line"><span class="comment">	 * 2019年7月8日</span></span><br><span class="line"><span class="comment">	 * 获取指定医院的医生</span></span><br><span class="line"><span class="comment">	 ************/</span></span><br><span class="line">	<span class="keyword">public</span> <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getDoctor</span>(<span class="params"><span class="variable">$params</span></span>)</span>&#123;</span><br><span class="line">		<span class="variable">$db</span> = Zend_Registry::get(<span class="string">&#x27;db&#x27;</span>); </span><br><span class="line">		<span class="variable">$structureId</span> = <span class="variable">$params</span>[<span class="string">&#x27;structure_id&#x27;</span>];</span><br><span class="line">		<span class="variable">$id</span>  = <span class="variable">$params</span>[<span class="string">&#x27;hospital_id&#x27;</span>];</span><br><span class="line"></span><br><span class="line">		<span class="variable">$org</span> = <span class="built_in">self</span>::getOrganization(<span class="variable">$structureId</span>);</span><br><span class="line">		<span class="variable">$orgIds</span>=<span class="keyword">array</span>();</span><br><span class="line">		<span class="keyword">foreach</span>(<span class="variable">$org</span> <span class="keyword">as</span> <span class="variable">$k</span>=&gt;<span class="variable">$val</span>)&#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="variable">$val</span> == <span class="variable">$id</span>)&#123;</span><br><span class="line">				<span class="variable">$orgIds</span>[]=<span class="variable">$k</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="variable">$orgIds</span>[]=<span class="variable">$id</span>;</span><br><span class="line">		<span class="variable">$where</span> = <span class="variable">$db</span>-&gt;quoteInto(<span class="string">&#x27;organization_id in (?)&#x27;</span>,<span class="variable">$orgIds</span>);</span><br><span class="line">		<span class="variable">$rows</span>=<span class="variable">$db</span>-&gt;fetchAll(<span class="string">&quot;select user.user_id,user_name from user left join user_extend on user.user_id = user_extend.user_id where <span class="subst">$where</span>&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$rows</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
     </div>
 
     
-
     
-    
-    
-
-    
-
-    
-      
-    
-    
-
     
 
     <footer class="post-footer">
-      
 
-      
-      
-      
+        
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/05/07/柱状图使用/" rel="next" title="柱状图使用">
-                <i class="fa fa-chevron-left"></i> 柱状图使用
-              </a>
-            
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/blog/2019/05/07/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E8%BF%9C%E7%A8%8B%E5%8C%BB%E7%96%97%EF%BC%89/" rel="prev" title="前端Ext">
+                  <i class="fa fa-chevron-left"></i> 前端Ext
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/blog/2019/05/07/%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%BD%BF%E7%94%A8/" rel="next" title="柱状图使用">
+                  柱状图使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/07/域名解析/" rel="prev" title="域名解析">
-                域名解析 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
     </footer>
-  </div>
-  
-  
-  
   </article>
-
-
-  </div>
-
-
-          </div>
-          
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">chaofml</p>
-              <p class="site-description motion-element" itemprop="description"></p>
-          </div>
-
-          
-            <nav class="site-state motion-element">
-              
-                <div class="site-state-item site-state-posts">
-                
-                  <a href="/archives/">
-                
-                    <span class="site-state-item-count">70</span>
-                    <span class="site-state-item-name">日志</span>
-                  </a>
-                </div>
-              
-
-              
-
-              
-                
-                
-                <div class="site-state-item site-state-tags">
-                  
-                    
-                    
-                      
-                    
-                      
-                    
-                      
-                    
-                    <span class="site-state-item-count">3</span>
-                    <span class="site-state-item-name">标签</span>
-                  
-                </div>
-              
-            </nav>
-          
-
-          
-
-          
-
-          
-
-          
-          
-
-          
-            
-          
-          
-
-        </div>
-      </div>
-
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#树形结构"><span class="nav-number">1.</span> <span class="nav-text">树形结构</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
-
-      
-        <div class="back-to-top">
-          <i class="fa fa-arrow-up"></i>
-          
-        </div>
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
-  <span class="with-love" id="animate">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">chaofml</span>
-
-  
-
-  
 </div>
 
 
@@ -643,122 +296,53 @@
 
 
 
-
-  <div class="footer-custom">一个业余的程序员</div>
-
-
-        
-
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-
-    
-
-    
-
-    
-  </div>
-
-  
-
 <script>
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
 
 
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </div>
+  </footer>
 
   
-  
-    <script src="/lib/jquery/index.js?v=2.1.3"></script>
-  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/blog/js/utils.js"></script><script src="/blog/js/motion.js"></script><script src="/blog/js/schemes/muse.js"></script><script src="/blog/js/next-boot.js"></script>
 
   
-  
-    <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-
-  
-
-
-  <script src="/js/src/utils.js?v=6.6.0"></script>
-
-  <script src="/js/src/motion.js?v=6.6.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/src/affix.js?v=6.6.0"></script>
-
-  <script src="/js/src/schemes/pisces.js?v=6.6.0"></script>
-
-
-
-  
-  <script src="/js/src/scrollspy.js?v=6.6.0"></script>
-<script src="/js/src/post-details.js?v=6.6.0"></script>
-
-
-
-  
-
-
-  <script src="/js/src/bootstrap.js?v=6.6.0"></script>
-
-
-
-  
-
-
-
-  
-
-
-
-
 
 
 
@@ -772,33 +356,6 @@
 
 
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-  <script src="/js/src/js.cookie.js?v=6.6.0"></script>
-  <script src="/js/src/scroll-cookie.js?v=6.6.0"></script>
-
-
-  
-
-  
-
-  
-
-  
 
 </body>
 </html>
