@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="you-get与youtube-dl这两个工具都是用python写的，对于Linux环境，默认都安装了Python，默认也都有pip，但是注意，有可能是pip3。安装这两个工具，也都非常容易。 另外说一句，由此可见，python写的工具还是非常方便，非常受欢迎的。比如还有dockercomposer工具等。 安装方式pip install you-get pip install youtube-d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="you-get与youtube-dl">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/12/26/you-get/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="you-get与youtube-dl这两个工具都是用python写的，对于Linux环境，默认都安装了Python，默认也都有pip，但是注意，有可能是pip3。安装这两个工具，也都非常容易。 另外说一句，由此可见，python写的工具还是非常方便，非常受欢迎的。比如还有dockercomposer工具等。 安装方式pip install you-get pip install youtube-d">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-26T11:10:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.032Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/12/26/you-get/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>you-get与youtube-dl | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#you-get%E4%B8%8Eyoutube-dl"><span class="nav-number">1.</span> <span class="nav-text">you-get与youtube-dl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">安装方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-number">1.2.</span> <span class="nav-text">使用说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#youtube-dl"><span class="nav-number">1.2.1.</span> <span class="nav-text">youtube-dl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#you-get"><span class="nav-number">1.2.2.</span> <span class="nav-text">you-get</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/12/26/you-get/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          you-get与youtube-dl
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-12-26 11:10:00" itemprop="dateCreated datePublished" datetime="2020-12-26T11:10:00+00:00">2020-12-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="you-get与youtube-dl"><a href="#you-get与youtube-dl" class="headerlink" title="you-get与youtube-dl"></a>you-get与youtube-dl</h1><p>这两个工具都是用python写的，对于Linux环境，默认都安装了Python，默认也都有pip，但是注意，有可能是pip3。安装这两个工具，也都非常容易。</p>
+<p>另外说一句，由此可见，python写的工具还是非常方便，非常受欢迎的。比如还有dockercomposer工具等。</p>
+<h2 id="安装方式"><a href="#安装方式" class="headerlink" title="安装方式"></a>安装方式</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">pip <span class="token function">install</span> you-get
+pip <span class="token function">install</span> youtube-dl
+<span class="token comment"># 升级</span>
+pip <span class="token function">install</span> --upgrade you-get <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>至于源码，可以到github上查看。</p>
+<a id="more"></a>
+
+<h2 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h2><h3 id="youtube-dl"><a href="#youtube-dl" class="headerlink" title="youtube-dl"></a>youtube-dl</h3><p>在下载b站的教程视频列表，还是you-get比youtube-dl更好，前者能完整下载一个列表。而后者，无论如何，也下载不了。不确定是否自己打开的方式不对？【捂脸】</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">Usage: youtube-dl <span class="token punctuation">[</span>OPTIONS<span class="token punctuation">]</span> URL <span class="token punctuation">[</span>URL<span class="token punctuation">..</span>.<span class="token punctuation">]</span>
+
+Options:
+  通用选项:
+    -h, --help                       打印帮助文档
+    --version                        打印版本信息
+    -U, --update                     更新到最新版<span class="token punctuation">(</span>需要权限<span class="token punctuation">)</span>
+    -i, --ignore-errors              遇到下载错误时跳过
+    --abort-on-error                 遇到下载错误时终止
+    --dump-user-agent                显示当前使用的浏览器<span class="token punctuation">(</span>User-agent<span class="token punctuation">)</span>
+    --list-extractors                列出所有的提取器<span class="token punctuation">(</span>支持的网站<span class="token punctuation">)</span>
+    --extractor-descriptions         同上
+    --force-generic-extractor        强制使用通用提取器下载
+    --default-search PREFIX          使用此前缀补充不完整的URLs，例如：<span class="token string">"ytsearch2 yt-dl"</span> 从youtube搜索并下载两个关于yt-dl视频. 使用<span class="token string">"auto"</span>youtube-dl就会猜一个，一般效果等价于<span class="token string">"ytsearch"</span><span class="token punctuation">(</span><span class="token string">"auto_warning"</span>猜测时加入警告<span class="token punctuation">)</span>.我已知支持的PREFIX：ytsearch <span class="token punctuation">(</span>youtube<span class="token punctuation">)</span>, ytsearchdate <span class="token punctuation">(</span>youtube<span class="token punctuation">)</span>, yvsearch <span class="token punctuation">(</span>yahoo videos<span class="token punctuation">)</span>, gvsearch <span class="token punctuation">(</span>google videos<span class="token punctuation">)</span> 
+    --ignore-config                  不读取配置文件，当时用了全局配置文件/etc/youtube-dl.conf:不再读取 ~/.config/youtube-dl/config <span class="token punctuation">(</span>%APPDATA%/youtube-dl/config.txt on Windows<span class="token punctuation">)</span>
+    --config-location <span class="token environment constant">PATH</span>           使用指定路径下的配置文件
+    --flat-playlist                  列出列表视频但不下载
+    --mark-watched                   标记看过此视频 <span class="token punctuation">(</span>YouTube only<span class="token punctuation">)</span>
+    --no-mark-watched                不标记看过此视频 <span class="token punctuation">(</span>YouTube only<span class="token punctuation">)</span>
+    --no-color                       打印到屏幕上的代码不带色
+
+  网络选项:
+    --proxy URL                      使用HTTP/HTTPS/SOCKS协议的代理.如：socks5://127.0.0.1:1080/.
+    --socket-timeout <span class="token environment constant">SECONDS</span>         放弃连接前等待时间
+    --source-address IP              绑定的客户端IP地址
+    -4, --force-ipv4                 所有连接通过IPv4
+    -6, --force-ipv6                 所有连接通过IPv6
+
+  地理限制:
+    --geo-verification-proxy URL     使用此代理地址测试一些有地理限制的地址
+    --geo-bypass                     绕过地理限制通过伪装X-Forwarded-For HTTP头部的客户端ip <span class="token punctuation">(</span>实验<span class="token punctuation">)</span>
+    --no-geo-bypass                  不 绕过地理限制通过伪装X-Forwarded-For HTTP头部的客户端ip <span class="token punctuation">(</span>实验<span class="token punctuation">)</span>
+    --geo-bypass-country CODE        强制绕过地理限制通过提供准确的ISO <span class="token number">3166</span>-2标准的国别代码<span class="token punctuation">(</span>实验<span class="token punctuation">)</span>
+
+  视频选择:
+    --playlist-start NUMBER          指定列表中开始下载的视频<span class="token punctuation">(</span>默认为1<span class="token punctuation">)</span>
+    --playlist-end NUMBER            指定列表中结束的视频<span class="token punctuation">(</span>默认为last<span class="token punctuation">)</span>
+    --playlist-items ITEM_SPEC       指定列表中要下载的视频项目编号.如：<span class="token string">"--playlist-items 1,2,5,8"</span>或<span class="token string">"--playlist-items 1-3,7,10-13"</span>
+    --match-title REGEX              下载标题匹配的视频<span class="token punctuation">(</span>正则表达式或区分大小写的字符串<span class="token punctuation">)</span>
+    --reject-title REGEX             跳过下载标题匹配的视频<span class="token punctuation">(</span>正则表达式或区分大小写的字符串<span class="token punctuation">)</span>
+    --max-downloads NUMBER           下载NUMBER个视频后停止
+    --min-filesize SIZE              不下载小于SIZE的视频<span class="token punctuation">(</span>e.g. 50k or <span class="token number">44</span>.6m<span class="token punctuation">)</span>
+    --max-filesize SIZE              不下载大于SIZE的视频<span class="token punctuation">(</span>e.g. 50k or <span class="token number">44</span>.6m<span class="token punctuation">)</span>
+    --date DATE                      仅下载上传日期在指定日期的视频
+    --datebefore DATE                仅下载上传日期在指定日期或之前的视频 <span class="token punctuation">(</span>i.e. inclusive<span class="token punctuation">)</span>
+    --dateafter DATE                 仅下载上传日期在指定日期或之后的视频 <span class="token punctuation">(</span>i.e. inclusive<span class="token punctuation">)</span>
+    --min-views COUNT                不下载观影数小于指定值的视频
+    --max-views COUNT                不下载观影数大于指定值的视频
+    --match-filter FILTER            通用视频过滤器. Specify any key <span class="token punctuation">(</span>see <span class="token builtin class-name">help</span> <span class="token keyword">for</span> -o <span class="token keyword">for</span> a list of available keys<span class="token punctuation">)</span> to match <span class="token keyword">if</span> the key is present, <span class="token operator">!</span>key to check <span class="token keyword">if</span> the key is not present, key <span class="token operator">></span> NUMBER <span class="token punctuation">(</span>like <span class="token string">"comment_count > 12"</span>, also works with <span class="token operator">></span><span class="token operator">=</span>, <span class="token operator">&lt;</span>, <span class="token operator">&lt;</span><span class="token operator">=</span>, <span class="token operator">!=</span>, <span class="token operator">=</span><span class="token punctuation">)</span> to compare against a number,key <span class="token operator">=</span> ‘LITERAL‘ <span class="token punctuation">(</span>like <span class="token string">"uploader = ‘Mike Smith‘"</span>, also works with <span class="token operator">!=</span><span class="token punctuation">)</span> to match against a string literal and <span class="token operator">&amp;</span> to require multiple matches. Values <span class="token function">which</span> are not known are excluded unless you put a question mark <span class="token punctuation">(</span>?<span class="token punctuation">)</span> after the operator. For example, to only match videos that have been liked <span class="token function">more</span> than <span class="token number">100</span> <span class="token builtin class-name">times</span> and disliked <span class="token function">less</span> than <span class="token number">50</span> <span class="token builtin class-name">times</span> <span class="token punctuation">(</span>or the dislike functionality is not available at the given <span class="token function">service</span><span class="token punctuation">)</span>, but <span class="token function">who</span> also have a description, use --match-filter <span class="token string">"like_count > 100 &amp; dislike_count &lt;? 50 &amp; description"</span> <span class="token builtin class-name">.</span>
+    --no-playlist                    当视频链接到一个视频和一个播放列表时，仅下载视频
+    --yes-playlist                   当视频链接到一个视频和一个播放列表时，下载视频和播放列表
+    --age-limit YEARS                下载合适上传年限的视频
+    --download-archive FILE          仅下载档案文件中未列出的影片，已下载的记录ID
+    --include-ads                    同时下载广告<span class="token punctuation">(</span>实验<span class="token punctuation">)</span>
+
+  下载选项:
+    -r, --limit-rate RATE            最大bps <span class="token punctuation">(</span>e.g. 50K or <span class="token number">4</span>.2M<span class="token punctuation">)</span>
+    -R, --retries RETRIES            重试次数 <span class="token punctuation">(</span>默认10<span class="token punctuation">)</span>, or <span class="token string">"infinite"</span><span class="token builtin class-name">.</span>
+    --fragment-retries RETRIES       一个分段的最大重试次数<span class="token punctuation">(</span>default is <span class="token number">10</span><span class="token punctuation">)</span>, or <span class="token string">"infinite"</span> <span class="token punctuation">(</span>DASH, hlsnative and ISM<span class="token punctuation">)</span>
+    --skip-unavailable-fragments     跳过不可用分段<span class="token punctuation">(</span>DASH, hlsnative and ISM<span class="token punctuation">)</span>
+    --abort-on-unavailable-fragment  放弃某个分段当不可获取时
+    --keep-fragments                 下载完成后，将下载的片段保存在磁盘上<span class="token punctuation">;</span> 片段默认被删除
+    --buffer-size SIZE               设置缓冲区大小buffer <span class="token punctuation">(</span>e.g. <span class="token number">1024</span> or 16K<span class="token punctuation">)</span> <span class="token punctuation">(</span>default is <span class="token number">1024</span><span class="token punctuation">)</span>
+    --no-resize-buffer               不自动调整缓冲区大小.默认情况下自动调整
+    --playlist-reverse               以相反的顺序下载播放列表视频
+    --playlist-random                以随机的顺序下载播放列表视频
+    --xattr-set-filesize             Set <span class="token function">file</span> xattribute ytdl.filesize with expected <span class="token function">file</span> size <span class="token punctuation">(</span>experimental<span class="token punctuation">)</span>
+    --hls-prefer-native              使用本机默认HLS下载器而不是ffmpeg
+    --hls-prefer-ffmpeg              使用ffmpeg而不是本机HLS下载器
+    --hls-use-mpegts                 使用TS流容器来存放HLS视频,一些高级播放器允许在下载的同时播放视频
+    --external-downloader COMMAND    使用指定的第三方下载工具,当前支持：aria2c,avconv,axel,curl,ffmpeg,httpie,wget
+    --external-downloader-args ARGS  给第三方下载工具指定参数，如：--external-downloader aria2c --external-downloader-args -j8
+
+  文件系统选项:
+    -a, --batch-file FILE            文件中包含需要下载的URL
+    --id                             仅使用文件名中的视频ID
+    -o, --output TEMPLATE            Output filename template, see the <span class="token string">"OUTPUT TEMPLATE"</span> <span class="token keyword">for</span> all the info
+    --autonumber-start NUMBER        指定%<span class="token punctuation">(</span>autonumber<span class="token punctuation">)</span>s的起始值<span class="token punctuation">(</span>默认为1<span class="token punctuation">)</span>
+    --restrict-filenames             将文件名限制为ASCII字符，并避免文件名中的“＆”和空格
+    -w, --no-overwrites              不要覆盖文件
+    -c, --continue                   强制恢复部分下载的文件。 默认情况下，youtube-dl仅在可能时将恢复下载。
+    --no-continue                    不要恢复部分下载的文件<span class="token punctuation">(</span>从头开始重新启动<span class="token punctuation">)</span>
+    --no-part                        不使用.part文件 - 直接写入输出文件
+    --no-mtime                       不使用Last-modified header来设置文件最后修改时间
+    --write-description              将视频描述写入.description文件
+    --write-info-json                将视频元数据写入.info.json文件
+    --write-annotations              将视频注释写入.annotations.xml文件
+    --load-info-json FILE            包含视频信息的JSON文件<span class="token punctuation">(</span>使用“--write-info-json”选项创建<span class="token punctuation">)</span>
+    --cookies FILE                   文件从中读取Cookie<span class="token punctuation">(</span>经测试，export cookies插件可以使用，但firebug导出的cookies导致错误<span class="token punctuation">)</span>
+    --cache-dir DIR                  文件存储位置。youtube-dl需要永久保存一些下载的信息。默认为<span class="token variable">$XDG_CACHE_HOME</span>/youtube-dl或/.cache/youtube-dl。目前，只有YouTube播放器文件（对于具有模糊签名的视频）进行缓存，但可能会发生变化。
+    --no-cache-dir                   不用缓存
+    --rm-cache-dir                   删除所有缓存文件
+
+  缩略图:
+    --write-thumbnail                把缩略图写入硬盘
+    --write-all-thumbnails           将所有缩略图写入磁盘
+    --list-thumbnails                列出所有可用的缩略图格式
+
+  详细/模拟选项:
+    -q, --quiet                      激活退出模式
+    --no-warnings                    忽略警告
+    -s, --simulate                   不下载不存储任何文件到硬盘，模拟下载模式
+    --skip-download                  不下载视频
+    -g, --get-url                    模拟下载获取视频直连
+    -e, --get-title                  模拟下载获取标题
+    --get-id                         模拟下载获取id
+    --get-thumbnail                  模拟下载获取缩略图URL
+    --get-description                模拟下载获取视频描述
+    --get-duration                   模拟下载获取视频长度
+    --get-filename                   模拟下载获取输出视频文件名
+    --get-format                     模拟下载获取输出视频格式
+    -j, --dump-json                  模拟下载获取JSON information.
+    -J, --dump-single-json           模拟下载获取每条命令行参数的JSON information.如果是个播放列表，就获取整个播放列表的JSON
+    --print-json                     下载的同时获取视频信息的JSON
+    --newline                        进度条在新行输出
+    --no-progress                    不打印进度条
+    --console-title                  在控制台标题栏显示进度
+    -v, --verbose                    打印各种调试信息
+    --dump-pages                     打印下载下来的使用base64编码的页面来调试问题（非常冗长）
+    --write-pages                    将下载的中间页以文件的形式写入当前目录中以调试问题
+    --print-traffic                  显示发送和读取HTTP流量
+    -C, --call-home                  联系youtube-dl服务器进行调试
+    --no-call-home                   不联系youtube-dl服务器进行调试
+
+  解决方法:
+    --encoding ENCODING              强制指定编码<span class="token punctuation">(</span>实验<span class="token punctuation">)</span>
+    --no-check-certificate           禁止HTTPS证书验证
+    --prefer-insecure                使用未加密的连接来检索有关视频的信息<span class="token punctuation">(</span>目前仅支持YouTube<span class="token punctuation">)</span>
+    --user-agent UA                  指定user agent
+    --referer URL                    指定自定义的referer,仅限视频来源于同一网站
+    --add-header FIELD:VALUE         指定一个自定义值的HTTP头文件,使用分号分割,可以多次使用此选项
+    --bidi-workaround                围绕缺少双向文本支持的终端工作。需要在<span class="token environment constant">PATH</span>中有bidiv或fribidi可执行文件
+    --sleep-interval <span class="token environment constant">SECONDS</span>         在每次下载之前休眠的秒数，或者每次下载之前的随机睡眠的范围的下限<span class="token punctuation">(</span>最小可能的睡眠秒数<span class="token punctuation">)</span>与-max-sleep-interval一起使用。
+    --max-sleep-interval <span class="token environment constant">SECONDS</span>     每次下载前随机睡眠范围的上限<span class="token punctuation">(</span>最大可能睡眠秒数<span class="token punctuation">)</span>。只能与--min-sleep-interval一起使用。
+
+  视频格式选项:
+    -f, --format FORMAT              视频格式代码,查看<span class="token string">"FORMAT SELECTION"</span>获取所有信息
+    --all-formats                    获取所有视频格式
+    --prefer-free-formats            开源的视频格式优先，除非有特定的请求
+    -F, --list-formats               列出请求视频的所有可用格式
+    --youtube-skip-dash-manifest     不要下载关于YouTube视频的DASH清单和相关数据
+    --merge-output-format FORMAT     如果需要合并<span class="token punctuation">(</span>例如bestvideo + bestaudio<span class="token punctuation">)</span>，则输出到给定的容器格式。mkv，mp4，ogg，webm，flv之一。如果不需要合并，则忽略
+
+  字幕选项:
+    --write-sub                      下载字幕文件
+    --write-auto-sub                 下载自动生成的字幕文件 <span class="token punctuation">(</span>YouTube only<span class="token punctuation">)</span>
+    --all-subs                       下载所有可用的字幕
+    --list-subs                      列出所有字幕
+    --sub-format FORMAT              字幕格式,接受格式偏好,如：<span class="token string">"srt"</span> or <span class="token string">"ass/srt/best"</span>
+    --sub-lang LANGS                 要下载的字幕的语言<span class="token punctuation">(</span>可选<span class="token punctuation">)</span>用逗号分隔,请使用--list-subs表示可用的语言标签
+
+  验证选项:
+    -u, --username USERNAME          使用ID登录
+    -p, --password PASSWORD          账户密码,如果此选项未使用,youtube-dl将交互式地询问。
+    -2, --twofactor TWOFACTOR        双因素认证码
+    -n, --netrc                      使用.netrc认证数据
+    --video-password PASSWORD        视频密码<span class="token punctuation">(</span>vimeo, smotri, youku<span class="token punctuation">)</span>
+
+  Adobe Pass Options:
+    --ap-mso MSO                     Adobe Pass多系统运营商<span class="token punctuation">(</span>电视提供商<span class="token punctuation">)</span>标识符,使用--ap-list-mso列出可用的MSO
+    --ap-username USERNAME           MSO账号登录
+    --ap-password PASSWORD           账户密码,如果此选项未使用,youtube-dl将交互式地询问。
+    --ap-list-mso                    列出所有支持的MSO
+
+  后处理选项:
+    -x, --extract-audio              将视频文件转换为纯音频文件<span class="token punctuation">(</span>需要ffmpeg或avconv和ffprobe或avprobe<span class="token punctuation">)</span>
+    --audio-format FORMAT            指定音频格式: <span class="token string">"best"</span>, <span class="token string">"aac"</span>, <span class="token string">"flac"</span>, <span class="token string">"mp3"</span>, <span class="token string">"m4a"</span>, <span class="token string">"opus"</span>, <span class="token string">"vorbis"</span>, or <span class="token string">"wav"</span><span class="token punctuation">;</span> <span class="token string">"best"</span> by default<span class="token punctuation">;</span>-x存在时无效
+    --audio-quality QUALITY          指定ffmpeg/avconv音频质量,为VBR插入一个0<span class="token punctuation">(</span>best<span class="token punctuation">)</span>-9<span class="token punctuation">(</span>worse<span class="token punctuation">)</span>的值<span class="token punctuation">(</span>默认5<span class="token punctuation">)</span>,或者指定比特率
+    --recode-video FORMAT            必要时将视频转码为其他格式<span class="token punctuation">(</span>当前支持: mp4<span class="token operator">|</span>flv<span class="token operator">|</span>ogg<span class="token operator">|</span>webm<span class="token operator">|</span>mkv<span class="token operator">|</span>avi<span class="token punctuation">)</span>
+    --postprocessor-args ARGS        给后处理器提供这些参数
+    -k, --keep-video                 视频文件在后处理后保存在磁盘上<span class="token punctuation">;</span> 该视频默认被删除
+    --no-post-overwrites             不要覆盖后处理文件<span class="token punctuation">;</span> 默认情况下,后处理文件将被覆盖
+    --embed-subs                     在视频中嵌入字幕<span class="token punctuation">(</span>仅适用于mp4,webm和mkv视频）
+    --embed-thumbnail                将缩略图嵌入音频作为封面艺术
+    --add-metadata                   将元数据写入视频文件
+    --metadata-from-title FORMAT     从视频标题中解析附加元数据，如歌曲标题/艺术家。格式语法和--output相似.也可以使用带有命名捕获组的正则表达式。解析的参数替换现有值。Example: --metadata-from-title <span class="token string">"%(artist)s - %(title)s"</span> matches a title like <span class="token string">"Coldplay - Paradise"</span><span class="token builtin class-name">.</span> Example <span class="token punctuation">(</span>regex<span class="token punctuation">)</span>: --metadata-from-title <span class="token string">"(?P&lt;artist>.+?) - (?P&lt;title>.+)"</span> 
+    --xattrs                         将元数据写入视频文件的xattrs<span class="token punctuation">(</span>使用dublin core 和 xdg标准<span class="token punctuation">)</span>
+    --fixup POLICY                   自动更正文件的已知故障。never<span class="token punctuation">(</span>不做警告<span class="token punctuation">)</span>, warn<span class="token punctuation">(</span>只发出警告<span class="token punctuation">)</span>, detect_or_warn <span class="token punctuation">(</span>默认<span class="token punctuation">;</span>如果可以的话修复文件,否则警告<span class="token punctuation">)</span>
+    --prefer-avconv                  后处理时相较ffmpeg偏向于avconv
+    --prefer-ffmpeg                  后处理优先使用ffmpeg
+    --ffmpeg-location <span class="token environment constant">PATH</span>           ffmpeg/avconv程序位置<span class="token punctuation">;</span><span class="token environment constant">PATH</span>为二进制所在文件夹或者目录.
+    --exec CMD                       在下载后对文件执行命令,类似于find -exec语法.示例：--exec‘adb push <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> /sdcard/Music/ <span class="token operator">&amp;&amp;</span> <span class="token function">rm</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>‘
+    --convert-subs FORMAT            转换字幕格式<span class="token punctuation">(</span>当前支持: srt<span class="token operator">|</span>ass<span class="token operator">|</span>vtt<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="you-get"><a href="#you-get" class="headerlink" title="you-get"></a>you-get</h3><p>别人说这是国人开发的，所以，对国内视频，更友好。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#直接下载</span>
+you-get url 
+<span class="token comment">#列表下载</span>
+you-get --playlist url<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/12/25/myself/java%E5%AD%A6%E4%B9%A0%E6%84%9F%E6%82%9F/" rel="prev" title="java学习感悟">
+                  <i class="fa fa-chevron-left"></i> java学习感悟
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/12/30/shell/if%E5%92%8C%E6%AF%94%E8%BE%83/" rel="next" title="if和比较">
+                  if和比较 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

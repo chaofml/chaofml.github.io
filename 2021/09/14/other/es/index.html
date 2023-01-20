@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="es的简单入门。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="es入门">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/09/14/other/es/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="es的简单入门。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-14T15:18:21.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.983Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="other">
+<meta property="article:tag" content="es">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/09/14/other/es/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>es入门 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kibana"><span class="nav-number">1.1.</span> <span class="nav-text">kibana</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#KQL"><span class="nav-number">1.1.1.</span> <span class="nav-text">KQL</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">查询语法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.</span> <span class="nav-text">python客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">2.1.</span> <span class="nav-text">增删改查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A51"><span class="nav-number">2.2.</span> <span class="nav-text">批量导入1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A52"><span class="nav-number">2.3.</span> <span class="nav-text">批量导入2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD"><span class="nav-number">3.</span> <span class="nav-text">备份</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%94%A8%E5%88%B0%E7%9A%84%E6%9F%A5%E8%AF%A2%E8%AF%AD%E6%B3%95"><span class="nav-number">3.1.</span> <span class="nav-text">一些用到的查询语法</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/09/14/other/es/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          es入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-14 15:18:21" itemprop="dateCreated datePublished" datetime="2021-09-14T15:18:21+00:00">2021-09-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>es的简单入门。</p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/cn/elasticsearch/guide/current/preface.html">https://www.elastic.co/guide/cn/elasticsearch/guide/current/preface.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://learnku.com/docs/elasticsearch73/7.3">https://learnku.com/docs/elasticsearch73/7.3</a></li>
+<li><a target="_blank" rel="noopener" href="https://elasticsearch-py.readthedocs.io/en/v7.14.1/">es-python文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/diyiday/article/details/82153780">python-elasticsearch基本用法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/Wu13241454771/p/13576288.html">https://www.cnblogs.com/Wu13241454771/p/13576288.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/szss/p/10573986.html">es的分词</a></li>
+</ul>
+<h3 id="kibana"><a href="#kibana" class="headerlink" title="kibana"></a>kibana</h3><p>创建索引</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 流水线</span>
+<span class="token comment">##注意 ingets需要开启</span>
+PUT _ingest/pipeline/my_timestamp_pipeline
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"description"</span><span class="token builtin class-name">:</span> <span class="token string">"Adds a field to a document with the time of ingestion"</span>,
+  <span class="token string">"processors"</span><span class="token builtin class-name">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+      <span class="token string">"set"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token string">"field"</span><span class="token builtin class-name">:</span> <span class="token string">"ingest_timestamp"</span>,
+        <span class="token string">"value"</span><span class="token builtin class-name">:</span> <span class="token string">"&#123;&#123;_ingest.timestamp&#125;&#125;"</span>
+      <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 创建索引</span>
+PUT pa_log_clean_with_time
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"settings"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"default_pipeline"</span><span class="token builtin class-name">:</span> <span class="token string">"my_timestamp_pipeline"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 最大分片设置</span>
+
+PUT /_cluster/settings
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"transient"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"cluster"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string">"max_shards_per_node"</span>:5000
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>crud</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 添加</span>
+POST /test/_doc
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"msg"</span> <span class="token builtin class-name">:</span><span class="token string">"Eating an apple a day keeps doctor away"</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 查询</span>
+POST /test/_search
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"query"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token string">"match"</span><span class="token builtin class-name">:</span> <span class="token punctuation">&#123;</span>
+      <span class="token string">"msg"</span><span class="token builtin class-name">:</span> <span class="token string">"eat"</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 查看分词效果</span>
+
+POST /test/_analyze
+<span class="token punctuation">&#123;</span>
+  <span class="token string">"field"</span><span class="token builtin class-name">:</span> <span class="token string">"msg"</span>,
+  <span class="token string">"text"</span><span class="token builtin class-name">:</span> <span class="token string">"我爱北京天安门"</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 删除</span>
+DELETE /test/_doc/xJ636HsBVVbMBtr2nSGm
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="KQL"><a href="#KQL" class="headerlink" title="KQL"></a>KQL</h4><p><a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/kibana/7.9/kuery-query.html">查询语法</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/-beyond/p/14159002.html">https://www.cnblogs.com/-beyond/p/14159002.html</a></p>
+<p>​        </p>
+<h3 id="查询语法"><a href="#查询语法" class="headerlink" title="查询语法"></a>查询语法</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/mon_star/article/details/102934620">https://blog.csdn.net/mon_star/article/details/102934620</a></p>
+<p>可以多层级嵌套使用。</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiohao/p/12970224.html">https://www.cnblogs.com/xiohao/p/12970224.html</a></p>
+<h2 id="python客户端"><a href="#python客户端" class="headerlink" title="python客户端"></a>python客户端</h2><h3 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf-8</span>
+
+<span class="token keyword">import</span> elasticsearch
+<span class="token keyword">from</span> elasticsearch<span class="token punctuation">.</span>helpers <span class="token keyword">import</span> bulk
+<span class="token keyword">import</span> csv
+
+<span class="token keyword">def</span> <span class="token function">init_es_client</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    es <span class="token operator">=</span> elasticsearch<span class="token punctuation">.</span>Elasticsearch<span class="token punctuation">(</span>
+        hosts<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"10.131.224.14"</span><span class="token punctuation">,</span><span class="token string">'10.131.224.15'</span><span class="token punctuation">,</span><span class="token string">'10.131.224.19'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">54926</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">return</span> es
+es <span class="token operator">=</span> init_es_client<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span>es<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token comment"># 查找</span>
+<span class="token keyword">def</span> <span class="token function">search</span><span class="token punctuation">(</span>es_client<span class="token punctuation">,</span> start<span class="token punctuation">,</span> end<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    result <span class="token operator">=</span> es_client<span class="token punctuation">.</span>search<span class="token punctuation">(</span>index<span class="token operator">=</span><span class="token string">"[YOUR-INDEX]"</span><span class="token punctuation">,</span> body<span class="token operator">=</span><span class="token punctuation">&#123;</span>
+        <span class="token string">"query"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token string">"bool"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span>
+                <span class="token string">"must"</span><span class="token punctuation">:</span><span class="token punctuation">[</span>
+                    <span class="token punctuation">&#123;</span> <span class="token string">"range"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span> <span class="token string">"[YOUR-DATE]"</span><span class="token punctuation">:</span><span class="token punctuation">&#123;</span> <span class="token string">"gte"</span><span class="token punctuation">:</span> start<span class="token punctuation">,</span> <span class="token string">"lte"</span><span class="token punctuation">:</span> end <span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> 
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token string">"bool"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span>
+                            <span class="token string">"should"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+                                <span class="token punctuation">&#123;</span> <span class="token string">"match_phrase"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span> <span class="token string">"[YOUR-CONTENT]"</span><span class="token punctuation">:</span> <span class="token string">"[KEYWORD-1]"</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                                <span class="token punctuation">&#123;</span> <span class="token string">"match_phrase"</span><span class="token punctuation">:</span> <span class="token punctuation">&#123;</span> <span class="token string">"[YOUR-CONTENT]"</span><span class="token punctuation">:</span> <span class="token string">"[KEYWORD-2]"</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span>
+                            <span class="token punctuation">]</span>
+                        <span class="token punctuation">&#125;</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">]</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> result
+    
+<span class="token comment"># 插入</span>
+data <span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">"recv_addr"</span><span class="token punctuation">:</span><span class="token string">'测试导入地址'</span><span class="token punctuation">,</span><span class="token string">'dtime'</span><span class="token punctuation">:</span><span class="token string">'2021-09-14 15:40'</span><span class="token punctuation">&#125;</span>
+<span class="token comment">#es.index(index='gpdata_addr',body=data)</span>
+
+
+<span class="token comment"># 批量导入</span>
+arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+data <span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">"recv_addr"</span><span class="token punctuation">:</span><span class="token string">'测试导入地址2'</span><span class="token punctuation">,</span><span class="token string">'dtime'</span><span class="token punctuation">:</span><span class="token string">'2021-09-14 15:40'</span><span class="token punctuation">&#125;</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    data<span class="token punctuation">[</span><span class="token string">'recv_addr'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'测试导入地址%d'</span><span class="token operator">%</span>i
+    arr<span class="token punctuation">.</span>append<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+
+
+<span class="token comment"># 删除   先查找id、再删除</span>
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+    result <span class="token operator">=</span> es<span class="token punctuation">.</span>search<span class="token punctuation">(</span>index<span class="token operator">=</span><span class="token string">"gpdata_addr"</span><span class="token punctuation">)</span>
+    <span class="token comment">#print(result)</span>
+    <span class="token comment">#print(result['hits']['hits'])</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> result<span class="token punctuation">:</span>
+        <span class="token keyword">break</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> result<span class="token punctuation">[</span><span class="token string">'hits'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'hits'</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token string">'_id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token comment"># 删除</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            es<span class="token punctuation">.</span>delete<span class="token punctuation">(</span>index<span class="token operator">=</span><span class="token string">"gpdata_addr"</span><span class="token punctuation">,</span><span class="token builtin">id</span><span class="token operator">=</span>item<span class="token punctuation">[</span><span class="token string">'_id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">except</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'%s  not found'</span><span class="token operator">%</span>item<span class="token punctuation">[</span><span class="token string">'_id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="批量导入1"><a href="#批量导入1" class="headerlink" title="批量导入1"></a>批量导入1</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf-8</span>
+
+<span class="token keyword">import</span> elasticsearch
+<span class="token keyword">from</span> elasticsearch<span class="token punctuation">.</span>helpers <span class="token keyword">import</span> bulk
+<span class="token keyword">import</span> csv
+
+<span class="token keyword">def</span> <span class="token function">init_es_client</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    es <span class="token operator">=</span> elasticsearch<span class="token punctuation">.</span>Elasticsearch<span class="token punctuation">(</span>
+        hosts<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"10.131.224.14"</span><span class="token punctuation">,</span><span class="token string">'10.131.224.15'</span><span class="token punctuation">,</span><span class="token string">'10.131.224.19'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">54926</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">return</span> es
+
+es <span class="token operator">=</span> init_es_client<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment"># 批量导入</span>
+
+batch <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'gpdata_addr.csv'</span><span class="token punctuation">,</span><span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+    reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>f<span class="token punctuation">)</span>
+    num <span class="token operator">=</span> <span class="token number">0</span>
+    batch <span class="token operator">=</span> <span class="token number">0</span>
+    arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+        num <span class="token operator">=</span> num <span class="token operator">+</span> <span class="token number">1</span>
+        <span class="token keyword">if</span> num <span class="token operator">%</span> <span class="token number">10000</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            batch <span class="token operator">=</span> batch <span class="token operator">+</span> <span class="token number">1</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'batch: %s'</span><span class="token operator">%</span>batch<span class="token punctuation">)</span>
+            res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span>
+            arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+        data <span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">"recv_addr"</span><span class="token punctuation">:</span><span class="token builtin">str</span><span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">'dtime'</span><span class="token punctuation">:</span><span class="token builtin">str</span><span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span>
+        arr<span class="token punctuation">.</span>append<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+        
+    <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+        res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">True</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="批量导入2"><a href="#批量导入2" class="headerlink" title="批量导入2"></a>批量导入2</h3><p>因为不清楚bluk的用法，自己写的多进程来快速、批量导入数据的脚本。思路非常简单，主进程用来分资源，子进程用来处理资源。进程间的同步，写得简单，存在隐患，主进程写文件，并不停的查看哪个文件清空了，子进程，处理完数据后，则删除文件，并休眠3秒，好让主进程有足够的时间来，写文件。</p>
+<p>具体用法参见：</p>
+<p><a target="_blank" rel="noopener" href="https://elasticsearch-py.readthedocs.io/en/v7.14.1/helpers.html#example">https://elasticsearch-py.readthedocs.io/en/v7.14.1/helpers.html#example</a></p>
+<ul>
+<li>主进程，分割文件</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf-8</span>
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> time
+
+<span class="token keyword">def</span> <span class="token function">get_file</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            fn <span class="token operator">=</span> <span class="token string">'gpdata_addr_%d.csv'</span><span class="token operator">%</span>i
+            <span class="token keyword">if</span> <span class="token keyword">not</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span>fn<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                <span class="token keyword">return</span> fn
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'等待新文件'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">'gpdata_addr.csv'</span><span class="token punctuation">,</span><span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> fi<span class="token punctuation">:</span>
+    is_end <span class="token operator">=</span> <span class="token boolean">False</span> <span class="token comment"># 读文件结束</span>
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        new_file <span class="token operator">=</span> get_file<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        fo <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>new_file<span class="token punctuation">,</span><span class="token string">'w'</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'create new file %s'</span><span class="token operator">%</span>new_file<span class="token punctuation">)</span>
+        output <span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">100000</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            line <span class="token operator">=</span> fi<span class="token punctuation">.</span>readline<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> line<span class="token punctuation">:</span>
+                output<span class="token punctuation">.</span>append<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                is_end <span class="token operator">=</span> true
+                <span class="token keyword">break</span>
+        fo<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>output<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        fo<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        output <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">if</span> is_end<span class="token punctuation">:</span>
+            <span class="token keyword">break</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>工作进程，消费文件，并删除</li>
+</ul>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment">#coding=utf-8</span>
+
+<span class="token keyword">import</span> elasticsearch
+<span class="token keyword">from</span> elasticsearch<span class="token punctuation">.</span>helpers <span class="token keyword">import</span> bulk
+<span class="token keyword">import</span> csv
+<span class="token keyword">import</span> sys
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> time
+
+<span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>sys<span class="token punctuation">.</span>argv<span class="token punctuation">)</span> <span class="token operator">&lt;</span><span class="token number">2</span> <span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'缺少参数 id'</span><span class="token punctuation">)</span>
+    os<span class="token punctuation">.</span>exit<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+pid <span class="token operator">=</span> sys<span class="token punctuation">.</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+csv_file <span class="token operator">=</span> <span class="token string">'gpdata_addr_%s.csv'</span><span class="token operator">%</span>pid
+
+<span class="token keyword">def</span> <span class="token function">init_es_client</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    es <span class="token operator">=</span> elasticsearch<span class="token punctuation">.</span>Elasticsearch<span class="token punctuation">(</span>
+        hosts<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">"10.1.1.1"</span><span class="token punctuation">,</span><span class="token string">'10.1.1.2'</span><span class="token punctuation">,</span><span class="token string">'10.1.1.3'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>port<span class="token operator">=</span><span class="token number">54926</span>
+    <span class="token punctuation">)</span>
+    <span class="token keyword">return</span> es
+
+es <span class="token operator">=</span> init_es_client<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 批量导入</span>
+
+batch <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> os<span class="token punctuation">.</span>path<span class="token punctuation">.</span>exists<span class="token punctuation">(</span>csv_file<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'file [%s] not found,sleep'</span><span class="token operator">%</span>csv_file<span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+        <span class="token keyword">continue</span>
+    <span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span>csv_file<span class="token punctuation">,</span><span class="token string">'r'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>f<span class="token punctuation">)</span>
+        num <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token comment"># batch = 0</span>
+        arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+            num <span class="token operator">=</span> num <span class="token operator">+</span> <span class="token number">1</span>
+            <span class="token keyword">if</span> num <span class="token operator">%</span> <span class="token number">10000</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+                batch <span class="token operator">=</span> batch <span class="token operator">+</span> <span class="token number">1</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'batch: %s'</span><span class="token operator">%</span>batch<span class="token punctuation">)</span>
+                res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">,</span>raise_on_exception <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">)</span>
+                arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+            data <span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token string">"recv_addr"</span><span class="token punctuation">:</span><span class="token builtin">str</span><span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string">'dtime'</span><span class="token punctuation">:</span><span class="token builtin">str</span><span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span>
+            arr<span class="token punctuation">.</span>append<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+            
+        <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+            res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">,</span>raise_on_exception <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">)</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'remove %s'</span><span class="token operator">%</span>csv_file<span class="token punctuation">)</span>
+    os<span class="token punctuation">.</span>remove<span class="token punctuation">(</span>csv_file<span class="token punctuation">)</span>
+    time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>核心代码如下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">res<span class="token punctuation">,</span>_ <span class="token operator">=</span> bulk<span class="token punctuation">(</span>es<span class="token punctuation">,</span>arr<span class="token punctuation">,</span>index<span class="token operator">=</span><span class="token string">'gpdata_addr'</span><span class="token punctuation">,</span>raise_on_error <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">,</span>raise_on_exception <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><p>raise_on_error</p>
+<p>是否报错误，但是连接错误，无法屏蔽。</p>
+</li>
+<li><p>raise_on_exception</p>
+<p>异常是否会退出等。如果不想中间因为异常退出，长期跑下去，这个需要设置。（具体异常做了什么处理，待确定……）</p>
+</li>
+</ul>
+<h2 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h2><h3 id="一些用到的查询语法"><a href="#一些用到的查询语法" class="headerlink" title="一些用到的查询语法"></a>一些用到的查询语法</h3><p>es的查询语法，真是负责，貌似手写语法树的感觉。很多的语法都可以嵌套的使用。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">query</span><span class="token punctuation">:</span>
+    <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+        <span class="token key atrule">should</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">term</span><span class="token punctuation">:</span>
+                <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token comment"># virtual_port: 11400</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">term</span><span class="token punctuation">:</span>
+                <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token comment"># virtual_port: 11400</span>
+        <span class="token key atrule">must_not</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">term</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.213.103
+            <span class="token punctuation">-</span> <span class="token key atrule">term</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.202.214
+                
+<span class="token key atrule">query</span><span class="token punctuation">:</span>
+    <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+        <span class="token key atrule">should</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token key atrule">virtual_port</span><span class="token punctuation">:</span> <span class="token number">11400</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token key atrule">virtual_port</span><span class="token punctuation">:</span> <span class="token number">11400</span>
+        <span class="token key atrule">must_not</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.213.103
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.202.214
+
+<span class="token key atrule">query</span><span class="token punctuation">:</span>
+    <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+        <span class="token key atrule">should</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+                <span class="token key atrule">must</span><span class="token punctuation">:</span>
+                <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                    <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                    <span class="token key atrule">virtual_port</span><span class="token punctuation">:</span> <span class="token number">11400</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+                <span class="token key atrule">must</span><span class="token punctuation">:</span>
+                <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                    <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+                <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                    <span class="token key atrule">virtual_port</span><span class="token punctuation">:</span> <span class="token number">11400</span>
+        <span class="token key atrule">must_not</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.213.103
+            <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+                <span class="token key atrule">clientip</span><span class="token punctuation">:</span> 10.131.202.214
+        <span class="token key atrule">must</span><span class="token punctuation">:</span>
+            <span class="token punctuation">-</span> <span class="token key atrule">range</span><span class="token punctuation">:</span>
+                <span class="token key atrule">"timestamp"</span><span class="token punctuation">:</span> 
+                    <span class="token key atrule">gte</span><span class="token punctuation">:</span> <span class="token string">'2021-12-06T09:00:00'</span>
+                    <span class="token key atrule">lt</span><span class="token punctuation">:</span>  <span class="token string">'2021-12-06T09:30:00'</span>
+                    
+<span class="token key atrule">query</span><span class="token punctuation">:</span>
+    <span class="token key atrule">bool</span><span class="token punctuation">:</span>
+        <span class="token key atrule">must</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+            <span class="token key atrule">virtual_ip</span><span class="token punctuation">:</span> 10.131.10.100
+        <span class="token punctuation">-</span> <span class="token key atrule">match</span><span class="token punctuation">:</span>
+            <span class="token key atrule">virtual_port</span><span class="token punctuation">:</span> <span class="token number">11400</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">range</span><span class="token punctuation">:</span>
+            <span class="token key atrule">"timestamp"</span><span class="token punctuation">:</span> 
+                <span class="token key atrule">gte</span><span class="token punctuation">:</span> <span class="token string">'2021-12-06T09:00:00Z'</span>
+                <span class="token key atrule">lt</span><span class="token punctuation">:</span>  <span class="token string">'2021-12-06T09:30:00Z'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/other/" rel="tag"># other</a>
+              <a href="/tags/es/" rel="tag"># es</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/13/pg/gpfdist_gpload/" rel="prev" title="gpfdist">
+                  <i class="fa fa-chevron-left"></i> gpfdist
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/16/pg/%E5%88%86%E7%BB%84/" rel="next" title="分组">
+                  分组 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

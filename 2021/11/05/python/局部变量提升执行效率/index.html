@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="看到的一篇文章，在python中如何提升执行的效率，故简单的记录一下，自己验证的过程，原文链接。 虽然自己在使用其他语言的时候，也知道，“局部变量”比“全局”变量访问速度快，对象的属性方法，直接使用一个局部变量的简单的方式引用，可以提升速度，但是从未验证过。以下包含自己验证的数据。 （可能并非适用所有语言，比如像lua这种栈虚拟机语言，？）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="局部变量提升执行效率">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/11/05/python/%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E6%95%88%E7%8E%87/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="看到的一篇文章，在python中如何提升执行的效率，故简单的记录一下，自己验证的过程，原文链接。 虽然自己在使用其他语言的时候，也知道，“局部变量”比“全局”变量访问速度快，对象的属性方法，直接使用一个局部变量的简单的方式引用，可以提升速度，但是从未验证过。以下包含自己验证的数据。 （可能并非适用所有语言，比如像lua这种栈虚拟机语言，？）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-05T16:59:55.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.017Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/11/05/python/%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E6%95%88%E7%8E%87/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>局部变量提升执行效率 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">局部变量性能提升对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">全局变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E7%94%A8%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%EF%BC%8C%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E9%80%9F%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">改用局部变量，提升执行速度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E5%8C%85%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">属性包装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">1.4.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/11/05/python/%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E6%95%88%E7%8E%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          局部变量提升执行效率
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-05 16:59:55" itemprop="dateCreated datePublished" datetime="2021-11-05T16:59:55+00:00">2021-11-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>看到的一篇文章，在python中如何提升执行的效率，故简单的记录一下，自己验证的过程，<a target="_blank" rel="noopener" href="https://www.toutiao.com/i7026745449696592422/">原文链接</a>。</p>
+<p>虽然自己在使用其他语言的时候，也知道，“局部变量”比“全局”变量访问速度快，对象的属性方法，直接使用一个局部变量的简单的方式引用，可以提升速度，但是从未验证过。以下包含自己验证的数据。</p>
+<p>（可能并非适用所有语言，比如像lua这种栈虚拟机语言，？）</p>
+<a id="more"></a>
+
+<h2 id="局部变量性能提升对比"><a href="#局部变量性能提升对比" class="headerlink" title="局部变量性能提升对比"></a>局部变量性能提升对比</h2><h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> math
+
+<span class="token keyword">def</span> <span class="token function">compute_sqrt</span><span class="token punctuation">(</span>nums<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> n <span class="token keyword">in</span> nums<span class="token punctuation">:</span> <span class="token comment"># 假如nums长度很大</span>
+    <span class="token comment"># 1. math.sqrt 会被频繁访问</span>
+    <span class="token comment"># 2. result.append 也会被频繁访问</span>
+        result<span class="token punctuation">.</span>append<span class="token punctuation">(</span>math<span class="token punctuation">.</span>sqrt<span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">%timeit compute_sqrt<span class="token punctuation">(</span>range<span class="token punctuation">(</span><span class="token number">100000000</span><span class="token punctuation">))</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<blockquote>
+<p>%timeit compute_sqrt(range(100000000))</p>
+</blockquote>
+<h3 id="改用局部变量，提升执行速度"><a href="#改用局部变量，提升执行速度" class="headerlink" title="改用局部变量，提升执行速度"></a>改用局部变量，提升执行速度</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">compute_sqrt2</span><span class="token punctuation">(</span>nums<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 调整sqrt为局部变量</span>
+    <span class="token keyword">from</span> math <span class="token keyword">import</span> sqrt
+    result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    apd <span class="token operator">=</span> result<span class="token punctuation">.</span>append
+    <span class="token keyword">for</span> n <span class="token keyword">in</span> nums<span class="token punctuation">:</span> <span class="token comment"># 假如nums长度很大</span>
+    <span class="token comment"># 1. math.sqrt 会被频繁访问</span>
+    <span class="token comment"># 2. result.append 也会被频繁访问</span>
+        apd<span class="token punctuation">(</span>sqrt<span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> result<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">%timeit compute_sqrt2<span class="token punctuation">(</span>range<span class="token punctuation">(</span><span class="token number">100000000</span><span class="token punctuation">))</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<blockquote>
+<p>13.4 s ± 144 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)</p>
+</blockquote>
+<h3 id="属性包装"><a href="#属性包装" class="headerlink" title="属性包装"></a>属性包装</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">A</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>x <span class="token operator">=</span> x
+        self<span class="token punctuation">.</span>y <span class="token operator">=</span> y
+    <span class="token decorator annotation punctuation">@property</span>
+    <span class="token keyword">def</span> <span class="token function">y</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>_y
+    <span class="token decorator annotation punctuation">@y<span class="token punctuation">.</span>setter</span> 
+    <span class="token keyword">def</span> <span class="token function">y</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>_y <span class="token operator">=</span> value<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p> 因此修改为下面这样，删去多余的@property包装 </p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">A</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>x <span class="token operator">=</span> x
+        self<span class="token punctuation">.</span>y <span class="token operator">=</span> y<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>非常的有效果，大概提升后，时间60%。</p>
+<p> 关于代码执行效率的<strong>第一个方法是减少频繁的方法访问</strong>  尤其是在多层循环内层、且循环次数较多的操作，差距尤为明显。 </p>
+<p> 第二个方法：<strong>查找局部变量的效率是最高的！！！</strong>对于频繁访问的变量应尽可能是局部变量，消除不必要的全局变量访问。所以对于上面代码，sqrt还是模块级别的全局变量 </p>
+<p> <strong>不要做一些不必要的属性包装。</strong>比如@property必要时再用，能不用时就别用。如下对于属性y做@property装饰没有任何意义！ </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/03/php/opcode/" rel="prev" title="opcode">
+                  <i class="fa fa-chevron-left"></i> opcode
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/10/docker/%E9%95%9C%E5%83%8F%E5%B1%82%E7%A0%94%E7%A9%B6/" rel="next" title="镜像层研究">
+                  镜像层研究 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

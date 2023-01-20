@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="镜像是分层，这个我们都知道，但是每层都是什么呢？哪些命令会导致增加一层呢？docker commit的方式跟使用Dockerfile构建的区别呢？它的层会不会少一些呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="镜像层研究">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/11/10/docker/%E9%95%9C%E5%83%8F%E5%B1%82%E7%A0%94%E7%A9%B6/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="镜像是分层，这个我们都知道，但是每层都是什么呢？哪些命令会导致增加一层呢？docker commit的方式跟使用Dockerfile构建的区别呢？它的层会不会少一些呢？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-10T10:51:03.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.950Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/11/10/docker/%E9%95%9C%E5%83%8F%E5%B1%82%E7%A0%94%E7%A9%B6/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>镜像层研究 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E9%95%9C%E5%83%8F"><span class="nav-number">1.</span> <span class="nav-text">解压镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E8%84%9A%E6%9C%AC"><span class="nav-number">1.1.</span> <span class="nav-text">构建脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E9%95%9C%E5%83%8F-1"><span class="nav-number">1.2.</span> <span class="nav-text">解压镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E5%B1%82%E9%95%9C%E5%83%8F"><span class="nav-number">1.3.</span> <span class="nav-text">上层镜像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">自动化工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-inspect"><span class="nav-number">2.1.</span> <span class="nav-text">docker inspect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-history"><span class="nav-number">2.2.</span> <span class="nav-text">docker history</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/11/10/docker/%E9%95%9C%E5%83%8F%E5%B1%82%E7%A0%94%E7%A9%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          镜像层研究
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-10 10:51:03" itemprop="dateCreated datePublished" datetime="2021-11-10T10:51:03+00:00">2021-11-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>镜像是分层，这个我们都知道，但是每层都是什么呢？哪些命令会导致增加一层呢？docker commit的方式跟使用Dockerfile构建的区别呢？它的层会不会少一些呢？</p>
+<a id="more"></a>
+
+<h2 id="解压镜像"><a href="#解压镜像" class="headerlink" title="解压镜像"></a>解压镜像</h2><h3 id="构建脚本"><a href="#构建脚本" class="headerlink" title="构建脚本"></a>构建脚本</h3><pre class="line-numbers language-dockerfile" data-language="dockerfile"><code class="language-dockerfile">FROM harbor.yundasys.com&#x2F;base&#x2F;php:7315-46
+
+ADD yum.repos.tar.gz  &#x2F;etc&#x2F;yum.repos.d
+ADD librdkafka-1.8.2.tar.gz &#x2F;root&#x2F;tools
+ADD rdkafka-5.0.0.tgz &#x2F;root&#x2F;tools
+
+RUN yum install -y gcc autoconf gcc-c++ make \
+    &amp;&amp; cd &#x2F;root&#x2F;tools&#x2F;librdkafka-1.8.2 \
+    &amp;&amp; .&#x2F;configure \
+    &amp;&amp; make \
+    &amp;&amp; make install \
+    &amp;&amp; cd &#x2F;root&#x2F;tools&#x2F;rdkafka-5.0.0 \
+    &amp;&amp; &#x2F;usr&#x2F;local&#x2F;php&#x2F;bin&#x2F;phpize \
+    &amp;&amp; .&#x2F;configure --with-php-config&#x3D;&#x2F;usr&#x2F;local&#x2F;php&#x2F;bin&#x2F;php-config \
+    &amp;&amp; make \
+    &amp;&amp; make install \
+    &amp;&amp; echo &#39;extension&#x3D;rdkafka.so&#39; &gt;&gt;  &#x2F;usr&#x2F;local&#x2F;php&#x2F;etc&#x2F;php.ini \
+    &amp;&amp; yum remove -y gcc-c++ gcc autoconf make \
+    &amp;&amp; yum clean all \
+    &amp;&amp; rm -f &#x2F;etc&#x2F;yum.repos.d&#x2F;* \
+    &amp;&amp; rm -rf &#x2F;root&#x2F;tools&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="解压镜像-1"><a href="#解压镜像-1" class="headerlink" title="解压镜像"></a>解压镜像</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 保存镜像</span>
+docker save  phpkafka:1.0 <span class="token operator">></span> phpkafka.tar
+<span class="token comment"># 解压</span>
+<span class="token function">tar</span> xvf phpkafka.tar 
+<span class="token comment"># 查看配置文件</span>
+<span class="token function">cat</span> manifest.json <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>内容如下：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"Config"</span><span class="token operator">:</span> <span class="token string">"486a39027b1f1d90355f3e562f7fe577a190f877c958a8d24eedd8a44a33ede0.json"</span><span class="token punctuation">,</span>
+        <span class="token property">"RepoTags"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"phpkafka:1.0"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Layers"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"74987dedac495b87824542fef3462baad0b444a24d91a073f37390ccb80d9e88/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"c6a308179ed52f69befc7effb66c495657630cef177c2455b4967362b3417a07/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"bdf5fed7ddde7883f8eb6e02fedb6d297e0d6daba8eb4b90ac142095d09dcc90/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"cc7e75bdba53f49faed55eeeb9c59ee12c9b510089c11202ed5c35ed476c6cce/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"b2836d813e4d889e1574e22a5a98934712058316b4195007c60b5d6b25f83514/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"38a52ad1c085fdaa6f03e244f5c214c9b7620da4b88f75182e006310720f3064/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"b23092a0583c32b720d20e88b37d052e0b4585ce50ca1d4ec48c0708fc71327c/layer.tar"</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span> b23092a0583c32b720d20e88b37d052e0b4585ce50ca1d4ec48c0708fc71327c/
+
+<span class="token function">cat</span> json 
+<span class="token comment"># 输出如下，说明该镜像是如何来的</span>
+<span class="token function">tar</span> xvf layer.tar 
+<span class="token function">ls</span> -alh
+ <span class="token comment"># layer.tar  即为该层的数据   发现其大小为95M 正好是基于母镜像，增加的大小</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"b23092a0583c32b720d20e88b37d052e0b4585ce50ca1d4ec48c0708fc71327c"</span><span class="token punctuation">,</span>
+    <span class="token property">"parent"</span><span class="token operator">:</span> <span class="token string">"38a52ad1c085fdaa6f03e244f5c214c9b7620da4b88f75182e006310720f3064"</span><span class="token punctuation">,</span>
+    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2021-11-10T01:51:04.205949795Z"</span><span class="token punctuation">,</span>
+    <span class="token property">"container"</span><span class="token operator">:</span> <span class="token string">"9b23fdbb81e2578fba22e3b9909698e975e8ef99b11e666ff1e2479b1c8a7848"</span><span class="token punctuation">,</span>
+    <span class="token property">"container_config"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"Hostname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Domainname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"User"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdout"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStderr"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Tty"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"OpenStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"StdinOnce"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Env"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span><span class="token punctuation">,</span>
+            <span class="token string">"LC_ALL=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANGUAGE=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANG=en_US.UTF-8"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Cmd"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/bin/sh"</span><span class="token punctuation">,</span>
+            <span class="token string">"-c"</span><span class="token punctuation">,</span>
+            <span class="token string">"yum install -y gcc autoconf gcc-c++ make     &amp;&amp; cd /root/tools/librdkafka-1.8.2     &amp;&amp; ./configure     &amp;&amp; make     &amp;&amp; make install     &amp;&amp; cd /root/tools/rdkafka-5.0.0     &amp;&amp; /usr/local/php/bin/phpize     &amp;&amp; ./configure --with-php-config=/usr/local/php/bin/php-config     &amp;&amp; make     &amp;&amp; make install     &amp;&amp; echo 'extension=rdkafka.so' >>  /usr/local/php/etc/php.ini     &amp;&amp; yum remove -y gcc autoconf make     &amp;&amp; yum clean all     &amp;&amp; rm -f /etc/yum.repos.d/*     &amp;&amp; rm -rf /root/tools/"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Image"</span><span class="token operator">:</span> <span class="token string">"sha256:ddd9303467088159756cd88ba79dcc707f55ed765594384ec7d0cd7f492757e3"</span><span class="token punctuation">,</span>
+        <span class="token property">"Volumes"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"WorkingDir"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Entrypoint"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"OnBuild"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Labels"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"org.label-schema.build-date"</span><span class="token operator">:</span> <span class="token string">"20181204"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.license"</span><span class="token operator">:</span> <span class="token string">"GPLv2"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.name"</span><span class="token operator">:</span> <span class="token string">"CentOS Base Image"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.schema-version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.vendor"</span><span class="token operator">:</span> <span class="token string">"CentOS"</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"docker_version"</span><span class="token operator">:</span> <span class="token string">"20.10.6"</span><span class="token punctuation">,</span>
+    <span class="token property">"config"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"Hostname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Domainname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"User"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdout"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStderr"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Tty"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"OpenStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"StdinOnce"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Env"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span><span class="token punctuation">,</span>
+            <span class="token string">"LC_ALL=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANGUAGE=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANG=en_US.UTF-8"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Cmd"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/run.sh"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"ArgsEscaped"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token property">"Image"</span><span class="token operator">:</span> <span class="token string">"sha256:ddd9303467088159756cd88ba79dcc707f55ed765594384ec7d0cd7f492757e3"</span><span class="token punctuation">,</span>
+        <span class="token property">"Volumes"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"WorkingDir"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Entrypoint"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"OnBuild"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Labels"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"org.label-schema.build-date"</span><span class="token operator">:</span> <span class="token string">"20181204"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.license"</span><span class="token operator">:</span> <span class="token string">"GPLv2"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.name"</span><span class="token operator">:</span> <span class="token string">"CentOS Base Image"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.schema-version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.vendor"</span><span class="token operator">:</span> <span class="token string">"CentOS"</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"architecture"</span><span class="token operator">:</span> <span class="token string">"amd64"</span><span class="token punctuation">,</span>
+    <span class="token property">"os"</span><span class="token operator">:</span> <span class="token string">"linux"</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="上层镜像"><a href="#上层镜像" class="headerlink" title="上层镜像"></a>上层镜像</h3><p>上层的镜像执行同样的操作，结果如下，但是我比较好奇的是，明明是基于该镜像构建打包的，为啥，产是的层，跟前面的层不一样呢？好奇怪。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker save  harbor.yundasys.com/base/php:7315-46 <span class="token operator">></span> php.tar
+<span class="token function">tar</span> xvf php.tar 
+<span class="token function">cat</span> manifest.json 
+<span class="token comment"># 输出内容如下：</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"Config"</span><span class="token operator">:</span> <span class="token string">"5c790d70b3ae8180128b000c275106ce3ac89e32cabf73b0cfab80e609b121a6.json"</span><span class="token punctuation">,</span>
+        <span class="token property">"RepoTags"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"harbor.yundasys.com/base/php:7315-46"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Layers"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"74987dedac495b87824542fef3462baad0b444a24d91a073f37390ccb80d9e88/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"c6a308179ed52f69befc7effb66c495657630cef177c2455b4967362b3417a07/layer.tar"</span><span class="token punctuation">,</span>
+            <span class="token string">"e48fc8bda85db4c2ae7b8857c3d3c657dd41e8f7491c43e74510142dd6bd4f99/layer.tar"</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span> e48fc8bda85db4c2ae7b8857c3d3c657dd41e8f7491c43e74510142dd6bd4f99
+<span class="token function">ls</span> -alh   <span class="token comment"># 发现layer.tar的大小  438M M  说明该层的内容比较多</span>
+<span class="token function">cat</span>  VERSION   <span class="token comment"># 输出 1.0</span>
+<span class="token function">cat</span> json<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>输出的内容如下：</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"e48fc8bda85db4c2ae7b8857c3d3c657dd41e8f7491c43e74510142dd6bd4f99"</span><span class="token punctuation">,</span>
+    <span class="token property">"parent"</span><span class="token operator">:</span> <span class="token string">"c6a308179ed52f69befc7effb66c495657630cef177c2455b4967362b3417a07"</span><span class="token punctuation">,</span>
+    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2020-03-13T05:35:42.828788768Z"</span><span class="token punctuation">,</span>
+    <span class="token property">"container"</span><span class="token operator">:</span> <span class="token string">"c99ddca5cf9ca657e5312d85f5a058bbcfba505202b809677db1b850402c4b9f"</span><span class="token punctuation">,</span>
+    <span class="token property">"container_config"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"Hostname"</span><span class="token operator">:</span> <span class="token string">"c99ddca5cf9c"</span><span class="token punctuation">,</span>
+        <span class="token property">"Domainname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"User"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdout"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStderr"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Tty"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"OpenStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"StdinOnce"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Env"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span><span class="token punctuation">,</span>
+            <span class="token string">"LC_ALL=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANGUAGE=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANG=en_US.UTF-8"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Cmd"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/bin/sh"</span><span class="token punctuation">,</span>
+            <span class="token string">"-c"</span><span class="token punctuation">,</span>
+            <span class="token string">"#(nop) "</span><span class="token punctuation">,</span>
+            <span class="token string">"CMD [\"/run.sh\"]"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"ArgsEscaped"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token property">"Image"</span><span class="token operator">:</span> <span class="token string">"sha256:27de3d979a1b156285eacaa3c2fcb5ae64429447a7a1a12493adf9a0a5e359d8"</span><span class="token punctuation">,</span>
+        <span class="token property">"Volumes"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"WorkingDir"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Entrypoint"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"OnBuild"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Labels"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"org.label-schema.build-date"</span><span class="token operator">:</span> <span class="token string">"20181204"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.license"</span><span class="token operator">:</span> <span class="token string">"GPLv2"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.name"</span><span class="token operator">:</span> <span class="token string">"CentOS Base Image"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.schema-version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.vendor"</span><span class="token operator">:</span> <span class="token string">"CentOS"</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"docker_version"</span><span class="token operator">:</span> <span class="token string">"18.09.0"</span><span class="token punctuation">,</span>
+    <span class="token property">"config"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+        <span class="token property">"Hostname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Domainname"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"User"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStdout"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"AttachStderr"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Tty"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"OpenStdin"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"StdinOnce"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">"Env"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span><span class="token punctuation">,</span>
+            <span class="token string">"LC_ALL=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANGUAGE=en_US.UTF-8"</span><span class="token punctuation">,</span>
+            <span class="token string">"LANG=en_US.UTF-8"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"Cmd"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token string">"/run.sh"</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"ArgsEscaped"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token property">"Image"</span><span class="token operator">:</span> <span class="token string">"sha256:27de3d979a1b156285eacaa3c2fcb5ae64429447a7a1a12493adf9a0a5e359d8"</span><span class="token punctuation">,</span>
+        <span class="token property">"Volumes"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"WorkingDir"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+        <span class="token property">"Entrypoint"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"OnBuild"</span><span class="token operator">:</span> <span class="token null keyword">null</span><span class="token punctuation">,</span>
+        <span class="token property">"Labels"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+            <span class="token property">"org.label-schema.build-date"</span><span class="token operator">:</span> <span class="token string">"20181204"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.license"</span><span class="token operator">:</span> <span class="token string">"GPLv2"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.name"</span><span class="token operator">:</span> <span class="token string">"CentOS Base Image"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.schema-version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+            <span class="token property">"org.label-schema.vendor"</span><span class="token operator">:</span> <span class="token string">"CentOS"</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token property">"architecture"</span><span class="token operator">:</span> <span class="token string">"amd64"</span><span class="token punctuation">,</span>
+    <span class="token property">"os"</span><span class="token operator">:</span> <span class="token string">"linux"</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="自动化工具"><a href="#自动化工具" class="headerlink" title="自动化工具"></a>自动化工具</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 美化json数据</span>
+yum <span class="token function">install</span> -y jq 
+<span class="token comment"># 使用</span>
+<span class="token function">cat</span> json <span class="token operator">|</span>jq<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="docker-inspect"><a href="#docker-inspect" class="headerlink" title="docker inspect"></a>docker inspect</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 好像只能看见当前层的信息</span>
+docker inspect centos:7.9.2009  <span class="token comment"># centos:7.9.2009镜像名</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="docker-history"><a href="#docker-history" class="headerlink" title="docker history"></a>docker history</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token comment"># 每层的构建命令，从最新到最老的层的构建</span>
+docker <span class="token function">history</span> --no-trunc python:3.7 <span class="token operator">></span> tmp.json<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>manifest.json中的，Layers越靠后，层越新。</p>
+<p>每层都会有一个额外的hash.json说明该层的一些信息</p>
+<p>经发现，上层的镜像仓库只有3层，但是，它是用一个<code>build.sh</code>脚本，批量执行安装的脚本。然后达到一次安装所有依赖的软件，然后形成最终的一层。而且，它里面也用到了gcc，也是在最后的阶段，来清理掉这些工具的。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/11/05/python/%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E6%89%A7%E8%A1%8C%E6%95%88%E7%8E%87/" rel="prev" title="局部变量提升执行效率">
+                  <i class="fa fa-chevron-left"></i> 局部变量提升执行效率
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/11/10/python/multiprocessing/" rel="next" title="python多进程multiprocessing">
+                  python多进程multiprocessing <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

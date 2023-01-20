@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="flask部署的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="flask部署">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/06/07/python/flask%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="flask部署的方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-07T10:47:06.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.018Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/06/07/python/flask%E9%83%A8%E7%BD%B2/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>flask部署 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E9%95%9C%E5%83%8F"><span class="nav-number">2.2.</span> <span class="nav-text">运行镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-uwsgi-ini"><span class="nav-number">2.3.</span> <span class="nav-text">配置文件 uwsgi.ini</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-%E6%96%87%E4%BB%B6%EF%BC%9Aapp-py"><span class="nav-number">2.4.</span> <span class="nav-text">python 文件：app.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uwsgi%E5%91%BD%E4%BB%A4"><span class="nav-number">2.5.</span> <span class="nav-text">uwsgi命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%87%E6%B3%A8"><span class="nav-number">2.6.</span> <span class="nav-text">备注</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%96%B9%E5%BC%8F2"><span class="nav-number">3.</span> <span class="nav-text">部署方式2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uwsgi"><span class="nav-number">4.</span> <span class="nav-text">uwsgi</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#uwsgi%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">4.1.</span> <span class="nav-text">uwsgi配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ini%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E"><span class="nav-number">4.2.</span> <span class="nav-text">ini格式说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E9%A1%B9%E8%AF%B4%E6%98%8E"><span class="nav-number">4.3.</span> <span class="nav-text">选项说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#waitress"><span class="nav-number">5.</span> <span class="nav-text">waitress</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/06/07/python/flask%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          flask部署
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-07 10:47:06" itemprop="dateCreated datePublished" datetime="2021-06-07T10:47:06+00:00">2021-06-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>flask部署的方式。</p>
+<a id="more"></a>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42337937/article/details/88070967">服务器部署flask项目</a>   (uwsgi部分参考)</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/unbit/uwsgi">https://github.com/unbit/uwsgi</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://uwsgi-docs.readthedocs.io/en/latest/WSGIquickstart.html">https://uwsgi-docs.readthedocs.io/en/latest/WSGIquickstart.html</a>  （包含了大部分的应用）</p>
+<p>顺便记一下参考手册：</p>
+<p>中文版</p>
+<p><a target="_blank" rel="noopener" href="https://dormousehole.readthedocs.io/en/latest/quickstart.html#id16">https://dormousehole.readthedocs.io/en/latest/quickstart.html#id16</a></p>
+<p>英文版</p>
+<p><a target="_blank" rel="noopener" href="https://flask.palletsprojects.com/en/2.0.x/">https://flask.palletsprojects.com/en/2.0.x/</a></p>
+<p>请求参数相关：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wsg-python/articles/9988295.html">https://www.cnblogs.com/wsg-python/articles/9988295.html</a></p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>使用下面方式构建docker镜像</p>
+<pre class="line-numbers language-dockerfile" data-language="dockerfile"><code class="language-dockerfile">FROM python:3.6
+
+RUN pip3 install requests \
+    &amp;&amp; pip3 install flask \
+    &amp;&amp; pip3 install uwsgi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>备注：优化的方式是，写一个requirement.txt，然后使用docker构建。</p>
+</blockquote>
+<h3 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker build -t scc/python:3.6 <span class="token builtin class-name">.</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="运行镜像"><a href="#运行镜像" class="headerlink" title="运行镜像"></a>运行镜像</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker run --rm -itd -p <span class="token number">8006</span>:6000 -v <span class="token environment constant">$PWD</span>:/mywork -w /mywork scc/python:3.6 uwsgi --ini uwsgi.ini<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="配置文件-uwsgi-ini"><a href="#配置文件-uwsgi-ini" class="headerlink" title="配置文件 uwsgi.ini"></a>配置文件 uwsgi.ini</h3><pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[uwsgi]</span>
+<span class="token comment"># localhost  port  端口自定义</span>
+<span class="token comment">#http=127.0.0.1:6000 </span>
+<span class="token constant">http</span><span class="token attr-value"><span class="token punctuation">=</span>0.0.0.0:6000</span>
+<span class="token comment"># uwsgi 管理的项目入口文件</span>
+<span class="token constant">wsgi-file</span><span class="token attr-value"><span class="token punctuation">=</span>/mywork/hello.py</span>
+<span class="token comment"># 管理的flask对象app</span>
+<span class="token constant">callable</span><span class="token attr-value"><span class="token punctuation">=</span>app</span>
+<span class="token constant">touch-reload</span><span class="token attr-value"><span class="token punctuation">=</span>/mywork/web</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="python-文件：app-py"><a href="#python-文件：app-py" class="headerlink" title="python 文件：app.py"></a>python 文件：app.py</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask
+
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"hello world %d"</span><span class="token operator">%</span>i<span class="token punctuation">)</span>
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@app<span class="token punctuation">.</span>route</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string">"index"</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="uwsgi命令"><a href="#uwsgi命令" class="headerlink" title="uwsgi命令"></a>uwsgi命令</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 启动后日志显示终端</span>
+uwsgi --ini uwsgi.ini
+<span class="token comment"># 后台运行，日志输出到指定文件</span>
+uwsgi --ini uwsgi.ini --daemonize /var/log/uwsgi.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h3><p>uwsgi.ini中的http，一般是暴露到内网，如果需要暴露到外网访问，需要更改。</p>
+<p>另外，wsgi-file是启动的文件，是哪个文件，就写哪个文件。callable指定对应的是下面的变量名。</p>
+<pre class="line-numbers language-none"><code class="language-none">app &#x3D; Flask(__name__)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>touch-reload 目前还没有使用到过。</p>
+<h2 id="部署方式2"><a href="#部署方式2" class="headerlink" title="部署方式2"></a>部署方式2</h2><p>参见：<a target="_blank" rel="noopener" href="https://dormousehole.readthedocs.io/en/latest/deploying/wsgi-standalone.html">Flask部署</a></p>
+<p>app2.py</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
+
+<span class="token decorator annotation punctuation">@app<span class="token punctuation">.</span>route</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> <span class="token string">"hello world"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>进入到app2所在的文件夹，然后运行如下命令：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">uwsgi --http <span class="token number">0.0</span>.0.0:5000 --module app2:app<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>app2是文件，app是定义的Flask对象的变量名</p>
+<p>也可以使用gunicorn</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gunicorn -w <span class="token number">4</span> -b <span class="token number">0.0</span>.0.0:5000 app2:app<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>该工具的常用配置</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/weiok/p/5719004.html">https://www.cnblogs.com/weiok/p/5719004.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chenggong2dm/article/details/43937433">https://blog.csdn.net/chenggong2dm/article/details/43937433</a></p>
+<h3 id="uwsgi配置文件"><a href="#uwsgi配置文件" class="headerlink" title="uwsgi配置文件"></a>uwsgi配置文件</h3><p>cat /tmp/uwsgi.ini</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[uwsgi]</span>
+<span class="token constant">http-socket</span> <span class="token attr-value"><span class="token punctuation">=</span> :80</span>
+<span class="token constant">plugin</span> <span class="token attr-value"><span class="token punctuation">=</span> python</span>
+<span class="token constant">chdir</span> <span class="token attr-value"><span class="token punctuation">=</span> /code/run/cms</span>
+<span class="token constant">wsgi-file</span> <span class="token attr-value"><span class="token punctuation">=</span> cms/wsgi.py</span>
+<span class="token constant">processes</span> <span class="token attr-value"><span class="token punctuation">=</span> 4</span>
+<span class="token constant">threads</span> <span class="token attr-value"><span class="token punctuation">=</span> 4</span>
+<span class="token constant">max-request</span> <span class="token attr-value"><span class="token punctuation">=</span> 20480</span>
+<span class="token constant">log-x-forwarded-for</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span>
+<span class="token constant">logto</span> <span class="token attr-value"><span class="token punctuation">=</span> /code/uwsgi_web.log</span>
+<span class="token constant">stats</span> <span class="token attr-value"><span class="token punctuation">=</span> 127.0.0.1:9191</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>另外一个示例：</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[uwsgi]</span>
+<span class="token constant">socket</span> <span class="token attr-value"><span class="token punctuation">=</span> 127.0.0.1:50000</span>
+<span class="token constant">chdir</span> <span class="token attr-value"><span class="token punctuation">=</span> /home/httpServer/</span>
+<span class="token constant">wsgi-file</span> <span class="token attr-value"><span class="token punctuation">=</span> httpServer/wsgi.py</span>
+<span class="token constant">processes</span> <span class="token attr-value"><span class="token punctuation">=</span> 4</span>
+<span class="token constant">stats</span> <span class="token attr-value"><span class="token punctuation">=</span> 127.0.0.1:9090</span>
+<span class="token constant">daemonize</span> <span class="token attr-value"><span class="token punctuation">=</span> /home/log/httpServer.log</span>
+<span class="token constant">pidfile</span> <span class="token attr-value"><span class="token punctuation">=</span> /tmp/uwsgi.pid</span>
+<span class="token constant">vacuum</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span>
+<span class="token constant">log-maxsize</span> <span class="token attr-value"><span class="token punctuation">=</span> 50000000</span>
+<span class="token constant">disable-logging</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ini格式说明"><a href="#ini格式说明" class="headerlink" title="ini格式说明"></a>ini格式说明</h3><p>1，ini配置为 key=value 形式<br>2，在ini配置文件里，#号为注释，<br>3，布尔值为 true 和 false<br>4，在命令行里，uwsgi myconf.ini 等价于 uwsgi –ini myconf.ini </p>
+<h3 id="选项说明"><a href="#选项说明" class="headerlink" title="选项说明"></a>选项说明</h3><ul>
+<li>socket ： 地址和端口号，例如：socket = 127.0.0.1:50000</li>
+<li>processes ： 开启的进程数量</li>
+<li>workers ： 开启的进程数量，等同于processes（官网的说法是spawn the specified number ofworkers / processes）</li>
+<li>chdir ： 指定运行目录（chdir to specified directory before apps loading）</li>
+<li>wsgi-file ： 载入wsgi-file（load .wsgi file）</li>
+<li>stats ： 在指定的地址上，开启状态服务（enable the stats server on the specified address）</li>
+<li>threads ： 运行线程。由于GIL的存在，我觉得这个真心没啥用。（run each worker in prethreaded mode with the specified number of threads）</li>
+<li>master ： 允许主进程存在（enable master process）</li>
+<li>daemonize ： 使进程在后台运行，并将日志打到指定的日志文件或者udp服务器（daemonize uWSGI）。实际上最常用的，还是把运行记录输出到一个本地文件上。</li>
+<li>pidfile ： 指定pid文件的位置，记录主进程的pid号。</li>
+<li>vacuum ： 当服务器退出的时候自动清理环境，删除unix socket文件和pid文件（try to remove all of the generated file/sockets）</li>
+<li>disable-logging ： 不记录请求信息的日志。只记录错误以及uWSGI内部消息到日志中。如果不开启这项，那么你的日志中会大量出现这种记录：<br>[pid: 347|app: 0|req: 106/367] 117.116.122.172 () {52 vars in 961 bytes} [Thu Jul 7 19:20:56 2016] POST /post =&gt; generated 65 bytes in 6 msecs (HTTP/1.1 200) 2 headers in 88 bytes (1 switches on core 0) </li>
+</ul>
+<h2 id="waitress"><a href="#waitress" class="headerlink" title="waitress"></a>waitress</h2><p>安装</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">pip <span class="token function">install</span> waitress<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">waitress-serve --call <span class="token string">'flaskr:create_app'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/05/shell/%E5%B0%8F%E7%9F%A5%E8%AF%86/" rel="prev" title="小知识">
+                  <i class="fa fa-chevron-left"></i> 小知识
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/06/10/nginx/ssl%E8%AF%81%E4%B9%A6/" rel="next" title="ssl证书">
+                  ssl证书 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

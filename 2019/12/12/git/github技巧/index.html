@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="github技巧 中文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="github搜索技巧">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/12/12/git/github%E6%8A%80%E5%B7%A7/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="github技巧 中文">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/9f8c91a0aab2c447869844874c80e126.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/2dfef1a0c739473385c2e5773764ab1f.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/10/8fff67288a075c18b3ddad2e67b2abbf.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/99cea8df39cd5864874dfa99e4e1799f.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/1c9064e9f31ac9a19c002825f75daac8.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/10/6ec59d98e56aaae64475339aaa80f49b.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/ffba2492882ad53e78c2f71bbadd66f1.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/f550f60bb9708166a9ede09432c75a36.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="og:image" content="https://cdn.sspai.com/2018/08/08/83eeda517d7d3ff0ff493cf008a73f65.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+<meta property="article:published_time" content="2019-12-12T18:15:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.952Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.sspai.com/2018/08/08/9f8c91a0aab2c447869844874c80e126.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2019/12/12/git/github%E6%8A%80%E5%B7%A7/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>github搜索技巧 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#github%E6%8A%80%E5%B7%A7"><span class="nav-number">1.</span> <span class="nav-text">github技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%83%AD%E9%97%A8%EF%BC%9AGitHub-Trend-%E5%92%8C-GitHub-Topic"><span class="nav-number">1.1.</span> <span class="nav-text">搜热门：GitHub Trend 和 GitHub Topic</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E5%BC%80%E5%8F%91%E8%80%85"><span class="nav-number">1.2.</span> <span class="nav-text">搜开发者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.3.</span> <span class="nav-text">搜项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">1.4.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/12/12/git/github%E6%8A%80%E5%B7%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          github搜索技巧
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-12 18:15:00" itemprop="dateCreated datePublished" datetime="2019-12-12T18:15:00+00:00">2019-12-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="github技巧"><a href="#github技巧" class="headerlink" title="github技巧"></a>github技巧</h1><blockquote>
+<p>中文</p>
+</blockquote>
+<a id="more"></a>
+
+<p>掌握 3 个搜索技巧，在 GitHub 上快速找到实用软件资源</p>
+<p>2018年08月11日</p>
+<p>GitHub 作为目前广大程序猿最大的游乐场，在今年 6 月被 <a target="_blank" rel="noopener" href="https://blogs.microsoft.com/blog/2018/06/04/microsoft-github-empowering-developers/">微软</a> 以 75 亿美元价值的微软股票收购，GitHub 再次成为业界讨论的焦点。GitHub 以自由开放的定位吸引了相当多的个人开发者和企业，不断发布和更新相当好用的软件和工具。之前少数派曾经为大家整理和推荐了 GitHub 上免费好用的 Windows、macOS 平台的软件：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://sspai.com/post/41563">GitHub 上那些免费好用的 Windows 软件</a></li>
+<li><a target="_blank" rel="noopener" href="https://sspai.com/post/41325">GitHub 中那些不错的免费软件</a></li>
+</ul>
+<p>对于使用者，我不禁好奇：面对如此海量的 GitHub 项目，究竟怎样才能这个平台发现一些优秀的软件和工具。秉着这样的疑问，我收集和总结了下面这几个搜索技巧。</p>
+<h2 id="搜热门：GitHub-Trend-和-GitHub-Topic"><a href="#搜热门：GitHub-Trend-和-GitHub-Topic" class="headerlink" title="搜热门：GitHub Trend 和 GitHub Topic"></a>搜热门：GitHub Trend 和 GitHub Topic</h2><p><a target="_blank" rel="noopener" href="https://github.com/trending">GitHub Trend</a> 页面总结了每天/每周/每月周期的热门 Repositories 和 Developers，你可以看到在某个周期处于热门状态的开发项目和开发者。而 <a target="_blank" rel="noopener" href="https://github.com/topics">GitHub Topic</a> 展示了最新和最流行的讨论主题，在这里你不仅能够看到开发项目，还能看到更多非开发技术的讨论主题，比如 Job、Chrome 浏览器等。</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/9f8c91a0aab2c447869844874c80e126.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">GitHub Trend</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/2dfef1a0c739473385c2e5773764ab1f.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">GitHub Topic</p>
+<h2 id="搜开发者"><a href="#搜开发者" class="headerlink" title="搜开发者"></a>搜开发者</h2><p>坊间传闻人事招聘开发类员工时，招聘对象在 GitHub 贡献会是重要的参考指标之一。GitHub 作为优秀国产开源软件的集散地之一，埋藏了不少出色的开发者，所以在寻找国产软件的时候，可以尝试先找国内开发者。利用 GitHub 强大的搜索功能，增加几个搜索参数即可轻松找到「目标人物」。</p>
+<p>（注：GitHub 官方还支持很多搜索条件，在 <a target="_blank" rel="noopener" href="https://help.github.com/articles/about-searching-on-github/">这里</a> 可以查看官方出品的搜索技巧。）</p>
+<p><img src="https://cdn.sspai.com/2018/08/10/8fff67288a075c18b3ddad2e67b2abbf.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">Github 搜索技巧 - 找开发者</p>
+<p>比如需要寻找国产软件，首先想到的应该是在 GituHub 上找国内开发者，搜索时设置 <code>location</code> 为 China，如果你要寻找使用 javascript 语言开发者，则再增加 <code>language</code> 为 javascript，整个搜索条件就是：<code>language:javascript location:china</code>，从搜索结果来看，我们找到了近 17000 名地区信息填写为 china 的 javascript 开发者，朋友们熟悉的阮一峰老师排在前列。根据官方指引，搜索 GitHub 用户时还支持使用 <code>followers</code>、<code>in:fullname</code> 组合条件进行搜索。</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/99cea8df39cd5864874dfa99e4e1799f.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">使用组合条件进行搜索</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/1c9064e9f31ac9a19c002825f75daac8.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">搜索条件&lt;language:javascript location:china&gt;</p>
+<h2 id="搜项目"><a href="#搜项目" class="headerlink" title="搜项目"></a>搜项目</h2><p>我们需要在 GitHub 上找到优秀的项目和工具，同样，通过关键字或者设置搜索条件帮助你事半功倍找到好资源。我的使用习惯是先用某些关键词搜索，得到的搜索结果优先展示一些现成的软件和工具。</p>
+<p><img src="https://cdn.sspai.com/2018/08/10/6ec59d98e56aaae64475339aaa80f49b.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">GitHub 搜索技巧 - 找项目</p>
+<p><strong>Awesome + 关键字</strong></p>
+<p>Awesome 似乎已经成为不少 GitHub 项目喜爱的命名之一，比如前面提及要找到优秀的 Windows 软件，可以尝试搜索 <code>Awesome windows</code>，得到这样的搜索结果：</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/ffba2492882ad53e78c2f71bbadd66f1.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">Awesome windows 搜索结果</p>
+<p>排名前列的结果出现了 <a target="_blank" rel="noopener" href="https://github.com/Awesome-Windows/Awesome">Windows/Awesome 项目</a>，这里集合了 Windows 上优质和精选的最佳应用程序及工具列表。在这里，我收集了这些 Awesome 主题的优秀项目：<a target="_blank" rel="noopener" href="https://github.com/sindresorhus/awesome">The awesome manifesto</a>、<a target="_blank" rel="noopener" href="https://github.com/vsouza/awesome-ios">Awesome iOS frameworks</a>、<a target="_blank" rel="noopener" href="https://github.com/JStumpp/awesome-android">Awesome wesome Android libraries and resources</a>。</p>
+<p><strong>设置搜索条件</strong></p>
+<p>如果你明确需要寻找某类特定的项目，比如用某种语言开发、Stars 数量需要达到标准的项目，在搜索框中直接输入搜索条件即可。其中用于发现项目，我的用法是灵活运用下面几个搜索条件：<code>stars:</code>、<code>language:</code>、<code>forks:</code>，其实就是设置项目收藏、开发语言、派生的搜索条件，比如输入 <code>stars:&gt;=500 language:javascript</code>，<a target="_blank" rel="noopener" href="https://github.com/search?q=stars:%3E=500+language:javascript">得到的结果</a> 就是收藏大于和等于 500 的 javascript 项目，排名前列是开源代码库和课程项目 freeCodeCamp、大热门的 Vue 和 React 项目。</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/f550f60bb9708166a9ede09432c75a36.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">搜索条件<a href="stars:">stars:</a>=500 language:javascript&gt;</p>
+<p>如果觉得记住这些搜索条件略显繁琐的话，使用 GitHub 提供的 <a target="_blank" rel="noopener" href="https://github.com/search/advanced">高级搜索功能</a>，同样可用自定义条件进行搜索。或者参考官方给出的帮助指南 <a target="_blank" rel="noopener" href="https://help.github.com/articles/searching-on-github/">Searching on GitHub</a> ，里面有更多关于项目、代码、评论、问题等搜索技巧。</p>
+<p><img src="https://cdn.sspai.com/2018/08/08/83eeda517d7d3ff0ff493cf008a73f65.png?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1" alt="img">GitHub 高级搜索功能</p>
+<p>下面是 GitHub 上影响力颇大的项目，仅列举部分：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/vhf/free-programming-books">free-programming-books</a>：整理了所有和编程相关的免费书籍，同时也有 <a target="_blank" rel="noopener" href="https://github.com/vhf/free-programming-books/blob/master/free-programming-books-zh.md">中文版项目</a>。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/tiimgreen/github-cheat-sheet/">github-cheat-sheet</a>：集合了使用 GitHub 的各种技巧。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Trinea/android-open-project">android-open-project</a>：涵盖 Android 开发的优秀开源项目。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/1c7/chinese-independent-developer">chinese-independent-developer</a>：聚合所有中国独立开发者的项目。</li>
+</ul>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>GitHub 网站拥有很多优秀的开源项目，用好 GitHub 的搜索功能，我们既可以使用官方提供的高级搜索和 Topic、Trend 专题页面，也可以学习组合使用搜索条件的方法，主动发现更多好用的项目和工具。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/12/k8s/k8s%E7%AB%AF%E5%8F%A3%E5%8C%BA%E5%88%86/" rel="prev" title="k8s端口区分">
+                  <i class="fa fa-chevron-left"></i> k8s端口区分
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" rel="next" title="PHP常用函数总结">
+                  PHP常用函数总结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

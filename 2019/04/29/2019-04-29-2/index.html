@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="typecho 源码解读typecho没有用到命名空间。此框架用到较多以类封装的静态函数的方式。解读这个框架的源码，首先，了解其大致的加载流程。其次呢，了解一些重要的类的加载，比如数据库的加载。再次，就是根据实际操作，查看请求的具体信息，来了解一个请求，是如何加载进来的。还有，主题里面的各个布局文件，是如何正确的加载进来。整个框架，一些重要的变量是如何传递的？ 通过这个框架的研究，加上之前多媒体后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="typecho 源码解读">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/04/29/2019-04-29-2/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="typecho 源码解读typecho没有用到命名空间。此框架用到较多以类封装的静态函数的方式。解读这个框架的源码，首先，了解其大致的加载流程。其次呢，了解一些重要的类的加载，比如数据库的加载。再次，就是根据实际操作，查看请求的具体信息，来了解一个请求，是如何加载进来的。还有，主题里面的各个布局文件，是如何正确的加载进来。整个框架，一些重要的变量是如何传递的？ 通过这个框架的研究，加上之前多媒体后">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-29T12:12:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.948Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2019/04/29/2019-04-29-2/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>typecho 源码解读 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#typecho-%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">typecho 源码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.1.</span> <span class="nav-text">源码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3%E6%96%87%E4%BB%B6index-php"><span class="nav-number">1.1.1.</span> <span class="nav-text">入口文件index.php</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%A8%A1%E5%9D%97install-php"><span class="nav-number">1.1.2.</span> <span class="nav-text">安装模块install.php</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6config-inc-php"><span class="nav-number">1.1.3.</span> <span class="nav-text">配置文件config.inc.php</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.1.4.</span> <span class="nav-text">程序初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E7%BB%84%E4%BB%B6"><span class="nav-number">1.1.5.</span> <span class="nav-text">初始化组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AA%E5%88%9D%E5%A7%8B%E5%8C%96%E6%8F%92%E4%BB%B6"><span class="nav-number">1.1.6.</span> <span class="nav-text">注册一个初始化插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E8%B7%AF%E7%94%B1%E5%88%86%E5%8F%91"><span class="nav-number">1.1.7.</span> <span class="nav-text">开始路由分发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%80%E4%B8%AA%E7%BB%93%E6%9D%9F%E6%8F%92%E4%BB%B6"><span class="nav-number">1.1.8.</span> <span class="nav-text">注册一个结束插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E6%B5%81%E8%BD%AC"><span class="nav-number">1.1.9.</span> <span class="nav-text">页面流转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#common-js-php"><span class="nav-number">1.1.9.1.</span> <span class="nav-text">common-js.php</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#common-php"><span class="nav-number">1.1.9.2.</span> <span class="nav-text">common.php</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">数据库操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.2.1.</span> <span class="nav-text">定义数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AF%B9%E8%B1%A1%E5%AE%9E%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">获取数据库对象实例：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86"><span class="nav-number">1.3.</span> <span class="nav-text">知识</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/04/29/2019-04-29-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          typecho 源码解读
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-29 12:12:00" itemprop="dateCreated datePublished" datetime="2019-04-29T12:12:00+00:00">2019-04-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="typecho-源码解读"><a href="#typecho-源码解读" class="headerlink" title="typecho 源码解读"></a>typecho 源码解读</h1><p>typecho没有用到命名空间。此框架用到较多以类封装的静态函数的方式。解读这个框架的源码，首先，了解其大致的加载流程。其次呢，了解一些重要的类的加载，比如数据库的加载。再次，就是根据实际操作，查看请求的具体信息，来了解一个请求，是如何加载进来的。还有，主题里面的各个布局文件，是如何正确的加载进来。整个框架，一些重要的变量是如何传递的？</p>
+<p>通过这个框架的研究，加上之前多媒体后台，前后端不分离的项目，php、js、html混合在一起，开发的难度确实大。如果选择的框架又不好用或者对代码没有一定的约束力，那么整体代码都失控了。</p>
+<h2 id="源码解读"><a href="#源码解读" class="headerlink" title="源码解读"></a>源码解读</h2><h3 id="入口文件index-php"><a href="#入口文件index-php" class="headerlink" title="入口文件index.php"></a>入口文件index.php</h3><p>首先，检测 __TYPECHO_ROOT_DIR__这个变量（全部文件都以此变量区分是否属于入口加载，）加载config.inc.php，判断结构  if( ! a  &amp;&amp; !b) 等价与 if(!(a || b)) ,即a，b只要有一个为真，就不执行判断内部的逻辑，也即__TYPECHO_ROOT_DIR__定义或者成功加载 config.inc.php，就不会进入if内部。但实际变量不存在，那么就看能不能加载到配置文件，config.inc.php，如果没有加载成功，则进重定向到安装模块，进行安装。</p>
+<p>正常加载到配置文件，那么执行后面四个语言：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;** 初始化组件 *&#x2F;
+Typecho_Widget::widget(&#39;Widget_Init&#39;);
+
+&#x2F;** 注册一个初始化插件 *&#x2F;
+Typecho_Plugin::factory(&#39;index.php&#39;)-&gt;begin();
+
+&#x2F;** 开始路由分发 *&#x2F;
+Typecho_Router::dispatch();
+
+&#x2F;** 注册一个结束插件 *&#x2F;
+Typecho_Plugin::factory(&#39;index.php&#39;)-&gt;end();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那么就需要看看配置文件到底是啥？怎么能为上面四句提供环境的？</p>
+<h3 id="安装模块install-php"><a href="#安装模块install-php" class="headerlink" title="安装模块install.php"></a>安装模块install.php</h3><p>此文件代码较多，但是php代码200行，其他都是html。目的，如果没有定义config，那么正常安装。如果有config，检查发现有数据库，数据库中有install等字段，那么直接屏蔽用户的请求，给个404。<br>主要的逻辑是：定义根目录，设置系统加载的路径，定义根目录，（全局变量的形式： __TYPECHO_ROOT_DIR__），</p>
+<ul>
+<li>根目录、</li>
+<li>插件目录/usr/plugins</li>
+<li>模板目录/usr/themes</li>
+<li>后台目录/admin/。<br>设置加载目录： /var（框架的主要目录），插件目录。     代码：<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;跟zendframework  很象
+@set_include_path(get_include_path() . PATH_SEPARATOR .<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+载入API支持（var目录下）， require_once ‘Typecho/Common.php’;<br>然后调用程序初始化。Typecho_Common::init();</li>
+</ul>
+<p>以上是不存在配置文件的执行方式，如果存在则加载执行下面的代码。</p>
+<p>获取数据库对象，$db = Typecho_Db::get();<br>根据table.options表中installed字段，如果$installed为空值或者有值value=1都会进行404响应Typecho_Response::setStatus(404);，并退出。</p>
+<p>正常往下执行的时候，有一端根据referer来阻止访问的代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 挡掉可能的跨站请求
+if (!empty($_GET) || !empty($_POST)) &#123;
+    if (empty($_SERVER[&#39;HTTP_REFERER&#39;])) &#123;
+        exit;
+    &#125;
+
+    $parts &#x3D; parse_url($_SERVER[&#39;HTTP_REFERER&#39;]);
+	if (!empty($parts[&#39;port&#39;])) &#123;
+        $parts[&#39;host&#39;] &#x3D; &quot;&#123;$parts[&#39;host&#39;]&#125;:&#123;$parts[&#39;port&#39;]&#125;&quot;;
+    &#125;
+
+    if (empty($parts[&#39;host&#39;]) || $_SERVER[&#39;HTTP_HOST&#39;] !&#x3D; $parts[&#39;host&#39;]) &#123;
+        exit;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>后面就是定义一些功能函数，然后进入到安装界面。代码分析不够透彻，先略过。</p>
+<h3 id="配置文件config-inc-php"><a href="#配置文件config-inc-php" class="headerlink" title="配置文件config.inc.php"></a>配置文件config.inc.php</h3><p>配置文件是安装之后，产生的，跟上面安装文件，流程大致一样。程序的Typecho_Common::init();具体是什么作用？需要研究。<br>配置文件的代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;** 定义根目录 *&#x2F;
+define(&#39;__TYPECHO_ROOT_DIR__&#39;, dirname(__FILE__));
+
+&#x2F;** 定义插件目录(相对路径) *&#x2F;
+define(&#39;__TYPECHO_PLUGIN_DIR__&#39;, &#39;&#x2F;usr&#x2F;plugins&#39;);
+
+&#x2F;** 定义模板目录(相对路径) *&#x2F;
+define(&#39;__TYPECHO_THEME_DIR__&#39;, &#39;&#x2F;usr&#x2F;themes&#39;);
+
+&#x2F;** 后台路径(相对路径) *&#x2F;
+define(&#39;__TYPECHO_ADMIN_DIR__&#39;, &#39;&#x2F;admin&#x2F;&#39;);
+
+&#x2F;** 设置包含路径 *&#x2F;
+@set_include_path(get_include_path() . PATH_SEPARATOR .
+__TYPECHO_ROOT_DIR__ . &#39;&#x2F;var&#39; . PATH_SEPARATOR .
+__TYPECHO_ROOT_DIR__ . __TYPECHO_PLUGIN_DIR__);
+
+&#x2F;** 载入API支持 *&#x2F;
+require_once &#39;Typecho&#x2F;Common.php&#39;;
+
+&#x2F;** 程序初始化 *&#x2F;
+Typecho_Common::init();
+
+&#x2F;** 定义数据库参数 *&#x2F;
+$db &#x3D; new Typecho_Db(&#39;Pdo_SQLite&#39;, &#39;typecho_&#39;);
+$db-&gt;addServer(array (
+  &#39;file&#39; &#x3D;&gt; &#39;D:&#x2F;phpStudy&#x2F;PHPTutorial&#x2F;zend&#x2F;typecho&#x2F;usr&#x2F;5cc69e9d3bb13.db&#39;,
+), Typecho_Db::READ | Typecho_Db::WRITE);
+Typecho_Db::set($db);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那么剩下的就是，看index.php的流程了。主要分为：</p>
+<ul>
+<li>程序初始化Typecho_Common::init();</li>
+<li>初始化组件Typecho_Widget::widget(‘Widget_Init’);</li>
+<li>注册一个初始化插件Typecho_Plugin::factory(‘index.php’)-&gt;begin();</li>
+<li>开始路由分发Typecho_Router::dispatch();</li>
+<li>注册一个结束插件Typecho_Plugin::factory(‘index.php’)-&gt;end();</li>
+</ul>
+<h3 id="程序初始化"><a href="#程序初始化" class="headerlink" title="程序初始化"></a>程序初始化</h3><p>Typecho_Common是一个类文件，类之前定义了一些函数。总代码比较多。init代码如下：</p>
+<blockquote>
+<p>此代码的作用是，提供了一个自动加载类的方式。对比Zend、Thinkphp5.1、php-crud-api中加载的方式。同样也是注册一个加载函数，spl_autoload_register，另外，加上前面的自动加载目录，所以能自动加载到类。</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">
+&#x2F;**
+* 自动载入类
+*
+* @param $className
+*&#x2F;
+public static function __autoLoad($className)
+&#123;
+@include_once str_replace(array(&#39;\\&#39;, &#39;_&#39;), &#39;&#x2F;&#39;, $className) . &#39;.php&#39;;
+&#125;
+
+&#x2F;**
+* 程序初始化方法
+*
+* @access public
+* @return void
+*&#x2F;
+public static function init()
+&#123;
+&#x2F;** 设置自动载入函数 *&#x2F;
+spl_autoload_register(array(&#39;Typecho_Common&#39;, &#39;__autoLoad&#39;));
+
+&#x2F;** 兼容php6 *&#x2F;
+if (function_exists(&#39;get_magic_quotes_gpc&#39;) &amp;&amp; get_magic_quotes_gpc()) &#123;
+    $_GET &#x3D; self::stripslashesDeep($_GET);
+    $_POST &#x3D; self::stripslashesDeep($_POST);
+    $_COOKIE &#x3D; self::stripslashesDeep($_COOKIE);
+
+    reset($_GET);
+    reset($_POST);
+    reset($_COOKIE);
+&#125;
+
+&#x2F;** 设置异常截获函数 *&#x2F;
+set_exception_handler(array(&#39;Typecho_Common&#39;, &#39;exceptionHandle&#39;));
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="初始化组件"><a href="#初始化组件" class="headerlink" title="初始化组件"></a>初始化组件</h3><p>Typecho_Widget::widget(‘Widget_Init’);</p>
+<blockquote>
+<p>这代码Typecho_Widget::widget的大致所有是：静态化一个实例，并储存到主件池$_widgetPool变量中（私有静态变量）。如果这个类需要有多个实例的话，那么可以起一个别名，以@符号进行分隔，如Widget_Init@first，那么如果要获得这个实例，alias(‘Widget_Init’,’first’)。除此之外，还为组件自动绑定变量（跟传入的参数差不多），这个功能有点象容器注入（控制反转）。<br>此函数的注释如下：</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">   &#x2F;**
+    * 工厂方法,将类静态化放置到列表中
+    *
+    * @access public
+    * @param string $alias 组件别名
+    * @param mixed $params 传递的参数
+    * @param mixed $request 前端参数
+    * @param boolean $enableResponse 是否允许http回执
+    * @return Typecho_Widget
+    * @throws Typecho_Exception
+    *&#x2F;
+   public static function widget($alias, $params &#x3D; NULL, $request &#x3D; NULL, $enableResponse &#x3D; true)
+   &#123;
+   	&#x2F;&#x2F;$className 跟$alias 以@分隔，否则，两者都是$alias
+$parts &#x3D; explode(&#39;@&#39;, $alias);
+       $className &#x3D; $parts[0];
+       $alias &#x3D; empty($parts[1]) ? $className : $parts[1];
+
+       if (isset(self::$_widgetAlias[$className])) &#123;
+           $className &#x3D; self::$_widgetAlias[$className];
+       &#125;
+&#x2F;&#x2F;1、从组件池中获取，如果不存在，那么先创建一个放到池子内。
+       if (!isset(self::$_widgetPool[$alias])) &#123;
+           &#x2F;** 如果类不存在 *&#x2F;
+           if (!class_exists($className)) &#123;
+               throw new Typecho_Widget_Exception($className);
+           &#125;
+
+           &#x2F;** 初始化request *&#x2F;
+           if (!empty($request)) &#123;
+               $requestObject &#x3D; new Typecho_Request();
+               $requestObject-&gt;setParams($request);
+           &#125; else &#123;
+               $requestObject &#x3D; Typecho_Request::getInstance();
+           &#125;
+
+           &#x2F;** 初始化response *&#x2F;
+           $responseObject &#x3D; $enableResponse ? Typecho_Response::getInstance()
+           : Typecho_Widget_Helper_Empty::getInstance();
+
+           &#x2F;** 初始化组件 *&#x2F;
+           $widget &#x3D; new $className($requestObject, $responseObject, $params);&#x2F;&#x2F;注入了一些参数，有点象容器
+
+           $widget-&gt;execute();
+           self::$_widgetPool[$alias] &#x3D; $widget;
+       &#125;
+&#x2F;&#x2F;2、直接从组件池中获取
+       return self::$_widgetPool[$alias];
+   &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>从实际的请求中，发现manage-pages.php其实已经是一个独立的页面，那么此页面是如何完成页面渲染的呢？通过导入include ‘common.php’;完成页面的初始化工作。然后，发现下面的代码，作用是，将值分配到$pages对象中，然后遍历得到页面的结果。</p>
+<pre class="line-numbers language-none"><code class="language-none">Typecho_Widget::widget(&#39;Widget_Contents_Page_Admin&#39;)-&gt;to($pages)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>上面的Request、Response都还未深入分析。那么，下一步：</p>
+<h3 id="注册一个初始化插件"><a href="#注册一个初始化插件" class="headerlink" title="注册一个初始化插件"></a>注册一个初始化插件</h3><p>Typecho_Plugin::factory(‘index.php’)-&gt;begin();插件代码功能大概有400行。</p>
+<blockquote>
+<p>功能也是将插件进行了缓存。（缓存？是不是类似Zend_Register?也能集中管理？）</p>
+</blockquote>
+<p>代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+* 获取实例化插件对象
+*
+* @access public
+* @param string $handle 插件
+* @return Typecho_Plugin
+*&#x2F;
+public static function factory($handle)
+&#123;
+	return isset(self::$_instances[$handle]) ? self::$_instances[$handle] :
+	(self::$_instances[$handle] &#x3D; new Typecho_Plugin($handle));
+&#125;
+&#x2F;&#x2F;Typecho_Plugin的构造函数
+&#x2F;**
+* 插件初始化
+*
+* @access public
+* @param string $handle 插件
+*&#x2F;
+public function __construct($handle)
+&#123;
+&#x2F;** 初始化变量 *&#x2F;
+	$this-&gt;_handle &#x3D; $handle;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>从上面的代码来看，注册一个插件，并没有做什么实质的动作。估计是在其他地方，方便调用。类似注册成全局的变量一个。（暂时这样猜测）。那么到下一步。</p>
+<h3 id="开始路由分发"><a href="#开始路由分发" class="headerlink" title="开始路由分发"></a>开始路由分发</h3><p>Typecho_Router::dispatch();</p>
+<blockquote>
+<p>这个类的代码两百多行。</p>
+</blockquote>
+<p>代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+ * 路由分发函数
+ *
+ * @return void
+ * @throws Exception
+ *&#x2F;
+public static function dispatch()
+&#123;
+    &#x2F;** 获取PATHINFO *&#x2F;
+    $pathInfo &#x3D; self::getPathInfo();
+
+    foreach (self::$_routingTable as $key &#x3D;&gt; $route) &#123;
+        if (preg_match($route[&#39;regx&#39;], $pathInfo, $matches)) &#123;
+            self::$current &#x3D; $key;&#x2F;&#x2F;当前匹配到的路由表
+
+            try &#123;
+                &#x2F;** 载入参数 *&#x2F;
+                $params &#x3D; NULL;
+
+                if (!empty($route[&#39;params&#39;])) &#123;
+                    unset($matches[0]);
+                    $params &#x3D; array_combine($route[&#39;params&#39;], $matches);
+                &#125;
+                &#x2F;&#x2F;同样，将当前匹配到的$route[&#39;widget&#39;]，注册成一个组件。
+                $widget &#x3D; Typecho_Widget::widget($route[&#39;widget&#39;], NULL, $params);
+  &#x2F;&#x2F;如果当前路由有action属性，那么调用此方法
+                if (isset($route[&#39;action&#39;])) &#123;
+                    $widget-&gt;&#123;$route[&#39;action&#39;]&#125;();
+                &#125;
+  &#x2F;&#x2F;下面的，是如何获取到数据的？？
+                Typecho_Response::callback();
+                return;
+
+            &#125; catch (Exception $e) &#123;
+                if (404 &#x3D;&#x3D; $e-&gt;getCode()) &#123;
+                    Typecho_Widget::destory($route[&#39;widget&#39;]);
+                    continue;
+                &#125;
+
+                throw $e;
+            &#125;
+        &#125;
+    &#125;
+
+    &#x2F;** 载入路由异常支持 *&#x2F;
+    throw new Typecho_Router_Exception(&quot;Path &#39;&#123;$pathInfo&#125;&#39; not found&quot;, 404);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那么在顺道看有一下Typecho_Response::callback()这个函数是做哪些东西？<br>代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+    * 结束前的统一回调函数
+    *&#x2F;
+   public static function callback()
+   &#123;
+       &#x2F;&#x2F;注意此变量为静态变量，相当于锁功能。即在一次请求中，后面的代码只执行一次。
+       static $called;
+
+       if ($called) &#123;
+           return;
+       &#125;
+
+       $called &#x3D; true;
+       foreach (self::$_callbacks as $callback) &#123;
+           call_user_func($callback);
+       &#125;
+   &#125;
+   &#x2F;&#x2F;Typecho_Response类并不是真正的单例模式，因为其__construct、__clone没有做任何处理，也未定义。
+   &#x2F;**
+    * 获取单例句柄
+    *
+    * @access public
+    * @return Typecho_Response
+    *&#x2F;
+   public static function getInstance()
+   &#123;
+       if (null &#x3D;&#x3D;&#x3D; self::$_instance) &#123;
+           self::$_instance &#x3D; new Typecho_Response();
+       &#125;
+
+       return self::$_instance;
+   &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>另外，Typecho_Response类还有中写方法throwXml、throwJson、redirect、goBack</p>
+<h3 id="注册一个结束插件"><a href="#注册一个结束插件" class="headerlink" title="注册一个结束插件"></a>注册一个结束插件</h3><p>Typecho_Plugin::factory(‘index.php’)-&gt;end();</p>
+<blockquote>
+<p>有点迷糊了，Typecho_Plugin::factory(‘index.php’)返回的就是一个Typecho_Plugin，参数只是一个区分而已。而插件并没有begin、end方法。这是为什么呢？难道有更深的机制？</p>
+</blockquote>
+<p>这个到底是什么？为什么能调用这样了两个方法begin、start?</p>
+<p>类反射，查看一下，也没有什么想要的信息。</p>
+<pre class="line-numbers language-none"><code class="language-none">$tmp&#x3D;Typecho_Plugin::factory(&#39;index.php&#39;);
+var_dump(get_class_methods($tmp));<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>测试过了，如果注释掉注册插件这两行代码，其实对页面也没有任何影响。另外，随便写一个方法Typecho_Plugin::factory(‘index.php’)-&gt;ttt()，也不报错。这是因为使用了__call魔术方法。另外还使用了__set,__get魔术方法。如果将此Typecho_Plugin::__call方法注释掉，错误提示如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;下面这个是框架的报错提示，非系统提醒
+Call to undefined method Typecho_Plugin::begin();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>Typecho_Plugin::__call源代码(实现调用任意方法)：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+     * 回调处理函数
+     *
+     * @access public
+     * @param string $component 当前组件
+     * @param string $args 参数
+     * @return mixed
+     *&#x2F;
+    public function __call($component, $args)
+    &#123;
+        $component &#x3D; $this-&gt;_handle . &#39;:&#39; . $component;
+        $last &#x3D; count($args);
+        $args[$last] &#x3D; $last &gt; 0 ? $args[0] : false;
+
+        if (isset(self::$_plugins[&#39;handles&#39;][$component])) &#123;
+            $args[$last] &#x3D; NULL;
+            $this-&gt;_signal &#x3D; true;
+            foreach (self::$_plugins[&#39;handles&#39;][$component] as $callback) &#123;
+                $args[$last] &#x3D; call_user_func_array($callback, $args);
+            &#125;
+        &#125;
+
+        return $args[$last];
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>那么到了这一步，自然想知道，此框架的插件机制是如何的？</p>
+<p><a target="_blank" rel="noopener" href="http://docs.typecho.org/plugins/hello-world">官网给的helloworld</a>例子，结合本地的helloworld插件/usr/plugins/HelloWorld的代码，</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;
+class HelloWorld_Plugin implements Typecho_Plugin_Interface
+&#123;
+    &#x2F;**
+     * 激活插件方法,如果激活失败,直接抛出异常
+     * 
+     * @access public
+     * @return void
+     * @throws Typecho_Plugin_Exception
+     *&#x2F;
+    public static function activate()
+    &#123;
+        &#x2F;&#x2F;这其实就是设置了一个回调函数。navBar确实在admin&#x2F;menu.php中调用了。
+        Typecho_Plugin::factory(&#39;admin&#x2F;menu.php&#39;)-&gt;navBar &#x3D; array(&#39;HelloWorld_Plugin&#39;, &#39;render&#39;);
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>activate: 插件的激活接口，主要填写一些插件的初始化程序。</li>
+<li>deactivate: 这个是插件的禁用接口，主要就是插件在禁用时对一些资源的释放。</li>
+<li>config: 插件的配置面板，用于制作插件的标准配置菜单。</li>
+<li>personalConfig: 个人用户的配置面板，基本用不到。</li>
+<li>render: 自己定义的方法，用来实现插件要完成的功能。</li>
+</ul>
+<p>admin/menu.php</p>
+<p>在此处调用：<?php Typecho_Plugin::factory('admin/menu.php')->navBar(); ?></p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;?php if(!defined(&#39;__TYPECHO_ADMIN__&#39;)) exit; ?&gt;
+&lt;div class&#x3D;&quot;typecho-head-nav clearfix&quot; role&#x3D;&quot;navigation&quot;&gt;
+    &lt;nav id&#x3D;&quot;typecho-nav-list&quot;&gt;
+        &lt;?php $menu-&gt;output(); ?&gt;
+    &lt;&#x2F;nav&gt;
+    &lt;div class&#x3D;&quot;operate&quot;&gt;
+        &lt;?php Typecho_Plugin::factory(&#39;admin&#x2F;menu.php&#39;)-&gt;navBar(); ?&gt;&lt;a title&#x3D;&quot;&lt;?php
+                    if ($user-&gt;logged &gt; 0) &#123;
+                        $logged &#x3D; new Typecho_Date($user-&gt;logged);
+                        _e(&#39;最后登录: %s&#39;, $logged-&gt;word());
+                    &#125;
+                    ?&gt;&quot; href&#x3D;&quot;&lt;?php $options-&gt;adminUrl(&#39;profile.php&#39;); ?&gt;&quot; class&#x3D;&quot;author&quot;&gt;&lt;?php $user-&gt;screenName(); ?&gt;&lt;&#x2F;a&gt;&lt;a class&#x3D;&quot;exit&quot; href&#x3D;&quot;&lt;?php $options-&gt;logoutUrl(); ?&gt;&quot;&gt;&lt;?php _e(&#39;登出&#39;); ?&gt;&lt;&#x2F;a&gt;&lt;a href&#x3D;&quot;&lt;?php $options-&gt;siteUrl(); ?&gt;&quot;&gt;&lt;?php _e(&#39;网站&#39;); ?&gt;&lt;&#x2F;a&gt;
+    &lt;&#x2F;div&gt;
+&lt;&#x2F;div&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所以呢，结合此插件，大致明白了注册开始、结束插件的意思呢，反正就是预留了一些代码钩子，如果用户确实实现了这个插件，那么就调用了。</p>
+<p>理解这种插件机制的作用？为啥这样设计？</p>
+<blockquote>
+<p>个人理解，其实这样设计并没有什么太大的好处。插件嘛，类似于AOP，在固定的位置调用方法。其实也能理解js的事件回调。在固定的位置触发一个事件，然后响应这个事件。测试过，确实，一个地方，触发了这个插件，<strong>多个插件都响应了</strong>。插件代码中的注释，居然还能作为内容显示在页面中。</p>
+</blockquote>
+<h3 id="页面流转"><a href="#页面流转" class="headerlink" title="页面流转"></a>页面流转</h3><blockquote>
+<p>发现这个框架的页面跳转，其实跟之前想得很不一样。首先，管理后台,是要跳到/admin/文件夹中，然后就不再是统一的入口呢。</p>
+</blockquote>
+<p>/admin文件夹中，有两个文件，common-js.php跟common.php。估计前面的是为了加载js用的，后面，相当于一个入口函数。</p>
+<h4 id="common-js-php"><a href="#common-js-php" class="headerlink" title="common-js.php"></a>common-js.php</h4><p>php往js脚本中注入了一些变量。js脚本功能：处理消息机制（立即执行函数形式，防止变量泄漏成全局）、导航菜单 tab 聚焦时展开下拉菜单。加载js库jquery.js、jquery-ui.js、typecho.js。</p>
+<h4 id="common-php"><a href="#common-php" class="headerlink" title="common.php"></a>common.php</h4><h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><h3 id="定义数据库"><a href="#定义数据库" class="headerlink" title="定义数据库"></a>定义数据库</h3><pre class="line-numbers language-none"><code class="language-none">&#x2F;** 定义数据库参数 *&#x2F;
+$db &#x3D; new Typecho_Db(&#39;Pdo_SQLite&#39;, &#39;typecho_&#39;);
+$db-&gt;addServer(array (
+  &#39;file&#39; &#x3D;&gt; &#39;D:&#x2F;phpStudy&#x2F;PHPTutorial&#x2F;zend&#x2F;typecho&#x2F;usr&#x2F;5cc69e9d3bb13.db&#39;,
+), Typecho_Db::READ | Typecho_Db::WRITE);
+Typecho_Db::set($db);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="获取数据库对象实例："><a href="#获取数据库对象实例：" class="headerlink" title="获取数据库对象实例："></a>获取数据库对象实例：</h3><pre class="line-numbers language-none"><code class="language-none">&#x2F;** 初始化数据库 *&#x2F;
+$this-&gt;db &#x3D; Typecho_Db::get();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="知识"><a href="#知识" class="headerlink" title="知识"></a>知识</h2><pre class="line-numbers language-none"><code class="language-none">PHP获取当前类名、方法名
+  __CLASS__ 获取当前类名
+  __FUNCTION__ 当前函数名（confirm）
+  __METHOD__ 当前方法名 （bankcard::confirm）
+__FUNCTION__    函数名称（PHP 4.3.0 新加）。自 PHP 5 起本常量返回该函数被定义时的名字（区分大小写）。在 PHP 4 中该值总是小写字母的。
+__CLASS__    类的名称（PHP 4.3.0 新加）。自 PHP 5 起本常量返回该类被定义时的名字（区分大小写）。在 PHP 4 中该值总是小写字母的。
+__METHOD__    类的方法名（PHP 5.0.0 新加）。返回该方法被定义时的名字（区分大小写）。
+
+get_class(class name);&#x2F;&#x2F;取得当前语句所在类的类名
+get_class_methods(class name);&#x2F;&#x2F;取得class name 类的所有的方法名，并且组成一个数组
+get_class_vars(class name);&#x2F;&#x2F;取得class name 类的所有的变亮名，并组成一个数组<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>反射的形式获取：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;用反射类可以获得私有属性和私有方法
+$ref &#x3D; new ReflectionClass(Class1);&#x2F;&#x2F;Class1 可以为对象实例 $class &#x3D; new Class();
+ 
+print_r($ref-&gt;getMethods());
+print_r($ref-&gt;getProperties());<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/28/2019-04-28-2/" rel="prev" title="右键菜单">
+                  <i class="fa fa-chevron-left"></i> 右键菜单
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/29/2019-04-29/" rel="next" title="php中的一个bug的排查过程">
+                  php中的一个bug的排查过程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

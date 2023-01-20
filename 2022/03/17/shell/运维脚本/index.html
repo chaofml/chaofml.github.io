@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="转载自https:&#x2F;&#x2F;www.toutiao.com&#x2F;i7075327261393699367&#x2F; 一些shell脚本备份等等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux实用运维脚本">
+<meta property="og:url" content="https://blog.chaofml.cn/2022/03/17/shell/%E8%BF%90%E7%BB%B4%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="转载自https:&#x2F;&#x2F;www.toutiao.com&#x2F;i7075327261393699367&#x2F; 一些shell脚本备份等等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-17T13:43:56.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.024Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2022/03/17/shell/%E8%BF%90%E7%BB%B4%E8%84%9A%E6%9C%AC/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Linux实用运维脚本 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql%E5%A4%87%E4%BB%BD"><span class="nav-number">1.</span> <span class="nav-text">mysql备份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E5%A4%87%E4%BB%BD"><span class="nav-number">2.</span> <span class="nav-text">目录备份</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PING%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.</span> <span class="nav-text">PING查询</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A3%81%E7%9B%98IO%E6%A3%80%E6%9F%A5"><span class="nav-number">4.</span> <span class="nav-text">磁盘IO检查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E7%9B%B8%E5%85%B3"><span class="nav-number">5.</span> <span class="nav-text">性能相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%9B%B8%E5%85%B3"><span class="nav-number">6.</span> <span class="nav-text">进程相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#javadump-sh"><span class="nav-number">7.</span> <span class="nav-text">javadump.sh</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E5%AE%89%E8%A3%85"><span class="nav-number">8.</span> <span class="nav-text">常用工具安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8lib%E5%BA%93%E5%AE%89%E8%A3%85"><span class="nav-number">9.</span> <span class="nav-text">常用lib库安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A3%80%E6%9F%A5%E8%84%9A%E6%9C%AC"><span class="nav-number">10.</span> <span class="nav-text">系统检查脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sed%E8%BF%9B%E9%98%B6"><span class="nav-number">11.</span> <span class="nav-text">sed进阶</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">12.</span> <span class="nav-text">其他</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2022/03/17/shell/%E8%BF%90%E7%BB%B4%E8%84%9A%E6%9C%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux实用运维脚本
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-17 13:43:56" itemprop="dateCreated datePublished" datetime="2022-03-17T13:43:56+00:00">2022-03-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AC%E8%BD%BD/" itemprop="url" rel="index"><span itemprop="name">转载</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BD%AC%E8%BD%BD/shell/" itemprop="url" rel="index"><span itemprop="name">shell</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>转载自<a target="_blank" rel="noopener" href="https://www.toutiao.com/i7075327261393699367/">https://www.toutiao.com/i7075327261393699367/</a></p>
+<p>一些shell脚本备份等等。</p>
+<a id="more"></a>
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查看僵尸进程</span>
+<span class="token function">ps</span> -al <span class="token operator">|</span> <span class="token function">gawk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>,<span class="token variable">$4</span>&#125;'</span> <span class="token operator">|</span> <span class="token function">grep</span> Z
+
+
+<span class="token comment"># 匹配电子邮件的地址</span>
+<span class="token function">cat</span> index.html <span class="token operator">|</span> <span class="token function">egrep</span> -o <span class="token string">"[A-Za-z0-9._]+@[A-Za-z0-9.]+\.[a-zA-Z]&#123;2,4&#125;"</span> <span class="token operator">></span> ans.txt
+
+<span class="token comment">#匹配http URL</span>
+<span class="token function">cat</span> index.html <span class="token operator">|</span> <span class="token function">egrep</span> -o <span class="token string">"http://[A-Za-z0-9.]+\.[a-zA-Z]&#123;2,3&#125;"</span> <span class="token operator">></span> ans.txt 
+
+<span class="token comment">#纯文本形式下载网页</span>
+<span class="token function">lynx</span> -dump www.baidu.com <span class="token operator">></span> plain.txt
+
+<span class="token comment">#只打印HTTP头部信息，无须远程下载文件</span>
+<span class="token function">curl</span> --head www.baidu.com
+
+<span class="token comment">#使用POST提交数据</span>
+<span class="token function">curl</span> -d <span class="token string">"param2=nickwolfe¶m2=12345"</span> http://www.linuxidc.com/login.cgi
+
+<span class="token comment">#显示分组途经的网关</span>
+<span class="token function">traceroute</span> www.baidu.com
+
+<span class="token comment">#列出系统中的开放端口以及运行在端口上的服务</span>
+<span class="token function">lsof</span> -i 
+
+<span class="token comment">#nc命令建立socket连接</span>
+
+<span class="token comment">#设置监听　nc -l 5555</span>
+<span class="token comment">#连接到套接字 nc 192.0.0.1 5555</span>
+
+<span class="token comment">#快速文件传输</span>
+<span class="token comment">#接收端　nc -l 5555 > destination_filename</span>
+<span class="token comment">#发送端　nc 192.0.0.1 5555 &lt; source_filename</span>
+
+<span class="token comment">#找出指定目录最大的n个文件</span>
+<span class="token function">du</span> -ak target_dir <span class="token operator">|</span> <span class="token function">sort</span> -nrk <span class="token number">1</span> <span class="token operator">|</span> <span class="token function">head</span> -n <span class="token number">4</span>
+<span class="token comment"># du中a为递归,k为kb；sort中n为数字,r为降序,k指定列</span>
+
+<span class="token comment">#向终端中的所有登陆用户发送广播信息</span>
+<span class="token function">cat</span> message.txt <span class="token operator">|</span> wall
+
+<span class="token comment">#创建新的screen窗口</span>
+<span class="token function">screen</span>
+
+<span class="token comment">#打印所有的.txt和.pdf文件</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> <span class="token punctuation">\</span><span class="token punctuation">(</span> -name <span class="token string">"*.txt"</span> -o -name <span class="token string">"*.pdf"</span> <span class="token punctuation">\</span><span class="token punctuation">)</span> -print
+
+<span class="token comment"># -exec command &#123;&#125; \;是连用的，所有符合的都会放置在&#123;&#125;中，去执行command </span>
+
+<span class="token comment">#将文件分割成多个大小为10kb的文件</span>
+<span class="token function">split</span> -b 10k data.file 
+
+<span class="token comment">#打印两个文件的交集</span>
+<span class="token function">comm</span> A.txt B.txt -3 <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/^<span class="token entity" title="\t">\t</span>//'</span>
+
+<span class="token comment">#sed移除空白行</span>
+<span class="token function">sed</span> <span class="token string">'/^$/d'</span> <span class="token function">file</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="mysql备份"><a href="#mysql备份" class="headerlink" title="mysql备份"></a>mysql备份</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token builtin class-name">set</span> -e
+
+<span class="token assign-left variable"><span class="token environment constant">USER</span></span><span class="token operator">=</span><span class="token string">"backup"</span>
+<span class="token assign-left variable">PASSWORD</span><span class="token operator">=</span><span class="token string">"backup"</span>
+<span class="token comment"># 数据库数据目录 #</span>
+<span class="token assign-left variable">DATA_DIR</span><span class="token operator">=</span><span class="token string">"/data/mysql"</span>
+<span class="token assign-left variable">BIN_INDEX</span><span class="token operator">=</span><span class="token variable">$DATA_DIR</span><span class="token string">"/mysql-bin.index"</span>
+<span class="token comment"># 备份目录 #</span>
+<span class="token assign-left variable">BACKUP_DIR</span><span class="token operator">=</span><span class="token string">"/data/backup/mysql"</span>
+<span class="token assign-left variable">BACKUP_LOG</span><span class="token operator">=</span><span class="token string">"/var/log/mysql/backup.log"</span>
+
+<span class="token assign-left variable">DATE</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +<span class="token string">"%Y%m%d"</span><span class="token variable">`</span></span>
+<span class="token assign-left variable">TIME</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +<span class="token string">"%Y%m%d%H"</span><span class="token variable">`</span></span>
+
+<span class="token assign-left variable">LOG_TIME</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +<span class="token string">"%Y-%m-%d %H:%M:%S"</span><span class="token variable">`</span></span>
+<span class="token assign-left variable">DELETE_BINLOG_TIME</span><span class="token operator">=</span><span class="token string">"7 day"</span>
+<span class="token assign-left variable">INCREMENT_INTERVAL</span><span class="token operator">=</span><span class="token string">"3 hour"</span>
+
+<span class="token function-name function">note</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">printf</span> <span class="token string">"[<span class="token variable">$LOG_TIME</span>] note: <span class="token variable">$*</span><span class="token entity" title="\n">\n</span>"</span> <span class="token operator">>></span> <span class="token variable">$BACKUP_LOG</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">warning</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">printf</span> <span class="token string">"[<span class="token variable">$LOG_TIME</span>] warning: <span class="token variable">$*</span><span class="token entity" title="\n">\n</span>"</span> <span class="token operator">>></span> <span class="token variable">$BACKUP_LOG</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">error</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">printf</span> <span class="token string">"[<span class="token variable">$LOG_TIME</span>] error: <span class="token variable">$*</span><span class="token entity" title="\n">\n</span>"</span> <span class="token operator">>></span> <span class="token variable">$BACKUP_LOG</span><span class="token punctuation">;</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">full_backup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">local</span> <span class="token assign-left variable">dbs</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> -l $DATA_DIR <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"^d"</span> <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">" "</span> <span class="token string">'&#123;print <span class="token variable">$9</span>&#125;'</span><span class="token variable">`</span></span>
+
+    <span class="token keyword">for</span> <span class="token for-or-select variable">db</span> <span class="token keyword">in</span> <span class="token variable">$dbs</span>
+    <span class="token keyword">do</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_dir</span><span class="token operator">=</span><span class="token variable">$BACKUP_DIR</span><span class="token string">"/full/"</span><span class="token variable">$db</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">filename</span><span class="token operator">=</span><span class="token variable">$db</span><span class="token string">"."</span><span class="token variable">$DATE</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_file</span><span class="token operator">=</span><span class="token variable">$backup_dir</span><span class="token string">"/"</span><span class="token variable">$filename</span><span class="token string">".sql"</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">!</span> -d <span class="token variable">$backup_dir</span> <span class="token punctuation">]</span>
+        <span class="token keyword">then</span>
+            <span class="token function">mkdir</span> -p <span class="token variable">$backup_dir</span> <span class="token operator">||</span> <span class="token punctuation">&#123;</span> error <span class="token string">"创建数据库 <span class="token variable">$db</span> 全量备份目录 <span class="token variable">$backup_dir</span> 失败"</span><span class="token punctuation">;</span> <span class="token builtin class-name">continue</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+            note <span class="token string">"数据库 <span class="token variable">$db</span> 全量备份目录 <span class="token variable">$backup_dir</span>  不存在，创建完成"</span><span class="token punctuation">;</span>
+        <span class="token keyword">fi</span>
+
+        note <span class="token string">"full backup <span class="token variable">$db</span> start ..."</span>
+        mysqldump --user<span class="token operator">=</span><span class="token variable">$&#123;<span class="token environment constant">USER</span>&#125;</span> --password<span class="token operator">=</span><span class="token variable">$&#123;PASSWORD&#125;</span> --flush-logs --skip-lock-tables --quick <span class="token variable">$db</span> <span class="token operator">></span> <span class="token variable">$backup_file</span> <span class="token operator">||</span> <span class="token punctuation">&#123;</span> warning <span class="token string">"数据库 <span class="token variable">$db</span> 备份失败"</span><span class="token punctuation">;</span> <span class="token builtin class-name">continue</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+        <span class="token builtin class-name">cd</span> <span class="token variable">$backup_dir</span>
+        <span class="token function">tar</span> -cPzf <span class="token variable">$filename</span><span class="token string">".tar.gz"</span> <span class="token variable">$filename</span><span class="token string">".sql"</span>
+        <span class="token function">rm</span> -f <span class="token variable">$backup_file</span>
+        <span class="token function">chown</span> -fR mysql:mysql <span class="token variable">$backup_dir</span>
+
+        note <span class="token string">"数据库 <span class="token variable">$db</span> 备份成功"</span><span class="token punctuation">;</span>
+        note <span class="token string">"full backup <span class="token variable">$db</span> end."</span>
+    <span class="token keyword">done</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">increment_backup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">local</span> <span class="token assign-left variable">StartTime</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">"-d <span class="token variable">$INCREMENT_INTERVAL</span> ago"</span> +<span class="token string">"%Y-%m-%d %H:%M:%S"</span><span class="token variable">`</span></span>
+    <span class="token builtin class-name">local</span> <span class="token assign-left variable">DELETE_BINLOG_END_TIME</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">"-d <span class="token variable">$DELETE_BINLOG_TIME</span> ago"</span> +<span class="token string">"%Y-%m-%d %H:%M:%S"</span><span class="token variable">`</span></span>
+    <span class="token builtin class-name">local</span> <span class="token assign-left variable">dbs</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> -l $DATA_DIR <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"^d"</span> <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">" "</span> <span class="token string">'&#123;print <span class="token variable">$9</span>&#125;'</span><span class="token variable">`</span></span>
+
+    mysql -u<span class="token environment constant">$USER</span> -p<span class="token variable">$PASSWORD</span> -e <span class="token string">"purge master logs before '<span class="token variable">$DELETE_BINLOG_END_TIME</span>'"</span> <span class="token operator">&amp;&amp;</span> note <span class="token string">"delete <span class="token variable">$DELETE_BINLOG_TIME</span> days before log"</span><span class="token punctuation">;</span>
+
+    <span class="token assign-left variable">filename</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">cat</span> $BIN_INDEX <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">"/"</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">`</span></span>
+    <span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable">$filename</span>
+    <span class="token keyword">do</span>
+        <span class="token keyword">for</span> <span class="token for-or-select variable">db</span> <span class="token keyword">in</span> <span class="token variable">$dbs</span>
+        <span class="token keyword">do</span>
+            <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_dir</span><span class="token operator">=</span><span class="token variable">$BACKUP_DIR</span><span class="token string">"/increment/"</span><span class="token variable">$db</span>
+            <span class="token builtin class-name">local</span> <span class="token assign-left variable">filename</span><span class="token operator">=</span><span class="token variable">$db</span><span class="token string">"."</span><span class="token variable">$TIME</span>
+            <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_file</span><span class="token operator">=</span><span class="token variable">$backup_dir</span><span class="token string">"/"</span><span class="token variable">$filename</span><span class="token string">".sql"</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">!</span> -d <span class="token variable">$backup_dir</span> <span class="token punctuation">]</span>
+            <span class="token keyword">then</span>
+                <span class="token function">mkdir</span> -p <span class="token variable">$backup_dir</span> <span class="token operator">||</span> <span class="token punctuation">&#123;</span> error <span class="token string">"创建数据库 <span class="token variable">$db</span> 增量备份目录 <span class="token variable">$backup_dir</span> 失败"</span><span class="token punctuation">;</span> <span class="token builtin class-name">continue</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+                note <span class="token string">"数据库 <span class="token variable">$db</span> 增量备份目录 <span class="token variable">$backup_dir</span>  不存在，创建完成"</span><span class="token punctuation">;</span>
+            <span class="token keyword">fi</span>
+
+            note <span class="token string">"increment backup <span class="token variable">$db</span> form time <span class="token variable">$StartTime</span> start ..."</span>
+
+            mysqlbinlog -d <span class="token variable">$db</span> --start-datetime<span class="token operator">=</span><span class="token string">"<span class="token variable">$StartTime</span>"</span> <span class="token variable">$DATA_DIR</span>/<span class="token variable">$i</span> <span class="token operator">>></span> <span class="token variable">$backup_file</span> <span class="token operator">||</span> <span class="token punctuation">&#123;</span> warning <span class="token string">"数据库 <span class="token variable">$db</span> 备份失败"</span><span class="token punctuation">;</span> <span class="token builtin class-name">continue</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+
+            note <span class="token string">"increment backup <span class="token variable">$db</span> end."</span>
+        <span class="token keyword">done</span>
+    <span class="token keyword">done</span>
+
+    <span class="token keyword">for</span> <span class="token for-or-select variable">db</span> <span class="token keyword">in</span> <span class="token variable">$dbs</span>
+    <span class="token keyword">do</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_dir</span><span class="token operator">=</span><span class="token variable">$BACKUP_DIR</span><span class="token string">"/increment/"</span><span class="token variable">$db</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">filename</span><span class="token operator">=</span><span class="token variable">$db</span><span class="token string">"."</span><span class="token variable">$TIME</span>
+        <span class="token builtin class-name">local</span> <span class="token assign-left variable">backup_file</span><span class="token operator">=</span><span class="token variable">$backup_dir</span><span class="token string">"/"</span><span class="token variable">$filename</span><span class="token string">".sql"</span>
+
+        <span class="token builtin class-name">cd</span> <span class="token variable">$backup_dir</span>
+        <span class="token function">tar</span> -cPzf <span class="token variable">$filename</span><span class="token string">".tar.gz"</span> <span class="token variable">$filename</span><span class="token string">".sql"</span>
+        <span class="token function">rm</span> -f <span class="token variable">$backup_file</span>
+
+        note <span class="token string">"数据库 <span class="token variable">$db</span> 备份成功"</span><span class="token punctuation">;</span>
+    <span class="token keyword">done</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">case</span> <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token keyword">in</span>
+    full<span class="token punctuation">)</span>
+        full_backup
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    increment<span class="token punctuation">)</span>
+        increment_backup
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+    *<span class="token punctuation">)</span>
+        <span class="token builtin class-name">exit</span> <span class="token number">2</span>
+    <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token keyword">esac</span>
+
+<span class="token builtin class-name">exit</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="目录备份"><a href="#目录备份" class="headerlink" title="目录备份"></a>目录备份</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment">#</span>
+<span class="token comment">#</span>
+<span class="token comment"># 时间</span>
+<span class="token assign-left variable">DATE</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> <span class="token string">'+%Y-%m-%d_%H_%M_%S'</span><span class="token variable">)</span></span>
+<span class="token comment"># 备份目录 </span>
+<span class="token assign-left variable">BACKUPDIR</span><span class="token operator">=</span><span class="token string">"/home/backups"</span>
+<span class="token comment"># 需要备份的目录</span>
+<span class="token assign-left variable">SORFILE</span><span class="token operator">=</span>/opt
+<span class="token comment"># 目标文件名</span>
+<span class="token assign-left variable">DESFILE</span><span class="token operator">=</span>/home/backups/<span class="token variable">$SORFILE</span><span class="token builtin class-name">.</span><span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> <span class="token string">'+%Y-%m-%d_%H_%M_%S'</span><span class="token variable">)</span></span>.zip
+
+<span class="token punctuation">[</span> <span class="token operator">!</span> -d <span class="token variable">$BACKUPDIR</span> <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token function">mkdir</span> -p <span class="token variable">$BACKUPDIR</span>
+<span class="token builtin class-name">cd</span> <span class="token variable">$BACKUPDIR</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">"start backup <span class="token variable">$SORFILE</span> ..."</span>
+<span class="token function">sleep</span> <span class="token number">3</span>
+<span class="token comment">#echo "$DESFILE"</span>
+
+
+<span class="token comment">#tar cvf $DESFILE $SORFILE</span>
+<span class="token comment">#gzip -f .zip $DESFILE</span>
+<span class="token function">zip</span> -r <span class="token variable">$DESFILE</span> <span class="token variable">$SORFILE</span> <span class="token operator">&amp;></span>/dev/null
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$?</span>"</span> <span class="token operator">==</span> <span class="token string">"0"</span> <span class="token punctuation">]</span>
+<span class="token keyword">then</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> +%Y-%m-%d<span class="token variable">)</span></span><span class="token string">" zip sucess"</span><span class="token operator">>></span>backup.log
+<span class="token keyword">else</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">date</span> +%Y-%m-%d<span class="token variable">)</span></span><span class="token string">" zip failed"</span><span class="token operator">>></span>backup.log
+   <span class="token builtin class-name">exit</span> <span class="token number">0</span>
+<span class="token keyword">fi</span>
+
+<span class="token comment"># 删除3天前的备份</span>
+<span class="token function">find</span> <span class="token variable">$BACKUPDIR</span> -type f -ctime +3 <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">rm</span> -rf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="PING查询"><a href="#PING查询" class="headerlink" title="PING查询"></a>PING查询</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment">#用途：根据网络配置对网络地址192.168.0进行修改，检查是否是活动状态</span>
+
+<span class="token comment">#&#123;start..end&#125;shell扩展生成一组地址</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">ip</span> <span class="token keyword">in</span> <span class="token number">192.168</span>.0.<span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token number">255</span><span class="token punctuation">&#125;</span>
+<span class="token keyword">do</span> 
+    <span class="token punctuation">(</span>
+    <span class="token function">ping</span> <span class="token variable">$ip</span> -c <span class="token number">2</span> <span class="token operator">&amp;></span> /dev/null 
+    <span class="token comment"># > 标准输出重定向，和1>一致</span>
+    <span class="token comment"># 2>&amp;1 将标准错误输出　重定向　到标准输出</span>
+    <span class="token comment"># &amp;>file 将标准输出和标准错误输出都重定向到文件filename中</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -eq <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token builtin class-name">echo</span> <span class="token variable">$ip</span> is alive
+    <span class="token keyword">fi</span>
+    <span class="token punctuation">)</span><span class="token operator">&amp;</span>
+<span class="token keyword">done</span>
+<span class="token function">wait</span>
+<span class="token comment">#并行ping,加速</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="磁盘IO检查"><a href="#磁盘IO检查" class="headerlink" title="磁盘IO检查"></a>磁盘IO检查</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">##iostat是查看磁盘活动统计情况</span>
+
+<span class="token comment">##显示所有设备负载情况 r/s:  每秒完成的读 I/O 设备次数。即 rio/s；w/s:  每秒完成的写 I/O 设备次数。即 wio/s等</span>
+iostat 
+
+<span class="token comment">##每隔2秒刷新磁盘IO信息，并且每次显示3次</span>
+iostat <span class="token number">2</span> <span class="token number">3</span>
+
+<span class="token comment">#显示某个磁盘的IO信息</span>
+iostat -d sda1
+
+<span class="token comment">##显示tty和cpu信息</span>
+iostat -t
+
+<span class="token comment">##以M为单位显示磁盘IO信息</span>
+iostat -m
+
+<span class="token comment">##查看TPS和吞吐量信息  kB_read/s：每秒从设备（drive expressed）读取的数据量；kB_wrtn/s：每秒向设备（drive expressed）写入的数据量；kB_read：读取的总数据量；kB_wrtn：写入的总数量数据量；</span>
+iostat -d -k <span class="token number">1</span> <span class="token number">1</span>
+
+<span class="token comment">#查看设备使用率（%util）、响应时间（await）</span>
+iostat -d -x -k <span class="token number">1</span> <span class="token number">1</span>
+
+<span class="token comment">#查看CPU状态</span>
+iostat -c <span class="token number">1</span> <span class="token number">3</span>
+
+<span class="token comment">#统计进程(pid)的stat,进程的stat自然包括进程的IO状况</span>
+pidstat
+
+<span class="token comment">#只显示IO</span>
+pidstat -d  <span class="token number">1</span> 
+
+<span class="token comment">#-d IO 信息,-r 缺页及内存信息-u CPU使用率-t 以线程为统计单位1  1秒统计一次</span>
+pidstat -u -r -d -t <span class="token number">1</span>
+
+<span class="token comment">#文件级IO分析,查看当前文件由哪些进程打开</span>
+<span class="token function">lsof</span>   
+<span class="token function">ls</span> /proc/pid/fd
+
+<span class="token comment">#利用 sar 报告磁盘 I/O 信息DEV 正在监视的块设备 tps 每秒钟物理设备的 I/O 传输总量 rd_sec/s 每秒从设备读取的扇区数量 wr_sec/s 每秒向设备写入的扇区数量 avgrq-sz I/O 请求的平均扇区数</span>
+<span class="token comment">#avgqu-sz I/O 请求的平均队列长度 await I/O 请求的平均等待时间，单位为毫秒 svctm I/O 请求的平均服务时间，单位为毫秒 %util I/O 请求所占用的时间的百分比，即设备利用率</span>
+sar -pd <span class="token number">10</span> <span class="token number">3</span> 
+
+<span class="token comment">#iotop  top的io版</span>
+iotop
+
+<span class="token comment">#查看页面缓存信息 其中的Cached 指用于pagecache的内存大小（diskcache-SwapCache）。随着写入缓存页，Dirty 的值会增加 一旦开始把缓存页写入硬盘,Writeback的值会增加直到写入结束。</span>
+<span class="token function">cat</span> /proc/meminfo 
+
+<span class="token comment">#查看有多少个pdflush进程 Linux 用pdflush进程把数据从缓存页写入硬盘</span>
+<span class="token comment">#pdflush的行为受/proc/sys/vm中的参数的控制/proc/sys/vm/dirty_writeback_centisecs (default 500): 1/100秒, 多长时间唤醒pdflush将缓存页数据写入硬盘。默认5秒唤醒2个（更多个）线程。如果wrteback的时间长于dirty_writeback_centisecs的时间，可能会出问题</span>
+<span class="token function">cat</span> /proc/sys/vm/nr_pdflush_threads
+
+<span class="token comment">#查看I/O 调度器</span>
+<span class="token comment">#调度算法</span>
+<span class="token comment">#noop anticipatory deadline [cfq] </span>
+<span class="token comment">#deadline :    deadline 算法保证对既定的IO请求以最小的延迟时间。</span>
+<span class="token comment">#anticipatory：    有个IO发生后，如果又有进程请求IO，则产生一个默认6ms猜测时间，猜测下一个进程请求IO是干什么。这对于随机读取会造成较大的延时。对数据库应用很糟糕，而对于Web Server等则会表现不错。</span>
+<span class="token comment">#cfq:        对每个进程维护一个IO队列，各个进程发来的IO请求会被cfq以轮循方式处理，对每一个IO请求都是公平。适合离散读的应用。</span>
+<span class="token comment">#noop:        对所有IO请求都用FIFO队列形式处理。默认IO不会存在性能问题。</span>
+<span class="token function">cat</span> /sys/block/<span class="token punctuation">[</span>disk<span class="token punctuation">]</span>/queue/scheduler
+
+
+<span class="token comment">#改变IO调度器</span>
+$ <span class="token builtin class-name">echo</span> deadline <span class="token operator">></span> /sys/block/sdX/queue/scheduler
+<span class="token comment">#提高调度器请求队列的</span>
+$ <span class="token builtin class-name">echo</span> <span class="token number">4096</span> <span class="token operator">></span> /sys/block/sdX/queue/nr_requests<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="性能相关"><a href="#性能相关" class="headerlink" title="性能相关"></a>性能相关</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查看当前系统load</span>
+<span class="token function">uptime</span>
+
+<span class="token comment">#查看系统状态和每个进程的系统资源使用状况</span>
+<span class="token function">top</span>
+
+<span class="token comment">#可视化显示CPU的使用状况</span>
+<span class="token function">htop</span>
+
+<span class="token comment">#查看每个CPU的负载信息</span>
+mpstat -P ALL <span class="token number">1</span>
+
+<span class="token comment">#每隔1秒查看磁盘IO的统计信息</span>
+iostat -xkdz <span class="token number">1</span>
+
+<span class="token comment">#每隔一秒查看虚拟内存的使用信息</span>
+<span class="token function">vmstat</span> <span class="token number">1</span>
+
+<span class="token comment">#查看内存使用统计信息</span>
+<span class="token function">free</span>
+
+<span class="token comment">#查看网络使用信息</span>
+nicstat -z <span class="token number">1</span>
+
+<span class="token comment">#类似vmstat的显示优化的工具</span>
+dstat <span class="token number">1</span>
+
+<span class="token comment">#查看系统活动状态，比如系统分页统计，块设备IO统计等</span>
+sar
+
+<span class="token comment">#网络连接状态查看</span>
+<span class="token function">netstat</span> -s
+
+<span class="token comment">#进程资源使用信息查看</span>
+pidstat <span class="token number">1</span>
+pidstat -d <span class="token number">1</span>
+
+<span class="token comment">#查看某个进程的系统调用信息 -p后面是进程id，-tttT 进程系统后的系统调用时间</span>
+<span class="token function">strace</span> -tttT -p <span class="token number">12670</span>
+<span class="token comment">#统计IO设备输入输出的系统调用信息</span>
+<span class="token function">strace</span> -c <span class="token function">dd</span> <span class="token assign-left variable">if</span><span class="token operator">=</span>/dev/zero <span class="token assign-left variable">of</span><span class="token operator">=</span>/dev/null <span class="token assign-left variable">bs</span><span class="token operator">=</span><span class="token number">512</span> <span class="token assign-left variable">count</span><span class="token operator">=</span>1024k
+
+
+<span class="token comment">#tcpdump 查看网络数据包</span>
+tcpdump -nr /tmp/out.tcpdump
+
+<span class="token comment">#块设备的读写事件信息统计</span>
+btrace /dev/sdb 
+
+<span class="token comment">#iotop查看某个进程的IO操作统计信息</span>
+iotop -bod5
+
+<span class="token comment">#slabtop 查看内核 slab内存分配器的使用信息</span>
+slabtop -sc
+
+<span class="token comment">#系统参数设置</span>
+sysctl -a
+
+<span class="token comment">#系统性能指标统计信息</span>
+perf <span class="token function">stat</span> <span class="token function">gzip</span> file1
+<span class="token comment">#系统cpu活动状态查看</span>
+perf record -a -g -F <span class="token number">997</span> <span class="token function">sleep</span> <span class="token number">10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="进程相关"><a href="#进程相关" class="headerlink" title="进程相关"></a>进程相关</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">## processes  进程管理</span>
+
+<span class="token comment">##ps查看当前系统执行的线程列表，进行瞬间状态，不是连续状态，连续状态需要使用top名称查看  更多常用参数请使用 man ps查看</span>
+<span class="token function">ps</span>
+
+<span class="token comment">##显示所有进程详细信息</span>
+<span class="token function">ps</span> aux
+
+<span class="token comment">##-u 显示某个用户的进程列表</span>
+<span class="token function">ps</span> -f -u www-data 
+
+<span class="token comment">## -C 通过名字或者命令搜索进程</span>
+<span class="token function">ps</span> -C apache2
+
+<span class="token comment">## --sort  根据进程cpu使用率降序排列，查看前5个进程  -pcpu表示降序  pcpu升序</span>
+<span class="token function">ps</span> aux --sort<span class="token operator">=</span>-pcpu <span class="token operator">|</span> <span class="token function">head</span> -5 
+
+<span class="token comment">##-f 用树结构显示进程的层次关系，父子进程情况下</span>
+<span class="token function">ps</span> -f --forest -C apache2 
+
+<span class="token comment">##显示一个父进程的所有子进程</span>
+<span class="token function">ps</span> -o pid,uname,comm -C apache2
+<span class="token function">ps</span> --ppid <span class="token number">2359</span> 
+
+<span class="token comment">##显示一个进程的所有线程  -L 参数</span>
+<span class="token function">ps</span> -p <span class="token number">3150</span> -L 
+
+<span class="token comment">##显示进程的执行时间 -o参数</span>
+<span class="token function">ps</span> -e -o pid,comm,etime 
+
+<span class="token comment">##watch命令可以用来实时捕捉ps显示进程</span>
+<span class="token function">watch</span> -n <span class="token number">1</span> <span class="token string">'ps -e -o pid,uname,cmd,pmem,pcpu --sort=-pmem,-pcpu | head -15'</span> 
+
+<span class="token comment">##jobs 查看后台运行的进程  jobs命令执行的结果，＋表示是一个当前的作业，减号表是是一个当前作业之后的一个作业，jobs -l选项可显示所有任务的PID,jobs的状态可以是running, stopped, Terminated,但是如果任务被终止了（kill），shell 从当前的shell环境已知的列表中删除任务的进程标识；也就是说，jobs命令显示的是当前shell环境中所起的后台正在运行或者被挂起的任务信息</span>
+<span class="token function">jobs</span>
+
+<span class="token comment">##查看后台运营的进程号</span>
+<span class="token function">jobs</span> -p
+
+<span class="token comment">##查看现在被终止或者退出的进程号</span>
+<span class="token function">jobs</span> -n
+
+
+<span class="token comment">##kill命令 终止一个前台进程可以使用Ctrl+C键   kill  通过top或者ps获取进程id号  kill [-s 信号 | -p ] [ -a ] 进程号 ...</span>
+<span class="token comment">##发送指定的信号到相应进程。不指定型号将发送SIGTERM（15）终止指定进程。 关闭进程号12的进程</span>
+<span class="token function">kill</span> <span class="token number">12</span>
+
+
+<span class="token comment">##等同于在前台运行PID为123的进程时按下Ctrl+C键</span>
+<span class="token function">kill</span> -2 <span class="token number">123</span>
+
+<span class="token comment">##如果任无法终止该程序可用“-KILL” 参数，其发送的信号为SIGKILL(9) ，将强制结束进程  </span>
+<span class="token function">kill</span> -9 <span class="token number">123</span>
+
+<span class="token comment">##列出所有信号名称</span>
+<span class="token comment">##HUP    1    终端断线</span>
+<span class="token comment">##INT     2    中断（同 Ctrl + C）</span>
+<span class="token comment">##QUIT    3    退出（同 Ctrl + \）</span>
+<span class="token comment">##TERM   15    终止</span>
+<span class="token comment">##KILL    9    强制终止</span>
+<span class="token comment">##CONT   18    继续（与STOP相反， fg/bg命令）</span>
+<span class="token comment">##STOP    19    暂停（同 Ctrl + Z）</span>
+<span class="token function">kill</span> -l
+
+<span class="token comment">##得到指定信号的数值</span>
+<span class="token function">kill</span> -l KILL
+
+<span class="token comment">##杀死指定用户所有进程</span>
+<span class="token function">kill</span> -u peidalinux
+<span class="token function">kill</span> -9 <span class="token variable"><span class="token variable">$(</span><span class="token function">ps</span> -ef <span class="token operator">|</span> <span class="token function">grep</span> peidalinux<span class="token variable">)</span></span> 
+
+<span class="token comment">##将后台中的命令调至前台继续运行  将进程123调至前台执行</span>
+<span class="token function">fg</span> <span class="token number">123</span>
+
+<span class="token comment">##将一个在后台暂停的命令，变成继续执行</span>
+<span class="token function">bg</span>  <span class="token number">123</span>
+
+<span class="token comment">##该命令可以在你退出帐户/关闭终端之后继续运行相应的进程。nohup就是不挂起的意思  下面输出被重定向到myout.file文件中</span>
+<span class="token function">nohup</span> <span class="token builtin class-name">command</span> <span class="token operator">></span> myout.file <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">&amp;</span>
+
+<span class="token comment">##at：计划任务，在特定的时间执行某项工作，在特定的时间执行一次。</span>
+<span class="token comment">## 格式：at HH:MM YYYY-MM-DD //HH（小时）:MM（分钟） YYYY（年）-MM（月份）-DD（日）</span>
+<span class="token comment">##HH[am pm]+D(天) days //HH（小时）[am（上午）pm（下午）]+days（天）</span>
+at <span class="token number">12</span>:00（时间） //at命令设定12:00执行一项操作
+<span class="token comment">#at>useradd aaa //在at命令里设定添加用户aaa</span>
+<span class="token comment">#ctrl+d //退出at命令</span>
+<span class="token comment">#tail -f /etc/passwd //查看/etc/passwd文件后十行是否增加了一个用户aaa</span>
+
+<span class="token comment">##计划任务设定后，在没有执行之前我们可以用atq命令来查看系统没有执行工作任务。</span>
+atq
+
+<span class="token comment">##启动计划任务后，如果不想启动设定好的计划任务可以使用atrm命令删除。</span>
+atrm <span class="token number">1</span> //删除计划任务1
+
+<span class="token comment">##pstree命令：列出当前的进程，以及它们的树状结构  格式：pstree [选项] [pid|user]</span>
+pstree
+
+<span class="token comment">##nice命令：改变程序执行的优先权等级 应用程序优先权值的范围从-20～19，数字越小，优先权就越高。一般情况下，普通应用程序的优先权值（CPU使用权值）都是0，如果让常用程序拥有较高的优先权等级，自然启动和运行速度都会快些。需要注意的是普通用户只能在0～19之间调整应用程序的优先权值，只有超级用户有权调整更高的优先权值（从-20～19）。</span>
+<span class="token function">nice</span> <span class="token punctuation">[</span>-n <span class="token operator">&lt;</span>优先等级<span class="token operator">></span><span class="token punctuation">]</span><span class="token punctuation">[</span>--help<span class="token punctuation">]</span><span class="token punctuation">[</span>--version<span class="token punctuation">]</span><span class="token punctuation">[</span>命令<span class="token punctuation">]</span>
+<span class="token function">nice</span> -n <span class="token number">5</span> <span class="token function">ls</span>
+
+<span class="token comment">##sleep命令：使进程暂停执行一段时间</span>
+<span class="token function">date</span><span class="token punctuation">;</span><span class="token function">sleep</span> 1m<span class="token punctuation">;</span><span class="token function">date</span>
+
+
+<span class="token comment">##renice命令 renice命令允许用户修改一个正在运行进程的优先权。 利用renice命令可以在命令执行时调整其优先权。</span>
+<span class="token comment">##其中，参数number与nice命令的number意义相同。（1） 用户只能对自己所有的进程使用renice命令。（2） root用户可以在任何进程上使用renice命令。（3） 只有root用户才能提高进程的优先权</span>
+<span class="token function">renice</span> -5 -p <span class="token number">5200</span>  <span class="token comment">#PID为5200的进程nice设为-5 </span>
+
+<span class="token comment">##pmap命令用于显示一个或多个进程的内存状态。其报告进程的地址空间和内存状态信息 #pmap PID </span>
+pmap <span class="token number">20367</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="javadump-sh"><a href="#javadump-sh" class="headerlink" title="javadump.sh"></a>javadump.sh</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/sh</span>
+
+
+
+<span class="token assign-left variable">DUMP_PIDS</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">ps</span>  --no-heading -C java -f --width <span class="token number">1000</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">`</span></span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -z <span class="token string">"<span class="token variable">$DUMP_PIDS</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"The server <span class="token variable">$HOST_NAME</span> is not started!"</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token keyword">fi</span>
+
+<span class="token assign-left variable">DUMP_ROOT</span><span class="token operator">=</span>~/dump
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">!</span> -d <span class="token variable">$DUMP_ROOT</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token function">mkdir</span> <span class="token variable">$DUMP_ROOT</span>
+<span class="token keyword">fi</span>
+
+<span class="token assign-left variable">DUMP_DATE</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> +%Y%m%d%H%M%S<span class="token variable">`</span></span>
+<span class="token assign-left variable">DUMP_DIR</span><span class="token operator">=</span><span class="token variable">$DUMP_ROOT</span>/dump-<span class="token variable">$DUMP_DATE</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">!</span> -d <span class="token variable">$DUMP_DIR</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token function">mkdir</span> <span class="token variable">$DUMP_DIR</span>
+<span class="token keyword">fi</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">PID</span> <span class="token keyword">in</span> <span class="token variable">$DUMP_PIDS</span> <span class="token punctuation">;</span> <span class="token keyword">do</span>
+<span class="token comment">#Full thread dump 用来查线程占用，死锁等问题</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jstack <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jstack-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#打印出一个给定的Java进程、Java core文件或远程Debug服务器的Java配置信息，具体包括Java系统属性和JVM命令行参数。</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jinfo <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jinfo-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#jstat能够动态打印jvm(Java Virtual Machine Statistics Monitoring Tool)的相关统计信息。如young gc执行的次数、full gc执行的次数，各个内存分区的空间大小和可使用量等信息。	</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jstat -gcutil <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jstat-gcutil-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jstat -gccapacity <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jstat-gccapacity-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#未指定选项时，jmap打印共享对象的映射。对每个目标VM加载的共享对象，其起始地址、映射大小及共享对象文件的完整路径将被打印出来，	</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jmap <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jmap-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#-heap打印堆情况的概要信息，包括堆配置，各堆空间的容量、已使用和空闲情况	</span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jmap -heap <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/jmap-heap-<span class="token variable">$PID</span>.dump <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#-dump将jvm的堆中内存信息输出到一个文件中,然后可以通过eclipse memory analyzer进行分析</span>
+<span class="token comment">#注意：这个jmap使用的时候jvm是处在假死状态的，只能在服务瘫痪的时候为了解决问题来使用，否则会造成服务中断。 </span>
+	<span class="token variable">$JAVA_HOME</span>/bin/jmap -dump:format<span class="token operator">=</span>b,file<span class="token operator">=</span><span class="token variable">$DUMP_DIR</span>/jmap-dump-<span class="token variable">$PID</span>.dump <span class="token variable">$PID</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token comment">#显示被进程打开的文件信息</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/sbin/lsof <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	/usr/sbin/lsof -p <span class="token variable">$PID</span> <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/lsof-<span class="token variable">$PID</span>.dump
+	<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+	<span class="token keyword">fi</span>
+<span class="token keyword">done</span>
+<span class="token comment">#主要负责收集、汇报与存储系统运行信息的。</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/sar <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/sar <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/sar.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#主要负责收集、汇报与存储系统运行信息的。</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/uptime <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/uptime <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/uptime.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#内存查看</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/free <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/free -t <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/free.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#可以得到关于进程、内存、内存分页、堵塞IO、traps及CPU活动的信息。</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/vmstat <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/vmstat <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/vmstat.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#报告与CPU相关的一些统计信息</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/mpstat <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/mpstat <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/mpstat.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#报告与IO相关的一些统计信息</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /usr/bin/iostat <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/usr/bin/iostat <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/iostat.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token comment">#报告与网络相关的一些统计信息</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -r /bin/netstat <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+/bin/netstat <span class="token operator">></span> <span class="token variable">$DUMP_DIR</span>/netstat.dump
+<span class="token builtin class-name">echo</span> -e <span class="token string">".<span class="token entity" title="\c">\c</span>"</span>
+<span class="token keyword">fi</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"OK!"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="常用工具安装"><a href="#常用工具安装" class="headerlink" title="常用工具安装"></a>常用工具安装</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/usr/bin/env bash</span>
+
+<span class="token comment"># ---------------------------------------------------------------------------------</span>
+<span class="token comment"># 控制台颜色</span>
+<span class="token assign-left variable">BLACK</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;30m"</span>
+<span class="token assign-left variable">RED</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;31m"</span>
+<span class="token assign-left variable">GREEN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;32m"</span>
+<span class="token assign-left variable">YELLOW</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;33m"</span>
+<span class="token assign-left variable">BLUE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;34m"</span>
+<span class="token assign-left variable">PURPLE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;35m"</span>
+<span class="token assign-left variable">CYAN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;36m"</span>
+<span class="token assign-left variable">RESET</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span>tput sgr0<span class="token variable">)</span></span>"</span>
+<span class="token comment"># ---------------------------------------------------------------------------------</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;BLUE&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+###################################################################################
+# 安装常用命令工具
+# 命令工具清单如下：
+# 核心工具：df、du、chkconfig
+# 网络工具：ifconfig、netstat、route、iptables
+# IP工具：ip、ss、ping、tracepath、traceroute
+# DNS工具：dig、host、nslookup、whois
+# 端口工具：lsof、nc、telnet
+# 下载工具：curl、wget
+# 编辑工具：emacs、vim
+# 流量工具：iftop、nethogs
+# 抓包工具：tcpdump
+# 压缩工具：unzip、zip
+# 版本控制工具：git、subversion
+#
+###################################################################################
+EOF</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;GREEN&#125;</span>>>>>>>>>> 安装常用命令工具开始<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+
+<span class="token comment"># 核心工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install coreutils(df、du)<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y coreutils
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install chkconfig<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">chkconfig</span>
+
+<span class="token comment"># 网络工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install net-tools(ifconfig、netstat、route)<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y net-tools
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install iptables<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y iptables
+
+<span class="token comment"># IP工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install iputils(ping、tracepath)<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y iputils
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install traceroute<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">traceroute</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install iproute(ip、ss)<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y iproute
+
+<span class="token comment"># 端口工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install lsof<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">lsof</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install nc<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">nc</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install netstat<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">netstat</span>
+
+<span class="token comment"># DNS工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install bind-utils(dig、host、nslookup)<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y bind-utils
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install whois<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y whois
+
+<span class="token comment"># 下载工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install curl<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">curl</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install wget<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">wget</span>
+
+<span class="token comment"># 编辑工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install emacs<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y emacs
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install vim<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">vim</span>
+
+<span class="token comment"># 流量工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install iftop<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y iftop
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install nethogs<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y nethogs
+
+<span class="token comment"># 抓包工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install tcpdump<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y tcpdump
+
+<span class="token comment"># 压缩工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install unzip<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">unzip</span>
+
+<span class="token comment"># 版本控制工具</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install git<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y <span class="token function">git</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install subversion<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum <span class="token function">install</span> -y subversion
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;GREEN&#125;</span>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; 安装常用命令工具结束<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="常用lib库安装"><a href="#常用lib库安装" class="headerlink" title="常用lib库安装"></a>常用lib库安装</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/usr/bin/env bash</span>
+
+<span class="token comment"># ---------------------------------------------------------------------------------</span>
+<span class="token comment"># 控制台颜色</span>
+<span class="token assign-left variable">BLACK</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;30m"</span>
+<span class="token assign-left variable">RED</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;31m"</span>
+<span class="token assign-left variable">GREEN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;32m"</span>
+<span class="token assign-left variable">YELLOW</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;33m"</span>
+<span class="token assign-left variable">BLUE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;34m"</span>
+<span class="token assign-left variable">PURPLE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;35m"</span>
+<span class="token assign-left variable">CYAN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;36m"</span>
+<span class="token assign-left variable">RESET</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span>tput sgr0<span class="token variable">)</span></span>"</span>
+<span class="token comment"># ---------------------------------------------------------------------------------</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;BLUE&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+###################################################################################
+# 安装常见 lib
+# 如果不知道命令在哪个 lib，可以使用 yum search xxx 来查找
+# lib 清单如下：
+# gcc gcc-c++ kernel-devel libtool
+# openssl openssl-devel
+# zlib zlib-devel
+# pcre
+###################################################################################
+EOF</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;GREEN&#125;</span>>>>>>>>>> 安装常见 lib 开始<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install gcc gcc-c++ kernel-devel libtool<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum -y <span class="token function">install</span> <span class="token function">make</span> gcc gcc-c++ kernel-devel libtool
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install openssl openssl-devel<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum -y <span class="token function">install</span> <span class="token function">make</span> openssl openssl-devel
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install zlib zlib-devel<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum -y <span class="token function">install</span> <span class="token function">make</span> zlib zlib-devel
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;CYAN&#125;</span>>>>> install pcre<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span>
+yum -y <span class="token function">install</span> pcre
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span><span class="token variable">$&#123;GREEN&#125;</span>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; 安装常见 lib 结束<span class="token variable">$&#123;RESET&#125;</span><span class="token entity" title="\n">\n</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="系统检查脚本"><a href="#系统检查脚本" class="headerlink" title="系统检查脚本"></a>系统检查脚本</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/usr/bin/env bash</span>
+
+<span class="token comment">##############################################################################</span>
+<span class="token comment"># console color</span>
+<span class="token assign-left variable">C_RESET</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span>tput sgr0<span class="token variable">)</span></span>"</span>
+<span class="token assign-left variable">C_BLACK</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;30m"</span>
+<span class="token assign-left variable">C_RED</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;31m"</span>
+<span class="token assign-left variable">C_GREEN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;32m"</span>
+<span class="token assign-left variable">C_YELLOW</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;33m"</span>
+<span class="token assign-left variable">C_BLUE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;34m"</span>
+<span class="token assign-left variable">C_PURPLE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;35m"</span>
+<span class="token assign-left variable">C_CYAN</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;36m"</span>
+<span class="token assign-left variable">C_WHITE</span><span class="token operator">=</span><span class="token string">"<span class="token entity" title="\033">\033</span>[1;37m"</span>
+<span class="token comment">##############################################################################</span>
+
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_PURPLE&#125;</span>"</span>
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+###################################################################################
+# 系统信息检查脚本
+###################################################################################
+EOF</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_RESET&#125;</span>"</span>
+
+<span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">id</span> -u<span class="token variable">)</span></span> -gt <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token string">"请用root用户执行此脚本！"</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+<span class="token assign-left variable">sysversion</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">rpm</span> -q centos-release <span class="token operator">|</span> <span class="token function">cut</span> -d- -f3<span class="token variable">)</span></span>
+<span class="token assign-left variable">double_line</span><span class="token operator">=</span><span class="token string">"==============================================================="</span>
+<span class="token assign-left variable">line</span><span class="token operator">=</span><span class="token string">"----------------------------------------------"</span>
+
+<span class="token comment"># 打印头部信息</span>
+<span class="token function-name function">printHeadInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
++---------------------------------------------------------------------------------+
+|                           欢迎使用 【系统信息检查脚本】                          |
++---------------------------------------------------------------------------------+
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 打印尾部信息</span>
+<span class="token function-name function">printFootInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
++---------------------------------------------------------------------------------+
+|                            脚本执行结束，感谢使用！                              |
++---------------------------------------------------------------------------------+
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token assign-left variable">options</span><span class="token operator">=</span><span class="token punctuation">(</span> <span class="token string">"获取系统信息"</span> <span class="token string">"获取服务信息"</span> <span class="token string">"获取CPU信息"</span> <span class="token string">"获取系统网络信息"</span> <span class="token string">"获取系统内存信息"</span> <span class="token string">"获取系统磁盘信息"</span> <span class="token string">"获取CPU/内存占用TOP10"</span> <span class="token string">"获取系统用户信息"</span> <span class="token string">"输出所有信息"</span> <span class="token string">"退出"</span> <span class="token punctuation">)</span>
+<span class="token function-name function">printMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_BLUE&#125;</span>"</span>
+	<span class="token builtin class-name">printf</span> <span class="token string">"主菜单：<span class="token entity" title="\n">\n</span>"</span>
+	<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token string">"<span class="token variable">$&#123;<span class="token operator">!</span>options<span class="token punctuation">[</span>@<span class="token punctuation">]</span>&#125;</span>"</span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+		<span class="token assign-left variable">index</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $<span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span> + <span class="token number">1</span><span class="token variable">`</span></span>
+		<span class="token assign-left variable">val</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $<span class="token punctuation">&#123;</span>index<span class="token punctuation">&#125;</span> % <span class="token number">2</span><span class="token variable">`</span></span>
+		<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\t">\t</span>(%02d) %-30s"</span> <span class="token string">"<span class="token variable">$&#123;index&#125;</span>"</span> <span class="token string">"<span class="token variable">$&#123;options<span class="token punctuation">[</span>$i<span class="token punctuation">]</span>&#125;</span>"</span>
+		<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$&#123;val&#125;</span> -eq <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+			<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token entity" title="\n">\n</span>"</span>
+		<span class="token keyword">fi</span>
+	<span class="token keyword">done</span>
+	<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_BLUE&#125;</span>请输入需要执行的指令：<span class="token entity" title="\n">\n</span>"</span>
+	<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_RESET&#125;</span>"</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取系统信息</span>
+<span class="token function-name function">get_systatus_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token assign-left variable">sys_os</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">uname</span> -o<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_release</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> /etc/redhat-release<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_kernel</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">uname</span> -r<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_hostname</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">hostname</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_selinux</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>getenforce<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_lang</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">echo</span> <span class="token environment constant">$LANG</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_lastreboot</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">who</span> -b <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$3</span>,<span class="token variable">$4</span>&#125;'</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_runtime</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">uptime</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print  <span class="token variable">$3</span>,<span class="token variable">$4</span>&#125;'</span> <span class="token operator">|</span> <span class="token function">cut</span> -d, -f1<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_time</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">date</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">sys_load</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">uptime</span> <span class="token operator">|</span> <span class="token function">cut</span> -d: -f5<span class="token variable">)</span></span>
+
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【系统信息】
+系统: <span class="token variable">$&#123;sys_os&#125;</span>
+发行版本:   <span class="token variable">$&#123;sys_release&#125;</span>
+系统内核:   <span class="token variable">$&#123;sys_kernel&#125;</span>
+主机名:    <span class="token variable">$&#123;sys_hostname&#125;</span>
+selinux状态:  <span class="token variable">$&#123;sys_selinux&#125;</span>
+系统语言:   <span class="token variable">$&#123;sys_lang&#125;</span>
+系统当前时间: <span class="token variable">$&#123;sys_time&#125;</span>
+系统最后重启时间:   <span class="token variable">$&#123;sys_lastreboot&#125;</span>
+系统运行时间: <span class="token variable">$&#123;sys_runtime&#125;</span>
+系统负载:   <span class="token variable">$&#123;sys_load&#125;</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取CPU信息</span>
+<span class="token function-name function">get_cpu_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token assign-left variable">Physical_CPUs</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> <span class="token string">"physical id"</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> <span class="token operator">|</span> <span class="token function">wc</span> -l<span class="token variable">)</span></span>
+	<span class="token assign-left variable">Virt_CPUs</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> <span class="token string">"processor"</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">wc</span> -l<span class="token variable">)</span></span>
+	<span class="token assign-left variable">CPU_Kernels</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> <span class="token string">"cores"</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">uniq</span> <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">': '</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">CPU_Type</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> <span class="token string">"model name"</span> /proc/cpuinfo <span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">': '</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">CPU_Arch</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">uname</span> -m<span class="token variable">)</span></span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【CPU信息】
+物理CPU个数:<span class="token variable">$Physical_CPUs</span>
+逻辑CPU个数:<span class="token variable">$Virt_CPUs</span>
+每CPU核心数:<span class="token variable">$CPU_Kernels</span>
+CPU型号:<span class="token variable">$CPU_Type</span>
+CPU架构:<span class="token variable">$CPU_Arch</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取服务信息</span>
+<span class="token function-name function">get_service_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token assign-left variable">port_listen</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">netstat</span> -lntup <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token string">"Active Internet"</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">kernel_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>sysctl -p <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null<span class="token variable">)</span></span>
+	<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$&#123;sysversion&#125;</span> -gt <span class="token number">6</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+		<span class="token assign-left variable">service_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>systemctl list-unit-files --type<span class="token operator">=</span>service --state<span class="token operator">=</span>enabled <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"enabled"</span><span class="token variable">)</span></span>
+		<span class="token assign-left variable">run_service</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>systemctl list-units --type<span class="token operator">=</span>service --state<span class="token operator">=</span>running <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">".service"</span><span class="token variable">)</span></span>
+	<span class="token keyword">else</span>
+		<span class="token assign-left variable">service_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>/sbin/chkconfig <span class="token operator">|</span> <span class="token function">grep</span> -E <span class="token string">":on|:启用"</span> <span class="token operator">|</span> <span class="token function">column</span> -t<span class="token variable">)</span></span>
+		<span class="token assign-left variable">run_service</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>/sbin/service --status-all <span class="token operator">|</span> <span class="token function">grep</span> -E <span class="token string">"running"</span><span class="token variable">)</span></span>
+	<span class="token keyword">fi</span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【服务信息】
+<span class="token variable">$&#123;service_config&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+运行的服务:
+<span class="token variable">$&#123;run_service&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+监听端口:
+<span class="token variable">$&#123;port_listen&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+内核参考配置:
+<span class="token variable">$&#123;kernel_config&#125;</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取系统内存信息</span>
+<span class="token function-name function">get_mem_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token assign-left variable">check_mem</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">free</span> -m<span class="token variable">)</span></span>
+	<span class="token assign-left variable">MemTotal</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> MemTotal /proc/meminfo <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">)</span></span> <span class="token comment">#KB</span>
+	<span class="token assign-left variable">MemFree</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">grep</span> MemFree /proc/meminfo <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">)</span></span> <span class="token comment">#KB</span>
+	<span class="token builtin class-name">let</span> <span class="token assign-left variable">MemUsed</span><span class="token operator">=</span>MemTotal-MemFree
+	<span class="token assign-left variable">MemPercent</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">awk</span> <span class="token string">"BEGIN &#123;if(<span class="token variable">$MemTotal</span>==0)&#123;printf 100&#125;else&#123;printf <span class="token entity" title="\&quot;">\"</span>%.2f<span class="token entity" title="\&quot;">\"</span>,<span class="token variable">$MemUsed</span>*100/<span class="token variable">$MemTotal</span>&#125;&#125;"</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">report_MemTotal</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$((</span>MemTotal<span class="token operator">/</span><span class="token number">1024</span><span class="token variable">))</span></span>"</span> <span class="token string">"MB"</span> <span class="token comment">#内存总容量(MB)</span>
+	<span class="token assign-left variable">report_MemFree</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$((</span>MemFree<span class="token operator">/</span><span class="token number">1024</span><span class="token variable">))</span></span>"</span> <span class="token string">"MB"</span> <span class="token comment">#内存剩余(MB)</span>
+	<span class="token assign-left variable">report_MemUsedPercent</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">free</span> <span class="token operator">|</span> <span class="token function">sed</span> -n <span class="token string">'2p'</span> <span class="token operator">|</span> <span class="token function">gawk</span> 'x <span class="token operator">=</span> int<span class="token punctuation">((</span> $3 / $2 <span class="token punctuation">)</span> * <span class="token number">100</span><span class="token variable">)</span></span> <span class="token punctuation">&#123;</span>print x<span class="token punctuation">&#125;</span><span class="token string">' | sed '</span>s/$/%/<span class="token string">')
+
+	cat &lt;&lt; EOF
+【内存信息】
+内存总容量(MB): <span class="token variable">$&#123;report_MemTotal&#125;</span>
+内存剩余量(MB):<span class="token variable">$&#123;report_MemFree&#125;</span>
+内存使用率: <span class="token variable">$&#123;report_MemUsedPercent&#125;</span>
+EOF
+&#125;
+
+# 获取系统网络信息
+get_net_info() &#123;
+	pri_ipadd=<span class="token variable"><span class="token variable">$(</span><span class="token function">ip</span> addr <span class="token operator">|</span> <span class="token function">awk</span> '/^<span class="token punctuation">[</span><span class="token number">0</span>-9<span class="token punctuation">]</span>+: / <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span> /inet.*global/ <span class="token punctuation">&#123;</span>print gensub<span class="token punctuation">(</span>/<span class="token punctuation">(</span>.*<span class="token punctuation">)</span><span class="token punctuation">\</span>/<span class="token punctuation">(</span>.*<span class="token punctuation">)</span>/, <span class="token string">"<span class="token entity" title="\\">\\</span>1"</span>, <span class="token string">"g"</span>, $2<span class="token variable">)</span></span>&#125;'</span><span class="token punctuation">)</span>
+	<span class="token assign-left variable">pub_ipadd</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">curl</span> ifconfig.me -s<span class="token variable">)</span></span>
+	<span class="token assign-left variable">gateway</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">ip</span> route <span class="token operator">|</span> <span class="token function">grep</span> default <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$3</span>&#125;'</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">mac_info</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">ip</span> <span class="token function">link</span> <span class="token operator">|</span> <span class="token function">egrep</span> -v <span class="token string">"lo"</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token function">link</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">dns_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">egrep</span> -v <span class="token string">"^$|^#"</span> /etc/resolv.conf<span class="token variable">)</span></span>
+	<span class="token assign-left variable">route_info</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>route -n<span class="token variable">)</span></span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【网络信息】
+系统公网地址:<span class="token variable">$&#123;pub_ipadd&#125;</span>
+系统私网地址:<span class="token variable">$&#123;pri_ipadd&#125;</span>
+网关地址:<span class="token variable">$&#123;gateway&#125;</span>
+MAC地址:<span class="token variable">$&#123;mac_info&#125;</span>
+路由信息:
+<span class="token variable">$&#123;route_info&#125;</span>
+DNS 信息:
+<span class="token variable">$&#123;dns_config&#125;</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取系统磁盘信息</span>
+<span class="token function-name function">get_disk_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token assign-left variable">disk_info</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">fdisk</span> -l <span class="token operator">|</span> <span class="token function">grep</span> <span class="token string">"Disk /dev"</span> <span class="token operator">|</span> <span class="token function">cut</span> -d, -f1<span class="token variable">)</span></span>
+	<span class="token assign-left variable">disk_use</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">df</span> -hTP <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'<span class="token variable">$2</span>!="tmpfs"&#123;print&#125;'</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">disk_percent</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">free</span> <span class="token operator">|</span> <span class="token function">sed</span> -n <span class="token string">'2p'</span> <span class="token operator">|</span> <span class="token function">gawk</span> 'x <span class="token operator">=</span> int<span class="token punctuation">((</span> $3 / $2 <span class="token punctuation">)</span> * <span class="token number">100</span><span class="token variable">)</span></span> <span class="token punctuation">&#123;</span>print x<span class="token punctuation">&#125;</span><span class="token string">' | sed '</span>s/$/%/<span class="token string">')
+	disk_inode=<span class="token variable"><span class="token variable">$(</span><span class="token function">df</span> -hiP <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'<span class="token variable">$1</span>!="tmpfs"&#123;print&#125;'</span><span class="token variable">)</span></span>
+
+	cat &lt;&lt; EOF
+【磁盘信息】
+<span class="token variable">$&#123;disk_info&#125;</span>
+磁盘使用: <span class="token variable">$&#123;disk_use&#125;</span>
+磁盘使用百分比: <span class="token variable">$&#123;disk_percent&#125;</span>
+inode信息: <span class="token variable">$&#123;disk_inode&#125;</span>
+EOF
+&#125;
+
+# 获取系统用户信息
+get_sys_user() &#123;
+	login_user=$(awk -F: '&#123;if (<span class="token variable">$NF</span>=="/bin/bash") print <span class="token variable">$0</span>&#125;'</span> /etc/passwd<span class="token punctuation">)</span>
+	<span class="token assign-left variable">ssh_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">egrep</span> -v <span class="token string">"^#|^$"</span> /etc/ssh/sshd_config<span class="token variable">)</span></span>
+	<span class="token assign-left variable">sudo_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">egrep</span> -v <span class="token string">"^#|^$"</span> /etc/sudoers <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token string">"^Defaults"</span><span class="token variable">)</span></span>
+	<span class="token assign-left variable">host_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">egrep</span> -v <span class="token string">"^#|^$"</span> /etc/hosts<span class="token variable">)</span></span>
+	<span class="token assign-left variable">crond_config</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token keyword">for</span> <span class="token for-or-select variable">cronuser</span> <span class="token keyword">in</span> /var/spool/cron/*<span class="token punctuation">;</span> <span class="token keyword">do</span>
+		<span class="token function">ls</span> $<span class="token punctuation">&#123;</span>cronuser<span class="token punctuation">&#125;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null <span class="token operator">|</span> <span class="token function">cut</span> -d/ -f5<span class="token punctuation">;</span> <span class="token function">egrep</span> -v <span class="token string">"^$|^#"</span> $<span class="token punctuation">&#123;</span>cronuser<span class="token punctuation">&#125;</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span> /dev/null<span class="token punctuation">;</span>
+		<span class="token builtin class-name">echo</span> <span class="token string">""</span><span class="token punctuation">;</span>
+	<span class="token keyword">done</span><span class="token variable">)</span></span>
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【用户信息】
+系统登录用户:
+<span class="token variable">$&#123;login_user&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+ssh 配置信息:
+<span class="token variable">$&#123;ssh_config&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+sudo 配置用户:
+<span class="token variable">$&#123;sudo_config&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+定时任务配置:
+<span class="token variable">$&#123;crond_config&#125;</span>
+	<span class="token variable">$&#123;line&#125;</span>
+hosts 信息:
+<span class="token variable">$&#123;host_config&#125;</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># 获取CPU/内存占用TOP10</span>
+<span class="token function-name function">get_process_top_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+	<span class="token assign-left variable">top_title</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">top</span> -b n1 <span class="token operator">|</span> <span class="token function">head</span> -7 <span class="token operator">|</span> <span class="token function">tail</span> -1<span class="token variable">)</span></span>
+	<span class="token assign-left variable">cpu_top10</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">top</span> -b n1 <span class="token operator">|</span> <span class="token function">head</span> -17 <span class="token operator">|</span> <span class="token function">tail</span> -11<span class="token variable">)</span></span>
+	<span class="token assign-left variable">mem_top10</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">top</span> -b n1 <span class="token operator">|</span> <span class="token function">head</span> -17 <span class="token operator">|</span> <span class="token function">tail</span> -10 <span class="token operator">|</span> <span class="token function">sort</span> -k10 -r<span class="token variable">)</span></span>
+
+	<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span> <span class="token string">EOF
+【TOP10】
+CPU占用TOP10:
+<span class="token variable">$&#123;cpu_top10&#125;</span>
+内存占用TOP10:
+<span class="token variable">$&#123;top_title&#125;</span>
+	<span class="token variable">$&#123;mem_top10&#125;</span>
+EOF</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">show_dead_process</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin class-name">printf</span> <span class="token string">"僵尸进程：<span class="token entity" title="\n">\n</span>"</span>
+	<span class="token function">ps</span> -al <span class="token operator">|</span> <span class="token function">gawk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>,<span class="token variable">$4</span>&#125;'</span> <span class="token operator">|</span> <span class="token function">grep</span> Z
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">get_all_info</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	get_systatus_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_service_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_cpu_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_net_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_mem_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_disk_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_process_top_info
+	<span class="token builtin class-name">echo</span> <span class="token variable">$&#123;double_line&#125;</span>
+	get_sys_user
+<span class="token punctuation">&#125;</span>
+
+<span class="token function-name function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">while</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token number">1</span> <span class="token punctuation">]</span><span class="token punctuation">]</span>
+	<span class="token keyword">do</span>
+		printMenu
+		<span class="token builtin class-name">read</span> option
+		<span class="token builtin class-name">local</span> <span class="token assign-left variable">index</span><span class="token operator">=</span>$<span class="token punctuation">[</span> <span class="token variable">$&#123;option&#125;</span> - <span class="token number">1</span> <span class="token punctuation">]</span>
+		<span class="token keyword">case</span> <span class="token variable">$&#123;options<span class="token punctuation">[</span>$&#123;index&#125;</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span> <span class="token keyword">in</span>
+			<span class="token string">"获取系统信息"</span><span class="token punctuation">)</span>
+				get_systatus_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取服务信息"</span><span class="token punctuation">)</span>
+				get_service_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取CPU信息"</span><span class="token punctuation">)</span>
+				get_cpu_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取系统网络信息"</span><span class="token punctuation">)</span>
+				get_net_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取系统内存信息"</span><span class="token punctuation">)</span>
+				get_mem_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取系统磁盘信息"</span><span class="token punctuation">)</span>
+				get_disk_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取CPU/内存占用TOP10"</span><span class="token punctuation">)</span>
+				get_process_top_info <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"获取系统用户信息"</span><span class="token punctuation">)</span>
+				get_sys_user <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"输出所有信息"</span><span class="token punctuation">)</span>
+				get_all_info <span class="token operator">></span> sys.log
+				<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_GREEN&#125;</span>信息已经输出到 sys.log 中。<span class="token variable">$&#123;C_RESET&#125;</span><span class="token entity" title="\n">\n</span><span class="token entity" title="\n">\n</span>"</span>
+			<span class="token punctuation">;</span><span class="token punctuation">;</span>
+			<span class="token string">"退出"</span><span class="token punctuation">)</span>
+				<span class="token builtin class-name">exit</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+			*<span class="token punctuation">)</span>
+				<span class="token function">clear</span>
+				<span class="token builtin class-name">echo</span> <span class="token string">"抱歉，不支持此选项"</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+		<span class="token keyword">esac</span>
+	<span class="token keyword">done</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">######################################## MAIN ########################################</span>
+printHeadInfo
+main
+printFootInfo
+<span class="token builtin class-name">printf</span> <span class="token string">"<span class="token variable">$&#123;C_RESET&#125;</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1 id="sed进阶"><a href="#sed进阶" class="headerlink" title="sed进阶"></a>sed进阶</h1><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token comment">#多个空格只保留一个</span>
+<span class="token comment">#sed '/./,/^$/!d' test</span>
+
+<span class="token comment">#删除开头的空白行</span>
+<span class="token comment">#sed '/./,$!d' test</span>
+
+<span class="token comment">#删除结尾的空白行</span>
+<span class="token function">sed</span> <span class="token string">'&#123;
+:start
+/^<span class="token entity" title="\n">\n</span>*$/&#123;<span class="token variable">$d</span>; N; b start&#125;
+&#125;'</span> <span class="token builtin class-name">test</span>
+
+<span class="token comment">#删除html标签</span>
+<span class="token comment">#有问题</span>
+<span class="token comment">#s/&lt;.*>//g</span>
+
+<span class="token comment">#sed 's/&lt;[^>]*>//g' test1</span>
+
+<span class="token comment">#sed 's/&lt;[^>]*>//g;/^$/d' test1</span>
+
+
+<span class="token comment">#and符号，代表替换命令中的匹配模式，不管预定义模式是什么文本，都可以用and符号替换，and符号会提取匹配替换命令中指定替换模式中的所有字符串</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"The cat sleeps in his hat"</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/.at/"&amp;"/g'</span>
+
+<span class="token comment">#替换单独的单词</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"The System Administrator manual"</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/\(System\) Administrator/<span class="token entity" title="\1">\1</span> user/'</span>
+
+<span class="token comment">#在长数字中插入逗号</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"1234567"</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'&#123;:start; s/\(.*[0-9]\)\([0-9]\&#123;3\&#125;\)/<span class="token entity" title="\1">\1</span>,<span class="token entity" title="\2">\2</span>/; t start&#125;'</span>
+
+<span class="token comment">#给文件中的行编号</span>
+<span class="token function">sed</span> <span class="token string">'='</span> <span class="token builtin class-name">test</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'N; s/<span class="token entity" title="\n">\n</span>/ /'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p> Linux常用的20条运维命令，值得收藏！<br>1、 删除0字节文件<br>find -type f -size 0 -exec rm -rf{}</p>
+<p>2、 查看进程按内存从大到小排序<br>ps -e -o “%C:%p:%z:%a”|sort -k5 -nr</p>
+<p>3、查看磁盘和分区信息<br># mount | column -t # 查看挂接的分区状态<br># fdisk -l         # 查看所有分区<br># swapon -s       # 查看所有交换分区<br># hdparm -i /dev/hda # 查看磁盘参数(仅适用于IDE设备)<br># dmesg | grep IDE # 查看启动时IDE设备检测状况</p>
+<p>4、 打开文件数目：检查打开文件总数是否过多<br>lsof |wc -l</p>
+<p>5、 查看网络信息<br>ifconfig    # 查看所有网络接口的属性<br>iptables -L   # 查看防火墙设置<br>route -n    # 查看路由表<br>netstat -lntp  # 查看所有监听端口<br>netstat -antp  # 查看所有已经建立的连接<br>netstat -s   # 查看网络统计信息</p>
+<p>6、 核心日志：检查是否有异常错误记录<br>dmesg</p>
+<p>7、 系统日志：检查是否有异常错误记录<br>cat /var/log/rflogview/*errors<br>也可以搜索一些异常关键字：比如<br>grep –i error /var/log/messages<br>grep –i fail /var/log/messages</p>
+<p>8、查看服务<br>chkconfig –list      # 列出所有系统服务<br>chkconfig –list | grep on # 列出所有启动的系统服务</p>
+<p>9、 检查是否有异常进程出现<br>top –id 1</p>
+<p>10、 检查是否有分区使用率过高<br>df –h<br>#找出占用空间最多的文件或目录<br>du –cks * | sort –rn |head –n 10</p>
+<p>11、 磁盘I/O负载：检查I/O使用率是否超过100%<br>Iostat –x 1 2</p>
+<p>12、 检查进程个数<br>ps aux |wc –l</p>
+<p>13、tar解压命令<br>参数说明：-x: 解压，-z:有gzip属性，-v:显示所有过程，-f:文件名，c:创建压缩文档<br>tar -xzvf file.tar #解压<br>tar -czvf /home/ccc.tar ccc/ #压缩<br>tar tfz ccc.tgz #查看压缩包内容<br>tar -zxvf ccc.tgz mylog.txt #解压压缩包中指定的文件</p>
+<p>14、 检查网络负载(网络流量是否过高)<br>sar –n DEV</p>
+<p>15、 检查是否有网络错误<br>netstat –i 或者cat /proc/net/dev</p>
+<p>16、 杀掉80端口相关的进程<br>lsof -i :80|grep -v ”ID”|awk’{print “kill -9”,$2}’|sh</p>
+<p>17、 tcpdump抓包<br>tcpdump -c 10000 -I eth0 -n dst port 80&gt;/root/zhuabao</p>
+<p>18、 检查登录用户是否过多<br>who |wc –l 或者uptime</p>
+<p>19、 按cpu利用率从大到小排序<br>ps -e -o “%C:%p:%z:%a”|sort -nr</p>
+<p>20、 检查内存空间<br>free 或者cat/proc/meminfo </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+              <a href="/tags/mysql/" rel="tag"># mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/16/other/hexo/" rel="prev" title="hexo">
+                  <i class="fa fa-chevron-left"></i> hexo
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/22/shell/%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE/" rel="next" title="终端配置">
+                  终端配置 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

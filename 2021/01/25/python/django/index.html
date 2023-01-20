@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="用惯了php语言的web后端，然后尝试一下python的web端。本文记录一下尝试记录。简单记录一个部署启动过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="django">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/01/25/python/django/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="用惯了php语言的web后端，然后尝试一下python的web端。本文记录一下尝试记录。简单记录一个部署启动过程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-25T15:25:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.018Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="django">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/01/25/python/django/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>django | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%84%9F%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">感想</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number"></span> <span class="nav-text">资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E7%9A%84%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.</span> <span class="nav-text">开源的项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DjangoBlog"><span class="nav-number">2.</span> <span class="nav-text">DjangoBlog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#django-idcops-git"><span class="nav-number">3.</span> <span class="nav-text">django-idcops.git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zqxt"><span class="nav-number">4.</span> <span class="nav-text">zqxt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E7%AC%94%E8%AE%B0"><span class="nav-number">5.</span> <span class="nav-text">临时笔记</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number"></span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number"></span> <span class="nav-text">搭建第一个例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.</span> <span class="nav-text">镜像环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%91%E9%80%9A%E4%BE%8B%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">跑通例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEnginx-uwsgi-python"><span class="nav-number">3.</span> <span class="nav-text">配置nginx + uwsgi + python</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F1%EF%BC%9Asocket"><span class="nav-number">3.1.</span> <span class="nav-text">方式1：socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F2%EF%BC%9Ahttp"><span class="nav-number">3.2.</span> <span class="nav-text">方式2：http</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">3.3.</span> <span class="nav-text">题外话</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uwsgi%E5%91%BD%E4%BB%A4"><span class="nav-number">3.4.</span> <span class="nav-text">uwsgi命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#supervisor"><span class="nav-number">3.5.</span> <span class="nav-text">supervisor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gunicorn"><span class="nav-number">3.6.</span> <span class="nav-text">gunicorn</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tzdata%E8%87%AA%E5%8A%A8%E5%AE%89%E8%A3%85%E8%A7%A3%E5%86%B3"><span class="nav-number">4.</span> <span class="nav-text">tzdata自动安装解决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number"></span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#urls-py"><span class="nav-number">2.</span> <span class="nav-text">urls.py</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E7%A7%8D%E6%A0%BC%E5%BC%8F%E5%BC%95%E5%85%A5"><span class="nav-number">2.1.</span> <span class="nav-text">3种格式引入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%96%E6%8B%AC%E5%8F%B7%E8%AF%AD%E6%B3%95"><span class="nav-number">2.2.</span> <span class="nav-text">尖括号语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99"><span class="nav-number">2.3.</span> <span class="nav-text">正则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92"><span class="nav-number">2.4.</span> <span class="nav-text">参数传递</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%80%81%E7%9A%84%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.5.</span> <span class="nav-text">老的格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2"><span class="nav-number">2.6.</span> <span class="nav-text">静态页面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#views-py"><span class="nav-number">3.</span> <span class="nav-text">views.py</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E8%A7%86%E5%9B%BE"><span class="nav-number">3.1.</span> <span class="nav-text">函数式视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%B1%BB%E7%9A%84%E8%A7%86%E5%9B%BE"><span class="nav-number">3.2.</span> <span class="nav-text">基于类的视图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#URLconf"><span class="nav-number">3.3.</span> <span class="nav-text">URLconf</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#forms-py"><span class="nav-number">4.</span> <span class="nav-text">forms.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">请求参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.</span> <span class="nav-text">返回类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">7.</span> <span class="nav-text">模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">8.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">8.1.</span> <span class="nav-text">模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">9.</span> <span class="nav-text">模型之间的关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E7%B1%BB%E5%9E%8B"><span class="nav-number">9.1.</span> <span class="nav-text">字段类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%B1%9E%E6%80%A7"><span class="nav-number">9.2.</span> <span class="nav-text">字段属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">9.3.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A2%9E"><span class="nav-number">9.4.</span> <span class="nav-text">增</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0"><span class="nav-number">9.5.</span> <span class="nav-text">删</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%B9"><span class="nav-number">9.6.</span> <span class="nav-text">改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5"><span class="nav-number">9.7.</span> <span class="nav-text">查</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell"><span class="nav-number">10.</span> <span class="nav-text">shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#command"><span class="nav-number">11.</span> <span class="nav-text">command</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todo"><span class="nav-number"></span> <span class="nav-text">todo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#admin%E4%B8%8B%E6%9C%89save%EF%BC%8C%E8%B7%9Fmodels%E4%B8%8B%E7%9A%84save%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">admin下有save，跟models下的save区别</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/01/25/python/django/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          django
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-25 15:25:00" itemprop="dateCreated datePublished" datetime="2021-01-25T15:25:00+00:00">2021-01-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>用惯了php语言的web后端，然后尝试一下python的web端。本文记录一下尝试记录。简单记录一个部署启动过程。</p>
+<a id="more"></a>
+
+<h3 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h3><p>django不用自己来写建表的sql，sql其实是从模型中出来的。让我一时难一接受的是：模型之间的关系，它会自动帮你维护。但是，我确很不适应。</p>
+<p>比如：多对多的关系，比如：文章跟标签，它会自动帮你创建中间表。article_tag。但是有个问题，如果我想在article_tag还要另另加内容，怎么弄呢？</p>
+<p>难道是要我自己建一个article_tag模型吗？自己来维护吗？</p>
+<p>本来想做一个简单的，结果发现越来越复杂。</p>
+<p>不能说django不好用，是我暂时没有习惯它的机制。</p>
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/4.0/contents/">官方文档，必须要优先</a>     </li>
+<li><a target="_blank" rel="noopener" href="https://www.liujiangblog.com/course/django/95">https://www.liujiangblog.com/course/django/95</a></li>
+<li><a target="_blank" rel="noopener" href="https://code.ziqiangxuetang.com/django/django-queryset-advance.html">自强学堂</a></li>
+</ul>
+<h3 id="开源的项目"><a href="#开源的项目" class="headerlink" title="开源的项目"></a>开源的项目</h3><p>下面是一些用django写的开源项目。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">https://gitee.com/lylinux/DjangoBlog.git
+https://gitee.com/wenvki/django-idcops.git
+https://github.com/twz915/zqxt.git<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="DjangoBlog"><a href="#DjangoBlog" class="headerlink" title="DjangoBlog"></a>DjangoBlog</h3><h3 id="django-idcops-git"><a href="#django-idcops-git" class="headerlink" title="django-idcops.git"></a>django-idcops.git</h3><p>后台管理系统，只有一个模块，但是模块的功能还是非常复杂。用到了djangoAdmin功能，但是呢，界面又不是传统那种的界面。</p>
+<h3 id="zqxt"><a href="#zqxt" class="headerlink" title="zqxt"></a>zqxt</h3><p>自强学堂的官网代码。比较适合新手来学，用到的东西都是中规中矩。</p>
+<h3 id="临时笔记"><a href="#临时笔记" class="headerlink" title="临时笔记"></a>临时笔记</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yueyuecoding/articles/13321366.html">https://www.cnblogs.com/yueyuecoding/articles/13321366.html</a></p>
+<p>使用 django 建模  过程 </p>
+<p>on_delete=models.CASCADE</p>
+<p>误删migrations下的<strong>init</strong>.py 导致无法创建数据库。原因猜想：可能是因为该模块无法识别，导致无法执行该模块中的创建数据库的内容。虽然<strong>init</strong>.py本身是个空文件。</p>
+<p>另外，因为反复删除Other模块的，导致，创建的数据库总是不对。</p>
+<p>limit_choices_to 使用，实在没有搞懂下面说的是什么意思。</p>
+<pre class="line-numbers language-none"><code class="language-none">
+http:&#x2F;&#x2F;www.voidcn.com&#x2F;article&#x2F;p-wynuqchl-bue.html
+原来是翻译过来的
+https:&#x2F;&#x2F;www.it1352.com&#x2F;2047712.html
+https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;31578559&#x2F;django-foreignkey-limit-choices-to-a-different-foreignkey-id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><pre class="line-numbers language-none"><code class="language-none">apt install sqlite3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="搭建第一个例子"><a href="#搭建第一个例子" class="headerlink" title="搭建第一个例子"></a>搭建第一个例子</h2><p>以下以ubuntu20.04为例，使用docker的方式，从零开始，快速搭建一个测试环境。（以下为自己测试后的代码）</p>
+<blockquote>
+<p>很多部署方面参照自强学堂网站的配置。</p>
+</blockquote>
+<h3 id="镜像环境"><a href="#镜像环境" class="headerlink" title="镜像环境"></a>镜像环境</h3><p>启动一个镜像，后续的所有操作，都在这个镜像里面。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker run -itd -p <span class="token number">55023</span>:8000 -p <span class="token number">55024</span>:22 -v /tmp/work:/work -w /work ubuntu:20.04 <span class="token function">bash</span>
+
+docker <span class="token builtin class-name">exec</span> -it xxxxxx  <span class="token function">bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="跑通例子"><a href="#跑通例子" class="headerlink" title="跑通例子"></a>跑通例子</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 更新源，好安装软件</span>
+<span class="token function">apt</span> update
+<span class="token function">cp</span> /etc/apt/sources.list<span class="token punctuation">&#123;</span>,.bak<span class="token punctuation">&#125;</span>
+<span class="token function">apt</span> <span class="token function">install</span> -y <span class="token function">curl</span>
+<span class="token comment"># 更新源配置</span>
+<span class="token function">curl</span> -o /etc/apt/sources.list http://mirrors.cloud.tencent.com/repo/ubuntu20_sources.list 
+<span class="token function">apt</span> update
+<span class="token comment"># python 环境</span>
+<span class="token function">apt</span> <span class="token function">install</span> -y python3.8 python3-pip <span class="token function">vim</span> tmux
+pip3 config <span class="token builtin class-name">set</span> global.index-url https://mirrors.cloud.tencent.com/pypi/simple
+pip3 <span class="token function">install</span> requests django uwsgi
+<span class="token comment"># django 环境</span>
+django-admin startproject website
+<span class="token builtin class-name">cd</span> website/
+django-admin startapp demo
+
+<span class="token comment"># </span>
+<span class="token function">vi</span> website/settings.py
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+ALLOWED_HOSTS = ['*']
+INSTALLED_APPS   #  'demo',
+
+LANGUAGE_CODE = 'zh-hans'
+
+TIME_ZONE = 'Asia/Shanghai'
+STATIC_ROOT = BASE_DIR / 'collected_static'
+EOL</span>
+<span class="token comment"># 由于设置了时区，执行下面安装，选择亚洲、上海。</span>
+<span class="token comment"># 缺少此步，大概会报：No module named 'tzdata'</span>
+<span class="token function">apt</span> <span class="token function">install</span> tzdata
+
+
+<span class="token function">vi</span> demo/views.py 
+
+<span class="token comment"># 随便增加一个测试的函数</span>
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+from django.http import HttpResponse
+
+# Create your views here.
+
+def index(request):
+    return HttpResponse('hello world')
+EOL</span>
+
+<span class="token function">vi</span> website/urls.py 
+
+<span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+from demo import views as demo_views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('demo/', demo_views.index,name='demo_index'),
+]
+EOL</span>
+
+<span class="token comment"># 下面是一些常用的启动脚本</span>
+<span class="token function">cat</span> <span class="token operator">></span> run.sh <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+#python3 manage.py runserver 0.0.0.0:8000
+uwsgi --http :8000 --chdir /work/website --module website.wsgi  --static-map /static=collected_static
+EOL</span>
+
+<span class="token comment"># 启动服务，已经能访问到  demo/  了</span>
+python3 manage.py runserver <span class="token number">0.0</span>.0.0:8000
+
+<span class="token comment"># 下面配置uwsgi部署   并创建django-admin相关</span>
+python3 manage.py
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py createsuperuser
+<span class="token comment"># 收集一下静态文件</span>
+python3 manage.py collectstatic
+uwsgi --http :8000 --chdir /work/website --module website.wsgi  --static-map /static<span class="token operator">=</span>collected_static
+
+<span class="token comment"># 后续，配置nginx + uwsgi + python</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="配置nginx-uwsgi-python"><a href="#配置nginx-uwsgi-python" class="headerlink" title="配置nginx + uwsgi + python"></a>配置nginx + uwsgi + python</h3><h4 id="方式1：socket"><a href="#方式1：socket" class="headerlink" title="方式1：socket"></a>方式1：socket</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">apt</span> <span class="token function">install</span> -y nginx
+
+<span class="token function">vi</span> /etc/nginx/sites-enabled/default  <span class="token comment"># 具体配置见后面</span>
+nginx -t
+
+nginx
+
+<span class="token function">vi</span> /work/website/uwsgi.ini   <span class="token comment"># 具体配置见后面</span>
+uwsgi --ini  /work/website/uwsgi.ini 
+
+<span class="token comment"># 其他的nginx命令  </span>
+nginx -s reload/stop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<ul>
+<li>nginx配置</li>
+</ul>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">server</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">listen</span> <span class="token number">8000</span> default_server<span class="token punctuation">;</span>
+    <span class="token keyword">listen</span> <span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token number">8000</span> default_server<span class="token punctuation">;</span>
+
+    <span class="token keyword">index</span> <span class="token keyword">index</span><span class="token punctuation">.</span>html <span class="token keyword">index</span><span class="token punctuation">.</span>htm <span class="token keyword">index</span><span class="token punctuation">.</span>nginx<span class="token operator">-</span>debian<span class="token punctuation">.</span>html<span class="token punctuation">;</span>
+
+    <span class="token keyword">server_name</span> _<span class="token punctuation">;</span>
+
+    <span class="token keyword">location</span> <span class="token operator">/</span> <span class="token punctuation">&#123;</span>
+        uwsgi_pass  unix<span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token operator">/</span>work<span class="token operator">/</span>website<span class="token operator">/</span>uwsgi<span class="token punctuation">.</span>sock<span class="token punctuation">;</span>
+        <span class="token keyword">include</span>     <span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>uwsgi_params<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token comment">#location /media  &#123;</span>
+    <span class="token comment">#    alias /path/to/project/media;</span>
+    <span class="token comment">#&#125;</span>
+ 
+    <span class="token keyword">location</span> <span class="token operator">/</span>static <span class="token punctuation">&#123;</span>
+        <span class="token keyword">alias</span> <span class="token operator">/</span>work<span class="token operator">/</span>website<span class="token operator">/</span>collected_static<span class="token operator">/</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<ul>
+<li>uwsgi.ini</li>
+</ul>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[uwsgi]</span>
+<span class="token constant">socket</span> <span class="token attr-value"><span class="token punctuation">=</span> /work/website/uwsgi.sock</span>
+<span class="token constant">chdir</span> <span class="token attr-value"><span class="token punctuation">=</span> /work/website</span>
+<span class="token constant">wsgi-file</span> <span class="token attr-value"><span class="token punctuation">=</span> website/wsgi.py</span>
+<span class="token constant">touch-reload</span> <span class="token attr-value"><span class="token punctuation">=</span> /work/website/reload</span>
+ 
+<span class="token constant">processes</span> <span class="token attr-value"><span class="token punctuation">=</span> 2</span>
+<span class="token constant">threads</span> <span class="token attr-value"><span class="token punctuation">=</span> 4</span>
+ 
+<span class="token constant">chmod-socket</span> <span class="token attr-value"><span class="token punctuation">=</span> 664</span>
+<span class="token constant">chown-socket</span> <span class="token attr-value"><span class="token punctuation">=</span> www-data:www-data</span>
+ 
+<span class="token constant">vacuum</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>按如上方式，即可正常的访问到服务，并且提交表单是正常的。</p>
+<h4 id="方式2：http"><a href="#方式2：http" class="headerlink" title="方式2：http"></a>方式2：http</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 修改上面的nginx配置</span>
+proxy_pass   http://localhost:8001<span class="token punctuation">;</span>
+include      /etc/nginx/proxy_params<span class="token punctuation">;</span>
+
+<span class="token comment"># 启动uwsgi服务</span>
+uwsgi --http :8001 --chdir /work/website --module website.wsgi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h4 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h4><ul>
+<li><p>如果使用http代理，要导入请求参数，缺少proxy_params，则会出现跨域问题。</p>
+</li>
+<li><p>socket文件路径、及权限问题</p>
+<p>socket文件uwsgi程序会自动生成，按如下的配置，会自动设置好权限。否则，因为权限、路径问题，则无法将代理请求传入到python端。</p>
+</li>
+</ul>
+<pre class="line-numbers language-init" data-language="init"><code class="language-init">chown-socket &#x3D; www-data:www-data<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h4 id="uwsgi命令"><a href="#uwsgi命令" class="headerlink" title="uwsgi命令"></a>uwsgi命令</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 说明：端口不能被占用</span>
+<span class="token comment"># 如果使用切换用户组、配置静态文件目录等，则可以如下</span>
+<span class="token comment"># module参数，记住，并不是指向某个文件，而是像python导入模块一样，要导入项目的  wsgi模块，不带py结尾</span>
+uwsgi --http :8001 --chdir /work/website --module website.wsgi   --gid www-data --uid www-data  --static-map /static<span class="token operator">=</span>collected_static
+
+
+<span class="token comment"># 使用配置文件</span>
+uwsgi --ini  /work/website/uwsgi.ini <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="supervisor"><a href="#supervisor" class="headerlink" title="supervisor"></a>supervisor</h4><p>配置守护进程，来启动uwsgi。（如果在容器内跑应用，其实也不一定需要，只需要将该uwsgi放在最后执行，并占住终端即可。但是虚拟机下，可能需要配置它来守护进程。</p>
+<blockquote>
+<p>下面是建立在uwsgi本身已经跑通的情况下。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">pip3 <span class="token function">install</span> supervisor	
+
+<span class="token comment"># 安装之后，会多出命令： supervisorctl  supervisord echo_supervisord_conf</span>
+
+echo_supervisord_conf <span class="token operator">></span> /etc/supervisord.conf
+<span class="token comment"># 然后添加后面的配置,</span>
+<span class="token function">vi</span> /etc/supervisord.conf
+
+<span class="token comment">#启动</span>
+supervisord -c /etc/supervisord.conf
+supervisorctl -c /etc/supervisord.conf restart wetsite
+supervisorctl -c /etc/supervisord.conf <span class="token punctuation">[</span>start<span class="token operator">|</span>stop<span class="token operator">|</span>restart<span class="token punctuation">]</span> <span class="token punctuation">[</span>program-name<span class="token operator">|</span>all<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>首先要确保command本身是可以执行的，不会报错。</p>
+<p>然后添加到/etc/supervisord.conf 末尾</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token selector">[program:wetsite]</span>
+<span class="token constant">command</span><span class="token attr-value"><span class="token punctuation">=</span>uwsgi --http :8001 --chdir /work/website --module website.wsgi</span>
+<span class="token constant">directory</span><span class="token attr-value"><span class="token punctuation">=</span>/work/website</span>
+<span class="token constant">startsecs</span><span class="token attr-value"><span class="token punctuation">=</span>0</span>
+<span class="token constant">stopwaitsecs</span><span class="token attr-value"><span class="token punctuation">=</span>0</span>
+<span class="token constant">autostart</span><span class="token attr-value"><span class="token punctuation">=</span>true</span>
+<span class="token constant">autorestart</span><span class="token attr-value"><span class="token punctuation">=</span>true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h4 id="gunicorn"><a href="#gunicorn" class="headerlink" title="gunicorn"></a>gunicorn</h4><p>使用gunicorn来代替 uwsgi部署，方式差不多。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">pip <span class="token function">install</span> gunicorn
+
+<span class="token builtin class-name">cd</span> /work/website
+gunicorn -w4 -b0.0.0.0:8002 website.wsgi<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="tzdata自动安装解决"><a href="#tzdata自动安装解决" class="headerlink" title="tzdata自动安装解决"></a>tzdata自动安装解决</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># Dockerfile</span>
+<span class="token builtin class-name">echo</span> Asia/Shanghai <span class="token operator">></span> /etc/timezone <span class="token operator">&amp;&amp;</span> <span class="token punctuation">\</span>
+<span class="token assign-left variable">DEBIAN_FRONTEND</span><span class="token operator">=</span>noninteractive <span class="token function">apt-get</span> <span class="token function">install</span> -y tzdata
+
+
+<span class="token comment"># 重新选择时间，shell的交互模式</span>
+dpkg-reconfigure tzdata<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>试了下面的，但，好像不起作用</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"Asia/Shanghai"</span> <span class="token operator">></span> /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>视图可以继承、模型也能继承。</p>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><pre class="line-numbers language-none"><code class="language-none">|-- db.sqlite3
+|-- demo
+|   |-- __init__.py
+|   |-- admin.py    # 后台管理
+|   |-- apps.py    # 应用配置
+|   |-- migrations
+|   |   |-- __init__.py
+|   |-- models.py   # 模型，可以有多个模型
+|   |-- tests.py  
+|   &#96;-- views.py    # 视图函数
+|-- manage.py
+|-- run.sh
+&#96;-- website
+    |-- __init__.py
+    |-- asgi.py
+    |-- settings.py  # 项目配置
+    |-- urls.py      # 项目的所有url
+    &#96;-- wsgi.py<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>每个项目，都还可以增加额外的urls，来管理url。</p>
+<h3 id="urls-py"><a href="#urls-py" class="headerlink" title="urls.py"></a>urls.py</h3><h4 id="3种格式引入"><a href="#3种格式引入" class="headerlink" title="3种格式引入"></a>3种格式引入</h4><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token triple-quoted-string string">"""
+    https://docs.djangoproject.com/en/4.0/topics/http/urls/
+Examples:
+函数形式
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+类形式
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+导入url配置
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""</span>
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib <span class="token keyword">import</span> admin
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>urls <span class="token keyword">import</span> path
+<span class="token keyword">from</span> demo <span class="token keyword">import</span> views <span class="token keyword">as</span> demo_views
+<span class="token keyword">from</span> blibli <span class="token keyword">import</span> views <span class="token keyword">as</span> blibli_views
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    path<span class="token punctuation">(</span><span class="token string">'admin/'</span><span class="token punctuation">,</span> admin<span class="token punctuation">.</span>site<span class="token punctuation">.</span>urls<span class="token punctuation">)</span><span class="token punctuation">,</span>  <span class="token comment"># 因为url都是以 / 开头，故，省略。</span>
+    path<span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">,</span> demo_views<span class="token punctuation">.</span>index<span class="token punctuation">,</span>name<span class="token operator">=</span><span class="token string">'demo_index'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="尖括号语法"><a href="#尖括号语法" class="headerlink" title="尖括号语法"></a>尖括号语法</h4><pre class="line-numbers language-python" data-language="python"><code class="language-python">path<span class="token punctuation">(</span><span class="token string">'articles/&lt;int:year>/&lt;int:month>/&lt;slug:slug>/'</span><span class="token punctuation">,</span> views<span class="token punctuation">.</span>article_detail<span class="token punctuation">)</span><span class="token punctuation">,</span>
+
+<span class="token comment"># 对应的视图函数</span>
+views<span class="token punctuation">.</span>article_detail<span class="token punctuation">(</span>request<span class="token punctuation">,</span> year<span class="token operator">=</span><span class="token number">2003</span><span class="token punctuation">,</span> month<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span> slug<span class="token operator">=</span><span class="token string">"building-a-django-site"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>路径参数转换</p>
+<ul>
+<li>str 包任意非空字符串，但不包含<code>/</code></li>
+<li>int  0或多个数字。</li>
+<li>slug 包含英文字符、数字、下划线、减号。</li>
+<li>uuid</li>
+<li>path  可以包含<code>/</code></li>
+</ul>
+<h4 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h4><p>提前注册。</p>
+<p>直接使用。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">re_path<span class="token punctuation">(</span>r<span class="token string">'^articles/(?P&lt;year>[0-9]&#123;4&#125;)/(?P&lt;month>[0-9]&#123;2&#125;)/(?P&lt;slug>[\w-]+)/$'</span>, views.article_detail<span class="token punctuation">)</span>,<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h4 id="参数传递"><a href="#参数传递" class="headerlink" title="参数传递"></a>参数传递</h4><h4 id="老的格式"><a href="#老的格式" class="headerlink" title="老的格式"></a>老的格式</h4><p>使用的是 url格式</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>conf<span class="token punctuation">.</span>urls <span class="token keyword">import</span> url<span class="token punctuation">,</span> include
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>contrib <span class="token keyword">import</span> admin
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>conf <span class="token keyword">import</span> settings
+<span class="token keyword">import</span> notifications<span class="token punctuation">.</span>urls
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    url<span class="token punctuation">(</span><span class="token string">r'^admin/'</span><span class="token punctuation">,</span> admin<span class="token punctuation">.</span>site<span class="token punctuation">.</span>urls<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    url<span class="token punctuation">(</span><span class="token string">r'^idcops'</span><span class="token punctuation">,</span> include<span class="token punctuation">(</span><span class="token string">'idcops.urls'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    url<span class="token punctuation">(</span><span class="token string">'^inbox/notifications/'</span><span class="token punctuation">,</span> include<span class="token punctuation">(</span>notifications<span class="token punctuation">.</span>urls<span class="token punctuation">,</span> namespace<span class="token operator">=</span><span class="token string">'notifications'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="静态页面"><a href="#静态页面" class="headerlink" title="静态页面"></a>静态页面</h4><p>测试的时候</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">if</span> settings<span class="token punctuation">.</span>DEBUG<span class="token punctuation">:</span>
+    urlpatterns <span class="token operator">+=</span> static<span class="token punctuation">.</span>static<span class="token punctuation">(</span>
+        settings<span class="token punctuation">.</span>STATIC_URL<span class="token punctuation">,</span>
+        document_root<span class="token operator">=</span>settings<span class="token punctuation">.</span>STATIC_ROOT
+    <span class="token punctuation">)</span>
+    urlpatterns <span class="token operator">+=</span> static<span class="token punctuation">.</span>static<span class="token punctuation">(</span>
+        settings<span class="token punctuation">.</span>MEDIA_URL<span class="token punctuation">,</span>
+        document_root<span class="token operator">=</span>settings<span class="token punctuation">.</span>MEDIA_ROOT
+    <span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="views-py"><a href="#views-py" class="headerlink" title="views.py"></a>views.py</h3><h4 id="函数式视图"><a href="#函数式视图" class="headerlink" title="函数式视图"></a>函数式视图</h4><h4 id="基于类的视图"><a href="#基于类的视图" class="headerlink" title="基于类的视图"></a>基于类的视图</h4><p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/4.0/topics/class-based-views/">https://docs.djangoproject.com/zh-hans/4.0/topics/class-based-views/</a></p>
+<p>使用类的继承，来实现复用视图。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/4.0/topics/class-based-views/generic-display/#generic-views-of-objects">generic-views-of-objects</a></p>
+<h4 id="URLconf"><a href="#URLconf" class="headerlink" title="URLconf"></a>URLconf</h4><p>使用切换视图的模板。</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">from</span> django<span class="token punctuation">.</span>urls <span class="token keyword">import</span> path
+<span class="token keyword">from</span> django<span class="token punctuation">.</span>views<span class="token punctuation">.</span>generic <span class="token keyword">import</span> TemplateView
+
+urlpatterns <span class="token operator">=</span> <span class="token punctuation">[</span>
+    path<span class="token punctuation">(</span><span class="token string">'about/'</span><span class="token punctuation">,</span> TemplateView<span class="token punctuation">.</span>as_view<span class="token punctuation">(</span>template_name<span class="token operator">=</span><span class="token string">"about.html"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>缓存视图。</p>
+<h3 id="forms-py"><a href="#forms-py" class="headerlink" title="forms.py"></a>forms.py</h3><p>上传表单。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/4.0/ref/forms/">表单</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.djangoproject.com/zh-hans/4.0/topics/http/file-uploads/">文件上传</a></p>
+<h3 id="请求参数"><a href="#请求参数" class="headerlink" title="请求参数"></a>请求参数</h3><pre class="line-numbers language-none"><code class="language-none">def add(request):
+    a &#x3D; request.GET[&#39;a&#39;]
+    b &#x3D; request.GET[&#39;b&#39;]
+    c &#x3D; int(a) + int(b)
+    return HttpResponse(str(c))
+
+def add2(request,a,b):
+    c &#x3D; int(a) + int(b)
+    return HttpResponse(str(c))
+    
+# url
+path(&#39;add&#x2F;&lt;int:a&gt;&#x2F;&lt;int:b&gt;&#x2F;&#39;, calc_views.add2, name&#x3D;&#39;add2&#39;),
+
+
+
+request.session.get(&#39;has_commented&#39;, False):
+
+request.session[&#39;has_commented&#39;] &#x3D; True<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">url(r&#39;^new_add&#x2F;(\d+)&#x2F;(\d+)&#x2F;$&#39;, calc_views.add2, name&#x3D;&#39;add2&#39;),<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">from django.urls import reverse
+&gt;&gt;&gt; reverse(&#39;add2&#39;,args&#x3D;(2,4))
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="返回类型"><a href="#返回类型" class="headerlink" title="返回类型"></a>返回类型</h3><pre class="line-numbers language-none"><code class="language-none">from django.http import HttpResponse
+from django.http import JsonResponse
+
+
+from django.shortcuts import render<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h3><pre class="line-numbers language-none"><code class="language-none"># -*- coding: utf-8 -*-
+from django.shortcuts import render
+ 
+ 
+def home(request):
+    string &#x3D; u&quot;我在自强学堂学习Django，用它来建网站&quot;
+    return render(request, &#39;home.html&#39;, &#123;&#39;string&#39;: string&#125;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">&#123;% include &#39;nav.html&#39; %&#125;
+ 
+&#123;% block content %&#125;
+&lt;div&gt;这里是默认内容，所有继承自这个模板的，如果不覆盖就显示这里的默认内容。&lt;&#x2F;div&gt;
+&#123;% endblock %&#125;
+ 
+&#123;% include &#39;bottom.html&#39; %&#125;
+ 
+&#123;% include &#39;tongji.html&#39; %&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">&#123;%for i in cl%&#125;
+&#123;&#123;i&#125;&#125;
+&#123;%endfor%&#125;
+
+
+
+&#123;% for item in List %&#125;
+    &#123;&#123; item &#125;&#125;&#123;% if not forloop.last %&#125;,&#123;% endif %&#125; 
+&#123;% endfor %&#125;
+
+
+forloop.counter	索引从 1 开始算
+forloop.counter0	索引从 0 开始算
+forloop.revcounter	索引从最大长度到 1
+forloop.revcounter0	索引从最大长度到 0
+forloop.first	当遍历的元素为第一项时为真
+forloop.last	当遍历的元素为最后一项时为真
+forloop.parentloop	
+用在嵌套的 for 循环中，
+
+获取上一层 for 循环的 forloop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">[uwsgi]
+chdir&#x3D;&#x2F;path&#x2F;to&#x2F;your&#x2F;project
+module&#x3D;mysite.wsgi:application
+master&#x3D;True
+pidfile&#x3D;&#x2F;tmp&#x2F;project-master.pid
+vacuum&#x3D;True
+max-requests&#x3D;5000
+daemonize&#x3D;&#x2F;var&#x2F;log&#x2F;uwsgi&#x2F;yourproject.log
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>示例 ini 配置文件语法:</p>
+<pre class="line-numbers language-none"><code class="language-none">uwsgi --ini uwsgi.ini<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wurijie/p/12950322.html">更复杂的配置</a></p>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><h4 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h4><pre class="line-numbers language-none"><code class="language-none">from django.db import models
+ 
+ 
+class Person(models.Model):
+    name &#x3D; models.CharField(max_length&#x3D;30)
+    age &#x3D; models.IntegerField()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="模型之间的关系"><a href="#模型之间的关系" class="headerlink" title="模型之间的关系"></a>模型之间的关系</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/466602178">https://zhuanlan.zhihu.com/p/466602178</a></p>
+<h4 id="字段类型"><a href="#字段类型" class="headerlink" title="字段类型"></a>字段类型</h4><p>查找方式</p>
+<blockquote>
+<p>本来应该是通过文档来查看的，下面是另外一种方式</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">find . -type d -name &quot;*django*&quot;
+
+grep &#39;[^\s]*Field()&#39; -r . <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>类型：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">models<span class="token punctuation">.</span>CharField<span class="token punctuation">(</span>max_length<span class="token operator">=</span><span class="token number">30</span><span class="token punctuation">)</span>
+models<span class="token punctuation">.</span>IntegerField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+models<span class="token punctuation">.</span>TextField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+models<span class="token punctuation">.</span>URLField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+	
+FloatField<span class="token punctuation">(</span><span class="token punctuation">)</span>
+DecimalField
+DateTimeField
+DateField
+TimeField
+DurationField
+BinaryField
+UUIDField<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>关系映射</p>
+<pre class="line-numbers language-none"><code class="language-none">blog &#x3D; models.ForeignKey(Blog, on_delete&#x3D;models.CASCADE)
+authors &#x3D; models.ManyToManyField(Author)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="字段属性"><a href="#字段属性" class="headerlink" title="字段属性"></a>字段属性</h4><pre class="line-numbers language-none"><code class="language-none">@total_ordering
+class Field(RegisterLookupMixin):
+
+        self.name &#x3D; name
+        self.verbose_name &#x3D; verbose_name  # May be set by set_attributes_from_name
+        self._verbose_name &#x3D; verbose_name  # Store original for deconstruction
+        self.primary_key &#x3D; primary_key
+        self.max_length, self._unique &#x3D; max_length, unique
+        self.blank, self.null &#x3D; blank, null
+        self.remote_field &#x3D; rel
+        self.is_relation &#x3D; self.remote_field is not None
+        self.default &#x3D; default
+        self.editable &#x3D; editable
+        self.serialize &#x3D; serialize
+        self.unique_for_date &#x3D; unique_for_date
+        self.unique_for_month &#x3D; unique_for_month
+        self.unique_for_year &#x3D; unique_for_year
+        if isinstance(choices, collections.abc.Iterator):
+            choices &#x3D; list(choices)
+        self.choices &#x3D; choices or []
+        self.help_text &#x3D; help_text
+        self.db_index &#x3D; db_index
+        self.db_column &#x3D; db_column
+        self._db_tablespace &#x3D; db_tablespace
+        self.auto_created &#x3D; auto_created<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h4 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h4><pre class="line-numbers language-none"><code class="language-none">python3 manage.py makemigrations
+python3 manage.py migrate<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h4 id="增"><a href="#增" class="headerlink" title="增"></a>增</h4><h4 id="删"><a href="#删" class="headerlink" title="删"></a>删</h4><h4 id="改"><a href="#改" class="headerlink" title="改"></a>改</h4><h4 id="查"><a href="#查" class="headerlink" title="查"></a>查</h4><ol>
+<li><p>Person.objects.all()</p>
+</li>
+<li><p>Person.objects.all()[:10] 切片操作，获取10个人，不支持负索引，切片可以节约内存</p>
+</li>
+<li><p>Person.objects.get(name=name)</p>
+</li>
+</ol>
+<p>   get是用来获取一个对象的，如果需要获取满足条件的一些人，就要用到filter</p>
+<ol start="4">
+<li><p>Person.objects.filter(name=”abc”)  # 等于Person.objects.filter(name__exact=”abc”) 名称严格等于 “abc” 的人</p>
+</li>
+<li><p>Person.objects.filter(name__iexact=”abc”)  # 名称为 abc 但是不区分大小写，可以找到 ABC, Abc, aBC，这些都符合条件</p>
+</li>
+</ol>
+<ol start="6">
+<li><p>Person.objects.filter(name__contains=”abc”)  # 名称中包含 “abc”的人</p>
+</li>
+<li><p>Person.objects.filter(name__icontains=”abc”)  #名称中包含 “abc”，且abc不区分大小写</p>
+</li>
+</ol>
+<ol start="8">
+<li><p>Person.objects.filter(name__regex=”^abc”)  # 正则表达式查询</p>
+</li>
+<li><p>Person.objects.filter(name__iregex=”^abc”)  # 正则表达式不区分大小写</p>
+</li>
+</ol>
+<p>   filter是找出满足条件的，当然也有排除符合某条件的</p>
+<ol start="10">
+<li><p>Person.objects.exclude(name__contains=”WZ”)  # 排除包含 WZ 的Person对象</p>
+</li>
+<li><p>Person.objects.filter(name__contains=”abc”).exclude(age=23)  # 找出名称含有abc, 但是排除年龄是23岁的</p>
+</li>
+</ol>
+<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><p><a target="_blank" rel="noopener" href="https://www.pythonf.cn/read/121861">https://www.pythonf.cn/read/121861</a></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">python manage<span class="token punctuation">.</span>py shell
+<span class="token comment"># 使用blog 模块</span>
+<span class="token keyword">from</span> blog<span class="token punctuation">.</span>models <span class="token keyword">import</span> Category
+
+
+categories <span class="token operator">=</span> Category<span class="token punctuation">.</span>objects<span class="token punctuation">.</span><span class="token builtin">filter</span><span class="token punctuation">(</span>name__contains<span class="token operator">=</span><span class="token string">'cate'</span><span class="token punctuation">)</span>  <span class="token comment"># 获取分类名称中包含"cate"字符串的分类，如：cate_1, cate_2</span>
+categories<span class="token punctuation">.</span>delete<span class="token punctuation">(</span><span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="command"><a href="#command" class="headerlink" title="command"></a>command</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/polly-ling/p/9830060.html">https://www.cnblogs.com/polly-ling/p/9830060.html</a></p>
+<p>另，参见自强学堂clearcache.py 例子。</p>
+<p>第一个demo</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span> blibli/
+<span class="token function">mkdir</span> -p management/commands/
+<span class="token function">touch</span>  management/commands/<span class="token punctuation">&#123;</span>__init__,hello<span class="token punctuation">&#125;</span>.py
+<span class="token function">touch</span>  management/__init__.py
+
+
+<span class="token function">cat</span> <span class="token operator">></span> management/commands/hello.py <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+from django.core.management.base import BaseCommand, CommandError
+
+
+class Command(BaseCommand):
+    help = 'demo command.Just say: hello world'
+    def handle(self, *args, **kwargs):
+        try:
+            self.stdout.write('Hello world<span class="token entity" title="\n">\n</span>')
+        except AttributeError:
+            raise CommandError('Error happened!<span class="token entity" title="\n">\n</span>')
+EOL</span>
+
+<span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>
+python3 manage.py  <span class="token comment"># 已经能看到模块下的命令了</span>
+
+<span class="token comment"># 删除后其实也能正常运行</span>
+<span class="token function">rm</span> blibli/management/__init__.py blibli/management/commands/__init__.py <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h1 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h1><p>title_description  作用</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">admin<span class="token punctuation">.</span>site<span class="token punctuation">.</span>site_header <span class="token operator">=</span> <span class="token string">"后台数据管理系统"</span>
+admin<span class="token punctuation">.</span>site<span class="token punctuation">.</span>site_title <span class="token operator">=</span> <span class="token string">"登录系统后台"</span>
+admin<span class="token punctuation">.</span>site<span class="token punctuation">.</span>index_title <span class="token operator">=</span> <span class="token string">"后台管理"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zyh8619990307/article/details/105745889/">https://blog.csdn.net/zyh8619990307/article/details/105745889/</a></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"> on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>PROTECT<span class="token punctuation">,</span>
+    
+operator <span class="token operator">=</span> models<span class="token punctuation">.</span>ForeignKey<span class="token punctuation">(</span>
+        settings<span class="token punctuation">.</span>AUTH_USER_MODEL<span class="token punctuation">,</span> on_delete<span class="token operator">=</span>models<span class="token punctuation">.</span>PROTECT<span class="token punctuation">,</span>
+        related_name<span class="token operator">=</span><span class="token string">"%(app_label)s_%(class)s_operator"</span><span class="token punctuation">,</span>
+        blank<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> null<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>
+        verbose_name<span class="token operator">=</span><span class="token string">"修改人"</span><span class="token punctuation">,</span> help_text<span class="token operator">=</span><span class="token string">"该对象的修改人"</span>
+    <span class="token punctuation">)</span>
+
+
+
+hidden <span class="token operator">=</span> <span class="token builtin">getattr</span><span class="token punctuation">(</span>settings<span class="token punctuation">,</span> <span class="token string">'HIDDEN_CONFIGURE_NAVBAR'</span><span class="token punctuation">,</span> <span class="token boolean">True</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="admin下有save，跟models下的save区别"><a href="#admin下有save，跟models下的save区别" class="headerlink" title="admin下有save，跟models下的save区别"></a>admin下有save，跟models下的save区别</h3><p>效果有啥区别？</p>
+<pre class="line-numbers language-none"><code class="language-none">def save_model(self, request, obj, form, change):
+        obj.save()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/django/" rel="tag"># django</a>
+              <a href="/tags/web/" rel="tag"># web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/19/python/md5/" rel="prev" title="md5等hash加密">
+                  <i class="fa fa-chevron-left"></i> md5等hash加密
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/" rel="next" title="删除重复记录保留1条">
+                  删除重复记录保留1条 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

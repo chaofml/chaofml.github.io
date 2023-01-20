@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="centos使用nginx搭建mp4、flv服务器 本文的主要目的是，在centos下，使用yum工具来安装nginx，并搭配安装相关的模块，使其能在线播放视频。（提供https、视频预览）等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="centos使用nginx搭建mp4、flv服务器">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/01/17/nginx/centos%E4%BD%BF%E7%94%A8nginx%E6%90%AD%E5%BB%BAmp4%E3%80%81flv%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="centos使用nginx搭建mp4、flv服务器 本文的主要目的是，在centos下，使用yum工具来安装nginx，并搭配安装相关的模块，使其能在线播放视频。（提供https、视频预览）等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-17T14:37:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.982Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/01/17/nginx/centos%E4%BD%BF%E7%94%A8nginx%E6%90%AD%E5%BB%BAmp4%E3%80%81flv%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>centos使用nginx搭建mp4、flv服务器 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#centos%E4%BD%BF%E7%94%A8nginx%E6%90%AD%E5%BB%BAmp4%E3%80%81flv%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">centos使用nginx搭建mp4、flv服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">安装过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL"><span class="nav-number">1.2.</span> <span class="nav-text">SSL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">问题</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/01/17/nginx/centos%E4%BD%BF%E7%94%A8nginx%E6%90%AD%E5%BB%BAmp4%E3%80%81flv%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          centos使用nginx搭建mp4、flv服务器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-17 14:37:00" itemprop="dateCreated datePublished" datetime="2020-01-17T14:37:00+00:00">2020-01-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="centos使用nginx搭建mp4、flv服务器"><a href="#centos使用nginx搭建mp4、flv服务器" class="headerlink" title="centos使用nginx搭建mp4、flv服务器"></a>centos使用nginx搭建mp4、flv服务器</h1><blockquote>
+<p>本文的主要目的是，在centos下，使用yum工具来安装nginx，并搭配安装相关的模块，使其能在线播放视频。（提供https、视频预览）等。</p>
+</blockquote>
+<a id="more"></a>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://my.oschina.net/ososchina/blog/833909?tdsourcetag=s_pctim_aiomsg">nginx实现rtmp,flv,mp4流媒体服务器</a>     主要参考这篇。</p>
+<p> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/maidongdong/p/8631258.html">https://www.cnblogs.com/maidongdong/p/8631258.html</a>   这一篇带关键帧的讲解。或者 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/welcomer/p/3766815.html">https://www.cnblogs.com/welcomer/p/3766815.html</a> </p>
+<h2 id="安装过程"><a href="#安装过程" class="headerlink" title="安装过程"></a>安装过程</h2><p>安装一些依赖的库</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum <span class="token function">install</span> -y  pcre pcre-devel   zlib zlib-devel  openssl openssl-devel  <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>下载并解压</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">wget</span> http://nginx.org/download/nginx-1.17.6.tar.gz
+<span class="token function">tar</span> zxf nginx-1.17.6.tar.gz
+<span class="token builtin class-name">cd</span> nginx-1.17.6<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>执行安装命令</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./configure --prefix<span class="token operator">=</span>/usr/local/nginx <span class="token punctuation">\</span>
+	--with-http_ssl_module <span class="token punctuation">\</span>
+	--with-http_gzip_static_module <span class="token punctuation">\</span>
+	--with-http_flv_module <span class="token punctuation">\</span>
+	--with-http_mp4_module
+	
+<span class="token function">make</span> <span class="token operator">&amp;&amp;</span> <span class="token function">make</span> <span class="token function">install</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>备注：之前不小心，\写成了  &amp;&amp; \ ，导致命令不识别。</p>
+<p>另外，有一个模块<code>--with-http_stub_status_module </code>并没有安装，这是一个nginx的监控模块。用法如下：</p>
+<p>在nginx.conf的server块中添加如下代码</p>
+<pre class="line-numbers language-none"><code class="language-none">location &#x2F;nginx_status &#123;
+    # Turn on nginx stats
+    stub_status on;
+    # I do not need logs for stats
+    access_log   off;
+    # Security: Only allow access from 192.168.1.100 IP #
+    #allow 192.168.1.100;
+    # Send rest of the world to &#x2F;dev&#x2F;null #
+    #deny all;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这段代码是加在默认的server里的，假设默认server的配置为</p>
+<pre class="line-numbers language-none"><code class="language-none">listen       127.0.0.1:80;
+server_name  127.0.0.1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>那么访问nginx的状态，就可以通过 curl 127.0.0.1/nginx_status访问了，返回结果类似于：</p>
+<pre class="line-numbers language-none"><code class="language-none">Active connections: 1 
+server accepts handled requests
+ 655 655 1985 
+Reading: 0 Writing: 1 Waiting: 0 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以上，参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/94cool/p/3872492.html">编译安装 nginx的http_stub_status_module监控其运行状态</a></p>
+<h2 id="SSL"><a href="#SSL" class="headerlink" title="SSL"></a>SSL</h2><p>配置，参考这篇文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/smartdt/article/details/80027579">Nginx下配置Https证书详细过程</a></p>
+<p>如下，执行，然后输出对应的参数，即可。当然，正规的都是要申请的，用自己生成的，会提示不安全。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">openssl req -x509 -nodes -days <span class="token number">36500</span> -newkey rsa:2048 -keyout /usr/local/nginx/ssl/nginx.key -out /usr/local/nginx/ssl/nginx.crt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>以下为一个参照配置，将mp4目录直接由nginx处理，其他的请求，交给nodejs来响应。</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">server</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">listen</span> <span class="token number">443</span> <span class="token keyword">ssl</span><span class="token punctuation">;</span>
+	<span class="token comment">#server_name www.yourdomain.com;</span>
+	<span class="token keyword">ssl_certificate</span> <span class="token operator">/</span>usr<span class="token operator">/</span>local<span class="token operator">/</span>nginx<span class="token operator">/</span><span class="token keyword">ssl</span><span class="token operator">/</span>nginx<span class="token punctuation">.</span>crt<span class="token punctuation">;</span>
+	<span class="token keyword">ssl_certificate_key</span> <span class="token operator">/</span>usr<span class="token operator">/</span>local<span class="token operator">/</span>nginx<span class="token operator">/</span><span class="token keyword">ssl</span><span class="token operator">/</span>nginx<span class="token punctuation">.</span>key<span class="token punctuation">;</span>
+	<span class="token keyword">ssl_session_cache</span>    shared<span class="token punctuation">:</span><span class="token keyword">SSL</span><span class="token punctuation">:</span><span class="token number">1</span>m<span class="token punctuation">;</span>
+	<span class="token keyword">ssl_session_timeout</span>  <span class="token number">5</span>m<span class="token punctuation">;</span>
+	<span class="token comment">#禁止在header中出现服务器版本，防止黑客利用版本漏洞攻击</span>
+	<span class="token keyword">server_tokens</span> off<span class="token punctuation">;</span>
+	<span class="token comment">#如果是全站 HTTPS 并且不考虑 HTTP 的话，可以加入 HSTS 告诉你的浏览器本网站全站加密，并且强制用 HTTPS 访问</span>
+	<span class="token keyword">fastcgi_param</span>   <span class="token keyword">HTTPS</span>               on<span class="token punctuation">;</span>
+	<span class="token keyword">fastcgi_param</span>   HTTP_SCHEME         <span class="token keyword">https</span><span class="token punctuation">;</span>
+	<span class="token keyword">access_log</span> <span class="token operator">/</span>usr<span class="token operator">/</span>local<span class="token operator">/</span>nginx<span class="token operator">/</span>logs<span class="token operator">/</span>httpsaccess<span class="token punctuation">.</span>log<span class="token punctuation">;</span>
+    <span class="token comment"># /root</span>
+	<span class="token keyword">root</span> <span class="token operator">/</span>home<span class="token operator">/</span>movie<span class="token operator">/</span><span class="token punctuation">;</span> 
+	<span class="token keyword">location</span> <span class="token operator">/</span><span class="token keyword">mp4</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">index</span> <span class="token keyword">index</span><span class="token punctuation">.</span>html <span class="token keyword">index</span><span class="token punctuation">.</span>htm<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">location</span> <span class="token operator">/</span><span class="token punctuation">&#123;</span>
+		<span class="token keyword">proxy_pass</span> <span class="token keyword">http</span><span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token punctuation">:</span><span class="token number">55055</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>强制https访问，配置如下：</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">server</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">listen</span>	<span class="token number">80</span><span class="token punctuation">;</span>
+		<span class="token keyword">server_name</span> www<span class="token punctuation">.</span>yourdomain<span class="token punctuation">.</span>com<span class="token punctuation">;</span>
+	    <span class="token keyword">rewrite</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">https</span><span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token variable">$server_name</span>$<span class="token number">1</span> permanent<span class="token punctuation">;</span> <span class="token comment">#http 跳转 https</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>1、设置好后，执行<code>nginx -t</code>说配置没有问题，但是就是无法请求到对应的资源。后发现，/root/movie/没有目录权限，而nginx执行的用户组为nobody。另外，如果顶级目录，没有权限，那么子目录，就算有权限也无法访问。    </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/15/js/koa2%E6%95%99%E7%A8%8B/" rel="prev" title="koa2教程">
+                  <i class="fa fa-chevron-left"></i> koa2教程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/19/shell/%E9%98%B2%E7%81%AB%E5%A2%99/" rel="next" title="防火墙">
+                  防火墙 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

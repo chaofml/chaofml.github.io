@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="大数据中常用脚本–cut ：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Learn_ZhangK&#x2F;article&#x2F;details&#x2F;80284546 1.简介1.1 国际惯例按照国际惯例先来理论的介绍。 cut是在Linux里非常常用的一个命令，cut命令是一个选取命令，其功能是将文件中的每一行”字节” ”字符” ”字段” 进行剪切，选取我们需要的，并将这些选取好的数据输出至标准输出。执行过程：选取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据--cut">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--cut/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="大数据中常用脚本–cut ：https:&#x2F;&#x2F;blog.csdn.net&#x2F;Learn_ZhangK&#x2F;article&#x2F;details&#x2F;80284546 1.简介1.1 国际惯例按照国际惯例先来理论的介绍。 cut是在Linux里非常常用的一个命令，cut命令是一个选取命令，其功能是将文件中的每一行”字节” ”字符” ”字段” 进行剪切，选取我们需要的，并将这些选取好的数据输出至标准输出。执行过程：选取">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-31T15:39:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.024Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="大数据">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--cut/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>大数据--cut | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1.简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%9B%BD%E9%99%85%E6%83%AF%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 国际惯例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B8%B8%E7%94%A8%E9%80%89%E9%A1%B9"><span class="nav-number">2.</span> <span class="nav-text">2.常用选项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-cat%E7%9A%84-b-bytes"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 cat的-b(bytes)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-cat%E7%9A%84-n%E5%92%8C-c%E5%89%AA%E5%88%87%E5%AD%97%E7%AC%A6"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 cat的-n和-c剪切字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-cat%E7%9A%84-f%E6%A0%BC%E5%BC%8F%E4%B8%8D%E5%9B%BA%E5%AE%9A%E7%9A%84%E5%89%AA%E5%88%87"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 cat的-f格式不固定的剪切</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--cut/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大数据--cut
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-05-31 15:39:00" itemprop="dateCreated datePublished" datetime="2021-05-31T15:39:00+00:00">2021-05-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>大数据中常用脚本–cut ：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80284546">https://blog.csdn.net/Learn_ZhangK/article/details/80284546</a></p>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1-国际惯例"><a href="#1-1-国际惯例" class="headerlink" title="1.1 国际惯例"></a>1.1 国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
+<p>cut是在Linux里非常常用的一个命令，cut命令是一个选取命令，其功能是将文件中的每一行”字节” ”字符” ”字段” 进行剪切，选取我们需要的，并将这些选取好的数据输出至标准输出。执行过程：选取命令通常是针对一行一行的数据来进行分析的， 并不是整篇信息分析。</p>
+<a id="more"></a>
+
+<h1 id="2-常用选项"><a href="#2-常用选项" class="headerlink" title="2.常用选项"></a>2.常用选项</h1><p>使用时的一般格式：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cut</span> -<span class="token punctuation">[</span>n<span class="token punctuation">]</span>b <span class="token function">file</span> 
+<span class="token function">cut</span> -c <span class="token function">file</span> 
+<span class="token function">cut</span> -d<span class="token punctuation">[</span>分隔符<span class="token punctuation">]</span> -f<span class="token punctuation">[</span>域<span class="token punctuation">]</span> <span class="token function">file</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>素材1：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cat test1.txt </span>
+557adfhg
+bcd5464b
+<span class="token number">135465453456</span>
+<span class="token number">233546576</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>素材2：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cat test2.txt </span>
+星期一
+星期二
+星期三
+星期四
+星期五
+星期六
+星期日<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="2-1-cat的-b-bytes"><a href="#2-1-cat的-b-bytes" class="headerlink" title="2.1 cat的-b(bytes)"></a>2.1 cat的-b(bytes)</h2><p>以字节为单位进行分割。这些字节位置将忽略多字节字符边界，除非也指定了 -n 标志。 切txt中的每一行的第一个字节: </p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -b 1 test1.txt </span>
+<span class="token number">5</span>
+b
+<span class="token number">1</span>
+<span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>剪切多个字符有很多方式， </p>
+<p>如 -b 1,3,5 //剪切每一行第 1 3 5个字符 (示例1) </p>
+<p>如 -b 1-5 //剪切每一行第 1-5 个字符 (示例2)     可以省略开头、结尾</p>
+<p>如 -b -5 //剪切每一行第 1-5 个字符 (示例3) </p>
+<p>如 -b 3- //剪切每一行第 3个字符以后的 (示例4)</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -b 1,3,5 test1.txt </span>
+57d
+bd4
+<span class="token number">156</span>
+<span class="token number">234</span>
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -b 1-5 test1.txt </span>
+557ad
+bcd54
+<span class="token number">13546</span>
+<span class="token number">23354</span>
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -b -5 test1.txt </span>
+557ad
+bcd54
+<span class="token number">13546</span>
+<span class="token number">23354</span>
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -b 3- test1.txt </span>
+7adfhg
+d5464b
+<span class="token number">5465453456</span>
+<span class="token number">3546576</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="2-2-cat的-n和-c剪切字符"><a href="#2-2-cat的-n和-c剪切字符" class="headerlink" title="2.2 cat的-n和-c剪切字符"></a>2.2 cat的-n和-c剪切字符</h2><p>首先按照上面的例子对test2.txt进行操作出现了乱码的现象，因为-b 只是针对字节进行裁剪，对一个汉字进行字节裁剪，得到的结果必然是乱码，若想使用 -b 命令对字节进行裁剪，那么则需要使用 -n 选项，此选项的作用是取消分割多字节字符。</p>
+<blockquote>
+<p>备注：跟转载的文章原内容有很大的出入。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -nb 1 test2.txt </span>
+星
+星
+星
+星
+星
+星
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -nb 1,2  test2.txt </span>
+星期
+星期
+星期
+星期
+星期
+星期
+星期
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -nb 1,2,3  test2.txt </span>
+星期
+星期二
+星期三
+星期四
+星期五
+星期六
+星期日
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -nb 1,2,3,4  test2.txt </span>
+星期一
+星期二
+星期三
+星期四
+星期五
+星期六
+星期日<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>-c的作用就是剪切字符，和上面的 -nb 有些类似：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -c 1 test2.txt </span>
+星
+星
+星
+星
+星
+星
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -c 2 test2.txt </span>
+期
+期
+期
+期
+期
+期
+期
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cut -c 1-3 test2.txt </span>
+星期
+星期二
+星期三
+星期四
+星期五
+星期六
+星期日<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="2-3-cat的-f格式不固定的剪切"><a href="#2-3-cat的-f格式不固定的剪切" class="headerlink" title="2.3 cat的-f格式不固定的剪切"></a>2.3 cat的-f格式不固定的剪切</h2><p>上面的-b -c 只是针对于格式固定的数据中剪切，但是对于一些格式不固定的，就没有办法获取到我们想要的数据，因此便有了 -f 域的概念。字符给剪切出来，那么我们就可以使用 -d 命令，指定其分割符为 ： 然后再选取第一个域内的内容即可，如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cat /etc/passwd | head -n 3</span>
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+
+<span class="token punctuation">[</span>root@localhost shell<span class="token punctuation">]</span><span class="token comment"># cat /etc/passwd | head -n 3 | cut -d : -f 1</span>
+root
+bin
+daemon<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--grep%E5%85%A5%E9%97%A8/" rel="prev" title="grep入门（大数据）">
+                  <i class="fa fa-chevron-left"></i> grep入门（大数据）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--sort/" rel="next" title="大数据--sort">
+                  大数据--sort <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

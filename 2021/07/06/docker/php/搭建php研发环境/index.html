@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="使用官方的php-apache环境，搭建本地的研发环境。主要是解决几个遇到的问题。故简单的记录如下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建php研发环境">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/07/06/docker/php/%E6%90%AD%E5%BB%BAphp%E7%A0%94%E5%8F%91%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="使用官方的php-apache环境，搭建本地的研发环境。主要是解决几个遇到的问题。故简单的记录如下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-06T10:49:28.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.950Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="php">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/07/06/docker/php/%E6%90%AD%E5%BB%BAphp%E7%A0%94%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>搭建php研发环境 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">镜像源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.1.</span> <span class="nav-text">具体步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gd%E5%BA%93"><span class="nav-number">1.2.</span> <span class="nav-text">安装gd库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%BA%90%E5%86%85%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">镜像源内的条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-php-ext-install"><span class="nav-number">3.</span> <span class="nav-text">docker-php-ext-install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">构建示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#opcode"><span class="nav-number">4.1.</span> <span class="nav-text">opcode</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/07/06/docker/php/%E6%90%AD%E5%BB%BAphp%E7%A0%94%E5%8F%91%E7%8E%AF%E5%A2%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建php研发环境
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-06 10:49:28" itemprop="dateCreated datePublished" datetime="2021-07-06T10:49:28+00:00">2021-07-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>使用官方的php-apache环境，搭建本地的研发环境。主要是解决几个遇到的问题。故简单的记录如下。</p>
+<a id="more"></a>
+
+<h2 id="镜像源"><a href="#镜像源" class="headerlink" title="镜像源"></a>镜像源</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">10.131</span>.9.12:5000/scc/php:7.4-apache
+<span class="token comment"># 即官方的源</span>
+php:7.4-apache<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="具体步骤"><a href="#具体步骤" class="headerlink" title="具体步骤"></a>具体步骤</h3><p>启动镜像</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker run -d --name qingcloud-dev -p <span class="token number">8081</span>:80 -v <span class="token environment constant">$PWD</span>:/var/www/html php:7.4-apache<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>启动后，大概会遇到各种报错，因为官方的镜像，缺少一些基础的扩展，需要自己手动进入容器内安装。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 进入容器，后续的操作都是在容器内操作</span>
+docker <span class="token builtin class-name">exec</span> -it qingcloud-dev <span class="token function">bash</span>
+<span class="token comment"># 直接执行下面的命令会报错，但是会提示，哪些ext能直接安装，见 docker-php-ext-install</span>
+docker-php-ext-install redis
+
+<span class="token comment"># 先到pecl下载 redis</span>
+<span class="token function">curl</span> https://pecl.php.net/get/redis-5.3.4.tgz -o redis-5.3.4.tgz
+<span class="token function">ls</span>
+<span class="token function">tar</span> zxvf redis-5.3.4.tgz 
+<span class="token function">mkdir</span> -p /usr/src/php/ext
+<span class="token function">mv</span> redis-5.3.4 /usr/src/php/ext/redis
+<span class="token comment"># 然后就能安装了</span>
+docker-php-ext-install redis
+php -m <span class="token operator">|</span><span class="token function">grep</span> redis
+   
+<span class="token comment"># 顺道将 mysql安装上，否则也会缺少该插件无法连接数据库，而报错。</span>
+docker-php-ext-install pdo_mysql
+
+<span class="token comment"># 权限问题，根据项目确定。用top 查看，运行的角色</span>
+www-data
+<span class="token comment"># 简单起见，全部可写</span>
+<span class="token function">chown</span> -R www-data:www-data html/
+
+
+<span class="token comment"># 需要重启apache服务 加载 php的扩展</span>
+<span class="token builtin class-name">exit</span> <span class="token comment"># 退出容器</span>
+docker restart qingcloud-dev
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="安装gd库"><a href="#安装gd库" class="headerlink" title="安装gd库"></a>安装gd库</h3><p>以下未测试过。安装gp库，有依赖，另外还需要配置。下面命令正好展示。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">apt</span> update  <span class="token comment">#更新软件源</span>
+<span class="token function">apt</span> <span class="token function">install</span> -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev <span class="token comment">#安装各种库</span>
+docker-php-source extract <span class="token comment">#解压源码</span>
+<span class="token builtin class-name">cd</span> /usr/src/php/ext/gd  <span class="token comment">#gd源码文件夹</span>
+docker-php-ext-configure gd --with-webp-dir<span class="token operator">=</span>/usr/include/webp --with-jpeg-dir<span class="token operator">=</span>/usr/include --with-png-dir<span class="token operator">=</span>/usr/include --with-freetype-dir<span class="token operator">=</span>/usr/include/freetype2   <span class="token comment">#准备编译</span>
+docker-php-ext-install gd   <span class="token comment">#编译安装</span>
+php -m <span class="token operator">|</span> <span class="token function">grep</span> gd<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>虽然按如上步骤正常搭建了环境，但是呢，vscode远程过去，跟本地，还是有一些区别。以后考虑，本地推送代码过去，远程来运行。（todo:自己简单的写个推送的服务。）</p>
+<h2 id="镜像源内的条件"><a href="#镜像源内的条件" class="headerlink" title="镜像源内的条件"></a>镜像源内的条件</h2><pre class="line-numbers language-none"><code class="language-none">curl
+vim  无<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h2 id="docker-php-ext-install"><a href="#docker-php-ext-install" class="headerlink" title="docker-php-ext-install"></a>docker-php-ext-install</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">bcmath bz2 calendar ctype <span class="token function">curl</span> dba dom enchant exif ffi fileinfo filter <span class="token function">ftp</span> gd gettext 
+gmp <span class="token builtin class-name">hash</span> <span class="token function">iconv</span> imap intl json ldap mbstring mysqli oci8 odbc opcache pcntl pdo pdo_dblib 
+pdo_firebird pdo_mysql pdo_oci pdo_odbc pdo_pgsql pdo_sqlite pgsql phar posix pspell readline reflection session shmop simplexml snmp soap sockets sodium spl standard sysvmsg sysvsem sysvshm tidy tokenizer xml xmlreader xmlrpc xmlwriter xsl zend_test <span class="token function">zip</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h2 id="构建示例"><a href="#构建示例" class="headerlink" title="构建示例"></a>构建示例</h2><p>ADD命令，放在最后，前面的命令可能会被缓存</p>
+<pre class="line-numbers language-none"><code class="language-none">FROM 10.131.9.12:5000&#x2F;scc&#x2F;php:7.4-apache
+
+RUN docker-php-ext-install pdo_mysql \
+    &amp;&amp; docker-php-ext-install mysqli
+    
+ADD --chown&#x3D;www-data:www-data phpmyadmin&#x2F;  &#x2F;var&#x2F;www&#x2F;html&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>备注，按装如下库，会报错</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker-php-ext-install pdo_sqlite<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<blockquote>
+<p>configure: error: Package requirements (sqlite3 &gt; 3.7.4) were not met:</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker-php-ext-install pdo_pgsql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<blockquote>
+<p>checking for PostgreSQL support for PDO… yes, shared<br>checking for pg_config… not found<br>configure: error: Cannot find libpq-fe.h. Please specify correct PostgreSQL installation path</p>
+</blockquote>
+<p>一键构建</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker build -t phpapache:1.0 <span class="token builtin class-name">.</span>
+docker stop phpapache
+docker run --rm -itd --name phpapache -p <span class="token number">0.0</span>.0.0:8008:80 -v ~/php:/var/www/html/php phpapache:1.0 
+docker image <span class="token function">ls</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'<span class="token variable">$1</span>=="&lt;none>" &amp;&amp; <span class="token variable">$2</span>=="&lt;none>"&#123;printf "docker rmi %s<span class="token entity" title="\n">\n</span>",<span class="token variable">$3</span>&#125;'</span><span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="opcode"><a href="#opcode" class="headerlink" title="opcode"></a>opcode</h3><pre class="line-numbers language-none"><code class="language-none">FROM 10.131.9.12:5000&#x2F;scc&#x2F;php:7.4-apache
+
+RUN docker-php-ext-install pdo_mysql \
+    &amp;&amp; docker-php-ext-install mysqli \
+    &amp;&amp; docker-php-ext-install opcache
+
+ADD _run.sh &#x2F;run.sh
+RUN chmod	+x &#x2F;run.sh  \
+    &amp;&amp; &#x2F;run.sh
+ADD --chown&#x3D;root:root conf  &#x2F;etc&#x2F;apache2&#x2F;
+ADD --chown&#x3D;www-data:www-data html  &#x2F;var&#x2F;www&#x2F;html&#x2F;
+
+
+run.sh
+
+#!&#x2F;bin&#x2F;bash
+cat &lt;&lt;EOL &gt;&gt; &#x2F;usr&#x2F;local&#x2F;etc&#x2F;php&#x2F;conf.d&#x2F;docker-php-ext-opcache.ini
+[opcache]
+opcache.enable&#x3D;1  
+opcache.enable_cli&#x3D;1
+opcache.memory_consumption&#x3D;128  
+opcache.interned_strings_buffer&#x3D;8
+opcache.max_accelerated_files&#x3D;4000
+opcache.revalidate_freq&#x3D;60
+opcache.fast_shutdown&#x3D;1
+opcache.validate_timestamps&#x3D;0
+opcache.file_cache&#x3D;&#x2F;tmp
+EOL<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>拷贝配置文件</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker <span class="token function">cp</span> phpapache:/etc/apache2/ conf/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/php/" rel="tag"># php</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/03/shell/socat/" rel="prev" title="socat">
+                  <i class="fa fa-chevron-left"></i> socat
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/09/shell/rsync/" rel="next" title="rsync">
+                  rsync <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,13 +1,28 @@
 <!DOCTYPE html>
-<html lang='zh-CN'>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-<meta name="renderer" content="webkit">
-<meta http-equiv="Cache-Control" content="no-siteapp"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
 
-<title>shell||超凡魔力|君子善思，善假于物，而不物于物。</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
 <meta name="description" content="思绪偶尔会在这里停留">
 <meta property="og:type" content="website">
 <meta property="og:title" content="超凡魔力">
@@ -20,2638 +35,460 @@
 <meta name="twitter:card" content="summary">
 
 
-<meta name="description" content="思绪偶尔会在这里停留">
-
-<meta name="author" content="chaofml,undefined">
+<link rel="canonical" href="https://blog.chaofml.cn/tags/shell/page/2/">
 
 
-<link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
-<link rel="icon" href="/favicon.png">
-
-
-<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-
-<link rel="stylesheet" href="/css/theme.css">
-
-
-<link rel="stylesheet" href="/css/syntax.css">
-
-
-<link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
-
-
-<link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.1.0/styles/arta.min.css">
-
-<!--baidu analytics-->
-
-<meta name="generator" content="Hexo 5.2.0"></head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            
-            <a class="navbar-brand" href="/.">超凡魔力</a>
-        </div>
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                
-                <li><a href="/."><i class="icon-home"> 首页</i></a></li>
-                
-                <li><a href="/archives/"><i class="icon-archive"> 归档</i></a></li>
-                
-                <li><a href="/atom.xml"><i class="icon-rss"> 订阅</i></a></li>
-                
-                <li><a href="/about/"><i class="icon-about"> 关于</i></a></li>
-                
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="wrapper">
-    <div class="content">
-        <div class="container container-center">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="page-content wc-container">
-    <div class="post">
-        <h2 class="post_title">shell</h2>
-        <div class="well">
-            <ul>
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-11-22</time>
-                                <a class="archive_list_article_link" href="/2021/11/22/docker/docker%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">docker定时任务</a>
-                                <p>
-                                    
-                                        <p>使用docker来构建一个镜像，并使用docker容器来处理定时任务。如果在集群里面，也能使用k8s的定时任务功功能，但是注意k8s的时间问题，比北京时间晚8小时。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-11-03</time>
-                                <a class="archive_list_article_link" href="/2021/11/03/docker/docker%E8%84%9A%E6%9C%AC/">docker脚本</a>
-                                <p>
-                                    
-                                        <p>docker在使用过程中，一些常用的脚本。如镜像拉取等等命令。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-05</time>
-                                <a class="archive_list_article_link" href="/2021/06/05/docker/entrypoint/">entrypoint</a>
-                                <p>
-                                    
-                                        <p>docker中指定入口点的函数，确实有一点技巧。准确来说，它是应该执行的第一条语句。cmd 其实也是交entrypoint点来接管的，只不过，cmd的命令，一般是交给<code>bash -c</code>。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-02-11</time>
-                                <a class="archive_list_article_link" href="/2022/02/11/install/%E7%88%B1%E5%BF%AB%E5%AE%89%E8%A3%85/">爱快安装</a>
-                                <p>
-                                    
-                                        <p>使用腾讯云主机vps来搭建爱快软路由。下载引导的工具<code>memdisk</code>来引导iso光盘镜像。用此方法，也可以安装其他的光盘镜像。</p>
-<p>通过引导，加载其他的镜像，并启动。</p>
-<p>参考文章地址：<a target="_blank" rel="noopener" href="https://www.toutiao.com/a7041727967931662879/?log_from=e85ec5c8085e4_1644560010976">腾讯云vps安装爱快路由系统</a></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-12-23</time>
-                                <a class="archive_list_article_link" href="/2021/12/23/js/%E6%B7%B7%E6%B7%86js/">混淆js</a>
-                                <p>
-                                    
-                                        <p>最近有一个需求，需要混淆一下前端页面用到js文件。想到的是使用<code>uglify-js</code>工具。本文简单的记录一下，如何更新镜像里面的js文件。本文的侧重点，并不是如何使用<code>uglify-js</code>，而是如何从工程性的方式，介绍如何升级js混淆代码，既保留源码，又在发布的时候，直接能用上压缩的js。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-15</time>
-                                <a class="archive_list_article_link" href="/2021/07/15/js/%E8%B7%A8%E5%9F%9F/">跨域</a>
-                                <p>
-                                    
-                                        <p>网上找到的一遍非常好的跨域相关的知识描述，加上之前也做了一次nginx的代理docker，故将相关的记录一下。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-02-17</time>
-                                <a class="archive_list_article_link" href="/2022/02/17/other/sshd%E9%98%B2%E6%AD%A2%E7%88%86%E7%A0%B4/">sshd防止爆破.sh</a>
-                                <p>
-                                    
-                                        <p>最近听说有个同事的云主机被登录，植入了挖矿的代码。恶意暴破，我也遇到过，最多的一次，都有几万次的登录记录，当时也是找了好久的方式，最后发现，使用脚本方式，最稳妥。</p>
-<p>以下是我想到的几种安全方式。使用定时脚本，基本上能满足大部分的需求。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-24</time>
-                                <a class="archive_list_article_link" href="/2021/05/24/other/vip/">vip</a>
-                                <p>
-                                    
-                                        <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>虚拟IP即VIP，这只是一个概念而已 。主要作用，做灾备时候，做主从切换使用的。 如eth0:x ，x为0-255的任意数字，你可以在一块网卡上绑定多个别名在实际生产环境中，需要在DNS配置中把网站域名地址解析到这个VIP地址，由这个VIP对用户提供服务。如：把<a target="_blank" rel="noopener" href="http://www.zhangcong.top解析到vip/">www.zhangcong.top解析到VIP</a> 1.1.1.1 上。</p>
-<blockquote>
-<p>域名dns绑定到特定的ip上，但是dns生效时间，可能并不快。</p>
-<p>而vip呢，相当于，将某个静态的ip分配给指定的机器上，如果该机器服务挂了或它自己挂了，它应该让出vip，而其他的机器去抢夺该vip。一般就两台机器。（主从）</p>
-</blockquote>
-<p>虽然是虚拟ip，但是，它应该也是能被路由，访问的，并不是随便的假的ip地址。需要于多分配了一个ip。假如，我们叫原来的ip叫管理ip，新增的叫vip。这样，相当于，有了两个ip，vip可以随意切换，这样，我们的服务，可以通过vip稳定的找到。机器，可以通过管理ip稳定找到。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-28</time>
-                                <a class="archive_list_article_link" href="/2021/06/28/other/%E5%91%BD%E5%90%8D/">命名</a>
-                                <p>
-                                    
-                                        <p>常见的变量命令方式。1</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-11-16</time>
-                                <a class="archive_list_article_link" href="/2021/11/16/python/getopt/">getopt</a>
-                                <p>
-                                    
-                                        <p>getopt只需要了解一点简单用法即可，更好的是使用<code>argparse</code> 等库进行替代。但是在用的过程中，会有如下的易错地方，1、getopt参数不能直接用全部的参数，因为，第一个参数为文件名称，它会破坏掉正常解析。2、解析顺序，参数的选项，必须放在最前面，后面非选项型参数，否则，不能正常识别。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2020-04-14</time>
-                                <a class="archive_list_article_link" href="/2020/04/14/shell/SHELL%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">SHELL异常处理</a>
-                                <p>
-                                    
-                                        <h1 id="SHELL异常处理"><a href="#SHELL异常处理" class="headerlink" title="SHELL异常处理"></a>SHELL异常处理</h1><blockquote>
-<p>容器内运行一个php脚本，需要根据php脚本运行的结果，决定是否继续接着运行。其中包含了错误重定向，已经获取上次运行结果。整体如下：</p>
-</blockquote>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2019-12-16</time>
-                                <a class="archive_list_article_link" href="/2019/12/16/shell/alias/">alias</a>
-                                <p>
-                                    
-                                        <h1 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h1><blockquote>
-<p>alias 使用的一些例子及技巧。</p>
-</blockquote>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-03-08</time>
-                                <a class="archive_list_article_link" href="/2021/03/08/shell/awk%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0/">awk字符串函数</a>
-                                <p>
-                                    
-                                        <p>awk常用的字符串函数总结。<a target="_blank" rel="noopener" href="https://blog.csdn.net/xibeichengf/article/details/51346632">原问链接</a></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-27</time>
-                                <a class="archive_list_article_link" href="/2021/07/27/shell/awk%E6%AD%A3%E5%88%99/">awk正则</a>
-                                <p>
-                                    
-                                        <p>awk的可以通过正则或者其他的函数，来实现过滤功能。正则的功能非常的强大，不过话说，正则一般性能都不是特别的高。在一定的场合下，正则也需是非常适合的工具。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-08</time>
-                                <a class="archive_list_article_link" href="/2021/05/08/shell/crontab/">crontab</a>
-                                <p>
-                                    
-                                        <p>程序部署在Linux系统之中，很可能会用到crontab，但是呢，写好的定时任务，可能因为种种错误方式，并没有按着预定的方式运行，如何写出正确的、健壮的定时任务。做一下总结。</p>
-<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><h3 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h3><ul>
-<li>1、执行的时候，先cd到目录，最稳妥，防止引入了相对变量的文件路径。</li>
-<li>2、加上环境变量，尤其是<code>PATH</code>，有时，居然连<code>/usr/local/bin</code>都不在环境变量中。故，最好自己设置一下。</li>
-<li>3、测试，测试的时候，跳到<code>cd /</code>路径，再执行，看看能否正常执行。</li>
-<li>4、测试的时候，直接清空 PATH，只加有关的PATH。（待验证）</li>
-</ul>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-28</time>
-                                <a class="archive_list_article_link" href="/2021/04/28/shell/curl/">curl</a>
-                                <p>
-                                    
-                                        <p>curl工具，是一种常用的工具，在Linux环境中，可以用来发送请求，完成各种与api的互动。应用的场景还是非常多的。比如，常见<code>curl -sSll  | sh </code>来执行远程的shell，达到自动完成安装等命令。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-08-11</time>
-                                <a class="archive_list_article_link" href="/2021/08/11/shell/date/">date的用法</a>
-                                <p>
-                                    
-                                        <h2 id="常用格式"><a href="#常用格式" class="headerlink" title="常用格式"></a>常用格式</h2><p>时分秒格式</p>
-<blockquote>
-<p>备注，如果格式里面没有空格，则可以不加引号。</p>
-</blockquote>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">date</span> <span class="token string">'+%Y-%m-%d %H:%M:%S'</span>
-
-
-<span class="token comment"># 时间戳格式</span>
-<span class="token assign-left variable">current</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">"+%Y-%m-%d %H:%M:%S"</span><span class="token variable">`</span></span>
-<span class="token assign-left variable">timeStamp</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> -d <span class="token string">"<span class="token variable">$current</span>"</span> +%s<span class="token variable">`</span></span>
-
-
-<span class="token comment">#将current转换为时间戳，精确到毫秒</span>
-<span class="token assign-left variable">currentTimeStamp</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$((</span>timeStamp<span class="token operator">*</span><span class="token number">1000</span><span class="token operator">+</span>`date "<span class="token operator">+</span><span class="token operator">%</span>N"`<span class="token operator">/</span><span class="token number">1000000</span><span class="token variable">))</span></span>
-<span class="token builtin class-name">echo</span> <span class="token variable">$currentTimeStamp</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-23</time>
-                                <a class="archive_list_article_link" href="/2021/04/23/shell/docker_shell/">docker_shell</a>
-                                <p>
-                                    
-                                        <p>docker相关的shell</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-08-11</time>
-                                <a class="archive_list_article_link" href="/2021/08/11/shell/error/">error</a>
-                                <p>
-                                    
-                                        <p>虽然不把shell当作主力的编程语言，但是在任务中，难免不会用到shell，尤其是拿shell来做为各种程序之间的粘合剂，或者那shell直接做一些简单的任务，或者定时任务。</p>
-<p>shell功能强大，代码简省，如果写的合适，shell的性能不输其他专门的脚本语言，但是呢，遇到问题，也是头疼。故，本文的目的是，尽可能多的记录工作中遇到的问题。方便，自己。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-13</time>
-                                <a class="archive_list_article_link" href="/2021/05/13/shell/exec/">exec</a>
-                                <p>
-                                    
-                                        <p>第一次发现有exec这个功能。从网上摘抄了一些功能如下。</p>
-<p>exec是 Shell 内置命令，它有两种用法，一种是执行 Shell 命令，一种是操作文件描述符。 </p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-02-18</time>
-                                <a class="archive_list_article_link" href="/2022/02/18/shell/expect/">expect</a>
-                                <p>
-                                    
-                                        <p>expect，期待。这个工具大体上来说，可以模拟按键，解决在终端自动化的事。基本的模式，出现了什么字符串，然后，输入什么命令。类似于，一问一答的模式。</p>
-<p>用途，管理多台机器时，自动化操作。比如，通过堡垒机，执行命令，再访问目标机器。<code>expect</code>,非常适合。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-30</time>
-                                <a class="archive_list_article_link" href="/2021/06/30/shell/export/">export</a>
-                                <p>
-                                    
-                                        <p>简单的记录export的使用方式。export主要是对子shell也启作用。比如脚本中，引入的脚本，能通过环境变量将参数传递过去。但它并不是全局生效的。shell进程销毁，则环境变量就消失了。对于登录的ssh，export设置后，其后续的指令都能读到该变量。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2019-12-13</time>
-                                <a class="archive_list_article_link" href="/2019/12/13/shell/find/">find</a>
-                                <p>
-                                    
-                                        <p>linux中find命令详解。对于使用各种条件来查找文件，该命令非常的重要，而且还能使用<code>-exec</code>参数，附加命令，(跟xargs很像)，完成更多的功能。</p>
-<p>类似于资源管理器中的查找功能。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-27</time>
-                                <a class="archive_list_article_link" href="/2021/04/27/shell/for/">for</a>
-                                <p>
-                                    
-                                        <p>for循环的使用。比如，想要固定次数的循环，或者循环某个文件中的类容等等。while是另外一种循环方式。</p>
-<h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>在shell中，定义字符串，不需要用字符串来界定，比如：<code>echo  hello world</code>，<code>myshell.sh 参数1  参数2 参数3</code>。</p>
-<p>所以，脑海里面，一定要纠正观念，<strong>在shell中定义字符串不需要引号</strong>。出现引号，其实为了保护定义的内容，别过早的解析、或变量被解析。单引号：变量不会被解析。双引号，变量会被解析。单双引号，都会将带空格分隔的内容，视为一个整体（有时候接收的某个参数包含空格或星号等，则需要用引号包裹，保护，避免解析。如果该参数再内部使用的时候，不加引号，则空格的分隔会让它变为多个参数、星号则会被解析）。</p>
-<p>for核心语法：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> java c php<span class="token punctuation">;</span><span class="token keyword">do</span>
-    <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
-<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>注意上面是没有用任何引号来定义的字符串。如果加了，则返回视为一个整体。如：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 输出一行</span>
-<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token string">'java c php'</span><span class="token punctuation">;</span><span class="token keyword">do</span>
-    <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
-<span class="token keyword">done</span>
-
-<span class="token comment"># 多行</span>
-<span class="token comment"># 如要纠正，再次引用的时候，失去引号保护即可：</span>
-<span class="token assign-left variable">lang</span><span class="token operator">=</span><span class="token string">'java c php'</span>
-<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable">$lang</span><span class="token punctuation">;</span><span class="token keyword">do</span>
-    <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
-<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-<p>基于以上的理解，我们可以理解：in的后面，可以跟任何可以被shell解析的命令，或表达式。比如：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> express<span class="token punctuation">;</span><span class="token keyword">do</span>
-    <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
-<span class="token keyword">done</span>
-
-
-<span class="token comment"># express可以有如下：</span>
-<span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token number">10</span><span class="token punctuation">&#125;</span>
-<span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token number">10</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#123;</span><span class="token number">2,3</span><span class="token punctuation">&#125;</span>  <span class="token comment"># 或括号是shell来解析的。</span>
-
-<span class="token comment"># 命令</span>
-<span class="token variable"><span class="token variable">`</span><span class="token function">cat</span> myfile.sh<span class="token variable">`</span></span>  
-<span class="token comment"># 路径</span>
-demo/*.php   <span class="token comment"># 或包装成命令   `ls demo/*.php`</span>
-
-<span class="token comment"># 其他的，如  ?  * 等都</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-30</time>
-                                <a class="archive_list_article_link" href="/2021/06/30/shell/function/">function</a>
-                                <p>
-                                    
-                                        <p>关于shell如何调用函数，以及如何使用函数的简短说明。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-27</time>
-                                <a class="archive_list_article_link" href="/2021/04/27/shell/history/">history</a>
-                                <p>
-                                    
-                                        <p>本文转载自于网络，主要是对history的使用、来进行总结。通过history方便的找到以前执行过的命令，快速执行。也可以做审查。另外，通过history的记录，可以方便的学习别人的操作记录。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-03-02</time>
-                                <a class="archive_list_article_link" href="/2021/03/02/shell/iconv/">iconv</a>
-                                <p>
-                                    
-                                        <p>Linux下转换文本格式的工具。比如将gbk编码的输入文件，转换为utf-8编码。亦或者是将utf8编码中无法识别的字符删除掉（使用<code>-c</code>）参数，真是帮了大忙了。遂记录一下本文的心得。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2020-12-30</time>
-                                <a class="archive_list_article_link" href="/2020/12/30/shell/if%E5%92%8C%E6%AF%94%E8%BE%83/">if和比较</a>
-                                <p>
-                                    
-                                        <h1 id="if和比较"><a href="#if和比较" class="headerlink" title="if和比较"></a>if和比较</h1><p>多数语言，一般比较运算常用在判断，控制流程中。所以呢，本文记录一下shell中的逻辑运算跟if控制流程。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-04-18</time>
-                                <a class="archive_list_article_link" href="/2022/04/18/shell/iptables/">iptables</a>
-                                <p>
-                                    
-                                        
-                                        
-                                            <p>iptables功能异常强大，值得去深入研究一下，有利于了解linux上的网络功能。使用它能代替一些路由的功能、tcp转发等等。</p>
-                                        
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-13</time>
-                                <a class="archive_list_article_link" href="/2021/07/13/shell/ls/">ls</a>
-                                <p>
-                                    
-                                        <p>常用的ls命令参数。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-09-02</time>
-                                <a class="archive_list_article_link" href="/2021/09/02/shell/nc/">nc</a>
-                                <p>
-                                    
-                                        <h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 服务端</span>
-<span class="token function">nc</span> -lup <span class="token number">9002</span>
-<span class="token comment"># 客户端</span>
-<span class="token function">nc</span> -u localhost <span class="token number">9002</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>效果：</p>
-<p>客户端连上服务端后。服务端在终端输出内容，客户端不会有反应。但是，客户端输出内容，服务端会有内容输出。</p>
-<p>服务端没有启动时，客户端可在终端上输入内容，但是回车发送的时候，会立即退出。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-18</time>
-                                <a class="archive_list_article_link" href="/2021/06/18/shell/netstat/">netstat</a>
-                                <p>
-                                    
-                                        <p>网络工具，查看网络连接的情况。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-09-06</time>
-                                <a class="archive_list_article_link" href="/2022/09/06/shell/openssl/">openssl</a>
-                                <p>
-                                    
-                                        <p>加密文件</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">openssl enc -des3  -e -in prime.txt -out prime.enc -k <span class="token number">12345678</span>   
-openssl enc -des3  -d -in prime.enc -out prime2.txt -k <span class="token number">12345678</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-28</time>
-                                <a class="archive_list_article_link" href="/2021/06/28/shell/paste/">paste</a>
-                                <p>
-                                    
-                                        <p>第一次使用paste命令。这个在上午的多个文件按行合并，很有用。而且效果可能更好。记录一下，自己测试过的效果如下。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-03-16</time>
-                                <a class="archive_list_article_link" href="/2022/03/16/shell/pssh/">pssh</a>
-                                <p>
-                                    
-                                        <p>比ansible更轻量级，能实现批量管理多台机器。都是<code>python</code>的<code>pssh</code>包提供的命令，用法也大同小异，学习起来也很容易。可以通过<code>pip install pssh</code>来安装这个<code>python</code>包。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-28</time>
-                                <a class="archive_list_article_link" href="/2021/04/28/shell/pushd%E3%80%81popd/">pushd、pop</a>
-                                <p>
-                                    
-                                        <p>类似于cd一样跳转路径的工具。</p>
-<ul>
-<li><p>pushed 把当前工作目录压栈，成为栈顶。  或者交换堆栈顺序，是当前工作目录成为新的栈顶。</p>
-<blockquote>
-<p>没有参数时，只是交换两个目录顺序，使得第二个目录成为栈顶，原栈顶目录下移，成功返回0； 只有当目录堆栈为空返回非零值。 </p>
-</blockquote>
-<p>pushed只会交换最上面两层的目录。或者新加入新的栈。</p>
-</li>
-<li><p> popd  将目录弹出目录栈。</p>
-</li>
-</ul>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-28</time>
-                                <a class="archive_list_article_link" href="/2021/06/28/shell/read/">read</a>
-                                <p>
-                                    
-                                        
-                                        
-                                            <a id="more"></a>
-                                        
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-09</time>
-                                <a class="archive_list_article_link" href="/2021/07/09/shell/rsync/">rsync</a>
-                                <p>
-                                    
-                                        <p>Linux下的同步文件非常多，可以根据不同的场景选择合适的工具。rsync，是用来跟远程机器，进行同步文件的工具，可以<strong>增量同步</strong>，即，已经下载的文件，不会重复的传递。（增量的含义是，已有的不会重复同步）</p>
-<p>顺便讲一下，其他方式，如scp、<code>python -m SimpleHTTPServer 8080</code>、lrzsz、ftp、samba等等，每种适合的场景略有不同。</p>
-<p>核心用法：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">rsync</span> -av -e <span class="token string">'ssh -p 22022'</span> thumb/  root@10.182.1.3:/home/wwwroot/default/thumb<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>注意，<code>thumb/</code>结尾带不带斜杆，差别较大。简单理解：带斜杆，当成文件夹，把文件夹下面的所有文件拷贝到目标目录中。（不会多层级）。不带斜杆，即当作文件，经其直接拷贝到目标目录中。（会多层级）</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2019-11-25</time>
-                                <a class="archive_list_article_link" href="/2019/11/25/shell/sed/">sed教程</a>
-                                <p>
-                                    
-                                        <h1 id="sed教程"><a href="#sed教程" class="headerlink" title="sed教程"></a>sed教程</h1><blockquote>
-<p>sed是linux中，常用的文档替换工具。本文包含一些常见的Sed命令。大致，Sed的命令形式，地址限制（可选） + 命令。地址，1、数字，2、正则。命令如下。，</p>
-<p>替换 s/查找的内容/替换后的内容/   如果一行后，需要匹配多个替换，添加g</p>
-<p>删除  1d </p>
-<p>修改  2c some new things.</p>
-<p>插入  2a some new things.   或  2i some new things. </p>
-<p>3、分隔，一般使用空格分隔，有些情况下可以省略。</p>
-</blockquote>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-01</time>
-                                <a class="archive_list_article_link" href="/2021/06/01/shell/shell_header/">shell通用部分</a>
-                                <p>
-                                    
-                                        <p>本篇写一些shell中共用的内容，比如shell的开头，或一些简单的开重用的模块。或者脚本执行计时、定时脚本的编写方式等等。</p>
-<h2 id="开头"><a href="#开头" class="headerlink" title="开头"></a>开头</h2><p>经常写shell，shell中常用的共享的一些内容。提炼如下：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#/bin/bash</span>
-
-<span class="token assign-left variable">BASEDIR</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">dirname</span> <span class="token punctuation">$(</span>readlink -f <span class="token string">"<span class="token variable">$0</span>"</span><span class="token punctuation">)</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p> 用得最多的就是这个，做成模版，每个shell都放在第三行上。</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">BASEDIR</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">cd</span> `dirname $0`<span class="token punctuation">;</span><span class="token builtin class-name">pwd</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>或者，多加一些引号</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">DIR</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">cd</span> <span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">dirname</span> <span class="token string">"<span class="token variable">$0</span>"</span><span class="token variable">)</span></span>"</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">pwd</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-03</time>
-                                <a class="archive_list_article_link" href="/2021/07/03/shell/socat/">socat</a>
-                                <p>
-                                    
-                                        <p>这是一个网络工具，类似与nc等工具（netcat）。但是功能又比较的强大。我记得第一次用这种类似的软件是nc，当时是用来传输文件，怎么没有成功。从名字上看，像是socket cat的缩写。所以，用法上，就想成cat，不过它的输入跟输出，可以非常的多。而且还能fork、reuseaddr等。</p>
-<p>凡是跟网络有关的软件，我个人感觉都比较的难理解，比如，ssh -D 代理、frp、ngork、甚至nginx的复杂代理设置等。</p>
-<p>不过发现，这个软件，最多用的就是</p>
-<p><code>socat TCP4-LISTEN:44444,reuseaddr,fork, TCP4:10.0.42.1:44444</code></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-03-11</time>
-                                <a class="archive_list_article_link" href="/2022/03/11/shell/ssh-agent/">ssh-agent</a>
-                                <p>
-                                    
-                                        <p>在免密码登录ssh的基础上，实现，从一个机器上，在多台机器上相互免密码登录。</p>
-<p>最开始，我以为：</p>
-<p>比如，有1台机器O，然后配置好O在A、B、C上的面免密登录。然后呢，A、B、C之间，不设置免密登录。在O机器上设置<code>ssh-agent</code>，然后，使用O，ssh登录A，再从As可以面密登录B、C，不需要密码，这种场景。</p>
-<p>实际上呢，顶多经过一次堡垒机，还能使用自己的秘钥登录。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-12-14</time>
-                                <a class="archive_list_article_link" href="/2021/12/14/shell/ssh/">ssh</a>
-                                <p>
-                                    
-                                        <p>ssh命令常用方式总结。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-08-05</time>
-                                <a class="archive_list_article_link" href="/2021/08/05/shell/ssh%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95/">docker中ssh服务无法登录</a>
-                                <p>
-                                    
-                                        <p>本文涉及到ssh的登录验证问题的解决，具体参见文章。</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wangzengdi/article/details/31742267">login (登录)的 PAM 验证机制流程</a></li>
-<li><a target="_blank" rel="noopener" href="https://upupor.com/u/21010509382329624576">删除/run/nologin文件即可</a></li>
-</ul>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-08-12</time>
-                                <a class="archive_list_article_link" href="/2021/08/12/shell/su/">su</a>
-                                <p>
-                                    
-                                        <p>用户之间的切换，使用 su，一般情况下，禁止root账号登录，在使用root账号权限的时候，在临时切换，并不会长期使用。</p>
-<p>不在root权限下操作，是有好处的。1、权限安全问题。普通用户，无法操作root操作的内容。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-09-02</time>
-                                <a class="archive_list_article_link" href="/2021/09/02/shell/syslog/">syslog</a>
-                                <p>
-                                    
-                                        <p>第一次知道syslog这种协议。使用udp的514端口来接收日志文件。内容比较多，但是先简单的记录一下。</p>
-<p>使用filebeat貌似也能监听到这个端口。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-08-18</time>
-                                <a class="archive_list_article_link" href="/2021/08/18/shell/tcp%E5%B9%B6%E5%8F%91%E6%95%B0%E6%94%BB%E5%87%BB%E9%98%B2%E5%BE%A1shell%E8%84%9A%E6%9C%AC/">tcp并发数攻击防御shell脚本</a>
-                                <p>
-                                    
-                                        <p>tcp并发数攻击防御shell脚本，根据netstat工具，查找到特定的ip，并将该ip使用防火墙中。添加到定时任务。</p>
-<p>转载的网址：<a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/787471?spm=a2c6h.13528211.0.0.228c4307K97B1y">https://developer.aliyun.com/article/787471?spm=a2c6h.13528211.0.0.228c4307K97B1y</a></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-03-03</time>
-                                <a class="archive_list_article_link" href="/2021/03/03/shell/uptime/">uptime</a>
-                                <p>
-                                    
-                                        <p>使用uptime来查看系统的负载。如果电脑cpu为1，则cpu负载100%时，uptime看到的是1。cpu为n，每个cpu都100%，则值是n。</p>
-<p>具体可以看这篇文章：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2011/07/linux_load_average_explained.html">理解Linux系统负荷</a></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2020-12-09</time>
-                                <a class="archive_list_article_link" href="/2020/12/09/shell/vim/">vim</a>
-                                <p>
-                                    
-                                        <p>vim的使用方式。vim的使用，需要一定的成本，而且比较而言，没有那些可识别化的编辑器，用起来直观，配置一个适合自己的vim、使用vim，上手难度大，而且不建议直接上来就用vim搞编程。但有时，又非用不可，在服务器编程方面，vim却有非常大的方便。故，策略是，可以在工作的接触中逐渐使用，慢慢的积累一些用法。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-07-25</time>
-                                <a class="archive_list_article_link" href="/2022/07/25/shell/vim%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/">vim快速入门</a>
-                                <p>
-                                    
-                                        
-                                        
-                                            <p>首先要属性vim有3种模式。</p>
-                                        
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-28</time>
-                                <a class="archive_list_article_link" href="/2021/06/28/shell/while_read/">while_read</a>
-                                <p>
-                                    
-                                        <p>之前有遇见过别人写的代码里面用到了while-read组合，当时觉得很神奇，没有仔细研究。最近一次，有个需求，有需要了这个命令。故记录之。</p>
-<p>需求如下：批量执行的shell，每行一个命令，而产生的日志文件<code>my.sh |tee log.prod.txt</code>,也正好是每个命令输出一行。需要将输出错误的日志，跟其对应的命令，进行关联，输出到一个新的文件中。我知道，可以使用awk的关联数组（awk非常的强大，能模拟出类似与sql的查询功能）。</p>
-<p>简单描述：将两个文件的每1行，按行交叉输入到同一个文件中。（发现paste命令可能更适合）</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-07-27</time>
-                                <a class="archive_list_article_link" href="/2021/07/27/shell/yum/">yum</a>
-                                <p>
-                                    
-                                        <p>yum工具命令，安装软件过程。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2019-12-17</time>
-                                <a class="archive_list_article_link" href="/2019/12/17/shell/%E5%88%86%E5%8D%B7%E5%8E%8B%E7%BC%A9split/">分卷压缩split</a>
-                                <p>
-                                    
-                                        <h1 id="分卷压缩split"><a href="#分卷压缩split" class="headerlink" title="分卷压缩split"></a>分卷压缩split</h1><blockquote>
-<p>利用管道符号，将压缩的数据传递给 split。或者cat 的数据传递给tar。由于输入输出之间，存在文件名，使用 - 符号来代理空缺的位置。</p>
-</blockquote>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 分隔</span>
-<span class="token function">split</span> -b 80M demo.tar.gz demo.tar.gz.
-<span class="token comment"># 合并</span>
-<span class="token function">cat</span> demo.tar.gz.* <span class="token operator">></span> demo.tgz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-09-14</time>
-                                <a class="archive_list_article_link" href="/2022/09/14/shell/%E5%8E%8B%E7%BC%A9%E3%80%81%E8%A7%A3%E5%8E%8B/">压缩、解压</a>
-                                <p>
-                                    
-                                        <p>Linux环境下，压缩与解压的命令。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2020-06-24</time>
-                                <a class="archive_list_article_link" href="/2020/06/24/shell/%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/">后台执行</a>
-                                <p>
-                                    
-                                        <h1 id="后台执行"><a href="#后台执行" class="headerlink" title="后台执行"></a>后台执行</h1><blockquote>
-<p>后台执行一段脚本，主要是使用了&amp;符号。除了正常的command &amp;以外，shell脚本里面的函数也能。主要有两种形式。</p>
-</blockquote>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-25</time>
-                                <a class="archive_list_article_link" href="/2021/04/25/shell/%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/">命令解析</a>
-                                <p>
-                                    
-                                        <p>如何用shell来做一个命令行工具。最简单的，可能是判断用户的输入 <code>$?</code>，另外还有 <code>getopt</code>函数。本文收集了多个shell的命令行解析方式。</p>
-<p>脚本首行的，<code>set -o errexit</code>不确定是什么作用。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-09-08</time>
-                                <a class="archive_list_article_link" href="/2021/09/08/shell/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/">四则运算</a>
-                                <p>
-                                    
-                                        <p>shell中的算数运算的支持。直接使用两个小括号，里面可以支持四则混合运算。一般情况下，整数，用这种方式就行。遇到小数，使用<code>bc</code>命令来完成即可。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-31</time>
-                                <a class="archive_list_article_link" href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk_sql/">awk进行统计分析SQL</a>
-                                <p>
-                                    
-                                        <p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80392512">https://blog.csdn.net/Learn_ZhangK/article/details/80392512</a></p>
-<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1国际惯例"><a href="#1-1国际惯例" class="headerlink" title="1.1国际惯例"></a>1.1国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
-<p>awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。</p>
-<p>awk有3个不同版本: awk、nawk和gawk，未作特别说明，一般指gawk，gawk 是 AWK 的 GNU 版本。</p>
-<p>awk其名称得自于它的创始人 Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。实际上 AWK 的确拥有自己的语言： AWK 程序设计语言 ， 三位创建者已将它正式定义为“样式扫描和处理语言”。它允许您创建简短的程序，这些程序读取输入文件、为数据排序、处理数据、对输入执行计算以及生成报表，还有无数其他的功能。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-31</time>
-                                <a class="archive_list_article_link" href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--awk%E5%85%A5%E9%97%A8/">awk入门</a>
-                                <p>
-                                    
-                                        <p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80241366">https://blog.csdn.net/Learn_ZhangK/article/details/80241366</a></p>
-<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1国际惯例"><a href="#1-1国际惯例" class="headerlink" title="1.1国际惯例"></a>1.1国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
-<p>awk是一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。</p>
-<p>awk有3个不同版本: awk、nawk和gawk，未作特别说明，一般指gawk，gawk 是 AWK 的 GNU 版本。</p>
-<p>awk其名称得自于它的创始人 Alfred Aho 、Peter Weinberger 和 Brian Kernighan 姓氏的首个字母。实际上 AWK 的确拥有自己的语言： AWK 程序设计语言 ， 三位创建者已将它正式定义为“样式扫描和处理语言”。它允许您创建简短的程序，这些程序读取输入文件、为数据排序、处理数据、对输入执行计算以及生成报表，还有无数其他的功能。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-31</time>
-                                <a class="archive_list_article_link" href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--cut/">大数据--cut</a>
-                                <p>
-                                    
-                                        <p>大数据中常用脚本–cut ：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80284546">https://blog.csdn.net/Learn_ZhangK/article/details/80284546</a></p>
-<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1-国际惯例"><a href="#1-1-国际惯例" class="headerlink" title="1.1 国际惯例"></a>1.1 国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
-<p>cut是在Linux里非常常用的一个命令，cut命令是一个选取命令，其功能是将文件中的每一行”字节” ”字符” ”字段” 进行剪切，选取我们需要的，并将这些选取好的数据输出至标准输出。执行过程：选取命令通常是针对一行一行的数据来进行分析的， 并不是整篇信息分析。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-31</time>
-                                <a class="archive_list_article_link" href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--grep%E5%85%A5%E9%97%A8/">grep入门（大数据）</a>
-                                <p>
-                                    
-                                        <p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80284903">https://blog.csdn.net/Learn_ZhangK/article/details/80284903</a></p>
-<p>本文在转载的基础上，加上自己的笔记，整理而成。</p>
-<p>grep常用的命令</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> hello  demo.txt  <span class="token comment">#在demo.txt文件中，查找hello字符串</span>
-<span class="token function">grep</span> hello -r <span class="token builtin class-name">.</span>    <span class="token comment"># 在文件夹中查找，下同，但是略有不同</span>
-<span class="token function">grep</span> hello -R <span class="token builtin class-name">.</span>   <span class="token comment"># grep -R hello .    但是千万不能写成 grep -R . hello</span>
-<span class="token function">grep</span> -2 hello    <span class="token comment"># 查找前后2行。  如：seq 1 10 |grep -2 5</span>
-<span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span> <span class="token operator">|</span><span class="token function">grep</span> -A2 -B3 <span class="token number">5</span>   <span class="token comment"># A前n行  B后n行</span>
-<span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span><span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'s/^/HELLO/'</span> <span class="token operator">|</span><span class="token function">grep</span> -iA2 -B3 hello5  <span class="token comment"># -i 忽略大小写，但是注意，因为其没有参数，可以跟其他命令合并，这是getopts命令行的特性</span>
-
-
-<span class="token comment"># 查找指定文件</span>
-
-
-<span class="token function">grep</span> -R --include<span class="token operator">=</span>*.c main <span class="token function">dir</span>   <span class="token comment"># 查找指定几个目录下的c文件</span>
-<span class="token function">grep</span> -rn --include<span class="token operator">=</span><span class="token string">'*.c'</span> --include<span class="token operator">=</span><span class="token string">'*.h'</span> re <span class="token builtin class-name">.</span>   <span class="token comment"># 查找指定文件格式，可以使用　｛｝符号</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-31</time>
-                                <a class="archive_list_article_link" href="/2021/05/31/shell/%E5%A4%A7%E6%95%B0%E6%8D%AE--sort/">大数据--sort</a>
-                                <p>
-                                    
-                                        <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80259459">大数据中常用脚本–sort（一)</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Learn_ZhangK/article/details/80263743">大数据中常用脚本–sort（二)</a></p>
-<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h1><h2 id="1-1国际惯例"><a href="#1-1国际惯例" class="headerlink" title="1.1国际惯例"></a>1.1国际惯例</h2><p>按照国际惯例先来理论的介绍。</p>
-<p>sort是在Linux里非常常用的一个命令，管排序的。工作原理：sort将文件的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按<strong>ASCII码值</strong>进行比较，最后将他们按升序输出。在其中我们会遇到需要数值排序的，别急，慢慢来，都是干货。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-12-23</time>
-                                <a class="archive_list_article_link" href="/2021/12/23/shell/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86/">字符串处理</a>
-                                <p>
-                                    
-                                        <p>shell本身对字符串处理，并不像传统的编程能力那样，方便，有很多的函数可以使用。<code>shell</code>嘛，以简洁著称，故它本身，可以通过<code>$&#123;string命令&#125;</code>方式。</p>
-<p>这些用法，在很大一部分场景能替代<code>sed</code>、<code>cut</code>等命令。前者，简洁，后者功能更强大。</p>
-<p>常用：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">curdir</span><span class="token operator">=</span><span class="token variable">$&#123;each<span class="token operator">%</span><span class="token operator">/</span>*&#125;</span>   <span class="token comment"># 路径名</span>
-<span class="token assign-left variable">filename</span><span class="token operator">=</span><span class="token variable">$&#123;each<span class="token operator">##</span>*<span class="token operator">/</span>&#125;</span>   <span class="token comment"># 文件名</span>
- <span class="token assign-left variable">ext</span><span class="token operator">=</span><span class="token variable">$&#123;each<span class="token operator">##</span>*.&#125;</span>    <span class="token comment">#格式名、扩展名</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-06-05</time>
-                                <a class="archive_list_article_link" href="/2021/06/05/shell/%E5%B0%8F%E7%9F%A5%E8%AF%86/">小知识</a>
-                                <p>
-                                    
-                                        <p>shell中有些问题很小，又不值得专门写一遍文章来记录。对一些暂时不知道放到哪篇文档的小知识、或者易错点，放到本文来讲。比如<code>sed</code>命令踩得坑。<code>~</code>符号解析问题等。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-05-13</time>
-                                <a class="archive_list_article_link" href="/2021/05/13/shell/%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98/">权限问题</a>
-                                <p>
-                                    
-                                        <p>以前也遇到一些权限问题，发现某文件夹命名是正在用的用户的，但是无法cd进去，并查看该目录内的文件，并提示：</p>
-<blockquote>
-<p>/: Permission denied</p>
-</blockquote>
-<p>首先，该文件夹是用root账户建的，然后通过<code>chown -R gpadmin:gpadmin /yd/td2</code>的方式转交给gpadmin，但是<code>runtime</code>的权限是<code>drw-r--r--</code>，拥有者少了一个对文件夹的执行权限，才导致无法执行。</p>
-<p>解决方式，即可：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">chown</span> +x runtime<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-04-29</time>
-                                <a class="archive_list_article_link" href="/2021/04/29/shell/%E6%9D%A1%E4%BB%B6%E6%B5%8B%E8%AF%95/">条件测试</a>
-                                <p>
-                                    
-                                        <h1 id="Shell脚本应用——条件测试操作"><a href="#Shell脚本应用——条件测试操作" class="headerlink" title="Shell脚本应用——条件测试操作"></a>Shell脚本应用——条件测试操作</h1><p><strong>Shell脚本应用——条件测试操作</strong></p>
-<p>前言：在简单的shell脚本程序中，各条语句将按先后顺序依次执行，从而实现批处理的自动化过程，这就使得脚本过于机械化，不够”智能”，难以处理更加灵活的系统任务。</p>
-<p>下面让我们一起了解如何进行条件测试操作，并通过正确使用if语句，使shell脚本具有一定的”判断”能力，以根据不同的条件来完成不同的管理任务。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-01-06</time>
-                                <a class="archive_list_article_link" href="/2021/01/06/shell/%E6%9F%A5%E7%9C%8B%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8/">查看资源占用</a>
-                                <p>
-                                    
-                                        <h1 id="查看资源占用"><a href="#查看资源占用" class="headerlink" title="查看资源占用"></a>查看资源占用</h1><p>Linux下常用的查看资源占用量的工具汇总。cpu、内存等。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-07-25</time>
-                                <a class="archive_list_article_link" href="/2022/07/25/shell/%E7%94%A8%E6%88%B7/">用户、组管理</a>
-                                <p>
-                                    
-                                        <p>Linux系统中，用户、用户组的概念，以及相关的文件权限、属性。<a target="_blank" rel="noopener" href="https://www.lmlphp.com/user/57828/article/item/661424/">参考文章</a></p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-02-22</time>
-                                <a class="archive_list_article_link" href="/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/">符号</a>
-                                <p>
-                                    
-                                        <p>shell非常的灵活，一条简单的命令，往往能做很大的事情。别人说，web界面是方便输入的，而shell这种，更方便批量操作。</p>
-<p>但是shell有时候非常的晦涩，尤其是大量的符号，比如无限复制进程的fork炸弹代码如下：</p>
-<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">:<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token builtin class-name">:</span><span class="token operator">|</span><span class="token builtin class-name">:</span><span class="token operator">&amp;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>符号虽然抽象，但是功能强大啊。一句胜过千言万语。</p>
-<p>另外，听同事讲，shell里面的命令，基本上都是命令。比如 <code>((i=i+1))</code>，两个括号就是命令，括号内的语法，模仿c语言的。中括号，也差不多。为啥要留空格呢，怕被识别成一个变量？？？</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2021-10-22</time>
-                                <a class="archive_list_article_link" href="/2021/10/22/shell/%E7%AE%A1%E9%81%93/">管道</a>
-                                <p>
-                                    
-                                        <p>管道的使用例子，在Linux shell中使用的非常多，本文只能简单的挑一下常用的，或者具有启发性的例子，记录有效性。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-03-22</time>
-                                <a class="archive_list_article_link" href="/2022/03/22/shell/%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE/">终端配置</a>
-                                <p>
-                                    
-                                        <p>打造一个顺手的终端环境，比较适合远程ssh连上，远程写代码等。可以放到一个docker镜像里面。这样，非常方便迁移。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2020-04-28</time>
-                                <a class="archive_list_article_link" href="/2020/04/28/shell/%E8%84%9A%E6%9C%AC%E5%BE%AA%E7%8E%AFfor/">脚本循环for</a>
-                                <p>
-                                    
-                                        <h1 id="脚本循环for"><a href="#脚本循环for" class="headerlink" title="脚本循环for"></a>脚本循环for</h1><blockquote>
-<p>中文</p>
-</blockquote>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-03-11</time>
-                                <a class="archive_list_article_link" href="/2022/03/11/python/ansible/">ansible</a>
-                                <p>
-                                    
-                                        <p>ansible是批量管理Linux机器的工具。让一批的机器，同时执行一些命令。比如查看网络、机器状态、批量安装、执行命令等等。提供了<code>ansible</code>、<code>ansible-playbook</code>等命令。其中，后者的功能非常强大，有非常多的模块，而前者可以快速的，简单的调用后者的一些功能。</p>
-<p>ansible应用场景，批量管理，当然也可以对单机操作。它抽象出了很多的管理，如机器组、任务等等。</p>
-<p>它有很好的扩展性能编写模块来扩充它的功能。</p>
-<p>它使用了比较流行的yaml格式来作为配置文件。但是在标准的格式上，又增加了一些其特有的自定义内容。</p>
-<p>抽象会带来了复杂，但是为了更强大。比如：幂等性（即多次执行脚本，结果是一样的。）</p>
-<p>在批量控制多台机器上，其实还有其他方案，如for+ssh，pssh等。pssh貌似比较接近<code>ansible -m shell</code>。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2019-12-13</time>
-                                <a class="archive_list_article_link" href="/2019/12/13/shell/shell/">shell</a>
-                                <p>
-                                    
-                                        
-                                        
-                                            <p>shell是个很强大的工具，界面操作，用其来简单，但是想做到自动化，却有点困难。而且，会将限制用户的输入，这是好处，也是坏出。增加了限制，可以保证执行的有效性，但也限制了功能。</p>
-                                        
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                            <li class="archive_list">
-                                <time>2022-03-17</time>
-                                <a class="archive_list_article_link" href="/2022/03/17/shell/%E8%BF%90%E7%BB%B4%E8%84%9A%E6%9C%AC/">Linux实用运维脚本</a>
-                                <p>
-                                    
-                                        <p>转载自<a target="_blank" rel="noopener" href="https://www.toutiao.com/i7075327261393699367/">https://www.toutiao.com/i7075327261393699367/</a></p>
-<p>一些shell脚本备份等等。</p>
-                                    
-                                </p>
-                            </li>
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                        
-                    
-                
-                    
-                        
-                    
-                        
-                    
-                
-            </ul>
-        </div>
-    </div>
-</div>
-
-                </div>
-                <div class="col-md-4 hidden-xs">
-                    
-<div class="sidebar">
-    <div class="well">
-        <h2>标签云</h2>
-        <a href="/tags/php/" style="font-size: 15px;">php</a> <a href="/tags/restful-api/" style="font-size: 15px;">restful api</a> <a href="/tags/ext/" style="font-size: 15px;">ext</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/%E5%AF%BC%E8%88%AA/" style="font-size: 15px;">导航</a> <a href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" style="font-size: 15px;">编程语言</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/shell/" style="font-size: 15px;">-shell</a> <a href="/tags/think/" style="font-size: 15px;">think</a> <a href="/tags/%E8%AF%AD%E6%B3%95/" style="font-size: 15px;">语法</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 15px;">转载</a> <a href="/tags/vb/" style="font-size: 15px;">vb</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/Jenkinsfile/" style="font-size: 15px;">Jenkinsfile</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/default/" style="font-size: 15px;">default</a> <a href="/tags/extjs/" style="font-size: 15px;">extjs</a> <a href="/tags/db/" style="font-size: 15px;">db</a> <a href="/tags/c/" style="font-size: 15px;">c</a> <a href="/tags/docker/" style="font-size: 15px;">docker</a> <a href="/tags/python/" style="font-size: 15px;">python</a> <a href="/tags/postgresql/" style="font-size: 15px;">postgresql</a> <a href="/tags/shell/" style="font-size: 15px;">shell</a> <a href="/tags/docker-php/" style="font-size: 15px;">docker php</a> <a href="/tags/docker-weblogic/" style="font-size: 15px;">docker weblogic</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/ingore/" style="font-size: 15px;">ingore</a> <a href="/tags/go/" style="font-size: 15px;">go</a> <a href="/tags/%E6%89%93%E5%8C%85/" style="font-size: 15px;">打包</a> <a href="/tags/cygwin/" style="font-size: 15px;">cygwin</a> <a href="/tags/install/" style="font-size: 15px;">install</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/underscope/" style="font-size: 15px;">underscope</a> <a href="/tags/sql/" style="font-size: 15px;">sql</a> <a href="/tags/k8s/" style="font-size: 15px;">k8s</a> <a href="/tags/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 15px;">K8s学习笔记</a> <a href="/tags/rancher/" style="font-size: 15px;">rancher</a> <a href="/tags/%E4%B8%AA%E4%BA%BA/" style="font-size: 15px;">个人</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/nginx/" style="font-size: 15px;">nginx</a> <a href="/tags/host/" style="font-size: 15px;">host</a> <a href="/tags/conf/" style="font-size: 15px;">conf</a> <a href="/tags/lua/" style="font-size: 15px;">lua</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/openapi/" style="font-size: 15px;">openapi</a> <a href="/tags/other/" style="font-size: 15px;">other</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/csv/" style="font-size: 15px;">csv</a> <a href="/tags/es/" style="font-size: 15px;">es</a> <a href="/tags/json/" style="font-size: 15px;">json</a> <a href="/tags/%E7%A9%BA%E6%A0%BC/" style="font-size: 15px;">空格</a> <a href="/tags/emoji/" style="font-size: 15px;">emoji</a> <a href="/tags/greenplum/" style="font-size: 15px;">greenplum</a> <a href="/tags/copy/" style="font-size: 15px;">copy</a> <a href="/tags/pg/" style="font-size: 15px;">pg</a> <a href="/tags/%E5%88%86%E5%8C%BA%E8%A1%A8/" style="font-size: 15px;">分区表</a> <a href="/tags/gp/" style="font-size: 15px;">gp</a> <a href="/tags/array/" style="font-size: 15px;">array</a> <a href="/tags/pdo/" style="font-size: 15px;">pdo</a> <a href="/tags/php-%E6%8F%92%E4%BB%B6/" style="font-size: 15px;">php 插件</a> <a href="/tags/php-%E6%89%A9%E5%B1%95/" style="font-size: 15px;">php 扩展</a> <a href="/tags/session/" style="font-size: 15px;">session</a> <a href="/tags/static/" style="font-size: 15px;">static</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 15px;">模板</a> <a href="/tags/bs4/" style="font-size: 15px;">bs4</a> <a href="/tags/celery/" style="font-size: 15px;">celery</a> <a href="/tags/ldap/" style="font-size: 15px;">ldap</a> <a href="/tags/lxml/" style="font-size: 15px;">lxml</a> <a href="/tags/md5/" style="font-size: 15px;">md5</a> <a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 15px;">进程</a> <a href="/tags/pip/" style="font-size: 15px;">pip</a> <a href="/tags/requests/" style="font-size: 15px;">requests</a> <a href="/tags/sqlite/" style="font-size: 15px;">sqlite</a> <a href="/tags/%E5%AE%89%E8%A3%85/" style="font-size: 15px;">安装</a> <a href="/tags/linux/" style="font-size: 15px;">linux</a> <a href="/tags/awk/" style="font-size: 15px;">awk</a> <a href="/tags/iptables/" style="font-size: 15px;">iptables</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 15px;">网络</a> <a href="/tags/openssl/" style="font-size: 15px;">openssl</a> <a href="/tags/ssh/" style="font-size: 15px;">ssh</a> <a href="/tags/%E5%90%8C%E6%AD%A5/" style="font-size: 15px;">同步</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/for/" style="font-size: 15px;">for</a> <a href="/tags/yum/" style="font-size: 15px;">yum</a> <a href="/tags/socat/" style="font-size: 15px;">socat</a> <a href="/tags/split/" style="font-size: 15px;">split</a> <a href="/tags/tar/" style="font-size: 15px;">tar</a> <a href="/tags/gzip/" style="font-size: 15px;">gzip</a> <a href="/tags/tmux/" style="font-size: 15px;">tmux</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 15px;">大数据</a> <a href="/tags/chmod/" style="font-size: 15px;">chmod</a> <a href="/tags/chown/" style="font-size: 15px;">chown</a> <a href="/tags/%E4%B8%9A%E5%8A%A1/" style="font-size: 15px;">业务</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/vue3/" style="font-size: 15px;">vue3</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/django/" style="font-size: 15px;">django</a> <a href="/tags/web/" style="font-size: 15px;">web</a> <a href="/tags/postgre/" style="font-size: 15px;">postgre</a>
-    </div>
-</div>
-
-<div class="sidebar">
-    <div class="well">
-        <h2>归档</h2>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">2023年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">2022年10月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">2022年09月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">2022年08月</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">2022年07月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">2022年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">2022年04月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">2022年03月</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">2022年02月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">2022年01月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">2021年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">2021年11月</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">2021年10月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">2021年09月</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">2021年08月</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">2021年07月</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">2021年06月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">2021年05月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">2021年04月</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">2021年03月</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">2021年02月</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">2021年01月</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">2020年12月</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">2020年11月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">2020年10月</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">2020年09月</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">2020年08月</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">2020年07月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">2020年06月</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">2020年05月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">2020年04月</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">2020年01月</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">2019年12月</a><span class="archive-list-count">37</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">2019年11月</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">2019年10月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">2019年09月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">2019年08月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">2019年07月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">2019年05月</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">2019年04月</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">2019年02月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">2019年01月</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">2018年12月</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">2018年04月</a><span class="archive-list-count">1</span></li></ul>
-    </div>
-</div>
-
-<div class="sidebar ">
-    <div class="well">
-        <h2>最新文章</h2>
-        <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2023/01/20/pg/%E6%95%B0%E6%8D%AE%E6%8F%92%E5%85%A5%E5%88%B0%E5%88%86%E5%8C%BA/">数据插入到分区</a></li><li class="post-list-item"><a class="post-list-link" href="/2022/10/09/shell/%E6%AD%A3%E5%88%99/">常用的正则表达式</a></li><li class="post-list-item"><a class="post-list-link" href="/2022/09/22/other/%E8%BF%9C%E7%A8%8B%E5%8A%9E%E5%85%AC/">远程办公</a></li><li class="post-list-item"><a class="post-list-link" href="/2022/09/20/apache/%E5%8E%8B%E6%B5%8B/">压测</a></li><li class="post-list-item"><a class="post-list-link" href="/2022/09/14/shell/%E5%8E%8B%E7%BC%A9%E3%80%81%E8%A7%A3%E5%8E%8B/">压缩、解压</a></li></ul>
-    </div>
-</div>
-
-<div class="sidebar">
-    <div class="well">
-        <h2>友情链接</h2>
-        <ul>
-            
-            <li><a class="links-list-link" href="http://www.howardliu.com/" title="沉潜飞动" target='_blank'>沉潜飞动</a></li>
-            
-        </ul>
-    </div>
-</div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="side-button-wrap">
-        <a id="to-top" class="side-button icon-up-arrow" href="#top"></a>
-        <a id="to-home" class="side-button icon-home" href="/."></a>
-        <a id="to-comment-button" class="side-button icon-msg" href="#comment"></a>
-        <a id="to-bottom-button" class="side-button icon-down-arrow" href="#bottom"></a>
-    </div>
-    <a id="bottom" name="bottom"></a>
-    <footer id="footer" class="footer-distributed" style="background-color: #222222;">
-    <div class="container">
-        <div class="footer">
-            <p>chaofml &copy; 2023</p>
-            <ul class="social-media">
-                
-                
-                <li>
-                    <a title="hexo-theme-clean-dark" href="https://github.com/howardliu-cn/hexo-theme-clean-dark"
-                       target="_blank">
-                        <i class="fa fa-film fa-2x"></i>
-                    </a>
-                </li>
-                
-            </ul>
-        </div>
-    </div>
-</footer>
-
-</div>
-
-<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
-
-
-<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-
-<script src="//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js"></script>
-
-<script>hljs.initHighlightingOnLoad();</script>
-
-<script src="/js/header.js"></script>
-
-
-<script src="/js/toc.js"></script>
-
-<!--[if lt IE 9]>
-
-<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-
-![endif]-->
-<!--fancybox-->
-
-<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
-<script src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-<link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
-<script>
-    $(document).ready(function () {
-        $("img").each(function (index, item) {
-            var p = $(item).parents()[0];
-            if($(p).is('a')) {
-                $(p).fancybox();
-                return;
-            }
-            $(p).append(function() {return "<a id='fancybox_id_"+index+"' href='" + $(item).attr("src") + "'></a>";});
-            item.remove();
-            var fancyboxItem = $("#fancybox_id_" + index);
-            fancyboxItem.append($(item));
-            fancyboxItem.fancybox();
-        });
-    });
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
 </script>
+<title>标签: shell | 超凡魔力</title>
+  
 
-<!--baidu auto-push-->
 
-<!--google analytics-->
 
-<script color="255,255,255" opacity='0.9' zIndex="-1" count="150" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner tag posts-collapse">
+
+
+  
+  
+  
+  <div class="post-block">
+    <div class="post-content">
+      <div class="collection-title">
+        <h2 class="collection-header">shell
+          <small>标签</small>
+        </h2>
+      </div>
+
+      
+    <div class="collection-year">
+      <span class="collection-header">2022</span>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2022-02-22T13:33:14+00:00"
+              content="2022-02-22">
+          02-22
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/" itemprop="url">
+            <span itemprop="name">符号</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2022-02-18T14:58:24+00:00"
+              content="2022-02-18">
+          02-18
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/02/18/shell/expect/" itemprop="url">
+            <span itemprop="name">expect</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2022-02-17T10:52:41+00:00"
+              content="2022-02-17">
+          02-17
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/02/17/other/sshd%E9%98%B2%E6%AD%A2%E7%88%86%E7%A0%B4/" itemprop="url">
+            <span itemprop="name">sshd防止爆破.sh</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2022-02-11T13:50:28+00:00"
+              content="2022-02-11">
+          02-11
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/02/11/install/%E7%88%B1%E5%BF%AB%E5%AE%89%E8%A3%85/" itemprop="url">
+            <span itemprop="name">爱快安装</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+    <div class="collection-year">
+      <span class="collection-header">2021</span>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-12-23T11:43:51+00:00"
+              content="2021-12-23">
+          12-23
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/12/23/shell/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86/" itemprop="url">
+            <span itemprop="name">字符串处理</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-12-23T10:56:24+00:00"
+              content="2021-12-23">
+          12-23
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/12/23/js/%E6%B7%B7%E6%B7%86js/" itemprop="url">
+            <span itemprop="name">混淆js</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-12-14T09:55:47+00:00"
+              content="2021-12-14">
+          12-14
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/12/14/shell/ssh/" itemprop="url">
+            <span itemprop="name">ssh</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-11-22T15:52:37+00:00"
+              content="2021-11-22">
+          11-22
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/11/22/docker/docker%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" itemprop="url">
+            <span itemprop="name">docker定时任务</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-11-16T17:47:36+00:00"
+              content="2021-11-16">
+          11-16
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/11/16/python/getopt/" itemprop="url">
+            <span itemprop="name">getopt</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+      <div class="post-meta-container">
+        <time itemprop="dateCreated"
+              datetime="2021-11-03T11:10:04+00:00"
+              content="2021-11-03">
+          11-03
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/2021/11/03/docker/docker%E8%84%9A%E6%9C%AC/" itemprop="url">
+            <span itemprop="name">docker脚本</span>
+          </a>
+      </div>
+
+      
+    </header>
+  </article>
+
+    </div>
+  </div>
+  
+  
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/tags/shell/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/tags/shell/">1</a><span class="page-number current">2</span><a class="page-number" href="/tags/shell/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/tags/shell/page/8/">8</a><a class="extend next" rel="next" href="/tags/shell/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
 </body>
 </html>

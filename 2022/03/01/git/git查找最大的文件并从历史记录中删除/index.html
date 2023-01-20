@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="git查找大文件，并从历史记录中删除。大概有几种方法。如果出现错误提交，最好在没有推送到远程前，赶紧删掉。就算推到远程，也尽快恢复。大概两种方法。分几个部分看。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git查找大文件并删除">
+<meta property="og:url" content="https://blog.chaofml.cn/2022/03/01/git/git%E6%9F%A5%E6%89%BE%E6%9C%80%E5%A4%A7%E7%9A%84%E6%96%87%E4%BB%B6%E5%B9%B6%E4%BB%8E%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E4%B8%AD%E5%88%A0%E9%99%A4/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="git查找大文件，并从历史记录中删除。大概有几种方法。如果出现错误提交，最好在没有推送到远程前，赶紧删掉。就算推到远程，也尽快恢复。大概两种方法。分几个部分看。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-01T09:14:38.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.952Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2022/03/01/git/git%E6%9F%A5%E6%89%BE%E6%9C%80%E5%A4%A7%E7%9A%84%E6%96%87%E4%BB%B6%E5%B9%B6%E4%BB%8E%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E4%B8%AD%E5%88%A0%E9%99%A4/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>git查找大文件并删除 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">方式一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F2"><span class="nav-number">2.</span> <span class="nav-text">方式2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F3"><span class="nav-number">3.</span> <span class="nav-text">方式3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F4%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">方式4：</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2022/03/01/git/git%E6%9F%A5%E6%89%BE%E6%9C%80%E5%A4%A7%E7%9A%84%E6%96%87%E4%BB%B6%E5%B9%B6%E4%BB%8E%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E4%B8%AD%E5%88%A0%E9%99%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git查找大文件并删除
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-01 09:14:38" itemprop="dateCreated datePublished" datetime="2022-03-01T09:14:38+00:00">2022-03-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>git查找大文件，并从历史记录中删除。大概有几种方法。如果出现错误提交，最好在没有推送到远程前，赶紧删掉。就算推到远程，也尽快恢复。<br>大概两种方法。分几个部分看。</p>
+<a id="more"></a>
+
+<h2 id="方式一"><a href="#方式一" class="headerlink" title="方式一"></a>方式一</h2><p>测试创建、并推送一些记录。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token function">git</span>
+<span class="token builtin class-name">echo</span> test_git
+<span class="token function">git</span> clone http://<span class="token punctuation">..</span><span class="token punctuation">..</span>./test_git.git
+
+<span class="token builtin class-name">cd</span> test_git
+<span class="token function">ls</span>
+<span class="token comment"># 创建提交记录</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">n</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span><span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$n</span><span class="token variable">$n</span><span class="token variable">$n</span><span class="token variable">$n</span><span class="token variable">$n</span>"</span> <span class="token operator">>></span> <span class="token variable">$n</span>.txt
+    <span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>
+    <span class="token function">git</span> commit -am <span class="token string">"<span class="token variable">$n</span>:add <span class="token variable">$n</span>.txt"</span>
+    <span class="token function">git</span> push
+<span class="token keyword">done</span> 
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> log --oneline 
+<span class="token comment"># 选择其中一个节点，如果要删除某个点，要在其前1个点执行</span>
+<span class="token function">git</span> rebase -i 9303e8f 
+<span class="token comment"># 然后编辑,drop 代表删除。比如删除该节点后面的一个节点，再看</span>
+
+<span class="token function">git</span> log --oneline 
+
+<span class="token comment"># 然后发现上面的节点确实删除了</span>
+<span class="token comment"># 去掉git的保护分支</span>
+<span class="token function">git</span> push -f 
+<span class="token function">git</span> push -f  --all<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="方式2"><a href="#方式2" class="headerlink" title="方式2"></a>方式2</h2><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token number">1</span>、查找最大的文件 
+<span class="token function">git</span> rev-list --all <span class="token operator">|</span> <span class="token function">xargs</span> -rL1 <span class="token function">git</span> ls-tree -r --long <span class="token operator">|</span> <span class="token function">sort</span> -uk3 <span class="token operator">|</span> <span class="token function">sort</span> -rnk4 <span class="token operator">|</span> <span class="token function">head</span> -10
+
+<span class="token comment"># 由于提交历史已有8000+，很长时间后，找到如下</span>
+<span class="token comment"># 100644 blob 0800a0c5f547627750412b8f5ed9026c74235ba6 1984831488 geoserver/osm-lowres.gpkg</span>
+
+<span class="token number">2</span>、根据最大文件的路径 <span class="token punctuation">&#123;</span>filepath<span class="token punctuation">&#125;</span>，修改此文件的commit历史：
+
+<span class="token function">git</span> filter-branch --tree-filter <span class="token string">"rm -f &#123;filepath&#125;"</span> -- --all
+
+<span class="token number">3</span>、强制提交到远程分支：
+
+<span class="token function">git</span> push -f --all<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><strong>试过，大文件还在。</strong></p>
+<h2 id="方式3"><a href="#方式3" class="headerlink" title="方式3"></a>方式3</h2><p>1、实际上到下面文件能找到一个最大的文件<br>.git\objects\pack<br>能找到大文件  但是不知道，对应哪次提交。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> verify-pack -v .git/objects/pack/pack-5794788dfaa1755461cb7dc301649cab222b4006.pack <span class="token operator">|</span> <span class="token function">sort</span> -k <span class="token number">3</span> -n <span class="token operator">|</span> <span class="token function">tail</span> -3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>2.查询大文件的文件名</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> rev-list --objects --all <span class="token operator">|</span> <span class="token function">grep</span> 0800a0c5f547627750412b8f5ed9026c74235ba6
+
+<span class="token comment"># 输出如下：</span>
+<span class="token comment"># 0800a0c5f547627750412b8f5ed9026c74235ba6 geoserver/osm-lowres.gpkg</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>3.将该文件从历史记录的所有 tree 中移除</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">git</span> filter-branch --index-filter <span class="token string">'git rm --cached --ignore-unmatch  geoserver/osm-lowres.gpkg'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>注意：上面文件命令  geoserver/osm-lowres.gpkg  <strong>前面并没有 / 号</strong></p>
+<p>4.然后再执行如下语句：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">rm</span> -rf .git/refs/original/
+<span class="token function">git</span> reflog expire --expire<span class="token operator">=</span>now --all
+<span class="token function">git</span> <span class="token function">fsck</span> --full --unreachable
+<span class="token function">git</span> repack -A -d
+<span class="token function">git</span> gc --aggressive --prune<span class="token operator">=</span>now
+<span class="token function">git</span> push --force<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><strong>试过，大文件还在。</strong></p>
+<h2 id="方式4："><a href="#方式4：" class="headerlink" title="方式4："></a>方式4：</h2><p>另外一篇文章：</p>
+<p>首先来看下.git目录：</p>
+<p>├── HEAD<br>├── branches<br>├── index<br>├── logs<br>│   ├── HEAD<br>│   └── refs<br>│       └── heads<br>│           └── master<br>├── objects<br>│   ├── 88<br>│   │   └── 23efd7fa394844ef4af3c649823fa4aedefec5<br>│   ├── 91<br>│   │   └── 0fc16f5cc5a91e6712c33aed4aad2cfffccb73<br>│   ├── 9f<br>│   │   └── 4d96d5b00d98959ea9960f069585ce42b1349a<br>│   ├── info<br>│   └── pack<br>└── refs<br>    ├── heads<br>    │   └── master<br>    └── tags<br> 用于GitWeb程序<br> 配置特定于该仓库的设置<br> 放置客户端或服务端的hook脚本<br> 指明当前处于哪个分支<br> Git对象存储目录<br> Git引用存储目录<br> 放置分支引用的目录<br>每次   都会生成一个Git对象，称为blob 对象，存放在objects目录下。</p>
+<p>这个blob 对象里保存的是什么呢?<br>Git在add文件时，会把文件完整的保存成一个新的blob 对象。通过   打包或者每次  的时候Git都会自动执行一次打包过程，将Blob对象合并成一个包文件，同时会生成一个索引文件，索引文件中包含了每个Blob对象在包文件中的偏移信息，Git在打包的过程中使用了增量编码方案，只保存Blob对象的不同版本之间的差异，这使得仓库会瘦身。</p>
+<p>既然Git会对Blob对象进行合并优化，那么objects文件夹为什么还会那么大呢?</p>
+<p>因为当Blob对象在合并时不能对.a进行差异化比较，所以每次在添加.a文件时，都会保存一份.a文件，用于后续代码还原时使用。</p>
+<p>所以当频繁更换.a文件时，objects下的pack文件会越来越大。虽然这个.a文件后续可能用不到删除了，但是pack中的这个.a文件的缓存还是会一直存在。</p>
+<p>删除pack中无用的大文件缓存<br>首先先找出git中最大的文件：</p>
+<p>git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -g | tail -5</p>
+<p>执行结果：</p>
+<p>第一行的字母其实相当于文件的id，用以下命令可以找出id对应的文件名：<br>git rev-list –objects –all | grep 8f10eff91bb6aa2de1f5d096ee2e1687b0eab007</p>
+<p>找到最大的几个文件后，怎么删除呢？</p>
+<p>能够胜任这个任务的命令叫做 filter-branch:</p>
+<p>git filter-branch –force –prune-empty –index-filter ‘git rm -rf –cached –ignore-unmatch XXX.framework’ –tag-name-filter cat – –all</p>
+<p>等命令执行完后，要提交到远程：</p>
+<p>git push –force –all<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4f2ccb48da77">https://www.jianshu.com/p/4f2ccb48da77</a></p>
+<p>其他：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/780161d32c8e">https://www.jianshu.com/p/780161d32c8e</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/" rel="prev" title="符号">
+                  <i class="fa fa-chevron-left"></i> 符号
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/02/k8s/rancher/" rel="next" title="rancher">
+                  rancher <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="workerman源码解读 workerman集成了进程的管理、网络连接处理。算是比较底层的实现多进程与异步通信的框架，并不是常见的MVC框架。看懂，需要有unix编程知识及相关进程管理的基础。 一种场景，作为httpServer，自定义协议。worker.php中，集中实现了进程管理。Workerman\Connection\TcpConnection.php，实现了通信的细节。先看udp连接，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="workerman源码解读">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/01/06/learn_code/workerman%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="workerman源码解读 workerman集成了进程的管理、网络连接处理。算是比较底层的实现多进程与异步通信的框架，并不是常见的MVC框架。看懂，需要有unix编程知识及相关进程管理的基础。 一种场景，作为httpServer，自定义协议。worker.php中，集中实现了进程管理。Workerman\Connection\TcpConnection.php，实现了通信的细节。先看udp连接，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-06T13:48:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.977Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/01/06/learn_code/workerman%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>workerman源码解读 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#workerman%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">1.</span> <span class="nav-text">workerman源码解读</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">准备条件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">Linux网络编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%A4%8D%E5%88%B6"><span class="nav-number">2.2.</span> <span class="nav-text">进程复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SplPriorityQueue"><span class="nav-number">2.3.1.</span> <span class="nav-text">SplPriorityQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-socket-sendto"><span class="nav-number">2.3.2.</span> <span class="nav-text">stream_socket_sendto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-socket-get-name"><span class="nav-number">2.3.3.</span> <span class="nav-text">stream_socket_get_name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-context-set-option"><span class="nav-number">2.3.4.</span> <span class="nav-text">stream_context_set_option</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-set-blocking"><span class="nav-number">2.3.5.</span> <span class="nav-text">stream_set_blocking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-context-create"><span class="nav-number">2.3.6.</span> <span class="nav-text">stream_context_create</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-socket-server"><span class="nav-number">2.3.7.</span> <span class="nav-text">stream_socket_server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-socket-accept"><span class="nav-number">2.3.8.</span> <span class="nav-text">stream_socket_accept</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stream-socket-recvfrom"><span class="nav-number">2.3.9.</span> <span class="nav-text">stream_socket_recvfrom</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#restore-error-handler"><span class="nav-number">2.3.10.</span> <span class="nav-text">restore_error_handler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug-backtrace"><span class="nav-number">2.3.11.</span> <span class="nav-text">debug_backtrace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-kill"><span class="nav-number">2.3.12.</span> <span class="nav-text">posix_kill</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-getpid"><span class="nav-number">2.3.13.</span> <span class="nav-text">posix_getpid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-setsid"><span class="nav-number">2.3.14.</span> <span class="nav-text">posix_setsid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-getuid"><span class="nav-number">2.3.15.</span> <span class="nav-text">posix_getuid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#posix-getpwuid"><span class="nav-number">2.3.16.</span> <span class="nav-text">posix_getpwuid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcntl-signal"><span class="nav-number">2.3.17.</span> <span class="nav-text">pcntl_signal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcntl-signal-dispatch"><span class="nav-number">2.3.18.</span> <span class="nav-text">pcntl_signal_dispatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcntl-wait"><span class="nav-number">2.3.19.</span> <span class="nav-text">pcntl_wait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcntl-fork"><span class="nav-number">2.3.20.</span> <span class="nav-text">pcntl_fork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spl-object-hash"><span class="nav-number">2.3.21.</span> <span class="nav-text">spl_object_hash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7"><span class="nav-number">2.3.22.</span> <span class="nav-text">信号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E5%B9%B6%E5%8F%91"><span class="nav-number">2.4.</span> <span class="nav-text">高并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%E3%80%81%E5%B1%9E%E6%80%A7"><span class="nav-number">2.5.</span> <span class="nav-text">静态方法、属性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB"><span class="nav-number">3.</span> <span class="nav-text">源码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E6%B5%81%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">主要流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#checkSapiEnv"><span class="nav-number">3.1.1.</span> <span class="nav-text">checkSapiEnv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#init"><span class="nav-number">3.1.2.</span> <span class="nav-text">init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lock"><span class="nav-number">3.1.3.</span> <span class="nav-text">lock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#parseCommand"><span class="nav-number">3.1.4.</span> <span class="nav-text">parseCommand</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemonize"><span class="nav-number">3.1.5.</span> <span class="nav-text">daemonize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#initWorkers"><span class="nav-number">3.1.6.</span> <span class="nav-text">initWorkers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#installSignal"><span class="nav-number">3.1.7.</span> <span class="nav-text">installSignal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#saveMasterPid"><span class="nav-number">3.1.8.</span> <span class="nav-text">saveMasterPid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unlock"><span class="nav-number">3.1.9.</span> <span class="nav-text">unlock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#displayUI"><span class="nav-number">3.1.10.</span> <span class="nav-text">displayUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#forkWorkers"><span class="nav-number">3.1.11.</span> <span class="nav-text">forkWorkers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#resetStd"><span class="nav-number">3.1.12.</span> <span class="nav-text">resetStd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#monitorWorkers"><span class="nav-number">3.1.13.</span> <span class="nav-text">monitorWorkers</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">部分代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%96%91%E6%83%91"><span class="nav-number">4.</span> <span class="nav-text">疑惑</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/01/06/learn_code/workerman%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          workerman源码解读
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-06 13:48:00" itemprop="dateCreated datePublished" datetime="2020-01-06T13:48:00+00:00">2020-01-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="workerman源码解读"><a href="#workerman源码解读" class="headerlink" title="workerman源码解读"></a>workerman源码解读</h1><blockquote>
+<p>workerman集成了进程的管理、网络连接处理。算是比较底层的实现多进程与异步通信的框架，并不是常见的MVC框架。看懂，需要有unix编程知识及相关进程管理的基础。</p>
+<p>一种场景，作为httpServer，自定义协议。worker.php中，集中实现了进程管理。Workerman\Connection\TcpConnection.php，实现了通信的细节。先看udp连接，因为比较简单。</p>
+</blockquote>
+<p><strong>学习方式：</strong></p>
+<p>1、先了解功能，了解用法。</p>
+<p>2、对关键的过程的代码，进行粗略阅读，再精细阅读。（焦点在重点代码）</p>
+<p>3、上手拆解。对其中疑惑的代码，插入断点或修改，查看运行效果。</p>
+<p>4、记录学习笔记。</p>
+<a id="more"></a>
+
+<h1 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h1><h2 id="Linux网络编程"><a href="#Linux网络编程" class="headerlink" title="Linux网络编程"></a>Linux网络编程</h2><h2 id="进程复制"><a href="#进程复制" class="headerlink" title="进程复制"></a>进程复制</h2><p>进程复制的细节是什么？复制后的子进程，跟父进程一模一样？包含了所有已加载的类？</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="SplPriorityQueue"><a href="#SplPriorityQueue" class="headerlink" title="SplPriorityQueue"></a>SplPriorityQueue</h3><p>php5.3起，内部已经实现了优先级队列的类 ，  可以看到，php的优先级队列是用大顶堆实现的算法，其初始化时间复杂度为O(n)，重排时间复杂度为O(logn)。 </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34409822/article/details/91907474">PHP优先级队列</a></p>
+<h3 id="stream-socket-sendto"><a href="#stream-socket-sendto" class="headerlink" title="stream_socket_sendto"></a>stream_socket_sendto</h3><h3 id="stream-socket-get-name"><a href="#stream-socket-get-name" class="headerlink" title="stream_socket_get_name"></a>stream_socket_get_name</h3><p>参数 ( resource <code>$handle</code>   , bool <code>$want_peer</code>   )</p>
+<p>返回给定的本地或者远程套接字连接的名称。 </p>
+<p><code>want_peer</code></p>
+<p>TRUE ，那么将返回 remote 套接字连接名称；如果设置为 FALSE 则返回 local 套接字连接名称</p>
+<h3 id="stream-context-set-option"><a href="#stream-context-set-option" class="headerlink" title="stream_context_set_option"></a>stream_context_set_option</h3><p>对资源流、数据包或者上下文设置参数</p>
+<h3 id="stream-set-blocking"><a href="#stream-set-blocking" class="headerlink" title="stream_set_blocking"></a>stream_set_blocking</h3><p> 为资源流设置阻塞或者阻塞模式，此函数适用于支持非阻塞模式的任何资源流（常规文件，套接字资源流等）。</p>
+<h3 id="stream-context-create"><a href="#stream-context-create" class="headerlink" title="stream_context_create"></a>stream_context_create</h3><p>创建并返回一个资源流上下文，该资源流中包含了 options 中提前设定的所有参数的值。 </p>
+<h3 id="stream-socket-server"><a href="#stream-socket-server" class="headerlink" title="stream_socket_server"></a>stream_socket_server</h3><p>创建一个Internet或Unix套解字。</p>
+<h3 id="stream-socket-accept"><a href="#stream-socket-accept" class="headerlink" title="stream_socket_accept"></a>stream_socket_accept</h3><p>接受由 stream_socket_server() 创建的套接字连接。</p>
+<p>workerman中tcp连接，由 stream_socket_server创建一个socket，然后使用stream_socket_accept创建连接，这样多个tcpConnect复用一个socket？</p>
+<h3 id="stream-socket-recvfrom"><a href="#stream-socket-recvfrom" class="headerlink" title="stream_socket_recvfrom"></a>stream_socket_recvfrom</h3><p>Receives data from a socket, connected or not </p>
+<h3 id="restore-error-handler"><a href="#restore-error-handler" class="headerlink" title="restore_error_handler"></a>restore_error_handler</h3><p>还原之前的错误处理函数<br>在使用 set_error_handler() 改变错误处理函数之后，此函数可以用于还原之前的错误处理程序(可以是内置的或者也可以是用户所定义的函数)。</p>
+<p>workerman中的使用细节：</p>
+<pre class="line-numbers language-none"><code class="language-none">\set_error_handler(function()&#123;&#125;);
+\fclose($this-&gt;_mainSocket);
+\restore_error_handler();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="debug-backtrace"><a href="#debug-backtrace" class="headerlink" title="debug_backtrace"></a>debug_backtrace</h3><p>产生一条 PHP 的回溯跟踪，主要用来获取，启动文件名。</p>
+<h3 id="posix-kill"><a href="#posix-kill" class="headerlink" title="posix_kill"></a>posix_kill</h3><p>发送一个kill信号给进程。</p>
+<p>kill -0 pid 不发送任何信号，但是系统会进行错误检查。所以经常用来检查一个进程是否存在，存在则echo $?返回0；不存在返回1 。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$info</span> <span class="token operator">=</span> \<span class="token package">posix_kill</span><span class="token punctuation">(</span><span class="token variable">$master_pid</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//如果进程存在，$info为true ,否则为false。跟shell略有区别。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="posix-getpid"><a href="#posix-getpid" class="headerlink" title="posix_getpid"></a>posix_getpid</h3><p>返回当前进程 id号，（整型）。</p>
+<h3 id="posix-setsid"><a href="#posix-setsid" class="headerlink" title="posix_setsid"></a>posix_setsid</h3><p>让当前的进程变为session leader。</p>
+<h3 id="posix-getuid"><a href="#posix-getuid" class="headerlink" title="posix_getuid"></a>posix_getuid</h3><p>返回当前进程所属的用户id。</p>
+<h3 id="posix-getpwuid"><a href="#posix-getpwuid" class="headerlink" title="posix_getpwuid"></a>posix_getpwuid</h3><p>返回用户信息。</p>
+<pre class="line-numbers language-none"><code class="language-none">posix_getpwuid(\posix_getuid())[&#39;name&#39;];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h3 id="pcntl-signal"><a href="#pcntl-signal" class="headerlink" title="pcntl_signal"></a>pcntl_signal</h3><p>安装一个信号处理器</p>
+<h3 id="pcntl-signal-dispatch"><a href="#pcntl-signal-dispatch" class="headerlink" title="pcntl_signal_dispatch"></a>pcntl_signal_dispatch</h3><p>调用每个等待信号通过pcntl_signal() 安装的处理器</p>
+<h3 id="pcntl-wait"><a href="#pcntl-wait" class="headerlink" title="pcntl_wait"></a>pcntl_wait</h3><p>等待或返回fork的子进程状态。<br>wait函数挂起当前进程的执行直到一个子进程退出或接收到一个信号要求中断当前进程或调用一个信号处理函数。如果一个子进程在调用此函数时已经退出（俗称僵尸进程），此函数立刻返回。子进程使用的所有系统资源将被释放。关于wait在您系统上工作的详细规范请查看您系统的wait（2）手册。 </p>
+<h3 id="pcntl-fork"><a href="#pcntl-fork" class="headerlink" title="pcntl_fork"></a>pcntl_fork</h3><p>在当前进程当前位置产生分支（子进程）。译注：fork是创建了一个子进程，父进程和子进程都从fork的位置开始向下继续执行，不同的是父进程执行过程中，得到的fork返回值为子进程号，而子进程得到的是0。<br>失败时，在父进程上下文返回-1，不会创建子进程，并且会引发一个PHP错误。</p>
+<p>变为守护进程的例子</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+  <span class="token variable">$pid</span> <span class="token operator">=</span> <span class="token function">pcntl_fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// fork</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$pid</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">exit</span><span class="token punctuation">;</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$pid</span><span class="token punctuation">)</span> <span class="token comment">// parent</span>
+    <span class="token keyword">exit</span><span class="token punctuation">;</span>
+  <span class="token keyword">else</span> <span class="token punctuation">&#123;</span> <span class="token comment">// child</span>
+    <span class="token variable">$sid</span> <span class="token operator">=</span> <span class="token function">posix_setsid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$sid</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+      <span class="token keyword">exit</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$i</span> <span class="token operator">&lt;=</span> <span class="token number">60</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token comment">//do something for 5 minutes</span>
+      <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>workerman中的实现：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">daemonize</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$daemonize</span> <span class="token operator">||</span> <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_OS</span> <span class="token operator">!==</span> \<span class="token package">OS_TYPE_LINUX</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        \<span class="token package">umask</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$pid</span> <span class="token operator">=</span> \<span class="token package">pcntl_fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span> <span class="token operator">===</span> <span class="token variable">$pid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Exception</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'Fork fail'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">elseif</span> <span class="token punctuation">(</span><span class="token variable">$pid</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span> <span class="token operator">===</span> \<span class="token package">posix_setsid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Exception</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"Setsid fail"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token comment">// Fork again avoid SVR4 system regain the control of terminal.</span>
+        <span class="token variable">$pid</span> <span class="token operator">=</span> \<span class="token package">pcntl_fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span> <span class="token operator">===</span> <span class="token variable">$pid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Exception</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"Fork fail"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">elseif</span> <span class="token punctuation">(</span><span class="token number">0</span> <span class="token operator">!==</span> <span class="token variable">$pid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="spl-object-hash"><a href="#spl-object-hash" class="headerlink" title="spl_object_hash"></a>spl_object_hash</h3><p>返回指定对象的hash_id （注意：<strong>是对象</strong>）。hash_id 可用于作为保存对象或区分不同对象的hash key，对于每个对象它都是唯一的，并且对同一个对象它总是相同。</p>
+<p>如下的一个例子：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">class</span> <span class="token class-name">Stu</span><span class="token punctuation">&#123;</span>
+	<span class="token keyword">public</span> <span class="token variable">$age</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">public</span> <span class="token variable">$init</span> <span class="token operator">=</span> <span class="token boolean constant">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token variable">$obj</span>  <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Stu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$big</span> <span class="token operator">=</span> <span class="token variable">$obj</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token function">spl_object_hash</span><span class="token punctuation">(</span><span class="token variable">$obj</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token function">spl_object_hash</span><span class="token punctuation">(</span><span class="token variable">$big</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><pre class="line-numbers language-none"><code class="language-none">SIGHUP       1          &#x2F;* Hangup (POSIX).  *&#x2F;                          终止进程     终端线路挂断
+SIGINT       2          &#x2F;* Interrupt (ANSI).  *&#x2F;                        终止进程     中断进程 Ctrl+C
+SIGQUIT      3          &#x2F;* Quit (POSIX).  *&#x2F;                            建立CORE文件终止进程，并且生成core文件 Ctrl+\
+SIGILL       4          &#x2F;* Illegal instruction (ANSI).  *&#x2F;              建立CORE文件,非法指令
+SIGTRAP      5          &#x2F;* Trace trap (POSIX).  *&#x2F;                      建立CORE文件,跟踪自陷
+SIGABRT      6          &#x2F;* Abort (ANSI).  *&#x2F;
+SIGIOT       6          &#x2F;* IOT trap (4.2 BSD).  *&#x2F;                      建立CORE文件,执行I&#x2F;O自陷
+SIGBUS       7          &#x2F;* BUS error (4.2 BSD).  *&#x2F;                     建立CORE文件,总线错误
+SIGFPE       8          &#x2F;* Floating-point exception (ANSI).  *&#x2F;         建立CORE文件,浮点异常
+SIGKILL      9          &#x2F;* Kill, unblockable (POSIX).  *&#x2F;               终止进程     杀死进程
+SIGUSR1      10         &#x2F;* User-defined signal 1 (POSIX).  *&#x2F;           终止进程     用户定义信号1
+SIGSEGV      11         &#x2F;* Segmentation violation (ANSI).  *&#x2F;           建立CORE文件,段非法错误
+SIGUSR2      12         &#x2F;* User-defined signal 2 (POSIX).  *&#x2F;           终止进程     用户定义信号2
+SIGPIPE      13         &#x2F;* Broken pipe (POSIX).  *&#x2F;                     终止进程     向一个没有读进程的管道写数据
+SIGALARM     14         &#x2F;* Alarm clock (POSIX).  *&#x2F;                     终止进程     计时器到时
+SIGTERM      15         &#x2F;* Termination (ANSI).  *&#x2F;                      终止进程     软件终止信号
+SIGSTKFLT    16         &#x2F;* Stack fault.  *&#x2F;
+SIGCLD       SIGCHLD    &#x2F;* Same as SIGCHLD (System V).  *&#x2F;
+SIGCHLD      17         &#x2F;* Child status has changed (POSIX).  *&#x2F;        忽略信号     当子进程停止或退出时通知父进程
+SIGCONT      18         &#x2F;* Continue (POSIX).  *&#x2F;                        忽略信号     继续执行一个停止的进程
+SIGSTOP      19         &#x2F;* Stop, unblockable (POSIX).  *&#x2F;               停止进程     非终端来的停止信号
+SIGTSTP      20         &#x2F;* Keyboard stop (POSIX).  *&#x2F;                   停止进程     终端来的停止信号 Ctrl+Z
+SIGTTIN      21         &#x2F;* Background read from tty (POSIX).  *&#x2F;        停止进程     后台进程读终端
+SIGTTOU      22         &#x2F;* Background write to tty (POSIX).  *&#x2F;         停止进程     后台进程写终端
+SIGURG       23         &#x2F;* Urgent condition on socket (4.2 BSD).  *&#x2F;    忽略信号     I&#x2F;O紧急信号
+SIGXCPU      24         &#x2F;* CPU limit exceeded (4.2 BSD).  *&#x2F;            终止进程     CPU时限超时
+SIGXFSZ      25         &#x2F;* File size limit exceeded (4.2 BSD).  *&#x2F;      终止进程     文件长度过长
+SIGVTALRM    26         &#x2F;* Virtual alarm clock (4.2 BSD).  *&#x2F;           终止进程     虚拟计时器到时
+SIGPROF      27         &#x2F;* Profiling alarm clock (4.2 BSD).  *&#x2F;         终止进程     统计分布图用计时器到时
+SIGWINCH     28         &#x2F;* Window size change (4.3 BSD, Sun).  *&#x2F;       忽略信号     窗口大小发生变化
+SIGPOLL      SIGIO      &#x2F;* Pollable event occurred (System V).  *&#x2F;
+SIGIO        29         &#x2F;* I&#x2F;O now possible (4.2 BSD).  *&#x2F;              忽略信号     描述符上可以进行I&#x2F;O
+SIGPWR       30         &#x2F;* Power failure restart (System V).  *&#x2F;
+SIGSYS       31         &#x2F;* Bad system call.  *&#x2F;
+SIGUNUSED    31<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol>
+<li><p>SIGHUP 本信号在用户终端连接(正常或非正常)结束时发出, 通常是在终端的控制进程结束时, 通知同一session内的各个作业, 这时它们与控制终端不再关联.</p>
+</li>
+<li><p>SIGINT 程序终止(interrupt)信号, 在用户键入INTR字符(通常是Ctrl+C)时发出</p>
+</li>
+<li><p>SIGQUIT 和 SIGINT类似, 但由QUIT字符(通常是Ctrl+)来控制. 进程在因收到 SIGQUIT 退出时会产生core文件, 在这个意义上类似于一个程序错误信号.</p>
+</li>
+<li><p>SIGILL 执行了非法指令. 通常是因为可执行文件本身出现错误, 或者试图执行数据段. 堆栈溢出时也有可能产生这个信号.</p>
+</li>
+<li><p>SIGTRAP 由断点指令或其它trap指令产生. 由debugger使用.</p>
+</li>
+<li><p>SIGABRT 程序自己发现错误并调用abort时产生.</p>
+</li>
+<li><p>SIGIOT 在PDP-11上由iot指令产生, 在其它机器上和SIGABRT一样.</p>
+</li>
+<li><p>SIGBUS 非法地址, 包括内存地址对齐(alignment)出错. eg: 访问一个四个字长的整数, 但其地址不是4的倍数.</p>
+</li>
+<li><p>SIGFPE 在发生致命的算术运算错误时发出. 不仅包括浮点运算错误, 还包括溢出及除数为0等其它所有的算术的错误.</p>
+</li>
+<li><p>SIGKILL 用来立即结束程序的运行. 本信号不能被阻塞, 处理和忽略.</p>
+</li>
+<li><p>SIGUSR1 留给用户使用</p>
+</li>
+<li><p>SIGSEGV 试图访问未分配给自己的内存, 或试图往没有写权限的内存地址写数据.</p>
+</li>
+<li><p>SIGUSR2 留给用户使用</p>
+</li>
+<li><p>SIGPIPE Broken pipe</p>
+</li>
+<li><p>SIGALRM 时钟定时信号, 计算的是实际的时间或时钟时间. alarm函数使用该信号.</p>
+</li>
+<li><p>SIGTERM 程序结束(terminate)信号, 与SIGKILL不同的是该信号可以被阻塞和处理. 通常用来要求程序自己正常退出. shell命令kill缺省产生这个信号.</p>
+</li>
+<li><p>SIGCHLD 子进程结束时, 父进程会收到这个信号.</p>
+</li>
+<li><p>SIGCONT 让一个停止(stopped)的进程继续执行. 本信号不能被阻塞. 可以用一个handler来让程序在由stopped状态变为继续执行时完成特定的工作. 例如, 重新显示提示符</p>
+</li>
+<li><p>SIGSTOP 停止(stopped)进程的执行. 注意它和terminate以及interrupt的区别:该进程还未结束, 只是暂停执行. 本信号不能被阻塞, 处理或忽略.</p>
+</li>
+<li><p>SIGTSTP 停止进程的运行, 但该信号可以被处理和忽略. 用户键入SUSP字符时(通常是Ctrl+Z)发出这个信号</p>
+</li>
+<li><p>SIGTTIN 当后台作业要从用户终端读数据时, 该作业中的所有进程会收到SIGTTIN信号. 缺省时这些进程会停止执行.</p>
+</li>
+<li><p>SIGTTOU 类似于SIGTTIN, 但在写终端(或修改终端模式)时收到.</p>
+</li>
+<li><p>SIGURG 有”紧急”数据或out-of-band数据到达socket时产生.</p>
+</li>
+<li><p>SIGXCPU 超过CPU时间资源限制. 这个限制可以由getrlimit/setrlimit来读取/改变</p>
+</li>
+<li><p>SIGXFSZ 超过文件大小资源限制.</p>
+</li>
+<li><p>SIGVTALRM 虚拟时钟信号. 类似于SIGALRM, 但是计算的是该进程占用的CPU时间.</p>
+</li>
+<li><p>SIGPROF 类似于SIGALRM/SIGVTALRM, 但包括该进程用的CPU时间以及系统调用的时间.</p>
+</li>
+<li><p>SIGWINCH 窗口大小改变时发出.</p>
+</li>
+<li><p>SIGIO 文件描述符准备就绪, 可以开始进行输入/输出操作.</p>
+</li>
+<li><p>SIGPWR Power failure</p>
+</li>
+</ol>
+<p>有两个信号可以停止进程:SIGTERM和SIGKILL。 SIGTERM 比较友好，进程能捕捉这个信号，根据您的需要来关闭程序。</p>
+<p>在关闭程序之前，您可以结束打开的记录文件和完成正在做的任务。在某些情况下，假如进程正在进行作业而且不能中断，那么进程可以忽略这个SIGTERM信号。</p>
+<p>对于 SIGKILL 信号，进程是不能忽略的。这是一个 “我不管您在做什么,立刻停止”的信号。假如您发送SIGKILL信号给进程，Linux就将进程停止在那里。</p>
+<h2 id="高并发"><a href="#高并发" class="headerlink" title="高并发"></a>高并发</h2><p>高并发，需要什么？硬件基础。大内存、多cpu等。</p>
+<p>之前看到一个视频讲解：高并发的机制有并发编程、循环编程（进入死循环，不停的遍例可用的节点）。</p>
+<p>不同语言的实现：</p>
+<p><strong>js</strong></p>
+<p>单进程 + 异步事件 + io复用？  底层依赖的是什么？  在pm2的加持下，然后变成多进程。</p>
+<p><strong>php</strong></p>
+<p>workerman采用的是，复制进程 +epoll + 信号机制。</p>
+<p><strong>go</strong></p>
+<p>csp通信机制。</p>
+<p><strong>java</strong></p>
+<p>实现有很多。可以用到多线程。</p>
+<p><strong>c</strong></p>
+<p>c是基础，是王道。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/second60/article/details/81252106">高并发中的惊群效应（该博主的其他博客也不错）</a></p>
+<h2 id="静态方法、属性"><a href="#静态方法、属性" class="headerlink" title="静态方法、属性"></a>静态方法、属性</h2><p>曾经的项目中，使用到Utils类，作为模型方法，其中全部都是static属性、方法。现在，通过workerman的例子可以看出，worker类中，可以用来实例化，代表一个具体的协议，另外，通过其内封装的staic方法，可以直接调用，又相当于master   (重新组织语言？)</p>
+<p>使用静态方法、静态属性，其实还是相当于全局的函数、变量，只不过，将其的作用域限制在类中，整体感觉有点像单例模式，只不过static要在程序上来就要初始化，而单例还有两种模式区别。</p>
+<p>workerman中代码的难度在于，就wokerman，实例化n多workers对象，而又将一些类似全局的static方法、staic属性混入其中。增加了理解难度。另外，进程复制，是多了一套副本，父子进程运行的先后顺序，不固定。还有，关于socket复用，是如何情况？</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token keyword">class</span> <span class="token class-name">StaticDemo</span><span class="token punctuation">&#123;</span>
+	<span class="token keyword">static</span> <span class="token variable">$instance</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	<span class="token keyword">static</span> <span class="token variable">$_workers</span> <span class="token operator">=</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token keyword">echo</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$instance</span> <span class="token punctuation">.</span><span class="token double-quoted-string string">"\n"</span><span class="token punctuation">;</span>
+		<span class="token function">var_dump</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_workers</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token operator">++</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$instance</span><span class="token punctuation">;</span>
+		<span class="token comment">//添加对象添加到数组中</span>
+		self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_workers</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">spl_object_hash</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token variable">$demo1</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StaticDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$demo1</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StaticDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+StaticDemo<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1 id="源码解读"><a href="#源码解读" class="headerlink" title="源码解读"></a>源码解读</h1><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token comment">//使用命名空间，因为Worker对象需要用到，否则，要使用 new Workerman\Worker</span>
+<span class="token keyword">use</span> <span class="token package">Workerman<span class="token punctuation">\</span>Worker</span><span class="token punctuation">;</span>
+<span class="token comment">//自动加载，需要了解psr4标准，</span>
+<span class="token keyword">include</span> <span class="token single-quoted-string string">'../Autoloader.php'</span><span class="token punctuation">;</span>
+<span class="token comment">//实例化一个worker，实际上可以实例化多个，只会触发__construct，做一些初始化工作</span>
+<span class="token comment">//会将该实例放到变量中，static::$_workers[$this->workerId] = $this;</span>
+<span class="token variable">$http_worker</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Worker</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"http://0.0.0.0:2345"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//告诉，该worker会有8个实例。</span>
+<span class="token variable">$http_worker</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">count</span> <span class="token operator">=</span> <span class="token number">8</span><span class="token punctuation">;</span>
+<span class="token comment">//具体的业务处理，以回调的方式使用。</span>
+<span class="token comment">//可能用到闭包，使用外部变量时，需要用到use 变量来声明。</span>
+<span class="token variable">$http_worker</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">onMessage</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token variable">$connection</span><span class="token punctuation">,</span> <span class="token variable">$data</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token variable">$connection</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">send</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'hello world'</span><span class="token punctuation">.</span><span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span><span class="token number">9999</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token comment">//下面这个，是整体的核心。包含了一大堆的逻辑。所以，下面将其作为主要的流程来处理。</span>
+Worker<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">runAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h2><p>主要流程函数：Worker::runAll();   其启动整个服务。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">runAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">checkSapiEnv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">parseCommand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">daemonize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">initWorkers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">installSignal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">saveMasterPid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">displayUI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">forkWorkers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">resetStd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">monitorWorkers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="checkSapiEnv"><a href="#checkSapiEnv" class="headerlink" title="checkSapiEnv"></a>checkSapiEnv</h3><p>检查环境，cli环境，直接退出。判断操作系统的类型。</p>
+<h3 id="init"><a href="#init" class="headerlink" title="init"></a>init</h3><p>1、set_error_handler</p>
+<p>设置好错误处理，将相关的错误，输出。safeEcho会决定，将错误输出到终端还是文件中。</p>
+<p>2、debug_backtrace</p>
+<p>利用该函数获取到，启动的文件名称。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$backtrace</span>        <span class="token operator">=</span> \<span class="token package">debug_backtrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$backtrace</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_startFile</span> <span class="token operator">=</span> <span class="token variable">$backtrace</span><span class="token punctuation">[</span>\<span class="token package">count</span><span class="token punctuation">(</span><span class="token variable">$backtrace</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>输出内容如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">array(2) &#123;
+  [0]&#x3D;&gt;
+  array(6) &#123;
+    [&quot;file&quot;]&#x3D;&gt;
+    string(39) &quot;&#x2F;home&#x2F;chaofml&#x2F;demo&#x2F;Workerman&#x2F;Worker.php&quot;
+    [&quot;line&quot;]&#x3D;&gt;
+    int(530)
+    [&quot;function&quot;]&#x3D;&gt;
+    string(4) &quot;init&quot;
+    [&quot;class&quot;]&#x3D;&gt;
+    string(16) &quot;Workerman\Worker&quot;
+    [&quot;type&quot;]&#x3D;&gt;
+    string(2) &quot;::&quot;
+    [&quot;args&quot;]&#x3D;&gt;
+    array(0) &#123;
+    &#125;
+  &#125;
+  [1]&#x3D;&gt;
+  array(6) &#123;
+    [&quot;file&quot;]&#x3D;&gt;
+    string(42) &quot;&#x2F;home&#x2F;chaofml&#x2F;demo&#x2F;Workerman&#x2F;demo&#x2F;http.php&quot;
+    [&quot;line&quot;]&#x3D;&gt;
+    int(14)
+    [&quot;function&quot;]&#x3D;&gt;
+    string(6) &quot;runAll&quot;
+    [&quot;class&quot;]&#x3D;&gt;
+    string(16) &quot;Workerman\Worker&quot;
+    [&quot;type&quot;]&#x3D;&gt;
+    string(2) &quot;::&quot;
+    [&quot;args&quot;]&#x3D;&gt;
+    array(0) &#123;
+    &#125;
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>所以：static::$_startFile = “/home/chaofml/demo/Workerman/demo/http.php”</p>
+<p>pid文件名如：’_home_chaofml_demo_Workerman_demo_http.php.pid’</p>
+<p>日志文件</p>
+<p>1、文件名，定下来。2、检查是否有该文件名。</p>
+<p>标志运行状态</p>
+<p>将当前的 运行状态标记为：STATUS_STARTING</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_status</span> <span class="token operator">=</span> <span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">STATUS_STARTING</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>设置当前进程的名称：WorkerMan:***</p>
+<p>初始化idMap变量（initId），如果是已经在后台运行的，那么，重新更新变量？</p>
+<pre class="line-numbers language-none"><code class="language-none">static::$_idMap[$worker_id][index]
+检查是否有这个变量，如果有的话，那么，就保持原有的值，否则，给个0值。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="lock"><a href="#lock" class="headerlink" title="lock"></a>lock</h3><p>上锁。如果上锁失败，则直接退出。</p>
+<p>目的是什么呢？难道在关键的过程中，不允许并发的启动？防止出错。（目的，需要再探究。）</p>
+<h3 id="parseCommand"><a href="#parseCommand" class="headerlink" title="parseCommand"></a>parseCommand</h3><p>解析命令。对start，stop，restart，reload，status，connections命令进行不同的影响。注意，这个时候，当前进程还没有注册任何信号，posix_kill($master_pid, $sig) 是在给老的master发送命令。</p>
+<p>如果当前系统非linux系统，直接返回，继续下一个函数。</p>
+<p>启动文件命令，从$argv[0]中获取。</p>
+<p>解析用户输入的第一个参数command1，$argv[1]，如果不在上述6个命令中，程序终止，并提示用法。</p>
+<p>解析用户输入的第二个参数command2，$argv[2]，如果没有，默认设为空字符串。</p>
+<p>针对Start命令，如果command2，是-d，则设置$mode= 提示符。</p>
+<p>尝试从文件读取master文件的pid，否则置为0。</p>
+<p>判断 ，上面获取到的pid是否还存在，pid不为0，pid制定的进程还存活，另外跟当前的进程id不一样。则，认为，还存在旧的master。</p>
+<p>主进程存活，如果启动命令，则提示程序已运行，然后退出。</p>
+<p>进程未存活，如果不是启动命令、重启命令，也会提示，进程还没有启动。</p>
+<p>上面两条命令的含义，主进程存在，就不该再启动了，如果不存在，应该输入启动、重启的命令。</p>
+<p>然后，进入switch阶段，</p>
+<p>1、start 设置$daemonize变量。</p>
+<p>2、status   进入死循环。 -d 代表是否要持续。</p>
+<p>直接echo “\33[H\33[2J\33(B\33[m” 效果等效于，clear命令。</p>
+<p>formatStatusData函数，大概相当于，从指定的文件中读取统计数据，进行分析，然后输出。统计文件，也是周期的删除，重建、删除、重建。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>\<span class="token package">is_file</span><span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_statisticsFile</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		@\<span class="token package">unlink</span><span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_statisticsFile</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token comment">// Master process will send SIGUSR2 signal to all child processes.</span>
+	\<span class="token package">posix_kill</span><span class="token punctuation">(</span><span class="token variable">$master_pid</span><span class="token punctuation">,</span> <span class="token constant">SIGUSR2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">// Sleep 1 second.</span>
+	\<span class="token package">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">// Clear terminal.</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$command2</span> <span class="token operator">===</span> <span class="token single-quoted-string string">'-d'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">safeEcho</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"\33[H\33[2J\33(B\33[m"</span><span class="token punctuation">,</span> <span class="token boolean constant">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token comment">// Echo status data.</span>
+	<span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">safeEcho</span><span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">formatStatusData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$command2</span> <span class="token operator">!==</span> <span class="token single-quoted-string string">'-d'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">safeEcho</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"\nPress Ctrl+C to quit.\n\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>3、connections</p>
+<p>执行短暂的操作，然后退出进程。即：</p>
+<p>删除统计文件，发送SIGIO信号，等待0.5秒，如果统计文件可读，直接读出来。退出 exit(0)。</p>
+<p>4、restart （同stop）</p>
+<p>5、stop</p>
+<p>-g 代表平滑重启 ，对应信号SIGTERM ，否则 SIGINT 。</p>
+<p>发送信号：</p>
+<p>$master_pid &amp;&amp; \posix_kill($master_pid, $sig)</p>
+<p>………………</p>
+<p>6、reload</p>
+<p>$sig     平滑重启：SIGQUIT，直接：SIGUSR1</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">\<span class="token package">posix_kill</span><span class="token punctuation">(</span><span class="token variable">$master_pid</span><span class="token punctuation">,</span> <span class="token variable">$sig</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>7、其他</p>
+<p>如果非上述的情况，默认直接退出，由于前面有验证，估计这一步也不会执行。</p>
+<h3 id="daemonize"><a href="#daemonize" class="headerlink" title="daemonize"></a>daemonize</h3><p>使用pcntl_fork函数，对当前的master进程，完成两次复制，最后只有一个进程，存活下来。pcntl_fork函数执行后，进程会变成两个，其中返回为0的，为子进程。大于0，是父进程，但是pid为子进程的进程号，便于父进程获得子进程的id。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">\<span class="token package">umask</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//下面的代码，重复执行两次。完成守护进程。</span>
+<span class="token variable">$pid</span> <span class="token operator">=</span> \<span class="token package">pcntl_fork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span> <span class="token operator">===</span> <span class="token variable">$pid</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Exception</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'Fork fail'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">elseif</span> <span class="token punctuation">(</span><span class="token variable">$pid</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">exit</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">//重复上面的代码。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="initWorkers"><a href="#initWorkers" class="headerlink" title="initWorkers"></a>initWorkers</h3><p>非linux系统，直接返回。</p>
+<p>对于static::$_workers中的每个worker，初实化name、user、socket、status变量。输出该阶段的worker信息。如果reusePort，那么调用listen函数。</p>
+<h3 id="installSignal"><a href="#installSignal" class="headerlink" title="installSignal"></a>installSignal</h3><p>Linux系统下，安装七种信号。停止、优雅停止、重启、优雅重启、状态、连接状态、忽略信号。</p>
+<p>信号的回调函数signalHandler</p>
+<p>另外，在复制子进程的时候，会调用run函数。而run，会调用reinstallSignal。即复制子进程的时候，先卸载先前master进程上的信号，而安装static::$globalEvent中的事件。</p>
+<h3 id="saveMasterPid"><a href="#saveMasterPid" class="headerlink" title="saveMasterPid"></a>saveMasterPid</h3><h3 id="unlock"><a href="#unlock" class="headerlink" title="unlock"></a>unlock</h3><h3 id="displayUI"><a href="#displayUI" class="headerlink" title="displayUI"></a>displayUI</h3><h3 id="forkWorkers"><a href="#forkWorkers" class="headerlink" title="forkWorkers"></a>forkWorkers</h3><h3 id="resetStd"><a href="#resetStd" class="headerlink" title="resetStd"></a>resetStd</h3><h3 id="monitorWorkers"><a href="#monitorWorkers" class="headerlink" title="monitorWorkers"></a>monitorWorkers</h3><h2 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h2><ul>
+<li>设置进程的名称，一是：主进程的名字，二是，复制的子进程的名字。核心函数 cli_set_process_title </li>
+</ul>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">protected</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">setProcessTitle</span><span class="token punctuation">(</span><span class="token variable">$title</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        \<span class="token package">set_error_handler</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// >=php 5.5</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>\<span class="token package">function_exists</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'cli_set_process_title'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            \<span class="token package">cli_set_process_title</span><span class="token punctuation">(</span><span class="token variable">$title</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token comment">// Need proctitle when php&lt;=5.5 .</span>
+        <span class="token keyword">elseif</span> <span class="token punctuation">(</span>\<span class="token package">extension_loaded</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'proctitle'</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> \<span class="token package">function_exists</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'setproctitle'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            \<span class="token package">setproctitle</span><span class="token punctuation">(</span><span class="token variable">$title</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        \<span class="token package">restore_error_handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>parseCommand函数中有如下过程，关键搞懂<code>posix_kill($master_pid, 0)</code>函数的意思。</li>
+</ul>
+<p>估计并不是杀掉一个进程，一开始，一直以为是杀掉一个进程。实际上并不是。kill -0 pid 不发送任何信号，但是系统会进行错误检查。所以经常用来检查一个进程是否存在，存在则echo $?返回0；不存在返回1 。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">// Get master process PID.</span>
+<span class="token variable">$master_pid</span>      <span class="token operator">=</span> \<span class="token package">is_file</span><span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$pidFile</span><span class="token punctuation">)</span> <span class="token operator">?</span> \<span class="token package">file_get_contents</span><span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$pidFile</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token variable">$master_is_alive</span> <span class="token operator">=</span> <span class="token variable">$master_pid</span> <span class="token operator">&amp;&amp;</span> \<span class="token package">posix_kill</span><span class="token punctuation">(</span><span class="token variable">$master_pid</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> \<span class="token package">posix_getpid</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token variable">$master_pid</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>kill用法示例（shell）：</p>
+<pre class="line-numbers language-none"><code class="language-none">
+chaofml@scc:~&#x2F;demo&#x2F;Workerman$ kill -0 3394
+-bash: kill: (3394) - No such process
+chaofml@scc:~&#x2F;demo&#x2F;Workerman$ echo $?
+1
+
+chaofml@scc:~&#x2F;demo&#x2F;Workerman$ kill -0 3414
+chaofml@scc:~&#x2F;demo&#x2F;Workerman$ echo $?
+0
+
+chaofml@scc:~&#x2F;demo&#x2F;Workerman$ ps aux |grep 3414
+chaofml   3414  0.0  0.6 239616 12928 ?        S    09:38   0:00 WorkerMan: worker process  none http:&#x2F;&#x2F;0.0.0.0:2345
+chaofml   3429  0.0  0.0  21532  1108 pts&#x2F;3    S+   09:43   0:00 grep --color&#x3D;auto 3414<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>有关kill的小例子（延伸）：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token assign-left variable">PID</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>pgrep <span class="token function">sleep</span><span class="token variable">)</span></span>
+<span class="token keyword">if</span> <span class="token operator">!</span> <span class="token function">kill</span> -0 <span class="token variable">$PID</span> <span class="token operator"><span class="token file-descriptor important">2</span>></span>/dev/null<span class="token punctuation">;</span> <span class="token keyword">then</span> 
+  <span class="token builtin class-name">echo</span> <span class="token string">"you don't have permissions to kill PID:<span class="token variable">$PID</span>"</span>
+  <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+<span class="token keyword">fi</span>
+
+<span class="token comment"># 或者</span>
+<span class="token function">kill</span> -0 <span class="token variable">$pid</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -gt <span class="token number">0</span> <span class="token punctuation">]</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"进程<span class="token variable">$pid</span>存在"</span>
+<span class="token keyword">else</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"进程<span class="token variable">$pid</span>不存在"</span>
+<span class="token keyword">fi</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+<ul>
+<li>终端格式化输出</li>
+</ul>
+<p>终端输出样式示例：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+   <span class="token keyword">echo</span> <span class="token double-quoted-string string">"\033[47;30m哈哈\033[0m"</span><span class="token punctuation">.</span><span class="token constant">PHP_EOL</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>shell版本(使用sh，bash好像不行)：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/sh</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token entity" title="\033">\033</span>[47;30m哈哈<span class="token entity" title="\033">\033</span>[0m"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>workerman中的代码（替换相关的标记）：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">static</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$_outputDecorated</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$line</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"\033[1A\n\033[K"</span><span class="token punctuation">;</span>
+                <span class="token variable">$white</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"\033[47;30m"</span><span class="token punctuation">;</span>
+                <span class="token variable">$green</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"\033[32;40m"</span><span class="token punctuation">;</span>
+                <span class="token variable">$end</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"\033[0m"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> \<span class="token package">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'&lt;n>'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'&lt;w>'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'&lt;g>'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token variable">$line</span><span class="token punctuation">,</span> <span class="token variable">$white</span><span class="token punctuation">,</span> <span class="token variable">$green</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token variable">$msg</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> \<span class="token package">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'&lt;/n>'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'&lt;/w>'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'&lt;/g>'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token variable">$end</span><span class="token punctuation">,</span> <span class="token variable">$msg</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h1 id="疑惑"><a href="#疑惑" class="headerlink" title="疑惑"></a>疑惑</h1><ul>
+<li>打开一个文件，释放文件句柄，就能关闭这个文件吗？</li>
+</ul>
+<p>resetStd函数中，代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">$handle &#x3D; \fopen(static::$stdoutFile, &quot;a&quot;);
+if ($handle) &#123;
+    unset($handle);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>set_error_handler是栈的形式，记住所有的函数吗？</li>
+</ul>
+<p>首先，下面的代码的函数，意图是啥？是想放弃错误捕捉吗？</p>
+<p>另外，set_error_handler 肯定可以设置多次，那么每次，将错误补捉的堆栈，pop一层的时候，使用如下restore_error_handler函数实现吗？</p>
+<pre class="line-numbers language-none"><code class="language-none">set_error_handler(function()&#123;&#125;);
+&#x2F;&#x2F;一大堆代码
+\restore_error_handler();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>函数定义 ,self关键字</li>
+</ul>
+<p>self是什么作用？从来没有见过这种语法。</p>
+<p>按类型约束来讲（php5有类型约束，针对的是非标量），那么self 表示的是这个类的类型。</p>
+<pre class="line-numbers language-none"><code class="language-none">protected static function forkOneWorkerForLinux(self $worker)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/01/03/php/%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BDspl_autoload_register/" rel="prev" title="自动加载spl_autoload_register.php">
+                  <i class="fa fa-chevron-left"></i> 自动加载spl_autoload_register.php
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/09/fix_bug/js%E8%AE%BF%E9%97%AE%E7%88%B6%E7%AA%97%E5%8F%A3/" rel="next" title="js访问父窗口">
+                  js访问父窗口 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="shell中的算数运算的支持。直接使用两个小括号，里面可以支持四则混合运算。一般情况下，整数，用这种方式就行。遇到小数，使用bc命令来完成即可。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四则运算">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/09/08/shell/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="shell中的算数运算的支持。直接使用两个小括号，里面可以支持四则混合运算。一般情况下，整数，用这种方式就行。遇到小数，使用bc命令来完成即可。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-08T16:13:40.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.031Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/09/08/shell/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>四则运算 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E7%AE%97"><span class="nav-number">1.</span> <span class="nav-text">运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E6%96%B9%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">各种方式对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4"><span class="nav-number">3.</span> <span class="nav-text">计算命令执行时间</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/09/08/shell/%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          四则运算
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-08 16:13:40" itemprop="dateCreated datePublished" datetime="2021-09-08T16:13:40+00:00">2021-09-08</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>shell中的算数运算的支持。直接使用两个小括号，里面可以支持四则混合运算。一般情况下，整数，用这种方式就行。遇到小数，使用<code>bc</code>命令来完成即可。</p>
+<a id="more"></a>
+
+<h3 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h3><p>expr 运算符号两边要增加空格。<code>(())</code>对空格貌似要求不严格，小括号貌似所以一个变量来接收变量。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">j</span><span class="token operator">=</span><span class="token number">10</span>
+<span class="token assign-left variable">k</span><span class="token operator">=</span><span class="token number">2</span>
+
+<span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span>$j<span class="token operator">+</span>$k<span class="token punctuation">))</span></span> 等价于 <span class="token assign-left variable">i</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $j + $k<span class="token variable">`</span></span>
+<span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span>$j<span class="token operator">-</span>$k<span class="token punctuation">))</span></span> 等价于 <span class="token assign-left variable">i</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $j - $k<span class="token variable">`</span></span>
+<span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span>$j<span class="token operator">*</span>$k<span class="token punctuation">))</span></span> 等价于 <span class="token assign-left variable">i</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $j <span class="token punctuation">\</span>* $k<span class="token variable">`</span></span>
+<span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span>$j<span class="token operator">/</span>$k<span class="token punctuation">))</span></span> 等价于 <span class="token assign-left variable">i</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">expr</span> $j / $k<span class="token variable">`</span></span>
+
+<span class="token comment"># 还能满足混合运算</span>
+<span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span>$j<span class="token operator">*</span><span class="token number">2</span><span class="token operator">+</span>$k<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">))</span></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="各种方式对比"><a href="#各种方式对比" class="headerlink" title="各种方式对比"></a>各种方式对比</h3><table>
+<thead>
+<tr>
+<th>运算操作符/运算命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/2480.html">(( ))</a></td>
+<td>用于整数运算，效率很高，<strong>推荐使用</strong>。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/2504.html">let</a></td>
+<td>用于整数运算，和 (()) 类似。</td>
+</tr>
+<tr>
+<td>[$<a target="_blank" rel="noopener" href="http://c.biancheng.net/view/vip_3235.html">]</a></td>
+<td>用于整数运算，不如 (()) 灵活。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/vip_3236.html">expr</a></td>
+<td>可用于整数运算，也可以处理字符串。比较麻烦，需要注意各种细节，不推荐使用。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/vip_3237.html">bc</a></td>
+<td>Linux下的一个计算器程序，可以处理整数和小数。Shell 本身只支持整数运算，想计算小数就得使用 bc 这个外部的计算器。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://c.biancheng.net/view/vip_3238.html">declare -i</a></td>
+<td>将变量定义为整数，然后再进行数学运算时就不会被当做字符串了。功能有限，仅支持最基本的数学运算（加减乘除和取余），不支持逻辑运算、自增自减等，所以在实际开发中很少使用。</td>
+</tr>
+</tbody></table>
+<p> 只学习 (()) 和 bc 即可，不用学习其它的了：(()) 可以用于整数计算，bc 可以小数计算。</p>
+<h3 id="计算命令执行时间"><a href="#计算命令执行时间" class="headerlink" title="计算命令执行时间"></a>计算命令执行时间</h3><pre class="line-numbers language-none"><code class="language-none">start_time&#x3D;$SECONDS
+其他的命令
+echo &#96;expr $SECONDS - $start_time&#96;  秒<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/07/python/ldap/" rel="prev" title="ldap">
+                  <i class="fa fa-chevron-left"></i> ldap
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/10/pg/with_select/" rel="next" title="with_select">
+                  with_select <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

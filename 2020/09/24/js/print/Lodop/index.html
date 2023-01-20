@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="Lodop 从2015年的时候，就接触过这个软件，那个时候，我只是拿别人做好的，使用。没有想到，我自己也从事这方面的开发呢。一开始我觉得Lodop不好用，指令什么的太复杂了，而且可视化的操作，感觉做得非常差。但是通过自己做出了3个模板后，感觉可视化的软件，其实已经做得很好了。该有的功能，都有了。这就行了。此外，我第一次知道，原来一维码还有如此多得种类。另外，xps文件原来很适合搞打印，能准确的反原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lodop">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="Lodop 从2015年的时候，就接触过这个软件，那个时候，我只是拿别人做好的，使用。没有想到，我自己也从事这方面的开发呢。一开始我觉得Lodop不好用，指令什么的太复杂了，而且可视化的操作，感觉做得非常差。但是通过自己做出了3个模板后，感觉可视化的软件，其实已经做得很好了。该有的功能，都有了。这就行了。此外，我第一次知道，原来一维码还有如此多得种类。另外，xps文件原来很适合搞打印，能准确的反原">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1601177342556.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603163214719.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603163428453.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603161754961.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603162303202.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603162406517.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1603162565064.png">
+<meta property="article:published_time" content="2020-09-24T11:45:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.955Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/Lodop.assets/1601177342556.png">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Lodop | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lodop"><span class="nav-number">1.</span> <span class="nav-text">Lodop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%B7%E6%AD%A5"><span class="nav-number">1.1.</span> <span class="nav-text">起步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%91%E6%89%93%E5%8D%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">云打印</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.</span> <span class="nav-text">可视化设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%AF%B4%E6%98%8E"><span class="nav-number">1.2.1.</span> <span class="nav-text">功能说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.2.</span> <span class="nav-text">操作策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E8%A7%88%E6%95%88%E6%9E%9C"><span class="nav-number">1.2.3.</span> <span class="nav-text">预览效果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%9D%97%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.4.</span> <span class="nav-text">分块策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.2.5.</span> <span class="nav-text">快捷键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E7%9B%B8%E5%85%B3"><span class="nav-number">1.3.</span> <span class="nav-text">指令相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%B8%E5%BC%A0%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.3.1.</span> <span class="nav-text">纸张大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%BB%98%E8%AE%A4%E7%9A%84%E9%A3%8E%E6%A0%BC"><span class="nav-number">1.3.2.</span> <span class="nav-text">设置默认的风格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E6%97%8B%E8%BD%AC%E8%A7%92%E5%BA%A6"><span class="nav-number">1.3.3.</span> <span class="nav-text">设置旋转角度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%BA%E5%AF%B8%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.4.</span> <span class="nav-text">尺寸转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%85%83%E7%B4%A0"><span class="nav-number">1.3.5.</span> <span class="nav-text">文本元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%85%83%E7%B4%A0"><span class="nav-number">1.3.6.</span> <span class="nav-text">图片元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%9D%97%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.4.</span> <span class="nav-text">分块设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E7%A0%94"><span class="nav-number">1.5.</span> <span class="nav-text">自研</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%BC%BA%E6%96%87%E5%AD%97%E6%89%93%E5%8D%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">增强文字打印</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="nav-number">1.5.2.</span> <span class="nav-text">增加偏移量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%8F%E7%A7%BB%E9%87%8F%E5%8F%A0%E5%8A%A0"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">偏移量叠加</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E6%89%93%E5%8D%B0"><span class="nav-number">1.5.3.</span> <span class="nav-text">批量打印</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E6%8E%A8%E8%8D%90"><span class="nav-number">1.6.</span> <span class="nav-text">文档推荐</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/09/24/js/print/Lodop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Lodop
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-24 11:45:00" itemprop="dateCreated datePublished" datetime="2020-09-24T11:45:00+00:00">2020-09-24</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Lodop"><a href="#Lodop" class="headerlink" title="Lodop"></a>Lodop</h1><blockquote>
+<p>从2015年的时候，就接触过这个软件，那个时候，我只是拿别人做好的，使用。没有想到，我自己也从事这方面的开发呢。一开始我觉得Lodop不好用，指令什么的太复杂了，而且可视化的操作，感觉做得非常差。但是通过自己做出了3个模板后，感觉可视化的软件，其实已经做得很好了。该有的功能，都有了。这就行了。此外，我第一次知道，原来一维码还有如此多得种类。另外，xps文件原来很适合搞打印，能准确的反原出真实的打印效果。自己也是第一次摸索使用，所以，记录了本文。 </p>
+<p>在尝试过Lodop之后，我也尝试了另外一款软件Hiprint，起初被它网页式的拖拽吸引了，后来发现其不过是个弟弟。（对比有几大问题：1、直接打印时，文字的字体就两种；2、打印时字体居然成虚线了；3、导出pdf，其不过是图片而已，再打印文字还是模糊的。）</p>
+<p>有篇文章还不错：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/moonvan/p/3419280.html">https://www.cnblogs.com/moonvan/p/3419280.html</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>一般需要在html页面中引入Lodop库文件。</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LodopFuncs.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>object</span>  <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LODOP_OB<span class="token punctuation">"</span></span> <span class="token attr-name">classid</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>clsid:2105C259-1E0C-4534-8141-A753534CB4CA<span class="token punctuation">"</span></span> <span class="token attr-name">width</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span>0</span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span>0</span><span class="token punctuation">></span></span> 
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>embed</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LODOP_EM<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>application/x-print-lodop<span class="token punctuation">"</span></span> <span class="token attr-name">width</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span>0</span> <span class="token attr-name">height</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span>0</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>embed</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>object</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> <span class="token constant">LODOP</span><span class="token operator">=</span><span class="token function">getLodop</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'LODOP_OB'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'LODOP_EM'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>推荐：</p>
+<p>动态构建</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> <span class="token constant">LODOP</span><span class="token operator">=</span><span class="token function">getLodop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="云打印"><a href="#云打印" class="headerlink" title="云打印"></a>云打印</h3><p>核心有以下两点，更改为安装C-LODOP的打印机的IP，端口8000不要变。第二、获取CLodop。</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;script src&#x3D;&quot;http:&#x2F;&#x2F;10.20.24.65:8000&#x2F;CLodopFuncs.js&quot;&gt;&lt;&#x2F;script&gt;
+LODOP &#x3D; getCLodop();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>其实我还是分不清CLodop跟那两个插件的区别是啥？反正只需要安装CLodop好像就可以了。</p>
+<h2 id="可视化设计"><a href="#可视化设计" class="headerlink" title="可视化设计"></a>可视化设计</h2><h3 id="功能说明"><a href="#功能说明" class="headerlink" title="功能说明"></a>功能说明</h3><p>第三个样例，找到空白设计，打开之后，大概弹出一个设计框。如下：</p>
+<p><img src="Lodop.assets/1601177342556.png" alt="1601177342556"></p>
+<p>对于功能，如下：</p>
+<ul>
+<li><p>1、进行微调位置，对应快捷键 ctrl+ 方向箭。</p>
+</li>
+<li><p>2、调整文字大小。</p>
+</li>
+<li><p>3、旋角。比如文字旋转方向。好像在预览模式下才能看见。</p>
+</li>
+<li><p>4、调整大小，比如纸张、文本框，根据选择的不同，设置内容不同。</p>
+</li>
+<li><p>5、文字加粗、倾斜、下划线等。必须是文字才能设置，其他都是置灰。</p>
+</li>
+<li><p>6、文本框的对齐方式。</p>
+</li>
+<li><p>7、矩形、边框线等。</p>
+</li>
+<li><p>8、多选模式下，进行对齐等。ctrl、shift可以多选。</p>
+</li>
+<li><p>9、背景图片等。这个也非常重要。可以把设计稿放在下面，进行拖动设计。</p>
+</li>
+<li><p>10、插入对象。尤其是插入文本框，这个很重要。</p>
+</li>
+<li><p>11、文本框。</p>
+</li>
+<li><p>12、生成LODOP代码，隐藏有点深。</p>
+</li>
+<li><p>13、标尺，暂时不知道怎么用。</p>
+</li>
+<li><p>14、打印预览，有些效果只能在预览情况下，看得出来。</p>
+</li>
+<li><p>15、文本框，重要说明：拖动文本框的感觉，好像是选择文本一样，反而，选择边框拖动，非常费劲，然后加上微调，非常方便调整整体位置。</p>
+</li>
+<li><p>16、这个三角，用来显示、隐藏对象列表，尤其页面元素比较多，在列表上选择非常方便。（有时候，左侧利用shift、ctrl多选之后，然后还需要点右侧内容区域，才能删除、或调整位置。也有可能不需要。）</p>
+</li>
+<li><p>17、对象属性，显示当前的值。</p>
+</li>
+</ul>
+<h3 id="操作策略"><a href="#操作策略" class="headerlink" title="操作策略"></a>操作策略</h3><p>下面描述我自己摸索出来的设计模式：</p>
+<ul>
+<li>1、加载背景图片</li>
+</ul>
+<blockquote>
+<p> 加载的图片最好是使用扫描出来的。（我用的好像是别人截图的）。然后截取图片中主要的内容区域，设置背景图片的大小。选择套打模式。这种图片，能反映出最终的尺寸，所以相当于在上面描。</p>
+</blockquote>
+<ul>
+<li>2、打开对象列表</li>
+</ul>
+<blockquote>
+<p> 主要是用来参考，或者快速选择对应的对象。</p>
+</blockquote>
+<ul>
+<li>3、快速生成大量的文本框，并大致拖到对应位置。</li>
+</ul>
+<blockquote>
+<p>这一步可以使用ctrl+拖拽，也可以简单的从菜单项中选择。快速将对应的标签、内容填上。等待微调。</p>
+</blockquote>
+<ul>
+<li>4、感觉差不多了，保存代码。然后再该代码基础上，再进行调整。</li>
+</ul>
+<blockquote>
+<p> 先导出代码保存，防止丢失。在代码中设置通用的字体大小和基础样式。然后像图片修图一样，进行精修模式。由于有基础样式，避免了大量调整文字等工作。这一步，需要一块一块的精确的调整，然后预览。这一步中，可以多选进行调整尺寸、字体等。也可以快速的进行对齐，如左边对齐、右边对齐等。</p>
+</blockquote>
+<ul>
+<li>5、预览效果</li>
+</ul>
+<blockquote>
+<p> 这一步，在设计中，选择打印预览，然后设置，在设置中选择默认的打印机为xps虚拟打印机。这是神器，基本上跟真实的打印差不多，但是能节省不少纸张。</p>
+</blockquote>
+<ul>
+<li>6、微调</li>
+</ul>
+<blockquote>
+<p> 使用拖拽快速调整大的效果，使用ctrl快速的选择多个组件，可以快速的设置统一的大小、尺寸等。使用ctrl+方向箭头可以进行微调，然后预览。此外，像直线等，可以先大致拖动更改大小，然后拖到合适的位置上，然后再利用菜单栏上的输入框或者输入框右侧上下箭头，快速调整尺寸等。</p>
+</blockquote>
+<ul>
+<li><p>7、添加边线等。</p>
+<blockquote>
+<p> 打印的时候，应该先打印线，但是我喜欢设计的时候，把线放到最后一步。</p>
+</blockquote>
+</li>
+<li><p>8、保存最终的代码。</p>
+</li>
+</ul>
+<blockquote>
+<p>将最终的代码保存起来，然后可以进行进一步处理。</p>
+</blockquote>
+<p>总结：</p>
+<p>利用可视化设计能非常方便的设计出打印的样式。直接用html来生成打印的样式，也尝试过，自己手动写样式，写html、table等，达到相同的效果，没有可视化来得快，而且用html打印，不能精确控制打印效果。</p>
+<h3 id="预览效果"><a href="#预览效果" class="headerlink" title="预览效果"></a>预览效果</h3><p>预览基本上等于真实的打印效果。但是，预览速度很快，然后再回到微调设计。</p>
+<p>为什么需要预览，有很多的属性，虽然设置了，在设计模式下，其实，并看不出来效果，只有预览，才能看出真实的效果。如下面的文本属性，好多效果都只能预览后，才能看出来：</p>
+<p><img src="Lodop.assets/1603163214719.png" alt="1603163214719"></p>
+<p>预览神器：在设置中选择默认的打印机为xps虚拟打印机。基本上跟真实的打印差不多，但是能节省不少纸张。还方便。2秒就能看出效果。windows没有的，可以自行搜索安装。</p>
+<p>预览方法：记得要放大预览，这样，很容易发现不协调部分。</p>
+<p><img src="Lodop.assets/1603163428453.png" alt="1603163428453"></p>
+<h3 id="分块策略"><a href="#分块策略" class="headerlink" title="分块策略"></a>分块策略</h3><p>一个典型的布局如下：</p>
+<p><img src="Lodop.assets/1603161754961.png" alt="1603161754961"></p>
+<p>对应的代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token number">36</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">"重量\r\n1.71吨"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span><span class="token punctuation">,</span><span class="token number">55</span><span class="token punctuation">,</span><span class="token number">39</span><span class="token punctuation">,</span><span class="token number">31</span><span class="token punctuation">,</span><span class="token string">"装载率\r\n27.8%"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span><span class="token punctuation">,</span><span class="token number">85</span><span class="token punctuation">,</span><span class="token number">170</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">"车牌\r\n沪EK6953(含装9.92米/56立方)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span><span class="token punctuation">,</span><span class="token number">201</span><span class="token punctuation">,</span><span class="token number">60</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">"实际发车时间\r\n05日14:26"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>好处：首先，设计的字体太小，对齐不好掌控，通过换行，有一致的左对齐效果，不需要调整。其次，这样分割，减少了块，代码量少，看起来更精简写，写起来，更容易，后期也容易整体进行调整。再次，由于，相同语义的在一个整体，后期更容易理解。顺便说下，不用担心固定文本与动态文本注入问题，后面有扩展功能。</p>
+<p>所以，进行扩展：</p>
+<p>下面分两块设计，左侧的块右对齐，右侧的块，默认左对齐即可。效果绝对比下面的好，而且也简单。</p>
+<p><img src="Lodop.assets/1603162303202.png" alt="1603162303202"></p>
+<p><img src="Lodop.assets/1603162406517.png" alt="1603162406517"></p>
+<p><img src="Lodop.assets/1603162565064.png" alt="1603162565064"></p>
+<h3 id="快捷键"><a href="#快捷键" class="headerlink" title="快捷键"></a>快捷键</h3><p>ctrl + 方向箭  微调位置</p>
+<p>ctrl + delete  删除。</p>
+<p>ctrl + 左键框选，ctrl + 左键拖动，复制。</p>
+<p> 在打印设计时， 按住CTRL再拖拽选中的对象，可实现快速复制。  </p>
+<p>打印对象列中按住ALT键的同时拖拉改变对象的顺序位置。</p>
+<h2 id="指令相关"><a href="#指令相关" class="headerlink" title="指令相关"></a>指令相关</h2><pre class="line-numbers language-none"><code class="language-none">ADD_PRINT_TEXT   &#x2F;&#x2F;插入文本，常用指令
+SET_PRINT_STYLE  &#x2F;&#x2F;设置默认的尺寸
+SET_PRINT_STYLEA  &#x2F;&#x2F; 常用.SET_PRINT_STYLEA(0, 来设置刚刚的元素的特殊样式。
+LODOP.ADD_PRINT_LINE   &#x2F;&#x2F;设置直线。由于只有向上、向小的线，所以，设置高度为1，宽度为1，即为水平直线。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="纸张大小"><a href="#纸张大小" class="headerlink" title="纸张大小"></a>纸张大小</h3><p>最好打开标尺，来显示纸张的大小。默认使用的纸张大小都是用px来标注的，所以要进行转换。纸张大小，可以在代码中设置，也可以打印的时候选择。在设计模式下，预览的时候，有提示大小。注意，它默认使用的尺寸是px。</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;公式  F3为厘米，60mm最终纸的大小227px。
+&#x3D;(F3&#x2F;10&#x2F;2.54)*96   <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="设置默认的风格"><a href="#设置默认的风格" class="headerlink" title="设置默认的风格"></a>设置默认的风格</h3><pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLE</span><span class="token punctuation">(</span><span class="token string">"FontSize"</span><span class="token punctuation">,</span><span class="token number">11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLE</span><span class="token punctuation">(</span><span class="token string">"FontName"</span><span class="token punctuation">,</span><span class="token string">"楷体"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="设置旋转角度"><a href="#设置旋转角度" class="headerlink" title="设置旋转角度"></a>设置旋转角度</h3><pre class="line-numbers language-none"><code class="language-none">LODOP.SET_PRINT_STYLEA(0,&quot;Angle&quot;,-90);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="尺寸转换"><a href="#尺寸转换" class="headerlink" title="尺寸转换"></a>尺寸转换</h3><p>96px=1英寸=2.54cm=25.4mm。默认的，如指令ADD_PRINT_TEXT中的参数，都是px单位，另外，页面也是px单位。最神奇的是，居然，显示的大小尺寸，跟真实的差不多。</p>
+<p>示例PrintSample29.html如下描述：</p>
+<blockquote>
+<p>Lodop很多函数的参数可声明使用in(英寸)、cm(厘米)、mm(毫米)、pt(磅)、px(1/96英寸)等长度单位，注意这里的px不是像素，是绝对长度单位，1px等于1/96英寸，与正常DPI显示设置的像素值相等。如果采用该单位，那么正常显示的屏幕内容与实际打印输出的内容大小相当，这个长度单位可以实现感觉上的“所见等于所打”，px是缺省长度单位，如此以来，单位换算关系为：1in = 2.54cm = 25.4mm = 72pt = 96px</p>
+</blockquote>
+<h3 id="文本元素"><a href="#文本元素" class="headerlink" title="文本元素"></a>文本元素</h3><p>可以使用下面的方式，进行设置，代码可以通过生成器来生成。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">24</span><span class="token punctuation">,</span><span class="token number">157</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"（该趟未回皮）"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"FontName"</span><span class="token punctuation">,</span><span class="token string">"Arial"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"FontSize"</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"Bold"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"Alignment"</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="图片元素"><a href="#图片元素" class="headerlink" title="图片元素"></a>图片元素</h3><p>比如插入图片，实际上是插入一段html代码。注意使用绝对的url链接，否则，不被识别。</p>
+<p>width=’100%’控制大小占打印区域100%。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_IMAGE</span><span class="token punctuation">(</span><span class="token number">391</span><span class="token punctuation">,</span><span class="token number">17</span><span class="token punctuation">,</span><span class="token number">60</span><span class="token punctuation">,</span><span class="token number">23</span><span class="token punctuation">,</span><span class="token string">"&lt;img border='0' src='http://10.20.24.65:8005/yunda.png'  width='100%' />"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="分块设计"><a href="#分块设计" class="headerlink" title="分块设计"></a>分块设计</h2><p>另外，关于打印区域进行分块，可以采用相对坐标。类似如下：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript">y<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span>y<span class="token punctuation">,</span><span class="token number">57</span><span class="token punctuation">,</span><span class="token number">138</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"这条线路装货物重量："</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span>y<span class="token operator">+</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">66</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"上海ZZ阜阳YD"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span>y<span class="token operator">+</span><span class="token number">130</span><span class="token punctuation">,</span><span class="token number">57</span><span class="token punctuation">,</span><span class="token number">120</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"本车规定发车时间"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>由于生成的代码比较简单，我们也可以自己对代码进行解析，比如，自己定义<code>LODOP.ADD_PRINT_TEXT</code>函数，然后处理、输出新的代码。见后面增加偏移量的增加设计。</p>
+<p>相应的代码块放在一起。</p>
+<h2 id="自研"><a href="#自研" class="headerlink" title="自研"></a>自研</h2><p>官方提供的工具已经很不错了，但是自己也能自己边写一个代码，来解析指令，生成指令等。</p>
+<p>大致的思路是：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> <span class="token constant">LODOP</span><span class="token operator">=</span><span class="token punctuation">&#123;</span>
+  <span class="token function-variable function">ADD_PRINT_TEXT</span><span class="token operator">:</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+     <span class="token comment">//处理指令</span>
+     <span class="token comment">//输出优化的指令</span>
+     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'LODOP.ADD_PRINT_TEXT(y,57,138,20,"这条线路装货物重量：");'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="增强文字打印"><a href="#增强文字打印" class="headerlink" title="增强文字打印"></a>增强文字打印</h3><p>增加文字打印，对花括号内的变量进行解析。其实也没有啥用，设计模板，生成的代码不包含带变量名替换的，还要手动改回来。但总归是一种思路吧。</p>
+<p>分两步</p>
+<p>步骤一：改造原来提供的LodopFuncs.js文件。在添加授权的位置处，增加如下代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//===如下空白位置适合调用统一功能(如注册语句、语言选择等):==</span>
+<span class="token comment">//另一种模式。</span>
+<span class="token comment">//加载模板数据 data</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">tpl</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> fields <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\&#123;\w+\&#125;</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>fields<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span> fields<span class="token punctuation">.</span>length<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token keyword">var</span> field <span class="token operator">=</span> fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>length<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>data<span class="token punctuation">[</span>field<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>str <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span>fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token string">"g"</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">this</span><span class="token punctuation">.</span>data<span class="token punctuation">[</span>field<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> str<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token constant">LODOP</span><span class="token punctuation">.</span>_addtpl<span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span>_addtpl <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> _ADD_PRINT_TEXT <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">ADD_PRINT_TEXT</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>txt</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">_ADD_PRINT_TEXT</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function">tpl</span><span class="token punctuation">(</span>txt<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">//=======================================================</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>代码说明：增加了锁标识，防止重复执行锁内的代码，造成死循环。即_addtpl增加过模板函数后，下次就不再执行了。</p>
+<p>步骤二：调用</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span> <span class="token operator">=</span> <span class="token function">getLodop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span>data <span class="token operator">=</span> <span class="token punctuation">&#123;</span>hi<span class="token operator">:</span><span class="token string">'hello'</span><span class="token punctuation">,</span>name<span class="token operator">:</span><span class="token string">'suchuanchao'</span><span class="token punctuation">,</span>status<span class="token operator">:</span><span class="token string">'入场'</span><span class="token punctuation">&#125;</span> <span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">PRINT_INIT</span><span class="token punctuation">(</span><span class="token string">"打印控件功能演示_地磅承重系统3"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_PAGESIZE</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">800</span><span class="token punctuation">,</span><span class="token number">45</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLE</span><span class="token punctuation">(</span><span class="token string">"FontSize"</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">18</span><span class="token punctuation">,</span><span class="token number">15</span><span class="token punctuation">,</span><span class="token number">137</span><span class="token punctuation">,</span><span class="token number">23</span><span class="token punctuation">,</span><span class="token string">"上海韵达快运"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"FontName"</span><span class="token punctuation">,</span><span class="token string">"楷体"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">45</span><span class="token punctuation">,</span><span class="token number">22</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">18</span><span class="token punctuation">,</span><span class="token string">"进出状态：&#123;status&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>代码说明：上面最后一句语句中的花括号内的变量会自动的解析。如果该变量未提供，会原样输出<code>&#123;变量名&#125;</code>。</p>
+<p>除此之外，不进行封装也行。形式如下：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//首先定义我们自己的函数</span>
+<span class="token comment">//加载模板数据 data</span>
+  <span class="token keyword">function</span> <span class="token function">tpl</span><span class="token punctuation">(</span><span class="token parameter">data<span class="token operator">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">str</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">var</span> fields <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">\&#123;\w+\&#125;</span><span class="token regex-delimiter">/</span><span class="token regex-flags">g</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>fields<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span> fields<span class="token punctuation">.</span>length<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+          <span class="token keyword">var</span> field <span class="token operator">=</span> fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span>fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>length<span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          data<span class="token punctuation">[</span>field<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>str <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">RegExp</span><span class="token punctuation">(</span>fields<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token string">"g"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>data<span class="token punctuation">[</span>field<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">return</span> str<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token comment">//打印时候</span>
+<span class="token keyword">function</span> <span class="token function">create_page</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">//注入模板数据对象 data</span>
+    <span class="token comment">// var _t = tpl(&#123;hi:'hello',name:'suchuanchao',status:'入场'&#125;); </span>
+    <span class="token comment">// //测试模板转换输出</span>
+    <span class="token comment">// console.log(_t("&#123;hi&#125; world! My name is &#123;name&#125;"));</span>
+
+    <span class="token constant">LODOP</span> <span class="token operator">=</span> <span class="token function">getLodop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//手动调用函数来进行转换</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">45</span><span class="token punctuation">,</span><span class="token number">22</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">18</span><span class="token punctuation">,</span><span class="token function">_t</span><span class="token punctuation">(</span><span class="token string">"进出状态：&#123;status&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//后续代码略</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>后来发现，sed源码里面也有类似的封装代码，如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">fprintf</span> <span class="token punctuation">(</span>out<span class="token punctuation">,</span> <span class="token function">_</span><span class="token punctuation">(</span><span class="token string">"  -n, --quiet, --silent\n\
+                 suppress automatic printing of pattern space\n"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>其实，后面这种简单封装，个人感觉更容易理解一些。</p>
+<h3 id="增加偏移量"><a href="#增加偏移量" class="headerlink" title="增加偏移量"></a>增加偏移量</h3><blockquote>
+<p>这个功能，本来是打算做成块功能，即一堆元素形成一个块，然后可以整体进行整体调整位置。但是呢，块是可以嵌套定义，在嵌套的模式下，代码实现起来，比较难，而且也很难理解。所以，就搞最简单的，设置偏移量。</p>
+<p>偏移量的含义是：相对设计稿的便宜量。水平x，x&gt;0，相对设计稿右移。同理，竖向y，y&gt;0,相对设计稿下移。</p>
+<p>叠加使用，偏移量用变量标式，如：整体偏x0,局部再设置偏移量时，x0+x1。</p>
+<p>由于只是使用了像素值，所以，并没有增加转换相关的函数。有需要的话，再考虑完善。</p>
+</blockquote>
+<p>灵感代码：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">//比如，设置一个固定的y值，然后需要手工计算，相对固定的y的便宜量。</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span> <span class="token operator">+</span>y<span class="token punctuation">,</span><span class="token number">85</span><span class="token punctuation">,</span><span class="token number">170</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">"车牌\r\n沪EK6953(含装9.92米/56立方)"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">412</span> <span class="token operator">+</span>y<span class="token punctuation">,</span><span class="token number">201</span><span class="token punctuation">,</span><span class="token number">60</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">"实际发车时间\r\n05日14:26"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">445</span> <span class="token operator">+</span>y<span class="token punctuation">,</span><span class="token number">19</span><span class="token punctuation">,</span><span class="token number">261</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"B 你的车牌沪EK1573（含厢9.72米/56立方）"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上面代码没有进行任何封装，但是比较简单，直观。下面讲述自己封装：</p>
+<p>方式一：改造原来提供的LodopFuncs.js文件，改造的代码（示例代码只改造了几种常见的典型）：</p>
+<blockquote>
+<p>此种方法，副作用少，使用起来问题不大。</p>
+</blockquote>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment">//水平方向偏移量</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment">//竖直方向偏移量</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">offset</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">y<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">,</span>x<span class="token operator">=</span><span class="token keyword">null</span></span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>y<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token operator">=</span> y<span class="token punctuation">;</span>   <span class="token comment">//这里如果换成  LODOP.offset_y += y，又是另外一种效果。估计用不到。</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>x<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token operator">=</span> x<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token constant">LODOP</span><span class="token punctuation">.</span>_addtpl<span class="token punctuation">)</span><span class="token punctuation">&#123;</span> 
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span>_addtpl <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">var</span> _ADD_PRINT_TEXT <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">ADD_PRINT_TEXT</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>txt</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_ADD_PRINT_TEXT</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>a <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token punctuation">,</span>b <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span><span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function">tpl</span><span class="token punctuation">(</span>txt<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// LODOP.ADD_PRINT_BARCODE(555,76,160,60,"Code93","68005715342");</span>
+    <span class="token keyword">var</span> _ADD_PRINT_BARCODE <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_BARCODE</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">ADD_PRINT_BARCODE</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>codeType<span class="token punctuation">,</span>codeStr</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">_ADD_PRINT_BARCODE</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>a <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token punctuation">,</span>b <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>codeType<span class="token punctuation">,</span>codeStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// LODOP.ADD_PRINT_LINE(519,13,518,262,0,1);</span>
+    <span class="token comment">//只移动，不变形</span>
+    <span class="token keyword">var</span> _ADD_PRINT_LINE <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_LINE</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">ADD_PRINT_LINE</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>lineType<span class="token punctuation">,</span>lineSize</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">_ADD_PRINT_LINE</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>a <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token punctuation">,</span>b <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>c <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token punctuation">,</span>d <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>lineType<span class="token punctuation">,</span>lineSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// LODOP.ADD_PRINT_RECT(15,12,250,635,0,1);</span>
+    <span class="token keyword">var</span> _ADD_PRINT_RECT <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_RECT</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">ADD_PRINT_RECT</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span>b<span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>lineType<span class="token punctuation">,</span>lineSize</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token function">_ADD_PRINT_RECT</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>a <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token punctuation">,</span>b <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>c<span class="token punctuation">,</span>d<span class="token punctuation">,</span>lineType<span class="token punctuation">,</span>lineSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="偏移量叠加"><a href="#偏移量叠加" class="headerlink" title="偏移量叠加"></a>偏移量叠加</h4><p>推荐使用下面偏移量叠加功能。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment">//水平方向偏移量</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment">//竖直方向偏移量</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">offset</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">y<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">,</span>x<span class="token operator">=</span><span class="token keyword">null</span><span class="token punctuation">,</span>isClear</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> flag <span class="token operator">=</span> isClear<span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">?</span><span class="token operator">-</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>y<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y <span class="token operator">+=</span> flag<span class="token operator">*</span>y<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>x<span class="token operator">!=</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token operator">+=</span> flag<span class="token operator">*</span>x<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>方式二：底层修改LodopFuncs.js文件：</p>
+<blockquote>
+<p>此种方式是从底层修改，将所有的底层都修改了。副作用大。不确定是否有潜在的问题。目前使用，暂无问题。用这种方式，不但能做偏移量增加，也能做文字模板替换等。核心代码如下：</p>
+</blockquote>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> _AddItemArray <span class="token operator">=</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>AddItemArray<span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function-variable function">AddItemArray</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">type<span class="token punctuation">,</span>top<span class="token punctuation">,</span>left<span class="token punctuation">,</span>width<span class="token punctuation">,</span>height<span class="token punctuation">,</span>strContent<span class="token punctuation">,</span>itemname<span class="token punctuation">,</span>ShapeType<span class="token punctuation">,</span>intPenStyle<span class="token punctuation">,</span>intPenWidth<span class="token punctuation">,</span>intColor<span class="token punctuation">,</span>isLinePosition<span class="token punctuation">,</span>BarType<span class="token punctuation">,</span>strChartTypess</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>top<span class="token operator">===</span><span class="token keyword">undefined</span><span class="token operator">||</span>left<span class="token operator">===</span><span class="token keyword">undefined</span><span class="token operator">||</span>width<span class="token operator">===</span><span class="token keyword">undefined</span><span class="token operator">||</span>height<span class="token operator">===</span><span class="token keyword">undefined</span><span class="token operator">||</span>strContent<span class="token operator">===</span><span class="token keyword">undefined</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>type <span class="token operator">==</span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> ShapeType <span class="token operator">===</span> <span class="token number">0</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span> <span class="token comment">//直线类，需要特别处理 如ADD_PRINT_LINE、ADD_PRINT_UPLINE等</span>
+        <span class="token function">_AddItemArray</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>type<span class="token punctuation">,</span>top <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y<span class="token punctuation">,</span>left <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>width  <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y<span class="token punctuation">,</span>height  <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x<span class="token punctuation">,</span>strContent<span class="token punctuation">,</span>itemname<span class="token punctuation">,</span>ShapeType<span class="token punctuation">,</span>intPenStyle<span class="token punctuation">,</span>intPenWidth<span class="token punctuation">,</span>intColor<span class="token punctuation">,</span>isLinePosition<span class="token punctuation">,</span>BarType<span class="token punctuation">,</span>strChartTypess<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+        <span class="token function">_AddItemArray</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token constant">LODOP</span><span class="token punctuation">,</span>type<span class="token punctuation">,</span>top <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_y<span class="token punctuation">,</span>left <span class="token operator">+</span> <span class="token constant">LODOP</span><span class="token punctuation">.</span>offset_x <span class="token punctuation">,</span>width<span class="token punctuation">,</span>height<span class="token punctuation">,</span>strContent<span class="token punctuation">,</span>itemname<span class="token punctuation">,</span>ShapeType<span class="token punctuation">,</span>intPenStyle<span class="token punctuation">,</span>intPenWidth<span class="token punctuation">,</span>intColor<span class="token punctuation">,</span>isLinePosition<span class="token punctuation">,</span>BarType<span class="token punctuation">,</span>strChartTypess<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>使用代码的示例：</p>
+<pre class="line-numbers language-js" data-language="js"><code class="language-js"><span class="token comment">//方式一：</span>
+<span class="token comment">// LODOP.offset_y = 200;</span>
+<span class="token comment">// LODOP.offset_x = 100;</span>
+<span class="token comment">//方式二：</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_TEXT</span><span class="token punctuation">(</span><span class="token number">526</span><span class="token punctuation">,</span><span class="token number">86</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token number">20</span><span class="token punctuation">,</span><span class="token string">"交件条码："</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"FontSize"</span><span class="token punctuation">,</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_STYLEA</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"Alignment"</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_BARCODE</span><span class="token punctuation">(</span><span class="token number">555</span><span class="token punctuation">,</span><span class="token number">76</span><span class="token punctuation">,</span><span class="token number">160</span><span class="token punctuation">,</span><span class="token number">60</span><span class="token punctuation">,</span><span class="token string">"Code93"</span><span class="token punctuation">,</span><span class="token string">"68005715342"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_LINE</span><span class="token punctuation">(</span><span class="token number">519</span><span class="token punctuation">,</span><span class="token number">13</span><span class="token punctuation">,</span><span class="token number">518</span><span class="token punctuation">,</span><span class="token number">262</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">ADD_PRINT_RECT</span><span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">,</span><span class="token number">12</span><span class="token punctuation">,</span><span class="token number">250</span><span class="token punctuation">,</span><span class="token number">635</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//也有两种，这里省略了。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="批量打印"><a href="#批量打印" class="headerlink" title="批量打印"></a>批量打印</h3><p>由于前面对基础的封装，批量打印，变得非常简单。示例如下：</p>
+<p>offset函数也可以放到create_page代码中。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">print_preview</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+  <span class="token constant">LODOP</span> <span class="token operator">=</span> <span class="token function">getLodop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">PRINT_INIT</span><span class="token punctuation">(</span><span class="token string">"打印控件功能演示_地磅承重系统"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_MODE</span><span class="token punctuation">(</span><span class="token string">"PRINT_NOCOLLATE"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">create_page</span><span class="token punctuation">(</span>data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token function">offset</span><span class="token punctuation">(</span><span class="token number">680</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//下一页的偏移量</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">SET_PRINT_PAGESIZE</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">720</span><span class="token punctuation">,</span><span class="token number">45</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//这里3表示纵向打印且纸高“按内容的高度”；720表示纸宽72mm；45表示页底空白4.5mm</span>
+  <span class="token constant">LODOP</span><span class="token punctuation">.</span><span class="token constant">PREVIEW</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>备注：记得官方推荐是，批量打印时，按切分成多个任务，每个任务打印若干组数据来处理。</p>
+<h2 id="文档推荐"><a href="#文档推荐" class="headerlink" title="文档推荐"></a>文档推荐</h2><p>下面的文章可以查看，其中包含了自己设计的增加部分。</p>
+<p><a target="_blank" rel="noopener" href="https://localhost.lodop.net:8443/CLodopDemos/PrintSample35.html">https://localhost.lodop.net:8443/CLodopDemos/PrintSample35.html</a></p>
+<blockquote>
+<p>循环设计，设计完后，能返回刚刚设计的代码，然后能再次进行设计。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://localhost.lodop.net:8443/CLodopDemos/PrintSample50.html">https://localhost.lodop.net:8443/CLodopDemos/PrintSample50.html</a></p>
+<p><strong>跟自己做的功能重复了</strong></p>
+<blockquote>
+<p>将js代码保存让人无法直接看懂的特殊base64编码。然后方便传输。另外，模板，还提供了前面自己设计的注入功能。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/07/php/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%BE%91%E5%99%A8/" rel="prev" title="模板编辑器">
+                  <i class="fa fa-chevron-left"></i> 模板编辑器
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/27/js/%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BDjs%E3%80%81css/" rel="next" title="动态加载js、css">
+                  动态加载js、css <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

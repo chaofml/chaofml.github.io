@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="某个系统用漏洞工具扫描后，报了好几个问题。然后从网上逐一搜到对应的答案。总体来说，就是设置一下nginx的响应头、修改php.ini的默认安全配置等。故简单记录一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次安全漏洞修复">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/03/30/other/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="某个系统用漏洞工具扫描后，报了好几个问题。然后从网上逐一搜到对应的答案。总体来说，就是设置一下nginx的响应头、修改php.ini的默认安全配置等。故简单记录一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-30T14:52:38.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.984Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/03/30/other/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>记一次安全漏洞修复 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="nav-number">1.</span> <span class="nav-text">第一次漏洞修复</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.2.</span> <span class="nav-text">具体问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">1.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="nav-number">2.</span> <span class="nav-text">第二次漏洞修复</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#bug1"><span class="nav-number">2.1.</span> <span class="nav-text">bug1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bug2"><span class="nav-number">2.2.</span> <span class="nav-text">bug2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proxy-cookie-path%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">proxy_cookie_path命令详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8C%E5%AF%B9%E6%AF%94%EF%BC%9A"><span class="nav-number">3.1.</span> <span class="nav-text">进行对比：</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/03/30/other/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记一次安全漏洞修复
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-30 14:52:38" itemprop="dateCreated datePublished" datetime="2021-03-30T14:52:38+00:00">2021-03-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>某个系统用漏洞工具扫描后，报了好几个问题。然后从网上逐一搜到对应的答案。总体来说，就是设置一下nginx的响应头、修改php.ini的默认安全配置等。故简单记录一下。</p>
+<a id="more"></a>
+
+<h2 id="第一次漏洞修复"><a href="#第一次漏洞修复" class="headerlink" title="第一次漏洞修复"></a>第一次漏洞修复</h2><h3 id="配置："><a href="#配置：" class="headerlink" title="配置："></a>配置：</h3><p>nginx配置：</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment"># HTTP拒绝服务攻击</span>
+<span class="token keyword">client_body_timeout</span> <span class="token number">20</span>s<span class="token punctuation">;</span>
+<span class="token keyword">client_header_timeout</span> <span class="token number">10</span>s<span class="token punctuation">;</span>
+<span class="token keyword">send_timeout</span> <span class="token number">30</span>s<span class="token punctuation">;</span>
+<span class="token comment"># large_client_header_buffers 4 8k;</span>
+<span class="token comment"># 漏洞修复</span>
+<span class="token keyword">add_header</span> X<span class="token operator">-</span>Frame<span class="token operator">-</span>Options SAMEORIGIN<span class="token punctuation">;</span>
+<span class="token keyword">add_header</span> Content<span class="token operator">-</span>Security<span class="token operator">-</span>Policy <span class="token string">"default-src 'self' www.aiwetalk.com;script-src 'self' 'unsafe-eval' 'unsafe-inline' www.aiwetalk.com;object-src 'none';style-src 'self' 'unsafe-inline';"</span><span class="token punctuation">;</span>
+<span class="token keyword">add_header</span> Referrer<span class="token operator">-</span>Policy <span class="token string">"strict-origin-when-cross-origin"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>php.ini配置</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token constant">session.cookie_httponly</span> <span class="token attr-value"><span class="token punctuation">=</span> true</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="具体问题描述"><a href="#具体问题描述" class="headerlink" title="具体问题描述"></a>具体问题描述</h3><p><strong>Clickjacking: X-Frame-Options header missing</strong> </p>
+<pre class="line-numbers language-none"><code class="language-none">add_header X-Frame-Options SAMEORIGIN;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>Cookies with missing, inconsistent or contradictory properties</strong> </p>
+<p>暂未找到相应的修复方法。</p>
+<p><strong>Cookies without HttpOnly flag set</strong> </p>
+<p>修改php.ini</p>
+<pre class="line-numbers language-none"><code class="language-none">session.cookie_httponly &#x3D; true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>Content Security Policy (CSP) not implemented</strong> </p>
+<pre class="line-numbers language-none"><code class="language-none">add_header Content-Security-Policy &quot;default-src &#39;self&#39; www.aiwetalk.com;script-src &#39;self&#39; &#39;unsafe-eval&#39; &#39;unsafe-inline&#39; www.aiwetalk.com;object-src &#39;none&#39;;style-src &#39;self&#39; &#39;unsafe-inline&#39;;&quot;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>上面的设置最为复杂，具体参考<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/09/csp.html">http://www.ruanyifeng.com/blog/2016/09/csp.html</a></p>
+<p><strong>Insecure Referrer Policy</strong> </p>
+<pre class="line-numbers language-none"><code class="language-none">add_header Referrer-Policy &quot;strict-origin-when-cross-origin&quot;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>Subresource Integrity (SRI) not implemented</strong></p>
+<p>直接将引入的外部文件，改为由服务器自己内部下载。否则，对引入的文件，需要加入 sha256等进行签名。</p>
+<hr>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>对于nginx以下的配置，注释掉的代码，可能造成无法正常的访问服务。注释掉就可。</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">http</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">client_body_timeout</span> <span class="token number">20</span>s<span class="token punctuation">;</span>
+    <span class="token keyword">client_header_timeout</span> <span class="token number">10</span>s<span class="token punctuation">;</span>
+    <span class="token keyword">send_timeout</span> <span class="token number">30</span>s<span class="token punctuation">;</span>
+    <span class="token comment"># large_client_header_buffers 4 8k;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">server</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment"># client_body_buffer_size 8k;</span>
+    <span class="token comment"># client_max_body_size 2m;</span>
+    <span class="token comment"># client_body_in_file_only clean;</span>
+    <span class="token comment"># client_body_in_single_buffer on;</span>
+    <span class="token comment"># client_body_temp_pathtemp_files 1 2;</span>
+    <span class="token comment"># client_header_buffer_size 1m;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="第二次漏洞修复"><a href="#第二次漏洞修复" class="headerlink" title="第二次漏洞修复"></a>第二次漏洞修复</h2><h3 id="bug1"><a href="#bug1" class="headerlink" title="bug1"></a>bug1</h3><p>安全修复时， 要求添加上cookie的访问策略，</p>
+<p>具体参见文章：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2019/09/cookie-samesite.html">http://www.ruanyifeng.com/blog/2019/09/cookie-samesite.html</a></p>
+<p>解决方式 php 或 nginx配置：</p>
+<p>1、nginx配置</p>
+<p>在location 的位置处设置（但是删除上设置了，发现没有什么效果？why？）</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">proxy_cookie_path</span> <span class="token operator">/</span> <span class="token string">"/; httponly; secure; SameSite=Lax"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>2、php配置</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx">session<span class="token punctuation">.</span>cookie_samesite <span class="token operator">=</span> Strict<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>备注：php中默认<code>session.name = PHPSESSID</code>，查看该条session对应的cookie，确实是按设置生效了，但是对自己使用以下方式设置的cookie不起任何作用？难道这个配置只适合session而不适合cookie？</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$r</span> <span class="token operator">=</span> <span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span><span class="token number">9999</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">setcookie</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'mykey_'</span><span class="token punctuation">.</span><span class="token variable">$r</span><span class="token punctuation">,</span><span class="token variable">$r</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>填写完整的setcookie调用参数，能添加上secure、httponly、过期时间参数，还是无法设置<code>SameSite=Lax</code>这个参数。</p>
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="bug2"><a href="#bug2" class="headerlink" title="bug2"></a>bug2</h3><p>另外一处修复：</p>
+<blockquote>
+<p>增加frame-ancestors ‘self’;</p>
+</blockquote>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">add_header</span> Content<span class="token operator">-</span>Security<span class="token operator">-</span>Policy <span class="token string">"default-src 'self' www.aiwetalk.com;script-src 'self' 'unsafe-eval' 'unsafe-inline' www.aiwetalk.com;object-src 'none';style-src 'self' 'unsafe-inline';frame-ancestors 'self';"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h2 id="proxy-cookie-path命令详解"><a href="#proxy-cookie-path命令详解" class="headerlink" title="proxy_cookie_path命令详解"></a>proxy_cookie_path命令详解</h2><p>proxy_cookie_path命令的作用，找到path中的特定部分，然后按照指定的规则进行整体替换，而cookie利用nginx加上安全策略，也只是利用了替换path中的特定部分。</p>
+<p>php使用按如下方式设置cookie：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">// 假设是在 /apimy/test.php路径下，否则，路径不符合，也不会显示cookie</span>
+<span class="token variable">$r</span> <span class="token operator">=</span> <span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">,</span><span class="token number">9999</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">echo</span> <span class="token single-quoted-string string">'set-cookie'</span><span class="token punctuation">.</span><span class="token variable">$r</span><span class="token punctuation">;</span>
+<span class="token function">setcookie</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'mykey_'</span><span class="token punctuation">.</span><span class="token variable">$r</span><span class="token punctuation">,</span><span class="token variable">$r</span><span class="token punctuation">,</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">3600</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'/apimy'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">''</span><span class="token punctuation">,</span><span class="token boolean constant">false</span><span class="token punctuation">,</span><span class="token boolean constant">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以下为实验对比：</p>
+<p>在没有proxy_cookie_path 设置时，响应的Set-Cookie头如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">mykey_7684&#x3D;7684; expires&#x3D;Tue, 06-Apr-2021 10:22:44 GMT; Max-Age&#x3D;3600; path&#x3D;&#x2F;apimy; HttpOnly<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="进行对比："><a href="#进行对比：" class="headerlink" title="进行对比："></a>进行对比：</h3><hr>
+<p>增加proxy_cookie_path的配置如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">proxy_cookie_path &#x2F; &quot;&#x2F;; httponly; secure; SameSite&#x3D;Lax&quot;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其作用是：发现了路径，将进行替换。</p>
+<p><strong>结果发现</strong></p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx">mykey_8190<span class="token operator">=</span><span class="token number">8190</span><span class="token punctuation">;</span> <span class="token keyword">expires</span><span class="token operator">=</span>Tue<span class="token punctuation">,</span> <span class="token number">06</span><span class="token operator">-</span>Apr<span class="token operator">-</span><span class="token number">2021</span> <span class="token number">10</span><span class="token punctuation">:</span><span class="token number">19</span><span class="token punctuation">:</span><span class="token number">00</span> GMT<span class="token punctuation">;</span> Max<span class="token operator">-</span>Age<span class="token operator">=</span><span class="token number">3600</span><span class="token punctuation">;</span> path<span class="token operator">=</span><span class="token operator">/</span><span class="token punctuation">;</span> httponly<span class="token punctuation">;</span> secure<span class="token punctuation">;</span> SameSite<span class="token operator">=</span>Laxapimy<span class="token punctuation">;</span> HttpOnly<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>对比发现，其命令是简单的将<code>path=/;</code>中的<code>/</code>，按上面的配置进行替换。</p>
+<p><strong>注意</strong></p>
+<p>1、如果setcookie中没有path,proxy_cookie_path将不会进行任何替换，因为找不到path。</p>
+<p>2、secure选项如果设置，而本身不是https的协议访问，设置将不会起作用。</p>
+<p>3、由于proxy_cookie_path本身并不智能，放在location这样更小的范围，可能更适合。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/25/js/websocket%E6%8E%A8%E9%80%81/" rel="prev" title="websocket推送">
+                  <i class="fa fa-chevron-left"></i> websocket推送
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/02/php/php%E9%97%AD%E5%8C%85/" rel="next" title="php闭包">
+                  php闭包 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

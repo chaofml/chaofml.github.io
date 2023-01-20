@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="这是一个网络工具，类似与nc等工具（netcat）。但是功能又比较的强大。我记得第一次用这种类似的软件是nc，当时是用来传输文件，怎么没有成功。从名字上看，像是socket cat的缩写。所以，用法上，就想成cat，不过它的输入跟输出，可以非常的多。而且还能fork、reuseaddr等。 凡是跟网络有关的软件，我个人感觉都比较的难理解，比如，ssh -D 代理、frp、ngork、甚至nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socat">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/07/03/shell/socat/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="这是一个网络工具，类似与nc等工具（netcat）。但是功能又比较的强大。我记得第一次用这种类似的软件是nc，当时是用来传输文件，怎么没有成功。从名字上看，像是socket cat的缩写。所以，用法上，就想成cat，不过它的输入跟输出，可以非常的多。而且还能fork、reuseaddr等。 凡是跟网络有关的软件，我个人感觉都比较的难理解，比如，ssh -D 代理、frp、ngork、甚至nginx">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-03T10:29:57.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.024Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/07/03/shell/socat/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>socat | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#socat%E8%AF%A6%E8%A7%A3"><span class="nav-number"></span> <span class="nav-text">socat详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#address"><span class="nav-number">1.3.</span> <span class="nav-text">address</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">1.4.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E5%9B%9E%E6%98%BE"><span class="nav-number">1.5.</span> <span class="nav-text">直接回显</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cat%E6%96%87%E4%BB%B6"><span class="nav-number">1.6.</span> <span class="nav-text">cat文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">1.7.</span> <span class="nav-text">写文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#socat%E5%BD%93netcat"><span class="nav-number">2.</span> <span class="nav-text">socat当netcat</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E8%BF%9C%E7%A8%8B%E7%AB%AF%E5%8F%A3"><span class="nav-number">2.1.</span> <span class="nav-text">连接远程端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%91%E5%90%AC%E7%AB%AF%E5%8F%A3"><span class="nav-number">2.2.</span> <span class="nav-text">监听端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%90%91shell"><span class="nav-number">2.3.</span> <span class="nav-text">正向shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%BC%B9shell"><span class="nav-number">2.4.</span> <span class="nav-text">反弹shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E4%B8%8E%E8%BD%AC%E5%8F%91"><span class="nav-number">2.5.</span> <span class="nav-text">代理与转发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL%E8%BF%9E%E6%8E%A5"><span class="nav-number">3.</span> <span class="nav-text">SSL连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSL%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">SSL服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fork%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.2.</span> <span class="nav-text">fork服务器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E8%AE%BE%E5%A4%87%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="nav-number">4.</span> <span class="nav-text">不同设备的通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86U%E7%9B%98%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%BB%9C%E5%85%B1%E4%BA%AB"><span class="nav-number">4.1.</span> <span class="nav-text">将U盘进行网络共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E7%BB%88%E7%AB%AF%E8%BD%AC%E5%8F%91%E5%88%B0COM1"><span class="nav-number">4.2.</span> <span class="nav-text">将终端转发到COM1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B0%E7%89%88%E7%91%9E%E5%A3%AB%E5%86%9B%E5%88%80%EF%BC%9Asocat"><span class="nav-number"></span> <span class="nav-text">新版瑞士军刀：socat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4%E5%B0%B1%E6%98%AF%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">基本命令就是：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%B5%8B%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">网络测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91"><span class="nav-number">3.</span> <span class="nav-text">端口转发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95"><span class="nav-number">4.</span> <span class="nav-text">远程登录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">网页服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93"><span class="nav-number">6.</span> <span class="nav-text">文件传输</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%8F%E6%98%8E%E4%BB%A3%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">透明代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%94%A8%E9%80%94"><span class="nav-number">8.</span> <span class="nav-text">其他用途</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E7%94%A8%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number"></span> <span class="nav-text">自己用的例子</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91-1"><span class="nav-number">1.</span> <span class="nav-text">端口转发</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/07/03/shell/socat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          socat
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-03 10:29:57" itemprop="dateCreated datePublished" datetime="2021-07-03T10:29:57+00:00">2021-07-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>这是一个网络工具，类似与nc等工具（netcat）。但是功能又比较的强大。我记得第一次用这种类似的软件是nc，当时是用来传输文件，怎么没有成功。从名字上看，像是socket cat的缩写。所以，用法上，就想成cat，不过它的输入跟输出，可以非常的多。而且还能fork、reuseaddr等。</p>
+<p>凡是跟网络有关的软件，我个人感觉都比较的难理解，比如，ssh -D 代理、frp、ngork、甚至nginx的复杂代理设置等。</p>
+<p>不过发现，这个软件，最多用的就是</p>
+<p><code>socat TCP4-LISTEN:44444,reuseaddr,fork, TCP4:10.0.42.1:44444</code></p>
+<a id="more"></a>
+
+
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wuheshi/article/details/107364998">socat详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/347722248">新版瑞士军刀：socat</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.dest-unreach.org/socat/">好像是英文的官网，感觉比较权威</a></li>
+</ul>
+<p>socat，是linux下的一个工具，其功能与有“瑞士军刀”之称的netcat类似，不过据说可以看做netcat的加强版。的确如此，它有一些netcat所不具备却又很有需求的功能，例如ssl连接这种。nc可能是因为比较久没有维护，确实显得有些陈旧了。</p>
+<h1 id="socat详解"><a href="#socat详解" class="headerlink" title="socat详解"></a>socat详解</h1><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> socat
+
+yum <span class="token function">install</span> -y socat<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>也可以去官网下载源码包socat link :<a target="_blank" rel="noopener" href="http://www.dest-unreach.org/socat/">http://www.dest-unreach.org/socat/</a></p>
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat <span class="token punctuation">[</span>options<span class="token punctuation">]</span> address address<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>其中这2个address就是关键，输入、输出，把它暂时想象成cat的用法，如果要解释的话，address就类似于一个文件描述符，socat所做的工作就是在2个address指定的描述符间建立一个pipe用于发送和接收数据。</p>
+<h3 id="address"><a href="#address" class="headerlink" title="address"></a>address</h3><p>address的描述就是socat的精髓所在，几个常用的描述方式如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"> <span class="token comment">#　：表示标准输入输出，可以就用一个横杠代替，这个就不用多说了吧….</span>
+-,STDIN,STDOUT
+<span class="token comment"># : 也可以是任意路径，如果是相对路径要使用./，打开一个文件作为数据流。（绝对路径、./相对路径能识别）</span>
+/var/log/syslog 
+<span class="token comment"># : 建立一个TCP连接作为数据流，TCP也可以替换为UDP   格式  TCP:ip:prot</span>
+TCP:: 
+<span class="token comment"># : 建立TCP监听端口，TCP也可以替换为UDP</span>
+TCP-LISTEN: 
+<span class="token comment"># : 执行一个程序作为数据流。</span>
+EXEC: <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<p>上面的命令，不区分大小写。TCP、EXEC等都可以小写。</p>
+<p>在这些描述后可以附加一些选项，用逗号隔开，如fork,reuseaddr,stdin,stdout,ctty等。</p>
+<blockquote>
+<p>由于地址有多种格式，所以呢，写的格式肯定要有区分度，否则它可能不知道你要干啥。如：myfile.txt不能直接拿来做地址，而是<code>./myfile.txt</code>。</p>
+<p>两个地址的数据流串起来，都可以作为输入、输出。</p>
+</blockquote>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><h3 id="直接回显"><a href="#直接回显" class="headerlink" title="直接回显"></a>直接回显</h3><p>socat当cat，从输入、输出中输出</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat - -<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="cat文件"><a href="#cat文件" class="headerlink" title="cat文件"></a>cat文件</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 写，下面执行一瞬间就结束了，文件中没有任何内容。</span>
+socat - /home/user/chuck
+<span class="token comment"># 显示文件内容</span>
+socat ./socat.txt -<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="写文件"><a href="#写文件" class="headerlink" title="写文件"></a>写文件</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"hello"</span> <span class="token operator">|</span> socat - /home/user/chuck<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="socat当netcat"><a href="#socat当netcat" class="headerlink" title="socat当netcat"></a>socat当netcat</h2><p>下面演示</p>
+<h3 id="连接远程端口"><a href="#连接远程端口" class="headerlink" title="连接远程端口"></a>连接远程端口</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> localhost <span class="token number">80</span>
+socat - TCP:localhost:80<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>自己测试：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://10.131.236.12:49416/">http://10.131.236.12:49416/</a>   地址是我搭建的nginx服务，简单的理解是一个静态页面。然后使用下面的方式，请求服务器，能正常的返回http请求内容。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat - TCP:10.131.236.12:49416
+<span class="token comment"># 随后输入下面的内容</span>
+GET / HTTP/1.1
+Host: <span class="token number">10.131</span>.236.12:49416
+Connection: keep-alive<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="监听端口"><a href="#监听端口" class="headerlink" title="监听端口"></a>监听端口</h3><p>作为一个服务端，从tcp中读内容，然后在标准的输出，输出内容。</p>
+<blockquote>
+<p>第二个地址，如果改造一下，可能还能传输文件。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> -lp localhost <span class="token number">700</span>
+socat TCP-LISTEN:700 -<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="正向shell"><a href="#正向shell" class="headerlink" title="正向shell"></a>正向shell</h3><p>输出，是执行本地的bash，而输出是作为一个tcp服务端。效果：其他用户通过tcp，连上该机器，然后直接可以执行命令，（不需要登录、加密）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> -lp localhost <span class="token number">700</span> -e /bin/bash
+socat TCP-LISTEN:700 EXEC:/bin/bash<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="反弹shell"><a href="#反弹shell" class="headerlink" title="反弹shell"></a>反弹shell</h3><p>tcp-conect第一次用，难道是表示主动连接一个地址，然后将该通道的输出，打到第二个上</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nc</span> localhost <span class="token number">700</span> -e /bin/bash
+socat tcp-connect:localhost:700 exec:<span class="token string">'bash -li'</span>,pty,stderr,setsid,sigint,sane<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="代理与转发"><a href="#代理与转发" class="headerlink" title="代理与转发"></a>代理与转发</h3><p>将本地80端口转发到远程的80端口</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat TCP-LISTEN:80,fork TCP:www.domain.org:80<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="SSL连接"><a href="#SSL连接" class="headerlink" title="SSL连接"></a>SSL连接</h2><p>其实从这里才是重点</p>
+<h3 id="SSL服务器"><a href="#SSL服务器" class="headerlink" title="SSL服务器"></a>SSL服务器</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat OPENSSL-LISTEN:443,cert<span class="token operator">=</span>/cert.pem -<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<p>需要首先生成证书文件</p>
+<p>SSL客户端</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat - OPENSSL:localhost:443<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+<h3 id="fork服务器"><a href="#fork服务器" class="headerlink" title="fork服务器"></a>fork服务器</h3><p>接下来这个例子，就是我认识socat的原因，可以将一个使用标准输入输出的单进程程序变为一个使用fork方法的多进程服务，非常方便。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat TCP-LISTEN:1234,reuseaddr,fork EXEC:./helloworld<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="不同设备的通信"><a href="#不同设备的通信" class="headerlink" title="不同设备的通信"></a>不同设备的通信</h2><h3 id="将U盘进行网络共享"><a href="#将U盘进行网络共享" class="headerlink" title="将U盘进行网络共享"></a>将U盘进行网络共享</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat -d -d /dev/ttyUSB1,raw,nonblock,ignoreeof,cr,echo<span class="token operator">=</span><span class="token number">0</span> TCP4-LISTEN:5555,reuseaddr<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>-d -d 指的是调试信息的级别</p>
+<h3 id="将终端转发到COM1"><a href="#将终端转发到COM1" class="headerlink" title="将终端转发到COM1"></a>将终端转发到COM1</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat READLINE,history<span class="token operator">=</span><span class="token environment constant">$HOME</span>/.cmd_history /dev/ttyS0,raw,echo<span class="token operator">=</span><span class="token number">0</span>,crnl<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>socat还有个readbyte的option，这样就可以当dd用了。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>因为在Linux/UNIX中，一切都是文件，无论是socket还是其他设备。所以从理论上来说，一切能够在文件层级访问的内容都可以成为socat的数据流的来源，2个address可以任意发挥，能够做到的事情还有很多。特别是其fork的功能，确实是netcat所不能比的。</p>
+<p>参考文献<br>借鉴的几篇博文：</p>
+<p>Some Useful Socat Commands</p>
+<p>Socat: A very powerful networking tool</p>
+<p>Socat Examples</p>
+<p>其他内容，可以参考socat man page</p>
+<h1 id="新版瑞士军刀：socat"><a href="#新版瑞士军刀：socat" class="headerlink" title="新版瑞士军刀：socat"></a>新版瑞士军刀：socat</h1><p>我在《<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/83959309">用好你的瑞士军刀：netcat</a>》中介绍过 nc 和它的几个实现（bsd, gnu, nmap），netcat 还有一个最重要的变种 socat （socket cat），值得花一篇完整的文章介绍一下，它不仅语义统一，功能灵活，除了完成 nc 能完成的所有任务外，还有很多实用的用法：</p>
+<h2 id="基本命令就是："><a href="#基本命令就是：" class="headerlink" title="基本命令就是："></a>基本命令就是：</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat <span class="token punctuation">[</span>参数<span class="token punctuation">]</span>  <span class="token operator">&lt;</span>地址<span class="token operator"><span class="token file-descriptor important">1</span>></span>  <span class="token operator">&lt;</span>地址<span class="token operator"><span class="token file-descriptor important">2</span>></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>使用 socat 需要提供两个地址，然后 socat 做的事情就是把这两个地址的数据流串起来，把第左边地址的输出数据传给右边，同时又把右边输出的数据传到左边。</p>
+<p>最简单的地址就是一个减号“-”，代表标准输入输出，而在命令行输入：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat - -              <span class="token comment"># 把标准输入和标准输出对接，输入什么显示什么</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>就会对接标准输入和标准输出，你键盘敲什么屏幕上就显示什么，类似无参数的 <code>cat</code> 命令。除了减号地址外，socat 还支持：<code>TCP</code>, <code>TCP-LISTEN</code>, <code>UDP</code>, <code>UDP-LISTEN</code>, <code>OPEN</code>, <code>EXEC</code>, <code>SOCKS</code>, <code>PROXY</code> 等多种地址，用于端口监听、链接，文件和进程读写，代理桥接等等。</p>
+<p>因此使用 socat 其实就是学习各类地址的定义及搭配方法，我们继续以实用例子开始。</p>
+<h2 id="网络测试"><a href="#网络测试" class="headerlink" title="网络测试"></a>网络测试</h2><p>这个类似 nc 的连通性测试，两台主机到底网络能否联通：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat - TCP-LISTEN:8080               <span class="token comment"># 终端1 上启动 server 监听 TCP</span>
+socat - TCP:localhost:8080            <span class="token comment"># 终端2 上启动 client 链接 TCP</span>
+
+<span class="token comment"># 根据上面的例子，自己在两台机器上测试。 两台机器的域名设置为h93、h就94</span>
+<span class="token comment"># 94机器上</span>
+socat - TCP-LISTEN:8080   
+<span class="token comment"># 93机器上，下面的两种顺序都行。</span>
+socat TCP:h94:8082 -
+socat - TCP:h94:8082<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在终端 1 上输入第一行命令作为服务端，并在终端 2 上输入第二行命令作为客户端去链接。</p>
+<p>联通后在终端2上随便输入点什么，就能显示在终端1上，反之亦然，因为两条命令都是把标准输入输出和网络串起来，因此把两个地址交换一下也是等价的：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:8080 -               <span class="token comment"># 终端1 上启动 server 监听 TCP</span>
+socat TCP:localhost:8080 -            <span class="token comment"># 终端2 上启动 client 链接 TCP</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>因为 socat 就是把左右两个地址的输入输出接在一起，因此颠倒左右两个地址影响不大，除非前面指明 <code>-u</code> 或者 <code>-U</code> 显示指明数据“从左到右”还是“从右到左”。</p>
+<p>同 netcat 一样，如果客户端结束的话，服务端也会结束，但是 socat 还可以加额外参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat - TCP-LISTEN:8080,fork,reuseaddr      <span class="token comment"># 终端1 上启动 server</span>
+socat - TCP:localhost:8080                  <span class="token comment"># 终端2 上启动 client</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>服务端在 <code>TCP-LISTEN</code> 地址后面加了 <code>fork</code> 的参数后，就能同时应答多个链接过来的客户端，每个客户端会 fork 一个进程出来进行通信，加上 <code>reuseaddr</code> 可以防止链接没断开玩无法监听的问题。</p>
+<p>刚才也说了使用 socat 主要就是学习描述各种地址，那么想测试 UDP 的话修改一下就行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat - UDP-LISTEN:8080               <span class="token comment"># 终端1 上启动 server 监听 UDP</span>
+socat - UDP:localhost:8080            <span class="token comment"># 终端2 上启动 client 链接 UDP</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>即可进行测试。</p>
+<h2 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h2><p>在主机上监听一个 8080 端口，将 8080 端口所有流量转发给远程机器的 80 端口：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:8080,fork,reuseaddr  TCP:192.168.1.3:80<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>那么连到这台机器上 8080 端口的所有链接，相当于链接了 192.168.1.3 这台机器的 80 端口，命令中交换左右两个地址一样是等价的。</p>
+<p>这里 socat 比 nc 强的地方就体现出来了，nc 做转发时只能转发 1 次，第一条链接 accept 并且关闭以后 nc 就退出了，无法接受新链接，因此 nc 只适合单次使用。而 socat 加上 <code>fork</code> 以后，每次 accept 一个链接都会 fork 出一份来不影响接收其他的新连接，这样 socat 就可以当一个端口转发服务，一直启动在那里。还可以用 supervisor 托管起来，开机自动启动。</p>
+<p>还可以用这个功能暴露一些 127.0.0.1 的端口出来供外面访问，比起 nc 的临时救急使用一下的场景，socat 是可以当一个服务长期运行的。</p>
+<h2 id="远程登录"><a href="#远程登录" class="headerlink" title="远程登录"></a>远程登录</h2><p>地址除了 <code>TCP</code> 和 <code>TCP-LISTEN</code> 外，另外一个重要的地址类型就是 <code>EXEC</code> 可以执行程序并且把输入输出和另外一个地址串起来，比如服务端：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:8080,fork,reuseaddr  EXEC:/usr/bin/bash    <span class="token comment"># 服务端提供 shell</span>
+socat - TCP:localhost:8080                                  <span class="token comment"># 客户端登录</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>完善一点可以加些参数：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:8080,fork,reuseaddr  EXEC:/usr/bin/bash,pty,stderr   <span class="token comment"># 服务端</span>
+socat file:<span class="token variable"><span class="token variable">`</span><span class="token function">tty</span><span class="token variable">`</span></span>,raw,echo<span class="token operator">=</span><span class="token number">0</span> TCP:localhost:8080                        <span class="token comment"># 客户端</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>这样可以把 bash 的标准错误重定向给标准输出，并且用终端模式运行。客户端可以像刚才那样登录，但是还可以更高级点，用 tty 的方式访问，这样基本就得到了一个全功能的交互式终端了，可以在里面运行 vim, emacs 之类的程序。</p>
+<p>更高级一点，使用 root 运行：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:23,reuseaddr,fork,crlf exec:/bin/login,pty,setsid,setpgid,stderr,ctty<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>相当于在 23 端口启动了一个 telnetd 的服务，可以用 telnet 客户端来链接。</p>
+<h2 id="网页服务"><a href="#网页服务" class="headerlink" title="网页服务"></a>网页服务</h2><p>首先编写一个脚本：<a href="https://link.zhihu.com/?target=http://web.sh/">web.sh</a></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token shebang important">#! /bin/bash</span>
+<span class="token builtin class-name">echo</span> -e -n <span class="token string">"HTTP/1.0 200<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>"</span>
+<span class="token builtin class-name">echo</span> -e -n <span class="token string">"Content-Type:text/html<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>"</span>
+<span class="token builtin class-name">echo</span> -e -n <span class="token string">"<span class="token entity" title="\r">\r</span><span class="token entity" title="\n">\n</span>"</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">"&lt;html>&lt;body>"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"now is <span class="token variable"><span class="token variable">$(</span><span class="token function">date</span><span class="token variable">)</span></span>"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"&lt;/body>&lt;/html>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里我们用 <code>SYSTEM</code> 地址类型代替原来的 <code>EXEC</code> 执行命令，因为可以后面写 shell 命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:8080,fork,reuseaddr SYSTEM:<span class="token string">"bash web.sh"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>这时你就可以用浏览器访问：<a href="https://link.zhihu.com/?target=http://localhost:8080/">http://localhost:8080</a> 的端口了。</p>
+<p>相当于每次请求的时候，socat 都会 fork 一个进程出来然后执行后面的命令，启动上面的脚本程序，并且将脚本的标准输入输出重定向给网络链接。</p>
+<p>相当于原始的 cgi 程序了，我们可以用 shell 直接完成一个 cgi 程序并由 socat 提供 cgi 服务，偶然需要暴露一些服务器信息的话，可以这样弄一下，返回的 html 里搞一个自动刷新，然后打开浏览器，实时监控服务器的情况。</p>
+<h2 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h2><p>临时需要传输下文件，无需 scp：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat -u TCP-LISTEN:8080 open:record.log,create    <span class="token comment"># 服务端接收文件</span>
+socat -u open:record.log TCP:localhost:8080        <span class="token comment"># 客户端发送文件</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>这里用了 <code>-u</code> 参数，意思是数据从左边的地址单向传输到右边的地址，大写 <code>-U</code> 的话是从右边单向传输到左边。</p>
+<h2 id="透明代理"><a href="#透明代理" class="headerlink" title="透明代理"></a>透明代理</h2><p>第一句是用于 socks 代理的，第二句用于 HTTP 代理：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:<span class="token operator">&lt;</span>本地端口<span class="token operator">></span>,reuseaddr,fork SOCKS:<span class="token operator">&lt;</span>代理服务器IP<span class="token operator">></span>:<span class="token operator">&lt;</span>远程地址<span class="token operator">></span>:<span class="token operator">&lt;</span>远程端口<span class="token operator">></span>,socksport<span class="token operator">=</span><span class="token operator">&lt;</span>代理服务器端口<span class="token operator">></span>
+socat TCP-LISTEN:<span class="token operator">&lt;</span>本地端口<span class="token operator">></span>,reuseaddr,fork PROXY:<span class="token operator">&lt;</span>代理服务器IP<span class="token operator">></span>:<span class="token operator">&lt;</span>远程地址<span class="token operator">></span>:<span class="token operator">&lt;</span>远程端口<span class="token operator">></span>,proxyport<span class="token operator">=</span><span class="token operator">&lt;</span>代理服务器端口<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>他们都可以把本地端口的请求转换成使用代理服务器访问的请求，比如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">socat TCP-LISTEN:1234,fork SOCKS4A:127.0.0.1:google.com:80,socksport<span class="token operator">=</span><span class="token number">5678</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>那么链接本地的 1234 端口，相当于通过代理服务器 127.0.0.1:5678 去链接 <a href="https://link.zhihu.com/?target=http://google.com/">google.com</a> 的 80 端口了，这里用了 <code>SOCKS4A</code> ，后面 <code>A</code> 的意思是让代理服务器去解析域名。</p>
+<h2 id="其他用途"><a href="#其他用途" class="headerlink" title="其他用途"></a>其他用途</h2><p>还有很多高级用法，比如用 socat 一键开启 vpn 网络，使用 socat 将 ssl 流量转化为裸的 tcp 流量等等，可以参考官方文档。不难发现，上面几个用法都比原始的 nc 要强很多，但是 nc 更小巧一些，也更容易获得：不管是路由器上，还是 busybox 的内置命令中，还是 nmap 工具包，都有 nc 的存在。</p>
+<p>所以很多时候条件限制可能你只有 netcat 可以使用，那么就用 netcat，其他时候看你哪个用的更熟练一些就用哪个。不管端口转发还是传文件，还是透明代理，每项其实都有专业的软件可以用，但 netcat/socat 用熟了以后，他们的灵活度非常大，能够搭配组合出千变万化的功能来，在你只是偶尔需要处理某件事情，又不想或者无法安装专用软件的情况下，完全可以使用这两个工具完成很多任务。</p>
+<p>所以，socat / netcat 还有 tcpdump 一起，可以说是最值得掌握的三条网络命令。</p>
+<h1 id="自己用的例子"><a href="#自己用的例子" class="headerlink" title="自己用的例子"></a>自己用的例子</h1><h2 id="端口转发-1"><a href="#端口转发-1" class="headerlink" title="端口转发"></a>端口转发</h2><p>执行socat的机器，作为跳板机，代理远程的<code>10.0.42.1</code>机器。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">socat TCP4-LISTEN:44444,reuseaddr,fork  TCP4:10.0.42.1:44444<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<p>下面的反向代理代码还没有想好。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 服务端</span>
+socat TCP4-LISTEN:44444,reuseaddr,fork  TCP:3333
+<span class="token comment"># 本地</span>
+socat TCP4-CONNECT:110.20.26.94:44444,reuseaddr,fork TCP4:localhost:22<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/01/openapi/openapi/" rel="prev" title="openapi">
+                  <i class="fa fa-chevron-left"></i> openapi
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/06/docker/php/%E6%90%AD%E5%BB%BAphp%E7%A0%94%E5%8F%91%E7%8E%AF%E5%A2%83/" rel="next" title="搭建php研发环境">
+                  搭建php研发环境 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

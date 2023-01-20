@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="php封装pdo实例以及pdo长连接的优缺点 这篇文章，感觉价值比较高，而且作者的其他文章也还不错。所以，保存起来。 原文连接： https:&#x2F;&#x2F;blog.csdn.net&#x2F;LJFPHP&#x2F;article&#x2F;details&#x2F;105105606">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php封装pdo实例以及pdo长连接的优缺点">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/07/30/php/php%E5%B0%81%E8%A3%85pdo%E5%AE%9E%E4%BE%8B%E4%BB%A5%E5%8F%8Apdo%E9%95%BF%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="php封装pdo实例以及pdo长连接的优缺点 这篇文章，感觉价值比较高，而且作者的其他文章也还不错。所以，保存起来。 原文连接： https:&#x2F;&#x2F;blog.csdn.net&#x2F;LJFPHP&#x2F;article&#x2F;details&#x2F;105105606">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-30T15:05:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.000Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/07/30/php/php%E5%B0%81%E8%A3%85pdo%E5%AE%9E%E4%BE%8B%E4%BB%A5%E5%8F%8Apdo%E9%95%BF%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>php封装pdo实例以及pdo长连接的优缺点 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#php%E5%B0%81%E8%A3%85pdo%E5%AE%9E%E4%BE%8B%E4%BB%A5%E5%8F%8Apdo%E9%95%BF%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">php封装pdo实例以及pdo长连接的优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9pdo"><span class="nav-number">1.2.</span> <span class="nav-text">二、为什么选择pdo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81pdo%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.</span> <span class="nav-text">三、pdo的长连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFpdo%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、什么是pdo的长连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%AF%B9nginx%E6%97%A0%E6%95%88%E5%90%97"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、长连接对nginx无效吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81php-fpm%E4%B8%8B%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、php-fpm下的长连接测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81%E9%95%BF%E8%BF%9E%E6%8E%A5%E5%AF%B9%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、长连接对事务的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.5.</span> <span class="nav-text">5、总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81pdo%E9%83%A8%E5%88%86demo%E7%9A%84%E5%B0%81%E8%A3%85"><span class="nav-number">1.4.</span> <span class="nav-text">四、pdo部分demo的封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%96%AD%E7%BA%BF%E9%87%8D%E8%BF%9E%E6%9C%BA%E5%88%B6"><span class="nav-number">1.4.1.</span> <span class="nav-text">1、断线重连机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E8%BD%AC%E5%8C%96php-warnings%E4%B8%BAtry%E2%80%A6catch%E5%8F%AF%E6%8D%95%E8%8E%B7%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">1.4.2.</span> <span class="nav-text">2、转化php warnings为try…catch可捕获的错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E6%9E%90%E6%9E%84%E6%96%B9%E6%B3%95%E5%9B%9E%E6%94%B6%E8%B5%84%E6%BA%90"><span class="nav-number">1.4.3.</span> <span class="nav-text">3、析构方法回收资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E3%80%81query%E7%9A%84%E6%97%B6%E5%80%99ping%E4%B8%80%E4%B8%8B"><span class="nav-number">1.4.4.</span> <span class="nav-text">4、query的时候ping一下</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%E3%80%81%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80"><span class="nav-number">1.4.5.</span> <span class="nav-text">5、下载地址</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/07/30/php/php%E5%B0%81%E8%A3%85pdo%E5%AE%9E%E4%BE%8B%E4%BB%A5%E5%8F%8Apdo%E9%95%BF%E8%BF%9E%E6%8E%A5%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          php封装pdo实例以及pdo长连接的优缺点
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-07-30 15:05:00" itemprop="dateCreated datePublished" datetime="2020-07-30T15:05:00+00:00">2020-07-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="php封装pdo实例以及pdo长连接的优缺点"><a href="#php封装pdo实例以及pdo长连接的优缺点" class="headerlink" title="php封装pdo实例以及pdo长连接的优缺点"></a>php封装pdo实例以及pdo长连接的优缺点</h1><blockquote>
+<p>这篇文章，感觉价值比较高，而且作者的其他文章也还不错。所以，保存起来。</p>
+<p>原文连接： <a target="_blank" rel="noopener" href="https://blog.csdn.net/LJFPHP/article/details/105105606">https://blog.csdn.net/LJFPHP/article/details/105105606</a> </p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>   最近需要写脚本来实现崩溃日志的入库，不出所料又是脱离于框架的，那么行吧，咱们只能自己封装数据库相关操作了。博主这里选择了封装<code>pdo</code>操作数据库相关。</p>
+<h2 id="二、为什么选择pdo"><a href="#二、为什么选择pdo" class="headerlink" title="二、为什么选择pdo"></a>二、为什么选择pdo</h2><p>   众所周知的，<code>php</code>在早期的时候是带有<code>mysql</code>扩展的，但是后来由于过于古老缺失了<code>mysql</code>的新特性，因此主键没落。</p>
+<p>   从<code>php5</code>开始，更建议大家使用<code>mysqli</code>扩展，这个是<code>mysql</code>扩展的增强版，是一个面向对象的<code>MySQL</code>接口，更容易使用。缺点是只能操作<code>mysql</code>，不够强大。</p>
+<p>   还有就是<code>pdo</code>扩展了，这个是最丰富的的一个扩展，支持多种数据库，重要的是，在安全上是比其他两种扩展都要强的，通过使用<code>prepared</code>预处理更是有效的防止<code>sql</code>注入。因此，博主这里选择了封装<code>pdo</code>相关的操作。</p>
+<h2 id="三、pdo的长连接"><a href="#三、pdo的长连接" class="headerlink" title="三、pdo的长连接"></a>三、pdo的长连接</h2><h3 id="1、什么是pdo的长连接"><a href="#1、什么是pdo的长连接" class="headerlink" title="1、什么是pdo的长连接"></a>1、什么是pdo的长连接</h3><p>   长连接顾名思义就是一直保持连接，相对于平时的短连接，每次请求都会重新创建链接来说，长连接可以有效的减少创建的过程，可以更好的节省性能。</p>
+<p>在操作上是在连接数据库的时候，多加一个参数：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PDO</span><span class="token punctuation">(</span><span class="token variable">$dsn</span><span class="token punctuation">,</span> <span class="token variable">$username</span><span class="token punctuation">,</span> <span class="token variable">$passwd</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token constant">PDO</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">ATTR_PERSISTENT</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token boolean constant">true</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>后面的<code>PDO::ATTR_PERSISTENT =&gt; true</code> 就是开启长连接的方法。</p>
+<h3 id="2、长连接对nginx无效吗"><a href="#2、长连接对nginx无效吗" class="headerlink" title="2、长连接对nginx无效吗"></a>2、长连接对nginx无效吗</h3><p>   博主在搜索长连接相关知识的时候，看到一篇文章，结论是长连接仅适用于apache，不适用于<code>nginx</code>，这是真的吗？</p>
+<pre class="line-numbers language-none"><code class="language-none">参考博文地址：https:&#x2F;&#x2F;www.cnblogs.com&#x2F;wpjamer&#x2F;articles&#x2F;7106389.html<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>   大致结论是：长连接更多的是针对于<code>apache</code>的，因为<code>apache</code>维护一个进程池，开启了<code>apache mpm</code>功能之后，<code>apache</code>会默认维持一个进程池，<code>mysql</code>长连接之后的连接，并没有作为<code>socet</code>连接关闭，而是作为一个不释放的东西，放进了进程池/线程池里面去。</p>
+<p>   而对于<code>nginx</code>来说，长连接是无效的，脚本执行结束则释放资源？</p>
+<h3 id="3、php-fpm下的长连接测试"><a href="#3、php-fpm下的长连接测试" class="headerlink" title="3、php-fpm下的长连接测试"></a>3、php-fpm下的长连接测试</h3><p>这里前辈已经测试过了，咱们给出前辈的地址，大家有兴趣的可以看看</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">参考博文地址：https<span class="token punctuation">:</span><span class="token comment">//hacpai.com/article/1526490593632</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>结论：</strong><br>   事实证明<code>php-fpm</code>是可以实现长连接的，只是如果该进程空闲的话，会造成资源浪费。</p>
+<p>   <code>php-fpm</code>的配置文件可以考虑设置<code>pm.max_requests = 1000</code>，代表每一个子进程的最大请求服务数量，如果超过了这个值，该子进程会被自动重启。</p>
+<p>   比如<code>max_requests</code>这个参数，如果设置很大的话，那这个子进程要运行很多次才会重启，假如这个请求发生了错误或者内存泄漏，那么这个值设置很大是不合适的。但如果请求没有问题，这个值设置小的话就会频繁的重启，这样也会碰到不少<code>502</code>的问题，所以要仁者见仁，智者见智的设置了，这里初始化设置<code>1000</code>，如果测试没有内存泄漏等问题，可以再大一些。</p>
+<h3 id="4、长连接对事务的影响"><a href="#4、长连接对事务的影响" class="headerlink" title="4、长连接对事务的影响"></a>4、长连接对事务的影响</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php">参考博文地址：https<span class="token punctuation">:</span><span class="token comment">//www.zhihu.com/question/62603122</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>总结：</strong> 如果业务并发比较大且带有事务，不建议使用长连接的方式。</p>
+<h3 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h3><p>   博主在不断的搜索中，发现长连接要发挥出最佳性能始终是避不开连接池这点的，而php恰恰又不能很好的实现连接池，这点确实是有点小遗憾。</p>
+<p>   整体来说在<code>php</code>中是暂时无法配置和<code>mysql</code>的完美连接池的，在业务比较复杂的地方，还是谨慎试用长连接，每个连接都是1个线程，会造成大量的资源浪费。</p>
+<p>   如果是某些业务需要持续的数据库操作，比如提交日志接口等，那么是可以考虑打开长连接的，记得设置<code>max_requests</code>来定量关闭<code>php-fpm</code>连接，<code>fpm</code>关闭之后也会自动释放<code>mysql</code>的连接。</p>
+<p>   还有<code>pm.max_spare_servers</code>设置服务器空闲时最大<code>php-fpm</code>进程数量。</p>
+<p>例如： <code>pm.max_spare_servers = 25</code> 如果空闲时，会检查进程数，多于<code>25</code>个了，就会关闭几个，达到<code>25</code>个的状态。</p>
+<p>   擅长<code>swoole</code>的同学，可以参考这篇文章：<br><a target="_blank" rel="noopener" href="http://rango.swoole.com/archives/265">基于swoole扩展实现真正的PHP数据库连接池</a></p>
+<h2 id="四、pdo部分demo的封装"><a href="#四、pdo部分demo的封装" class="headerlink" title="四、pdo部分demo的封装"></a>四、pdo部分demo的封装</h2><p>   首先这部分博主是参考了一个网友的封装，<code>github</code>地址如下：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">https<span class="token punctuation">:</span><span class="token comment">//github.com/nadirvishun/php-pdo-class</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>   这个网友基本的增删改查都封装好了，而且都有参数预处理，安全性还是可以的。不过既然作为一个基准的类，还是缺少一些东西。</p>
+<h3 id="1、断线重连机制"><a href="#1、断线重连机制" class="headerlink" title="1、断线重连机制"></a>1、断线重连机制</h3><p>例如重连函数：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">/**
+ * @params:重连函数，上限3次
+ * @date:2020/3/18
+ * @time:17:03
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">customConnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PDO</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">config</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'dsn'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">config</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'username'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">config</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'password'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">config</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'params'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">setAttribute</span><span class="token punctuation">(</span><span class="token constant">PDO</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">ATTR_ERRMODE</span><span class="token punctuation">,</span> <span class="token constant">PDO</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">ERRMODE_EXCEPTION</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//需要将错误处理模式变成异常模式</span>
+        <span class="token keyword">return</span> <span class="token boolean constant">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>Exception <span class="token variable">$e</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">stripos</span><span class="token punctuation">(</span><span class="token variable">$e</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'MySQL server has gone away'</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token boolean constant">false</span> <span class="token operator">||</span> <span class="token function">stripos</span><span class="token punctuation">(</span><span class="token variable">$e</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token single-quoted-string string">' bytes failed with errno=10053'</span><span class="token punctuation">)</span> <span class="token operator">!==</span><span class="token boolean constant">false</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">tryNums</span><span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">tryNums</span> <span class="token operator">></span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token boolean constant">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">customConnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">throw_exception</span><span class="token punctuation">(</span><span class="token variable">$e</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean constant">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="2、转化php-warnings为try…catch可捕获的错误"><a href="#2、转化php-warnings为try…catch可捕获的错误" class="headerlink" title="2、转化php warnings为try…catch可捕获的错误"></a>2、转化php warnings为try…catch可捕获的错误</h3><p>   这步原因是长连接会频繁的造成<code>mysql gone away</code>错误，而这个错误是<code>php</code> 的<code>warnings</code>级别错误，<code>try..catch</code>根本就捕获不到，所以博主这里自定义错误处理函数来处理。</p>
+<p>   这部分是转化<code>php</code>的<code>warnings</code>错误为<code>try..catch</code>可以捕获的<code>error</code>错误，关于<code>php</code>的报错机制以及错误处理这块，咱们下篇再讨论。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">//自定义warnings处理函数</span>
+<span class="token function">set_error_handler</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'customException'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//拿到warnngs错误之后，转化为error错误抛出，这样就可以被try..catch捕获</span>
+<span class="token keyword">function</span> <span class="token function">customException</span><span class="token punctuation">(</span> <span class="token variable">$error_no</span><span class="token punctuation">,</span> <span class="token variable">$error_msg</span><span class="token punctuation">,</span> <span class="token variable">$error_file</span><span class="token punctuation">,</span> <span class="token variable">$error_line</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>Exception</span><span class="token punctuation">(</span><span class="token variable">$error_msg</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token constant">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//throw new \Exception($error_msg);</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="3、析构方法回收资源"><a href="#3、析构方法回收资源" class="headerlink" title="3、析构方法回收资源"></a>3、析构方法回收资源</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">/**
+ * destruct 关闭数据库连接
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">destruct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">pdo</span> <span class="token operator">=</span> <span class="token constant">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="4、query的时候ping一下"><a href="#4、query的时候ping一下" class="headerlink" title="4、query的时候ping一下"></a>4、query的时候ping一下</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">query</span><span class="token punctuation">(</span><span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token constant">null</span><span class="token punctuation">,</span> <span class="token variable">$param</span> <span class="token operator">=</span> <span class="token constant">null</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#123;</span>
+      <span class="token comment">//检测连接是否活跃</span>
+      <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">pdo_ping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment">//判断之前是否有结果集</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">PDOStatement</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+          <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">free</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      xxxxxxxxxx
+      <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="5、下载地址"><a href="#5、下载地址" class="headerlink" title="5、下载地址"></a>5、下载地址</h3><p>   这四步完善之后，这个pdo的类还是可以用的，大家需要的话可以去百度云上下载。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">链接<span class="token punctuation">:</span> https<span class="token punctuation">:</span><span class="token comment">//pan.baidu.com/s/1Siz_bKlhEIVNV99Y0zTzqw 提取码: ebqx</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><strong>最近这段时间挺颓废的，不过疫情已经过去，春天已经到来，是时候奋斗了少年，奥利给！</strong></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/07/29/mysql/%E5%88%86%E5%8C%BA%E8%A1%A8/" rel="prev" title="分区表">
+                  <i class="fa fa-chevron-left"></i> 分区表
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/07/30/docker/%E6%90%AD%E5%BB%BAdocker%E3%80%81mysql8%E7%8E%AF%E5%A2%83/" rel="next" title="搭建docker、mysql8环境">
+                  搭建docker、mysql8环境 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

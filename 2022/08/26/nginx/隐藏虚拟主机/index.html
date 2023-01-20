@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="关于nginx配置隐藏的想法。 一般公司的内部服务，虽然暴露在公网上，但是呢，其目标群体并不是大众，所以，有些服务还是希望被隐藏起来。一般做法是，为一个ip申请多个域名，而该ip又暴露多个端口。通过域名 + 端口的形式，增加了访问对应服务的难度。 而我自己，有类似的需求。因为自己的云主机，无法绑定域名，故，采用了多端口。但多端口，而又没有域名，实际上并没有任何隐藏效果。故想通过其他方式，来实现目的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="隐藏虚拟主机">
+<meta property="og:url" content="https://blog.chaofml.cn/2022/08/26/nginx/%E9%9A%90%E8%97%8F%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="关于nginx配置隐藏的想法。 一般公司的内部服务，虽然暴露在公网上，但是呢，其目标群体并不是大众，所以，有些服务还是希望被隐藏起来。一般做法是，为一个ip申请多个域名，而该ip又暴露多个端口。通过域名 + 端口的形式，增加了访问对应服务的难度。 而我自己，有类似的需求。因为自己的云主机，无法绑定域名，故，采用了多端口。但多端口，而又没有域名，实际上并没有任何隐藏效果。故想通过其他方式，来实现目的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-26T13:39:35.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.980Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="default">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2022/08/26/nginx/%E9%9A%90%E8%97%8F%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>隐藏虚拟主机 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.</span> <span class="nav-text">隐藏版本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87cookie%E6%9D%A5%E5%88%87%E6%8D%A2vhost"><span class="nav-number">1.2.</span> <span class="nav-text">通过cookie来切换vhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Eif"><span class="nav-number">1.3.</span> <span class="nav-text">关于if</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2022/08/26/nginx/%E9%9A%90%E8%97%8F%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          隐藏虚拟主机
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-08-26 13:39:35" itemprop="dateCreated datePublished" datetime="2022-08-26T13:39:35+00:00">2022-08-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/default/" itemprop="url" rel="index"><span itemprop="name">default</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于nginx配置隐藏的想法。</p>
+<p>一般公司的内部服务，虽然暴露在公网上，但是呢，其目标群体并不是大众，所以，有些服务还是希望被隐藏起来。一般做法是，为一个ip申请多个域名，而该ip又暴露多个端口。通过域名 + 端口的形式，增加了访问对应服务的难度。</p>
+<p>而我自己，有类似的需求。因为自己的云主机，无法绑定域名，故，采用了多端口。但多端口，而又没有域名，实际上并没有任何隐藏效果。故想通过其他方式，来实现目的。</p>
+<p>替代域名的方式，可以有cookie/header等等方式。</p>
+<p>以下简单叙述实现过程。</p>
+<a id="more"></a>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/40767711">https://www.zhihu.com/question/40767711</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.john3.cn/2019/02/12/diary/d20190212/">http://www.john3.cn/2019/02/12/diary/d20190212/</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yfx000/article/details/110886364">https://blog.csdn.net/yfx000/article/details/110886364</a></li>
+</ul>
+<h3 id="隐藏版本信息"><a href="#隐藏版本信息" class="headerlink" title="隐藏版本信息"></a>隐藏版本信息</h3><pre class="line-numbers language-none"><code class="language-none">nginx 隐藏版本   http 块下写
+server_tokens      off;
+
+php.ini   隐藏php的信息
+expose_php &#x3D; On<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="通过cookie来切换vhost"><a href="#通过cookie来切换vhost" class="headerlink" title="通过cookie来切换vhost"></a>通过cookie来切换vhost</h3><p>nginx配置如下：</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">location</span> <span class="token operator">/</span> <span class="token punctuation">&#123;</span>
+           <span class="token keyword">proxy_set_header</span> Host <span class="token variable">$http_host</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_set_header</span>   X<span class="token operator">-</span>Real<span class="token operator">-</span>IP <span class="token variable">$remote_addr</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_set_header</span>   X<span class="token operator">-</span>Forwarded<span class="token operator">-</span>For <span class="token variable">$proxy_add_x_forwarded_for</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_connect_timeout</span> <span class="token number">30</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_send_timeout</span> <span class="token number">60</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_read_timeout</span> <span class="token number">60</span><span class="token punctuation">;</span>
+           <span class="token keyword">proxy_buffering</span> on<span class="token punctuation">;</span>
+           <span class="token keyword">proxy_buffer_size</span> <span class="token number">32</span>k<span class="token punctuation">;</span>
+           <span class="token keyword">proxy_buffers</span> <span class="token number">4</span> <span class="token number">128</span>k<span class="token punctuation">;</span>
+           <span class="token keyword">proxy_busy_buffers_size</span> <span class="token number">256</span>k<span class="token punctuation">;</span>
+           <span class="token keyword">proxy_max_temp_file_size</span> <span class="token number">256</span>k<span class="token punctuation">;</span>
+       
+       <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token variable">$cookie_hostname</span> <span class="token operator">~</span><span class="token operator">*</span> typecho <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+           <span class="token keyword">proxy_pass</span> <span class="token keyword">http</span><span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span><span class="token number">127.0</span><span class="token number">.0</span><span class="token number">.1</span><span class="token punctuation">:</span><span class="token number">40198</span><span class="token punctuation">;</span>
+       <span class="token punctuation">&#125;</span>
+           <span class="token comment">#proxy_redirect default;</span>
+   <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>请求方式：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">curl</span> -v  --cookie <span class="token string">"hostname=typecho"</span> http://1.15.47.218/<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>谷歌浏览器通过，手动修改cookie方式，确实能达到目的。</p>
+<p>后续通过php代码等，来实现cookie的设置。 </p>
+<h3 id="关于if"><a href="#关于if" class="headerlink" title="关于if"></a>关于if</h3><p>if语句块比较特殊（挑剔），有较多的指令，不能放在其中。比如：</p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token variable">$cookie_hostname</span> <span class="token operator">~</span><span class="token operator">*</span> typecho <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">deny</span> all<span class="token punctuation">;</span>   <span class="token comment"># 该块内不能有该指令</span>
+<span class="token punctuation">&#125;</span>
+
+下面的这些指令，均不能放在<span class="token keyword">if</span>块中。
+
+<span class="token keyword">proxy_set_header</span> Host <span class="token variable">$http_host</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_set_header</span>   X<span class="token operator">-</span>Real<span class="token operator">-</span>IP <span class="token variable">$remote_addr</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_set_header</span>   X<span class="token operator">-</span>Forwarded<span class="token operator">-</span>For <span class="token variable">$proxy_add_x_forwarded_for</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_connect_timeout</span> <span class="token number">30</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_send_timeout</span> <span class="token number">60</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_read_timeout</span> <span class="token number">60</span><span class="token punctuation">;</span>
+<span class="token keyword">proxy_buffering</span> on<span class="token punctuation">;</span>
+<span class="token keyword">proxy_buffer_size</span> <span class="token number">32</span>k<span class="token punctuation">;</span>
+<span class="token keyword">proxy_buffers</span> <span class="token number">4</span> <span class="token number">128</span>k<span class="token punctuation">;</span>
+<span class="token keyword">proxy_busy_buffers_size</span> <span class="token number">256</span>k<span class="token punctuation">;</span>
+<span class="token keyword">proxy_max_temp_file_size</span> <span class="token number">256</span>k<span class="token punctuation">;</span>
+<span class="token keyword">proxy_redirect</span> default<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token keyword">proxy_redirect</span> default<span class="token punctuation">;</span>  <span class="token comment"># 不太明白此指令的意思，但其必须要放到  proxy_pass后面。</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/default/" rel="tag"># default</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/08/19/redis/redis%E6%95%99%E7%A8%8B/" rel="prev" title="redis教程">
+                  <i class="fa fa-chevron-left"></i> redis教程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/29/python/ipyparallel/" rel="next" title="ipyparallel">
+                  ipyparallel <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

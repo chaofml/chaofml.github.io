@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="虽然不把shell当作主力的编程语言，但是在任务中，难免不会用到shell，尤其是拿shell来做为各种程序之间的粘合剂，或者那shell直接做一些简单的任务，或者定时任务。 shell功能强大，代码简省，如果写的合适，shell的性能不输其他专门的脚本语言，但是呢，遇到问题，也是头疼。故，本文的目的是，尽可能多的记录工作中遇到的问题。方便，自己。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="error">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/08/11/shell/error/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="虽然不把shell当作主力的编程语言，但是在任务中，难免不会用到shell，尤其是拿shell来做为各种程序之间的粘合剂，或者那shell直接做一些简单的任务，或者定时任务。 shell功能强大，代码简省，如果写的合适，shell的性能不输其他专门的脚本语言，但是呢，遇到问题，也是头疼。故，本文的目的是，尽可能多的记录工作中遇到的问题。方便，自己。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-11T13:52:18.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.021Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/08/11/shell/error/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>error | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%97%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">问题列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-1-%E8%A7%A3%E6%9E%90"><span class="nav-number">1.1.</span> <span class="nav-text">{0,1}解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crontab-e%E5%87%BA%E9%94%99"><span class="nav-number">1.2.</span> <span class="nav-text">crontab -e出错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heredoc"><span class="nav-number">1.3.</span> <span class="nav-text">heredoc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%90%8D%E4%B8%AD%E6%9C%89%E7%A9%BA%E6%A0%BC"><span class="nav-number">1.4.</span> <span class="nav-text">文件名中有空格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#echo-%E9%97%AE%E9%A2%98"><span class="nav-number">1.5.</span> <span class="nav-text">echo * 问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4-%E9%94%99%E8%AF%AF2"><span class="nav-number">1.6.</span> <span class="nav-text">命令 * 错误2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%BC%95%E5%8F%B7%E4%BF%9D%E6%8A%A4"><span class="nav-number">1.7.</span> <span class="nav-text">单引号保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unix%E6%8D%A2%E8%A1%8C"><span class="nav-number">1.8.</span> <span class="nav-text">unix换行</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/08/11/shell/error/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          error
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-11 13:52:18" itemprop="dateCreated datePublished" datetime="2021-08-11T13:52:18+00:00">2021-08-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>虽然不把shell当作主力的编程语言，但是在任务中，难免不会用到shell，尤其是拿shell来做为各种程序之间的粘合剂，或者那shell直接做一些简单的任务，或者定时任务。</p>
+<p>shell功能强大，代码简省，如果写的合适，shell的性能不输其他专门的脚本语言，但是呢，遇到问题，也是头疼。故，本文的目的是，尽可能多的记录工作中遇到的问题。方便，自己。</p>
+<a id="more"></a>
+
+<h2 id="问题列表"><a href="#问题列表" class="headerlink" title="问题列表"></a>问题列表</h2><h3 id="0-1-解析"><a href="#0-1-解析" class="headerlink" title="{0,1}解析"></a>{0,1}解析</h3><blockquote>
+<p>sh myshell.sh 最好自己指定使用哪个shell，可能不同的shell之间略微有差别。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">db</span> <span class="token keyword">in</span> <span class="token punctuation">&#123;</span><span class="token number">0,1</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token keyword">for</span> <span class="token for-or-select variable">table</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">0</span> <span class="token number">1</span><span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+        <span class="token assign-left variable">outsql</span><span class="token operator">=</span>marked_ship_<span class="token variable">$db_</span><span class="token variable">$table</span>.sql
+        <span class="token builtin class-name">echo</span> <span class="token string">"ordercenter_order_tag_"</span><span class="token variable">$db</span> marked_ship_<span class="token variable">$table</span> to <span class="token variable">$outsql</span>
+    <span class="token keyword">done</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>宿主机上直接执行<code>sh mysh.sh </code>   实际<code>/usr/bin/sh</code></p>
+<blockquote>
+<p>ordercenter_order_tag_0 marked_ship_0 to marked_ship_0.sql<br>ordercenter_order_tag_0 marked_ship_1 to marked_ship_1.sql<br>ordercenter_order_tag_1 marked_ship_0 to marked_ship_0.sql<br>ordercenter_order_tag_1 marked_ship_1 to marked_ship_1.sql</p>
+</blockquote>
+<p>docker  mysql 执行<code>sh mysh.sh</code>     实际<code>/bin/sh</code></p>
+<blockquote>
+<p>ordercenter_order_tag_{0,1} marked_ship_0 to marked_ship_0.sql<br>ordercenter_order_tag_{0,1} marked_ship_1 to marked_ship_1.sql</p>
+</blockquote>
+<p>直接bash执行   方一致。貌似因为执行的</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token environment constant">$SHELL</span>
+<span class="token function">which</span> <span class="token function">sh</span>   <span class="token comment"># 查看哪个sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="crontab-e出错"><a href="#crontab-e出错" class="headerlink" title="crontab -e出错"></a>crontab -e出错</h3><p>问题类似于下面这个文章：</p>
+<p><a target="_blank" rel="noopener" href="http://blog.sina.com.cn/s/blog_633685790102vms0.html">http://blog.sina.com.cn/s/blog_633685790102vms0.html</a></p>
+<p>报错的时候：</p>
+<p><code>crontab -e</code></p>
+<blockquote>
+<p>no crontab for dxt - using an empty one<br>/tmp/crontab.XXXX9MaMQk: 权限不够 </p>
+</blockquote>
+<p>大概是因为/tmp文件夹的权限问题。故，直接：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">chmod</span> <span class="token number">777</span> /tmp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>定时任务，我个人觉得特别难编写，主要是因为，1、执行的时候，先cd到目录，最稳妥，防止引入了相对变量的文件路径。2、加上环境变量，尤其是<code>PATH</code>，有时，居然连<code>/usr/local/bin</code>都不在环境变量中。故，最好自己设置一下。3、测试，测试的时候，跳到<code>cd /</code>路径，再执行，看看能否正常执行。</p>
+<h3 id="heredoc"><a href="#heredoc" class="headerlink" title="heredoc"></a>heredoc</h3><p>为中文变量复制，正确的用法如下</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">query_sql</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+SELECT
+	COUNT (DISTINCT ship_id)
+FROM
+	tb_scan
+WHERE
+	ins_db_tm >= '2021-09-24'
+AND ins_db_tm &lt; '2021-09-25'
+AND scan_typ = '14'
+AND scan_site = '';
+EOL</span>
+<span class="token variable">)</span></span>
+
+<span class="token builtin class-name">echo</span> <span class="token variable">$query_sql</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>说明：EOL的括号，要另起一行，避免导致结束符号失效。另外，echo，输出的内容，换行符号预产被去掉了，即只有一行。</p>
+<p>heredoc要配合cat才能使用，<code>query_sql=&lt;&lt;EOL</code>，直接为变量赋值的格式，结果，输出的是一个空行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">query_sql</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span>
+    <span class="token builtin class-name">echo</span> $query_sql <span class="token operator">|</span>
+    <span class="token function">sed</span> <span class="token string">"s/#START_DATE/<span class="token variable">$START_DATE</span>/g"</span><span class="token operator">|</span>
+    <span class="token function">sed</span> <span class="token string">"s/#END_DATE/<span class="token variable">$END_DATE</span>/g"</span> <span class="token operator">|</span>
+    <span class="token function">sed</span> <span class="token string">"s/#SCAN_SITE/<span class="token variable">$SCAN_SITE</span>/g"</span>
+<span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>还能按如下的方式，来拼接管道。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">'EOF'</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/i/m/g'</span> <span class="token operator">></span> linuxidc.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>ssh时，使用heredoc</p>
+<pre class="line-numbers language-none"><code class="language-none">ssh -T user@host.com &lt;&lt; EOF<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="文件名中有空格"><a href="#文件名中有空格" class="headerlink" title="文件名中有空格"></a>文件名中有空格</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span>  *.flv<span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token function">grep</span> <span class="token string">"<span class="token variable">$each</span>"</span> downlist.txt <span class="token operator">></span> /dev/null
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -ne <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+         <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
+         sz <span class="token string">"<span class="token variable">$each</span>"</span>
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>说明如下：</p>
+<ul>
+<li><p>in后面直接跟模糊查找的名称，这样，而不是使用两个反引号或者<code>$(ls *.flv)</code>等符号，这是因为，in的属性，会默认将包含空格的部分，切分成两部分，而文件名中，正好又包含了空格等符号。</p>
+</li>
+<li><p>grep命令中，使用双引号包裹住each变量，这是因为，如果不包裹，则each变量中因包含空格，而被分隔成两部分。下面的sz命令相同。</p>
+</li>
+</ul>
+<p>这应该说是shell中针对空格中的坑。</p>
+<h3 id="echo-问题"><a href="#echo-问题" class="headerlink" title="echo * 问题"></a>echo * 问题</h3><p>问题描述：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">SQL</span><span class="token operator">=</span><span class="token string">"
+copy (SELECT * FROM tu_doc_info WHERE dtime >= '<span class="token variable">$&#123;DAY_AGO_10&#125;</span>' and doc_sn = '<span class="token variable">$&#123;SHIP_ID&#125;</span>' order by dtime ) to '<span class="token variable">$&#123;TMPDIR&#125;</span><span class="token variable">$&#123;SHIP_ID&#125;</span>_ludan.csv' with csv header;
+"</span>
+
+<span class="token assign-left variable">SQL</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+copy (SELECT * FROM tu_doc_info WHERE dtime >= '<span class="token variable">$&#123;DAY_AGO_10&#125;</span>' and doc_sn = '<span class="token variable">$&#123;SHIP_ID&#125;</span>' order by dtime ) to '<span class="token variable">$&#123;TMPDIR&#125;</span><span class="token variable">$&#123;SHIP_ID&#125;</span>_ludan.csv' with csv header;
+EOL</span>
+<span class="token variable">)</span></span>
+
+<span class="token assign-left variable">START</span><span class="token operator">=</span><span class="token string">'*'</span>
+<span class="token assign-left variable">SQL</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+copy (SELECT <span class="token variable">$&#123;START&#125;</span> FROM tu_doc_info WHERE dtime >= '<span class="token variable">$&#123;DAY_AGO_10&#125;</span>' and doc_sn = '<span class="token variable">$&#123;SHIP_ID&#125;</span>' order by dtime ) to '<span class="token variable">$&#123;TMPDIR&#125;</span><span class="token variable">$&#123;SHIP_ID&#125;</span>_ludan.csv' with csv header;
+EOL</span>
+<span class="token variable">)</span></span>
+
+<span class="token builtin class-name">echo</span> <span class="token variable">$SQL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>有如上的3种写法，在echo的时候，sql的<code>*</code>都会被当前执行shell的工作路径下的，文件列表所替代。这本来是<code>echo</code>的一个强大特色。</p>
+<p>但是，不要慌，echo出来的，是被echo加工了，<code>*</code>交给psql执行的时候，不会被替换成文件列表。</p>
+<p>解决方式非常简单：如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$SQL</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>原因：echo 后面的变量，如果缺少了双引号包裹，则，变相的，拆分成了n个参数，<code>echo *</code> 确实会输出文件列表。</p>
+<h3 id="命令-错误2"><a href="#命令-错误2" class="headerlink" title="命令 * 错误2"></a>命令 * 错误2</h3><p>问题基本上等同上个问题，但是隐藏性更深一些。先说如何正确的调用：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token assign-left variable">day</span><span class="token operator">=</span><span class="token variable">$1</span>
+<span class="token assign-left variable">gp_file_name</span><span class="token operator">=</span><span class="token variable">$2</span>
+<span class="token assign-left variable">csv_path</span><span class="token operator">=</span><span class="token variable">$3</span>
+<span class="token assign-left variable">csv_name</span><span class="token operator">=</span><span class="token string">"<span class="token variable">$4</span>"</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> $csv_path/$day/$csv_name<span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$each</span>
+    psql -d  develop   -h  localhost   -U gpadmin  -p <span class="token number">5432</span>  -c <span class="token string">"<span class="token entity" title="\c">\c</span>opy <span class="token variable">$gp_file_name</span> from <span class="token variable">$each</span> with csv"</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -ne <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+        <span class="token builtin class-name">echo</span> <span class="token string">"error: import <span class="token variable">$each</span>"</span>
+    <span class="token keyword">fi</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>正确调用：</p>
+<pre class="line-numbers language-none"><code class="language-none">.&#x2F;day_file_without_header.sh 20211024_2 cyf_etl_dta_20211026 &#x2F;etl&#x2F;dta &quot;tu_doc_info*.csv&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>错误调用：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./day_file_without_header.sh 20211024_2 cyf_etl_dta_20211026 /etl/dta tu_doc_info*.csv<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>区别就是，最后一个带<code>*</code>好的参数，其实在调用命令时，参数应该被bash给解析了，解析成当前目录下的文件。</p>
+<p>有点像我常用的命令行参数：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">sz  *.flv<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其实，就是bash在我调用参数的时候，帮我给解析了。</p>
+<p>总结：调用命令行参数的时候，当我们希望bash帮我们解析参数的时候，做额外的工作时，我们就不加引号，需要包含我们的参数的时候，不希望bash做额外工作时，就加引号（单双均可）保护。</p>
+<p><code>ls &quot;$csv_path/$day/$csv_name&quot;</code> 这种被保护起来了，bash就不会帮我们做额外的工作，但又不是我们想要的结果。</p>
+<h3 id="单引号保护"><a href="#单引号保护" class="headerlink" title="单引号保护"></a>单引号保护</h3><p><code>./crud_zh.sh</code></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># 时间：2022-02-21 10:13</span>
+<span class="token comment"># 描述：yii2自动生成的代码，汉化</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -z <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$0</span> ../cloud/backend/views/netrange/*.php"</span>       
+    <span class="token builtin class-name">exit</span>
+<span class="token keyword">fi</span>
+
+
+
+<span class="token function">sed</span> -i <span class="token string">'s#&lt;h1>&lt;?= Html::encode(<span class="token variable">$this</span>->title) ?>&lt;/h1>##'</span> <span class="token variable">$1</span>
+<span class="token function">sed</span> -i <span class="token string">'s#Update#更新#'</span> <span class="token variable">$1</span>
+<span class="token function">sed</span> -i <span class="token string">'s#Delete#删除#'</span> <span class="token variable">$1</span>
+<span class="token function">sed</span> -i <span class="token string">'s#Are you sure you want to delete this item?#您确定要删除该条记录吗？#'</span> <span class="token variable">$1</span>
+<span class="token function">sed</span> -i <span class="token string">'s#Create#新增#'</span> <span class="token variable">$1</span>
+<span class="token function">sed</span> -i <span class="token string">'s#Save#保存#'</span> <span class="token variable">$1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>调用</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">.&#x2F;crud_zh.sh &#39;..&#x2F;cloud&#x2F;backend&#x2F;views&#x2F;warning-order&#x2F;*.php&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>错误调用</p>
+<pre class="line-numbers language-none"><code class="language-none">.&#x2F;crud_zh.sh ..&#x2F;cloud&#x2F;backend&#x2F;views&#x2F;warning-order&#x2F;*.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>说明：没有单引号保护时，<code>crud_zh.sh</code>，将<code>*</code>解析调，那么，<code>*</code>被解析成多个具体的文件，可能传入多个参数到<code>./crud_zh.sh</code>，而到<code>sed</code>的命令中，<code>$1</code>只是第一个文件。</p>
+<h3 id="unix换行"><a href="#unix换行" class="headerlink" title="unix换行"></a>unix换行</h3><p>两种方式，一种是使用vim，设置并保存，另外一种，更简单一些，使用sed批量替换。</p>
+<p>出现的另外一种原因是：<strong>git设置，会自动的转换换行符号</strong>。切记。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sed</span> -i <span class="token string">'s/<span class="token entity" title="\r">\r</span>$//'</span> for_lua.sh
+
+<span class="token comment"># vim</span>
+<span class="token builtin class-name">set</span> <span class="token assign-left variable">ff</span><span class="token operator">=</span>unix  
+<span class="token builtin class-name">set</span> <span class="token assign-left variable">fileformat</span><span class="token operator">=</span>unix  <span class="token comment"># 全名</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/10/pg/plpython/" rel="prev" title="plpython">
+                  <i class="fa fa-chevron-left"></i> plpython
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/11/shell/date/" rel="next" title="date的用法">
+                  date的用法 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

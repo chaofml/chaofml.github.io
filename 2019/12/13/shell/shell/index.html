@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="shell是个很强大的工具，界面操作，用其来简单，但是想做到自动化，却有点困难。而且，会将限制用户的输入，这是好处，也是坏出。增加了限制，可以保证执行的有效性，但也限制了功能。 开发界面，也需要一定的成本。而直接开发出不带界面的，可能更容易一些。命令行直接再用强大的管道符号、重定向符号，能完成非常复杂的功能。 另外，*匹配也非常的强大，觉得这个功能，是能是bash解释器的功能。有了它，我们甚至省了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shell">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/12/13/shell/shell/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="shell是个很强大的工具，界面操作，用其来简单，但是想做到自动化，却有点困难。而且，会将限制用户的输入，这是好处，也是坏出。增加了限制，可以保证执行的有效性，但也限制了功能。 开发界面，也需要一定的成本。而直接开发出不带界面的，可能更容易一些。命令行直接再用强大的管道符号、重定向符号，能完成非常复杂的功能。 另外，*匹配也非常的强大，觉得这个功能，是能是bash解释器的功能。有了它，我们甚至省了">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-13T09:41:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.031Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2019/12/13/shell/shell/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>shell | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#shellcheck"><span class="nav-number">1.</span> <span class="nav-text">shellcheck</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F"><span class="nav-number"></span> <span class="nav-text">bash快捷方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shell%E7%BB%BC%E5%90%88%E4%BD%BF%E7%94%A8%E4%BE%8B%E5%AD%90"><span class="nav-number"></span> <span class="nav-text">shell综合使用例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-none%E6%A0%87%E8%AE%B0%E7%9A%84%E9%95%9C%E5%83%8F%EF%BC%8C%E7%BB%BC%E5%90%88%E7%94%A8%E4%BA%86-grep-awk-xargs-%E5%B7%A5%E5%85%B7%E3%80%82"><span class="nav-number">1.</span> <span class="nav-text">删除 none标记的镜像，综合用了 grep awk xargs 工具。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9F%E6%8D%AE%E6%8C%87%E5%AE%9A%E7%9A%84%E5%90%8D%E7%A7%B0%EF%BC%8C%E5%88%A0%E9%99%A4%E7%9B%B8%E5%85%B3%E7%9A%84%E4%B8%80%E7%BB%84%E8%BF%9B%E7%A8%8B%E3%80%82"><span class="nav-number">2.</span> <span class="nav-text">跟据指定的名称，删除相关的一组进程。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bcpu%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8D%A0%E7%94%A8%E7%8E%87%EF%BC%8C%E5%89%8D10"><span class="nav-number">3.</span> <span class="nav-text">查看cpu使用的占用率，前10.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%BB%E9%87%8D%E5%90%8E%E7%BB%9F%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">去重后统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E6%9F%90%E4%B8%AA%E6%AC%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E6%AC%A1%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">统计某个次出现的次数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E6%9F%90%E5%A4%A9csv%E6%96%87%E4%BB%B6%E7%9A%84%E8%AE%B0%E5%BD%95%E6%80%BB%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text">统计某天csv文件的记录总数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9F%90%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A4%B9%E5%86%85%E7%9A%84%E6%96%87%E4%BB%B6%E6%80%BB%E5%A4%A7%E5%B0%8F"><span class="nav-number">7.</span> <span class="nav-text">查看某个文件夹内的文件总大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E7%BB%9F%E8%AE%A1"><span class="nav-number">8.</span> <span class="nav-text">awk统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E9%95%BF%E5%BA%A6"><span class="nav-number">9.</span> <span class="nav-text">字符长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E9%95%BF%E5%BA%A6%E8%B6%8524"><span class="nav-number">10.</span> <span class="nav-text">字段长度超24</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E5%85%B7%E4%BD%93%E6%9F%90%E4%B8%80%E8%A1%8C"><span class="nav-number">11.</span> <span class="nav-text">打印具体某一行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sz%E5%8F%91%E9%80%81%E6%9C%AA%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">12.</span> <span class="nav-text">sz发送未下载的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%9F%90%E8%A1%8C%E6%96%87%E4%BB%B6%E7%9A%84%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6%E5%88%86%E5%B8%83%E6%83%85%E5%86%B5"><span class="nav-number">13.</span> <span class="nav-text">查看某行文件的最大长度分布情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#printf-%E5%91%BD%E4%BB%A4"><span class="nav-number">14.</span> <span class="nav-text">printf 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%88%B0pg"><span class="nav-number">15.</span> <span class="nav-text">导入到pg</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ls-%E7%BB%9D%E5%AF%B9%E8%B7%AF%E5%BE%84"><span class="nav-number">16.</span> <span class="nav-text">ls 绝对路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A1%8C%E6%95%B0%E7%BB%9F%E8%AE%A1"><span class="nav-number">17.</span> <span class="nav-text">代码行数统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A1%8C%E6%95%B0%E7%BB%9F%E8%AE%A1%EF%BC%88%E8%84%9A%E6%9C%AC%EF%BC%89"><span class="nav-number">18.</span> <span class="nav-text">代码行数统计（脚本）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8E%92%E5%BA%8F"><span class="nav-number">19.</span> <span class="nav-text">字符串排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E6%8B%86%E5%88%86"><span class="nav-number">20.</span> <span class="nav-text">awk拆分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swagger-operationId"><span class="nav-number">21.</span> <span class="nav-text">swagger operationId</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E5%AF%86%E7%A0%81"><span class="nav-number">22.</span> <span class="nav-text">随机密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E6%B1%82md5sum"><span class="nav-number">23.</span> <span class="nav-text">批量求md5sum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%91%E9%80%89%E7%85%A7%E7%89%87"><span class="nav-number">24.</span> <span class="nav-text">挑选照片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E7%85%A7%E7%89%87"><span class="nav-number">25.</span> <span class="nav-text">下载照片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDm3u"><span class="nav-number">26.</span> <span class="nav-text">下载m3u</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E4%B8%8D%E5%8C%85%E5%90%AB%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">27.</span> <span class="nav-text">统计不包含关键字的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xargs%E4%B8%8Eawk%E3%80%81sed"><span class="nav-number">28.</span> <span class="nav-text">xargs与awk、sed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%AD%97%E6%AE%B5"><span class="nav-number">29.</span> <span class="nav-text">统计字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">30.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E6%96%87%E4%BB%B6%E4%B8%AA%E6%95%B0"><span class="nav-number">31.</span> <span class="nav-text">统计文件个数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81%E7%BB%9F%E8%AE%A1"><span class="nav-number">32.</span> <span class="nav-text">网络状态统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%B8%BAcsv"><span class="nav-number">33.</span> <span class="nav-text">转换为csv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#csv%E7%BB%9F%E8%AE%A1%E4%B9%8B%E5%9D%91"><span class="nav-number">34.</span> <span class="nav-text">csv统计之坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fork%E7%82%B8%E5%BC%B9"><span class="nav-number">35.</span> <span class="nav-text">fork炸弹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%99%84%E8%BF%91%E5%87%A0%E8%A1%8C"><span class="nav-number">36.</span> <span class="nav-text">查看附近几行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%AF%BC%E5%85%A5%E6%80%BB%E6%95%B0"><span class="nav-number">37.</span> <span class="nav-text">统计导入总数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wget%E6%8F%90%E4%BA%A4form%E8%A1%A8%E5%8D%95"><span class="nav-number">38.</span> <span class="nav-text">wget提交form表单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%A8%A1%E5%9D%97-%E5%86%99%E6%96%87%E4%BB%B6"><span class="nav-number">39.</span> <span class="nav-text">代码模块&#x2F;写文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yii2%E5%BF%AB%E9%80%9F%E5%AF%BC%E5%85%A5%E6%A8%A1%E5%9D%97"><span class="nav-number">40.</span> <span class="nav-text">yii2快速导入模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%92%E7%94%A8"><span class="nav-number">41.</span> <span class="nav-text">{}秒用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81"><span class="nav-number">42.</span> <span class="nav-text">统计代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">43.</span> <span class="nav-text">统计当前目录下的文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sed-d"><span class="nav-number">44.</span> <span class="nav-text">sed   !d</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sed-%E6%9D%A1%E4%BB%B6%E6%9B%BF%E6%8D%A2"><span class="nav-number">45.</span> <span class="nav-text">sed 条件替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grep%E5%A6%82%E4%BD%95%E5%9C%A8%E5%A4%9A%E8%A1%8C%E5%8C%B9%E9%85%8D%E5%86%85%E5%AE%B9"><span class="nav-number">46.</span> <span class="nav-text">grep如何在多行匹配内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-in-%E5%A4%9A%E8%A1%8C%E7%9A%84%E5%9B%B0%E6%89%B0"><span class="nav-number">47.</span> <span class="nav-text">for in 多行的困扰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for-%E7%AE%A1%E9%81%93"><span class="nav-number">48.</span> <span class="nav-text">for + 管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while-read-%E7%AE%A1%E9%81%93"><span class="nav-number">49.</span> <span class="nav-text">while read + 管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E5%88%86%E9%9A%94%E6%96%87%E4%BB%B6"><span class="nav-number">50.</span> <span class="nav-text">awk分隔文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E5%8E%BB%E9%87%8D"><span class="nav-number">51.</span> <span class="nav-text">awk去重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xargs-%E5%B9%B6%E5%8F%91"><span class="nav-number">52.</span> <span class="nav-text">xargs 并发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bin-sh"><span class="nav-number">53.</span> <span class="nav-text">bin&#x2F;sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#json%E5%8F%96%E5%B7%A7%E5%A4%84%E7%90%86"><span class="nav-number">54.</span> <span class="nav-text">json取巧处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grep%E7%9B%B4%E6%8E%A5%E6%AD%A3%E5%88%99%E5%8C%B9%E9%85%8D"><span class="nav-number">55.</span> <span class="nav-text">grep直接正则匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E5%8D%A0%E7%94%A8%E6%83%85%E5%86%B5"><span class="nav-number">56.</span> <span class="nav-text">ps查看内存占用情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s%E8%8E%B7%E5%8F%96%E9%9B%86%E7%BE%A4pod%E7%8A%B6%E6%80%81"><span class="nav-number">57.</span> <span class="nav-text">k8s获取集群pod状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5"><span class="nav-number">58.</span> <span class="nav-text">查看网络连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E5%A4%9A%E8%A1%8C%E4%B8%BA%E5%8D%95%E4%BD%8D%EF%BC%8C%E7%BB%9F%E8%AE%A1"><span class="nav-number">59.</span> <span class="nav-text">awk多行为单位，统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exec"><span class="nav-number">60.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sed-grep-%E5%8F%AA%E6%9B%BF%E6%8D%A2%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6"><span class="nav-number">61.</span> <span class="nav-text">sed + grep 只替换指定文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#js%E8%B5%84%E6%BA%90%E7%89%88%E6%9C%AC%E5%8F%B7%E6%9B%BF%E6%8D%A2"><span class="nav-number">62.</span> <span class="nav-text">js资源版本号替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%BE%E4%B8%8D%E5%88%B0%E6%8C%87%E5%AE%9A%E5%86%85%E5%AE%B9%EF%BC%8C%E5%88%99%E8%BE%93%E5%87%BA%E6%96%87%E4%BB%B6%E5%90%8D%E7%A7%B0"><span class="nav-number">63.</span> <span class="nav-text">找不到指定内容，则输出文件名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if-else"><span class="nav-number">64.</span> <span class="nav-text">if-else</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMD"><span class="nav-number">65.</span> <span class="nav-text">$CMD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gum"><span class="nav-number">66.</span> <span class="nav-text">gum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E8%AE%A1%E6%AF%8F%E4%B8%AA%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E6%95%B0%E9%87%8F"><span class="nav-number">67.</span> <span class="nav-text">统计每个文件夹下的文件数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E7%9B%AE%E5%BD%95"><span class="nav-number">68.</span> <span class="nav-text">拷贝目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xargs%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82%E7%A4%BA%E4%BE%8B"><span class="nav-number">69.</span> <span class="nav-text">xargs并发请求示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#awk%E4%B9%8B%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4system"><span class="nav-number">70.</span> <span class="nav-text">awk之执行命令system</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BEmd%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E5%BC%95%E5%85%A5%E9%93%BE%E6%8E%A5"><span class="nav-number">71.</span> <span class="nav-text">查找md文件中的引入链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#split"><span class="nav-number">72.</span> <span class="nav-text">split</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bash-sh"><span class="nav-number">73.</span> <span class="nav-text">bash *.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ab%E5%8E%8B%E6%B5%8B"><span class="nav-number">74.</span> <span class="nav-text">ab压测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#watch-%E7%9B%91%E6%8E%A7%E5%A4%9A%E6%9D%A1%E5%91%BD%E4%BB%A4"><span class="nav-number">75.</span> <span class="nav-text">watch 监控多条命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scp-sh"><span class="nav-number">76.</span> <span class="nav-text">scp *.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rm-find"><span class="nav-number">77.</span> <span class="nav-text">rm find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E9%87%8D%E5%A4%8D%E6%96%87%E4%BB%B6"><span class="nav-number">78.</span> <span class="nav-text">对比重复文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mybatis%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90"><span class="nav-number">79.</span> <span class="nav-text">mybatis简单分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-pom%E4%BE%9D%E8%B5%96"><span class="nav-number">80.</span> <span class="nav-text">spring pom依赖</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/12/13/shell/shell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          shell
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-13 09:41:00" itemprop="dateCreated datePublished" datetime="2019-12-13T09:41:00+00:00">2019-12-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>shell是个很强大的工具，界面操作，用其来简单，但是想做到自动化，却有点困难。而且，会将限制用户的输入，这是好处，也是坏出。增加了限制，可以保证执行的有效性，但也限制了功能。</p>
+<p>开发界面，也需要一定的成本。而直接开发出不带界面的，可能更容易一些。命令行直接再用强大的管道符号、重定向符号，能完成非常复杂的功能。</p>
+<p>另外，<code>*</code>匹配也非常的强大，觉得这个功能，是能是bash解释器的功能。有了它，我们甚至省了循环。而且还有匹配（搜索）特定位置的文件的功能。</p>
+<p>还有就是<code>&#123;&#125;</code>序列功能。</p>
+<h3 id="shellcheck"><a href="#shellcheck" class="headerlink" title="shellcheck"></a>shellcheck</h3><p>脚本语法检测工具，方便测试出脚本中存在的错误。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">apt-get</span> <span class="token function">install</span> <span class="token function">shellcheck</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="bash快捷方式"><a href="#bash快捷方式" class="headerlink" title="bash快捷方式"></a>bash快捷方式</h2><p>Bash 快捷键<br>    命令 说明<br>    ctrl + a 移到命令行首<br>    ctrl + e 移到命令行尾<br>    ctrl + f 按字符右移<br>    ctrl + b 按字符左移<br>    ctrl + u 从光标处(不包含)删除至命令行首(包含)<br>    ctrl + k 从光标处(不包含)删除至命令行尾(包含)<br>    ctrl + w 从光标处(不包含)删除至单词字首(包含)<br>    ctrl + d 删除光标处的字符<br>    ctrl + h 删除光标前的字符<br>    ctrl + l 清屏<br>    ctrl + c 终止命令<br>    c+f 左移一个单词<br>    esc+b 右移一个单词<br>    ctrl + 左右箭头  单词移动</p>
+<h1 id="shell综合使用例子"><a href="#shell综合使用例子" class="headerlink" title="shell综合使用例子"></a>shell综合使用例子</h1><h3 id="删除-none标记的镜像，综合用了-grep-awk-xargs-工具。"><a href="#删除-none标记的镜像，综合用了-grep-awk-xargs-工具。" class="headerlink" title="删除 none标记的镜像，综合用了 grep awk xargs 工具。"></a>删除 none标记的镜像，综合用了 grep awk xargs 工具。</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sudo</span> docker image <span class="token function">ls</span><span class="token operator">|</span><span class="token function">grep</span> none  <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$3</span>&#125;'</span> <span class="token operator">|</span> <span class="token function">xargs</span> -n <span class="token number">1</span>  <span class="token function">sudo</span> docker rmi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>更好的方式如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker image <span class="token function">ls</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'<span class="token variable">$1</span>=="&lt;none>" &amp;&amp; <span class="token variable">$2</span>=="&lt;none>"&#123;printf "docker rmi %s<span class="token entity" title="\n">\n</span>",<span class="token variable">$3</span>&#125;'</span><span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="跟据指定的名称，删除相关的一组进程。"><a href="#跟据指定的名称，删除相关的一组进程。" class="headerlink" title="跟据指定的名称，删除相关的一组进程。"></a>跟据指定的名称，删除相关的一组进程。</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ps</span> aux <span class="token operator">|</span> <span class="token function">grep</span> test.php <span class="token operator">|</span> <span class="token function">grep</span> -v <span class="token function">grep</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;;'</span><span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> <span class="token function">kill</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="查看cpu使用的占用率，前10"><a href="#查看cpu使用的占用率，前10" class="headerlink" title="查看cpu使用的占用率，前10."></a>查看cpu使用的占用率，前10.</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#cpu</span>
+<span class="token function">ps</span> aux<span class="token operator">|</span> <span class="token function">sort</span> -nk3 <span class="token operator">|</span><span class="token function">head</span> 
+<span class="token comment"># 内存</span>
+<span class="token function">ps</span> aux<span class="token operator">|</span> <span class="token function">sort</span> -nk4 <span class="token operator">|</span><span class="token function">head</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="去重后统计"><a href="#去重后统计" class="headerlink" title="去重后统计"></a>去重后统计</h3><p>根据第4列去重，查看有多少条记录。注意，可能会有空行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$4</span>&#125;'</span> /etl/dta/0.csv <span class="token operator">|</span><span class="token function">sort</span> -u<span class="token operator">|</span><span class="token function">wc</span> -l<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="统计某个次出现的次数"><a href="#统计某个次出现的次数" class="headerlink" title="统计某个次出现的次数"></a>统计某个次出现的次数</h3><p>查询某个ip在日志文件中出现的次数。或者输出包含某个词的那一行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sed</span> -n <span class="token string">'/165.22.31.3/p'</span> /var/log/secure <span class="token operator">|</span><span class="token function">wc</span> -l<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<blockquote>
+<p>然后发现其实差不多等价于下面的内容（如果一行一个的话）： </p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> -c <span class="token string">'165.22.31.3'</span> /var/log/secure<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="统计某天csv文件的记录总数"><a href="#统计某天csv文件的记录总数" class="headerlink" title="统计某天csv文件的记录总数"></a>统计某天csv文件的记录总数</h3><p>csv文件每5分钟落一次盘，csv文件不包含header。</p>
+<p>tee命令，将明细结果保存在额外的文件中。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span> /etl/dta/20200704/tb_scan_*.csv <span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> <span class="token function">wc</span> -l <span class="token operator">|</span> <span class="token function">tee</span> /tmp/20200704_check.txt <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;sum+=<span class="token variable">$1</span>&#125; END &#123;print "Sum = ", sum&#125;'</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="查看某个文件夹内的文件总大小"><a href="#查看某个文件夹内的文件总大小" class="headerlink" title="查看某个文件夹内的文件总大小"></a>查看某个文件夹内的文件总大小</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span> -l<span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'BEGIN&#123;sum=0;&#125;&#123;sum+=<span class="token variable">$5</span>&#125;END&#123;print sum;&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="awk统计"><a href="#awk统计" class="headerlink" title="awk统计"></a>awk统计</h3><p>网上找到的各种统计。</p>
+<p>1、求和</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> data<span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;sum+=<span class="token variable">$1</span>&#125; END &#123;print "Sum = ", sum&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>2、求平均值</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> data<span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;sum+=<span class="token variable">$1</span>&#125; END &#123;print "Average = ", sum/NR&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>3、求最大值</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> data<span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'BEGIN &#123;max = 0&#125; &#123;if (<span class="token variable">$1</span>>max) max=<span class="token variable">$1</span> fi&#125; END &#123;print "Max=", max&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 4、求最小值（min的初始值设置一个超大数即可）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'BEGIN &#123;min = 1999999&#125; &#123;if (<span class="token variable">$1</span>&lt;min) min=<span class="token variable">$1</span> fi&#125; END &#123;print "Min=", min&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="字符长度"><a href="#字符长度" class="headerlink" title="字符长度"></a>字符长度</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 保存某个字段的长度、跟字段内容</span>
+<span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'&#123;print length(<span class="token variable">$67</span>),<span class="token variable">$67</span>&#125;'</span>   /path/to/my.csv <span class="token operator">></span> /tmp/error.csv
+<span class="token comment"># 找出最长的几位</span>
+<span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'&#123;print length(<span class="token variable">$67</span>),<span class="token variable">$67</span>&#125;'</span>   /path/to/my.csv<span class="token operator">|</span><span class="token function">sort</span> -nr  <span class="token operator">|</span> <span class="token function">head</span> <span class="token punctuation">;</span>
+<span class="token comment"># 超过40，则输出该行的内容。</span>
+<span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'length(<span class="token variable">$67</span>)>40&#123;print <span class="token variable">$0</span>&#125;'</span>  <span class="token number">1</span>.csv <span class="token number">2</span>.csv <span class="token number">3</span>.csv <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="字段长度超24"><a href="#字段长度超24" class="headerlink" title="字段长度超24"></a>字段长度超24</h3><p>貌似awk比较容易。其他的方式，不太好写正则</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> -F, <span class="token string">'length(<span class="token variable">$2</span>) > 24 || length(<span class="token variable">$3</span>) > 24 '</span> sd_td_mail_02_202107*
+<span class="token function">sed</span> -n -r <span class="token string">'/\,\w&#123;25,&#125;/p'</span> sd_td_mail_02_202107* <span class="token operator">|</span><span class="token function">head</span>
+<span class="token function">grep</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="打印具体某一行"><a href="#打印具体某一行" class="headerlink" title="打印具体某一行"></a>打印具体某一行</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 注意 是两个等号。而不是 =</span>
+<span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'NR==485383&#123;print <span class="token variable">$1</span>&#125;'</span>  /path/to/my.csv<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="sz发送未下载的文件"><a href="#sz发送未下载的文件" class="headerlink" title="sz发送未下载的文件"></a>sz发送未下载的文件</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 在已下载的机器上生成已下载的文件列表</span>
+<span class="token function">ls</span> *.flv <span class="token operator">></span> download.txt
+<span class="token comment"># 在服务器上生成所有的文件列表</span>
+<span class="token function">ls</span> *.flv <span class="token operator">></span> all.txt
+<span class="token comment"># 重命名已下载的文件</span>
+<span class="token function">cat</span> all.txt download.txt <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span><span class="token function">uniq</span> -c <span class="token operator">|</span><span class="token function">sort</span> -n<span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'<span class="token variable">$1</span>==1&#123;print substr(<span class="token variable">$0</span>,8)&#125;'</span>  <span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> -i <span class="token function">mv</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>  tototo<span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token comment"># 下载</span>
+sz tototo*.flv<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="查看某行文件的最大长度分布情况"><a href="#查看某行文件的最大长度分布情况" class="headerlink" title="查看某行文件的最大长度分布情况"></a>查看某行文件的最大长度分布情况</h3><p>sort -nr   按数字来排序，逆序。</p>
+<p>head -n 1000 |tail   查看1000行左右的内容。替代方法 sed</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'&#123;print length(<span class="token variable">$8</span>),<span class="token variable">$8</span>&#125;'</span> /etl/dta/20200704/th_gpsdata_20200704144000.csv <span class="token operator">|</span><span class="token function">sort</span> -nr <span class="token operator">|</span><span class="token function">head</span> -n <span class="token number">1000</span> <span class="token operator">|</span><span class="token function">tail</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="printf-命令"><a href="#printf-命令" class="headerlink" title="printf 命令"></a>printf 命令</h3><p>使用ls  printf xargs 三者配合，达到生成特定的片段。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span> *.csv<span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> <span class="token builtin class-name">printf</span> <span class="token string">"###%s###<span class="token entity" title="\n">\n</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>说明:printf只接受参数，而不接受标准的输入流。所以使用上面的方式。</p>
+<h3 id="导入到pg"><a href="#导入到pg" class="headerlink" title="导入到pg"></a>导入到pg</h3><p>使用命令，利用sed的编辑功能，生成特定格式的sql，然后执行导入功能。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 先进入csv文件夹，然后执行</span>
+<span class="token function">ls</span> *.csv <span class="token operator">|</span><span class="token function">sed</span> <span class="token string">"s:^:copy sandan_poi from '<span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">pwd</span><span class="token variable">`</span></span>/: "</span><span class="token operator">|</span><span class="token function">sed</span> <span class="token string">"s:$:' with csv header;: "</span> <span class="token operator">></span> /tmp/目标.sql
+psql -h localhost -U gpadmin -d develop -f /tmp/目标.sql<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ls-绝对路径"><a href="#ls-绝对路径" class="headerlink" title="ls 绝对路径"></a>ls 绝对路径</h3><p>上面来源于这个例子</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span>  <span class="token operator">|</span><span class="token function">sed</span> <span class="token string">"s:^:<span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">pwd</span><span class="token variable">`</span></span>/: "</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>备注：由于替换一般使用  <code>/</code>分隔，但是路径中又多包含这个符号，为了避免歧义，使用<code>:</code>分隔，好像<code>|</code>也是可以的。</p>
+<h3 id="代码行数统计"><a href="#代码行数统计" class="headerlink" title="代码行数统计"></a>代码行数统计</h3><p>感谢通配符号，使得统计代码，非常得方便。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span> *.php */*.php */*/*.php
+<span class="token function">wc</span> -l  *.php */*.php */*/*.php   <span class="token comment"># 推荐使用</span>
+<span class="token function">ls</span>  *.php */*.php */*/*.php  <span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> <span class="token function">wc</span> -l
+<span class="token function">cat</span>  *.php */*.php */*/*.php  <span class="token operator">|</span><span class="token function">wc</span> -l
+<span class="token function">sed</span> <span class="token string">"/^\s*$/d"</span> *.php */*.php */*/*.php  <span class="token operator">|</span><span class="token function">wc</span> -l   <span class="token comment"># 剔除空行</span>
+
+<span class="token comment">#  查找注释并打印输出</span>
+<span class="token function">sed</span> -n -e <span class="token string">'/^\s*\//p;/^\s*\*/p;'</span> Worker.php
+
+<span class="token comment"># 输出空行、删除注释，再统计</span>
+<span class="token function">sed</span> -e <span class="token string">'/^\s*$/d;/^\s*\//d;/^\s*\*/d;'</span>  *.php */*.php */*/*.php  <span class="token operator">|</span><span class="token function">wc</span> -l 
+<span class="token comment"># 说明  -e 表达式有3个，以；分隔   /正则/d</span>
+<span class="token comment"># /^\s*$/d;      删除空行， </span>
+<span class="token comment"># /^\s*\//d;     \/ 转移，表示  / 字符。</span>
+<span class="token comment"># /^\s*\*/d;      \*  转移，表示 *字符 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="代码行数统计（脚本）"><a href="#代码行数统计（脚本）" class="headerlink" title="代码行数统计（脚本）"></a>代码行数统计（脚本）</h3><p>使用脚本统计</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">f</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> *.php */*.php */*/*.php<span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+<span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">sed</span> -e <span class="token string">'/^\s*$/d;/^\s*\//d;/^\s*\*/d;'</span> $f<span class="token operator">|</span><span class="token function">wc</span> -l<span class="token variable">`</span></span><span class="token punctuation">;</span>
+<span class="token comment">#echo "$count   $f"</span>
+<span class="token builtin class-name">printf</span> <span class="token string">"% 4d  %s<span class="token entity" title="\n">\n</span>"</span> <span class="token variable">$count</span> <span class="token variable">$f</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="字符串排序"><a href="#字符串排序" class="headerlink" title="字符串排序"></a>字符串排序</h3><blockquote>
+<p>因为无法直接在echo中  输出换行符号，故用  sed 来替换成换行符号。</p>
+<p>echo -e 参数支持转义符号。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> <span class="token string">'b c a'</span> <span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'s/\s/<span class="token entity" title="\n">\n</span>/g'</span><span class="token operator">|</span><span class="token function">sort</span>
+<span class="token builtin class-name">echo</span> -e <span class="token string">"b<span class="token entity" title="\n">\n</span>c<span class="token entity" title="\n">\n</span>a"</span><span class="token operator">|</span><span class="token function">sort</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="awk拆分"><a href="#awk拆分" class="headerlink" title="awk拆分"></a>awk拆分</h3><blockquote>
+<p>原始的数据结构如下：</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">大末端超市|98091419,98091419,98091419|app1,app1,app1,app1,app1,app1|market|980090|韵达超市-刘达达<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>拆分的脚本如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 更新部门信息</span>
+<span class="token builtin class-name">echo</span> group_cn,group_en,leader_name,leader_number <span class="token operator">></span> import_group.csv
+<span class="token function">awk</span> -F <span class="token string">'|'</span> <span class="token string">'&#123;print <span class="token variable">$1</span>","<span class="token variable">$4</span>","<span class="token variable">$6</span>","<span class="token variable">$5</span>&#125;'</span> basic-data-20210601_sort.csv <span class="token operator">>></span> import_group.csv
+
+<span class="token comment"># 更新人员的对应关系</span>
+<span class="token builtin class-name">echo</span> group_en,number <span class="token operator">></span> department_number.csv
+<span class="token function">awk</span> -F <span class="token string">'|'</span> <span class="token string">'&#123;print <span class="token variable">$4</span>","<span class="token variable">$2</span>&#125;'</span>  basic-data-20210601_sort.csv<span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'&#123;for (i = 2; i &lt;= NF; i++) print <span class="token variable">$1</span>","<span class="token variable">$i</span>&#125;'</span> <span class="token operator">>></span> department_number.csv
+
+<span class="token comment"># 更新关联app</span>
+<span class="token builtin class-name">echo</span> group_en,deploy <span class="token operator">></span> department_deploy.csv
+<span class="token function">awk</span> -F <span class="token string">'|'</span> <span class="token string">'&#123;print <span class="token variable">$4</span>","<span class="token variable">$3</span>&#125;'</span>  basic-data-20210601_sort.csv<span class="token operator">|</span> <span class="token function">awk</span> -F <span class="token string">','</span> <span class="token string">'&#123;for (i = 2; i &lt;= NF; i++) print <span class="token variable">$1</span>","<span class="token variable">$i</span>&#125;'</span> <span class="token operator">>></span> department_deploy.csv<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="swagger-operationId"><a href="#swagger-operationId" class="headerlink" title="swagger operationId"></a>swagger operationId</h3><blockquote>
+<p>uniq -c 能查看重复的数字</p>
+<p>如果返回的结果太多，还能近一步用 grep -v 来排查（注意正则），或者awk $1 &gt; 1.</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> operationId qingcloud-api.swagger.yaml <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> -c
+
+<span class="token comment"># 太多的时候使用</span>
+<span class="token function">grep</span> operationId qingcloud-api.swagger.yaml <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span> <span class="token function">uniq</span> -c <span class="token operator">|</span><span class="token function">grep</span> <span class="token string">'^\s+[^1] '</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="随机密码"><a href="#随机密码" class="headerlink" title="随机密码"></a>随机密码</h3><p>tr是转换工具。下面的亮点在于这种命令格式<code>tr &lt; |</code>，从来没有遇到过这样的管道组合。故记录下来。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">tr</span> -dc A-Za-z0-9_ <span class="token operator">&lt;</span>/dev/urandom  <span class="token operator">|</span> <span class="token function">head</span> -c <span class="token number">8</span> <span class="token operator">|</span> <span class="token function">xargs</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="批量求md5sum"><a href="#批量求md5sum" class="headerlink" title="批量求md5sum"></a>批量求md5sum</h3><p>只求一个文件的md5比较简单，关键是要求批量。原来很多命令，都可以直接执行。</p>
+<p>这个时候利用上xargs，比较方便。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 更简单的方式</span>
+<span class="token function">ls</span> *.jpg <span class="token operator">|</span><span class="token function">xargs</span> md5sum   <span class="token operator">></span> <span class="token punctuation">..</span>/s.txt
+<span class="token comment"># 其实更方便的方式如下（弊端好像也有，文件不能太多太多）：</span>
+md5sum *.jpg <span class="token operator">></span> s2.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>脚本的方式：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> -z <span class="token variable">$1</span> <span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"Usage: <span class="token variable">$0</span> targetpath,<span class="token variable">$0</span> my/path"</span>
+    <span class="token builtin class-name">exit</span>
+<span class="token keyword">fi</span>
+
+<span class="token assign-left variable">count</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">ls</span> $1<span class="token operator">|</span><span class="token function">wc</span> -l<span class="token variable">)</span></span>
+<span class="token assign-left variable">i</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">file</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">ls</span> $1<span class="token variable">)</span></span><span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$i</span>/<span class="token variable">$count</span> <span class="token variable">$file</span>"</span>
+    md5sum <span class="token string">"<span class="token variable">$1</span>/<span class="token variable">$file</span>"</span> <span class="token operator">>></span> md5.txt
+    <span class="token assign-left variable">i</span><span class="token operator">=</span>$<span class="token punctuation">[</span>i+1<span class="token punctuation">]</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="挑选照片"><a href="#挑选照片" class="headerlink" title="挑选照片"></a>挑选照片</h3><p>按名称挑选照片</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">md5sum *.jpg <span class="token operator">></span> <span class="token punctuation">..</span>/pic.txt
+
+<span class="token function">cat</span> pic.txt <span class="token operator">|</span><span class="token function">awk</span> -F<span class="token string">'*'</span> <span class="token punctuation">&#123;</span><span class="token string">'print <span class="token variable">$2</span>'</span><span class="token punctuation">&#125;</span><span class="token operator">|</span><span class="token function">xargs</span> <span class="token builtin class-name">printf</span> <span class="token string">"cp vivo_z3/DCIM/Camera/%s select<span class="token entity" title="\n">\n</span>"</span> <span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="下载照片"><a href="#下载照片" class="headerlink" title="下载照片"></a>下载照片</h3><p>pic文件存的是下载图片的路径的路径。文件按序号存储。还功能指定下载指定序号的图片。</p>
+<p>注意47前面加了空格，是表示想搜索除 url外的序号。否则，可能序号、url都搜索。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 下载全部</span>
+<span class="token function">cat</span> -n pic.txt <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print "curl -o "<span class="token variable">$1</span>".png "<span class="token variable">$2</span>&#125;'</span> <span class="token operator">|</span><span class="token function">sh</span>
+
+<span class="token comment"># 下载指定行的图片</span>
+<span class="token function">cat</span> -n pic.txt <span class="token operator">|</span><span class="token function">grep</span> <span class="token string">" 47"</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print "curl -o "<span class="token variable">$1</span>".png "<span class="token variable">$2</span>&#125;'</span> <span class="token operator">|</span><span class="token function">sh</span>
+<span class="token comment"># 其实指定行，用 sed  更好</span>
+<span class="token function">cat</span> -n pic.txt <span class="token operator">|</span><span class="token function">sed</span> -n <span class="token string">'47p'</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'&#123;print "curl -o "<span class="token variable">$1</span>".png "<span class="token variable">$2</span>&#125;'</span> <span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="下载m3u"><a href="#下载m3u" class="headerlink" title="下载m3u"></a>下载m3u</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 下载</span>
+<span class="token function">sed</span> -n <span class="token string">'/^http/p'</span> index.m3u8 <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;printf "curl -o %s %s <span class="token entity" title="\n">\n</span>",NR,<span class="token variable">$1</span> ;&#125;'</span> <span class="token operator">|</span><span class="token function">sh</span>
+
+<span class="token comment"># 合并文件 注意，直接cat * > ../down.ts 不行，因为顺序不正确</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">$(</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token punctuation">$(</span>ls <span class="token operator">|</span><span class="token function">wc</span> -l<span class="token punctuation">)</span><span class="token variable">)</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token function">cat</span> <span class="token variable">$i</span>  <span class="token operator">>></span> down.ts <span class="token punctuation">;</span><span class="token keyword">done</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>其他命令</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 进度</span>
+<span class="token function">ls</span> <span class="token operator">|</span><span class="token function">sort</span> -n <span class="token operator">|</span><span class="token function">tail</span>
+<span class="token comment"># 检查文件  查看最小的文件</span>
+<span class="token function">ls</span> -Slhr <span class="token operator">|</span><span class="token function">head</span>
+<span class="token comment"># 指定行的下载格式 注意空格是用来匹配的</span>
+<span class="token function">sed</span> -n <span class="token string">'/^http/p'</span> index.m3u8 <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;printf "curl -o %s %s <span class="token entity" title="\n">\n</span>",NR,<span class="token variable">$1</span> ;&#125;'</span><span class="token operator">|</span><span class="token function">grep</span> <span class="token string">"o 6 "</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="统计不包含关键字的文件"><a href="#统计不包含关键字的文件" class="headerlink" title="统计不包含关键字的文件"></a>统计不包含关键字的文件</h3><p>查找关键字：<code>AccessControl::className</code>，避免自己每个文件手动打开，检查。故：</p>
+<blockquote>
+<p>其他方法。直接 grep “AccessControl::className” -R .   这个只能查找到有的文件。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> <span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token function">grep</span> <span class="token string">"AccessControl::className"</span> <span class="token variable">$each</span> <span class="token operator">></span> /dev/null <span class="token punctuation">;</span> <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -ne <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span> <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span> <span class="token keyword">fi</span><span class="token punctuation">;</span> <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="xargs与awk、sed"><a href="#xargs与awk、sed" class="headerlink" title="xargs与awk、sed"></a>xargs与awk、sed</h3><p>假设在<code>/md</code>目录下执行操作。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span>  -name <span class="token string">'*.md'</span> <span class="token operator">|</span><span class="token function">xargs</span>  -n <span class="token number">1</span> -i <span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> 模板
+<span class="token function">find</span> <span class="token builtin class-name">.</span>  -name <span class="token string">'*.md'</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;printf "%s 模板<span class="token entity" title="\n">\n</span>",<span class="token variable">$1</span>&#125;'</span>    <span class="token comment"># 函数的参数之间，用逗号分隔</span>
+<span class="token comment"># sed 略  反正也是修改，替换</span>
+<span class="token comment"># 或者将输出写到文件   然后for循环</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>有的时候，需要加上 <code>|sh</code>，来直接执行命令。或者保存到文件，先看下输出是什么样子的。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span>  <span class="token punctuation">..</span>.  <span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="统计字段"><a href="#统计字段" class="headerlink" title="统计字段"></a>统计字段</h3><p>拿到每个csv文件的header，然后是统计有多少个字段。由于使用了<code>*</code>，head中有文件名称。故使用sed，删除指定的行。</p>
+<p>以下验证每个字段，都是169个字段。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">head</span> -1 /addr7/full_piece/real/202106*/*00.csv <span class="token operator">|</span><span class="token function">awk</span> -F<span class="token string">','</span> <span class="token string">'&#123;print NF&#125;'</span> <span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'/^0$/d;/^169$/d;/^1$/d'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>突然发现，也可以<code>sort -u</code>.</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">head</span> -1 /addr7/full_piece/real/202104*/*00.csv <span class="token operator">|</span><span class="token function">awk</span> -F<span class="token string">','</span> <span class="token string">'&#123;print NF&#125;'</span><span class="token operator">|</span><span class="token function">sort</span> -u<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>文本处理的结果如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">sz Linux三剑客超全超详情教程（grep、sed、awk入门到精通有这一套足够了） <span class="token punctuation">(</span>P1. 01-shell编程-debug<span class="token punctuation">)</span>.flv
+sz Linux三剑客超全超详情教程（grep、sed、awk入门到精通有这一套足够了） <span class="token punctuation">(</span>P2. 02-shell编程-总结<span class="token punctuation">)</span>.flv
+sz Linux三剑客超全超详情教程（grep、sed、awk入门到精通有这一套足够了） <span class="token punctuation">(</span>P3. 03-三剑客正则-正则什么鬼<span class="token punctuation">)</span>.flv
+sz Linux三剑客超全超详情教程（grep、sed、awk入门到精通有这一套足够了） <span class="token punctuation">(</span>P4. 04-三剑客正则-正则vs通配符<span class="token punctuation">)</span>.flv
+sz Linux三剑客超全超详情教程（grep、sed、awk入门到精通有这一套足够了） <span class="token punctuation">(</span>P5. 05-三剑客正则-基础正则01<span class="token punctuation">)</span>.flv<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>思路：<code>sed -r</code>来开启正则功能，将要匹配的内容，用括号括起来。<code>\1</code>，引用第一个匹配的内容。<code>\0</code>，匹配该行。然后转换成数字来排序。考虑到要处理的内容中有空格，故换成了<code>---</code>分隔。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ls</span> *.flv <span class="token operator">|</span><span class="token function">sed</span> -r <span class="token string">'s#^.*P(.*)\. .*<span class="token variable">$#</span><span class="token entity" title="\1">\1</span>---<span class="token entity" title="\0">\0</span>#'</span> <span class="token operator">|</span><span class="token function">sort</span> -n <span class="token operator">|</span><span class="token function">awk</span> -F<span class="token string">'---'</span> <span class="token string">'&#123;print "sz "<span class="token variable">$2</span>&#125;'</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>突然发现：</p>
+<blockquote>
+<p>因文件名中包含了空格啥的，我用*来匹配。则出现如下方式。直接按数字循环，即可。也不用排序了。</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">ls <span class="token operator">*</span><span class="token number">20</span><span class="token operator">*</span><span class="token punctuation">.</span>flv
+sz <span class="token operator">*</span><span class="token number">20</span><span class="token operator">*</span><span class="token punctuation">.</span>flv
+
+seq <span class="token number">1</span> <span class="token number">20</span> <span class="token operator">|</span>awk <span class="token string">'&#123;print "ls *"$0"*.flv"&#125;'</span><span class="token operator">|</span>sh  <span class="token comment">-- 尽量避免出现重复的</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="统计文件个数"><a href="#统计文件个数" class="headerlink" title="统计文件个数"></a>统计文件个数</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 统计月的文件夹</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">31</span><span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token function">ls</span> /addr7/full_piece/real/202105<span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">printf</span> <span class="token string">'%02d'</span> $each<span class="token variable">`</span></span>/*00.csv<span class="token operator">|</span><span class="token function">wc</span> -l<span class="token punctuation">;</span><span class="token keyword">done</span>
+
+<span class="token comment"># </span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">31</span><span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> 
+	<span class="token assign-left variable">path</span><span class="token operator">=</span>/addr7/full_piece/real/202105<span class="token variable"><span class="token variable">`</span><span class="token builtin class-name">printf</span> <span class="token string">'%02d'</span> $each<span class="token variable">`</span></span>/*00.csv <span class="token punctuation">;</span>
+	<span class="token builtin class-name">echo</span> <span class="token variable">$path</span><span class="token punctuation">;</span>  <span class="token comment"># 没有想到，居然是一批目录，通配符号已经被解释了</span>
+	<span class="token function">ls</span> <span class="token variable">$path</span><span class="token operator">|</span><span class="token function">wc</span> -l <span class="token punctuation">;</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>csearch提取函数</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"> csearch <span class="token string">"create or replace function"</span> <span class="token operator">|</span><span class="token function">awk</span> -F <span class="token string">':'</span> <span class="token string">'&#123;print <span class="token variable">$2</span>&#125;'</span> <span class="token operator">|</span><span class="token function">sort</span> -u <span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'s/^/c:/;s#\#/#g'</span> <span class="token operator">></span> functions.txt
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">cat</span> functions.txt<span class="token variable">`</span></span><span class="token punctuation">;</span> <span class="token keyword">do</span>  <span class="token function">sed</span> -n <span class="token string">'/create or replace function/,/language/p'</span> <span class="token variable">$each</span> <span class="token operator">>></span> plpgsql.txt <span class="token punctuation">;</span><span class="token keyword">done</span>
+<span class="token comment"># 每个language 后面增加空行的</span>
+<span class="token function">sed</span> -i <span class="token string">'/language pl/a <span class="token entity" title="\\">\\</span>n<span class="token entity" title="\n">\n</span><span class="token entity" title="\n">\n</span>'</span>  plpgsql.txt
+<span class="token comment"># 上面的为啥是 \\n  因为\\n输出的是 回车</span>
+<span class="token comment"># 如果是  \n  结果就会输出一个 换行 n 字母。  貌似是吞了一个 \</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="网络状态统计"><a href="#网络状态统计" class="headerlink" title="网络状态统计"></a>网络状态统计</h3><p>time_await较高，然后自己搜到如下命令。</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/45102654">https://zhuanlan.zhihu.com/p/45102654</a></p>
+<pre class="line-numbers language-none"><code class="language-none">netstat -an | awk &#39;&#x2F;^tcp&#x2F; &#123;++State[$NF]&#125;END&#123;for(key in State)print key &quot;\t&quot; State[key]&#125;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="转换为csv"><a href="#转换为csv" class="headerlink" title="转换为csv"></a>转换为csv</h3><p>原理很简单，就是替换分隔，遇到双引号，转换成两个双引号。（可能因为要转义，显得难懂一些）</p>
+<blockquote>
+<p><code>$1 = $1</code> 为啥要加这一句，我还不懂，但是两者差别很大。测试过，只要 数字不超过本身的长度即可，超过了，则在末尾多出很多多余的列。如有3列 ，<code>$2 = $2</code>,<code>$3 = $3</code>，也是可以的。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'BEGIN&#123;FS="<span class="token entity" title="\t">\t</span>";OFS="<span class="token entity" title="\&quot;">\"</span>,<span class="token entity" title="\&quot;">\"</span>"&#125;&#123;gsub(/"/,"<span class="token entity" title="\&quot;">\"</span><span class="token entity" title="\&quot;">\"</span>"); <span class="token variable">$1</span> = <span class="token variable">$1</span>;printf "<span class="token entity" title="\&quot;">\"</span>%s<span class="token entity" title="\&quot;">\"</span><span class="token entity" title="\n">\n</span>",<span class="token variable">$0</span>&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">awk &#39;&#123;a[$1]+&#x3D;$3&#125;END&#123;for(i in a)print a[i],i&#125;&#39; vm_cpu_cores.txt |sort -n<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="csv统计之坑"><a href="#csv统计之坑" class="headerlink" title="csv统计之坑"></a>csv统计之坑</h3><p>下面命令，csv统计行数有非常大的出入。</p>
+<p>。首先<code>uniq -u</code>的含义，并不是去重，而是只打印唯一行，即凡是重复的就不统计。另外，最好不要使用shell来统计行数，因为字段里面可能会有<code>\n</code>等符号。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -name <span class="token string">"tu*.csv"</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">cat</span> <span class="token operator">|</span> <span class="token function">cut</span> -d , -f <span class="token number">1</span> <span class="token operator">|</span> <span class="token function">sort</span> <span class="token operator">|</span><span class="token function">uniq</span> -u <span class="token operator">|</span> <span class="token function">wc</span> -l<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="fork炸弹"><a href="#fork炸弹" class="headerlink" title="fork炸弹"></a>fork炸弹</h3><p>非常简短的代码，能实现递归的fork，几秒之类，系统就能被资源耗尽，无响应。</p>
+<blockquote>
+<p>冒号即为函数名称。通过管道，再形成调用。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">:<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token builtin class-name">:</span><span class="token operator">|</span><span class="token builtin class-name">:</span><span class="token operator">&amp;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="查看附近几行"><a href="#查看附近几行" class="headerlink" title="查看附近几行"></a>查看附近几行</h3><p>查找特定的内容，并想输出附近几行，<code>grep -n</code> （n为数字）非常的好用。</p>
+<p>尝试用sed命令，但是<code>seq 1 10|sed -n &#39;/2/~6p&#39;</code> ，<code>seq 1 10|sed -n &#39;/2/~/3/p&#39;</code>，这种波浪号语法不支持，只支持逗号<code>,</code>这种。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> -3 <span class="token string">"string_agg"</span> /yd/td2/runtime/cron/log.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>扩展</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> -5 <span class="token string">'parttern'</span> inputfile //打印匹配行的前后5行
+<span class="token function">grep</span> -C <span class="token number">5</span> <span class="token string">'parttern'</span> inputfile //打印匹配行的前后5行
+<span class="token function">grep</span> -A <span class="token number">5</span> <span class="token string">'parttern'</span> inputfile //打印匹配行的后5行
+<span class="token function">grep</span> -B <span class="token number">5</span> <span class="token string">'parttern'</span> inputfile //打印匹配行的前5行
+
+-- 查找到行好，配合  <span class="token function">sed</span> -n <span class="token string">'1,2p'</span> 这中语法，来查看细节<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="统计导入总数"><a href="#统计导入总数" class="headerlink" title="统计导入总数"></a>统计导入总数</h3><p>sed 虽然也能匹配到，但是，用grep分来步来做，更直接一些。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> -n log.txt<span class="token operator">|</span> <span class="token function">grep</span> 打标 <span class="token operator">|</span><span class="token function">tail</span> -2
+<span class="token comment"># 每行的数据是这样的  COPY 4167873</span>
+<span class="token function">sed</span> -n <span class="token string">'215611,215807p'</span> log.txt <span class="token operator">|</span><span class="token function">grep</span> COPY <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'BEGIN&#123;sum=0&#125;&#123;sum+=<span class="token variable">$2</span>&#125;END&#123;print sum&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="wget提交form表单"><a href="#wget提交form表单" class="headerlink" title="wget提交form表单"></a>wget提交form表单</h3><pre class="line-numbers language-none"><code class="language-none">wget --post-data&#x3D;&quot;question&#x3D;怎么了&amp;user&#x3D;zhenghongxi&quot;  
+wget --post-data&#x3D;\&quot;question&#x3D;怎么了\&amp;user&#x3D;zhenghongxi\&quot;  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="代码模块-写文件"><a href="#代码模块-写文件" class="headerlink" title="代码模块/写文件"></a>代码模块/写文件</h3><p>遇到动态写shell到文件，有的时候会用cat。下面是另外一种方式，用大花括号包裹起来的，作为一个整体，相当于会运行一个子shell进程，输出的命令写到文件里面。</p>
+<p>借鉴。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">'#!/bin/sh'</span><span class="token punctuation">;</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">'set -e'</span><span class="token punctuation">;</span>
+    <span class="token builtin class-name">echo</span><span class="token punctuation">;</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">'dirname "<span class="token variable"><span class="token variable">$(</span><span class="token function">dirname</span> <span class="token string">"$(readlink -f "<span class="token variable"><span class="token variable">$(</span><span class="token function">which</span> javac <span class="token operator">||</span> <span class="token function">which</span> java<span class="token variable">)</span></span>"</span><span class="token variable">)</span></span>")"'</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> <span class="token operator">></span> test.sh
+<span class="token operator">&amp;&amp;</span> <span class="token function">chmod</span> +x test.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>以前用到的方式：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 后台运行</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment"># 多个命令</span>
+<span class="token punctuation">&#125;</span> <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="yii2快速导入模块"><a href="#yii2快速导入模块" class="headerlink" title="yii2快速导入模块"></a>yii2快速导入模块</h3><p>快速的生成指定模块下的use 函数。</p>
+<pre class="line-numbers language-sh" data-language="sh"><code class="language-sh">ls *&#x2F;models&#x2F;*.php |sed &#39;s#&#x2F;#\\#g;s&#x2F;.php$&#x2F;;&#x2F;g;s&#x2F;^&#x2F;use &#x2F;&#39;
+
+
+# 查找函数
+grep function common&#x2F;models&#x2F;DoubleLiving.php <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="秒用"><a href="#秒用" class="headerlink" title="{}秒用"></a>{}秒用</h3><p>比如想在特定的路径下搜索代码，非常的方便。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> <span class="token string">'api/v1/namespaces'</span> */<span class="token punctuation">&#123;</span>contro*,model*<span class="token punctuation">&#125;</span>/*.php
+<span class="token comment">#或者</span>
+<span class="token function">grep</span> <span class="token string">'api/v1/namespaces'</span> */<span class="token punctuation">&#123;</span>contro,model<span class="token punctuation">&#125;</span>*/*.php<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>或者备份，</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cp</span> config.php<span class="token punctuation">&#123;</span>,.bak<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="统计代码"><a href="#统计代码" class="headerlink" title="统计代码"></a>统计代码</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span>  -oh <span class="token string">'array_\w*'</span> vendor/yiisoft/yii2/*/*.php <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span><span class="token function">uniq</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>-h 隐藏文件名称</li>
+<li>-o 只显示匹配到的内容</li>
+</ul>
+<h3 id="统计当前目录下的文件格式"><a href="#统计当前目录下的文件格式" class="headerlink" title="统计当前目录下的文件格式"></a>统计当前目录下的文件格式</h3><p>下面的小括号，可要可不要，结果一样。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">(</span>for <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> *.*<span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$&#123;each<span class="token operator">##</span>*.&#125;</span><span class="token punctuation">;</span><span class="token keyword">done</span><span class="token punctuation">)</span><span class="token operator">|</span><span class="token function">sort</span><span class="token operator">|</span><span class="token function">uniq</span> -c <span class="token operator">|</span><span class="token function">sort</span> -rn
+
+<span class="token comment"># 貌似还有一点问题</span>
+<span class="token punctuation">(</span>for <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">find</span> <span class="token builtin class-name">.</span> -type f<span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$&#123;each<span class="token operator">##</span>*.&#125;</span><span class="token punctuation">;</span><span class="token keyword">done</span><span class="token punctuation">)</span><span class="token operator">|</span><span class="token function">sort</span><span class="token operator">|</span><span class="token function">uniq</span> -c <span class="token operator">|</span><span class="token function">sort</span> -rn<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="sed-d"><a href="#sed-d" class="headerlink" title="sed   !d"></a>sed   !d</h3><p>反向操作，666</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sed</span> -e <span class="token string">'/abc/,/efg/!d'</span> 
+<span class="token comment"># 等价于  sed -n '/abc/,/efg/p' file</span>
+
+<span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span> <span class="token operator">|</span><span class="token function">sed</span> -e <span class="token string">'/2/,/5/!d'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="sed-条件替换"><a href="#sed-条件替换" class="headerlink" title="sed 条件替换"></a>sed 条件替换</h3><p>同理，还有条件删除、条件添加，等等。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># /class/ 正则匹配到该条件，才会触发 s 替换</span>
+<span class="token function">sed</span> -i <span class="token string">'/class/s/Demo/ThreadDemo/'</span> snippet/java/ThreadDemo.java<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="grep如何在多行匹配内容"><a href="#grep如何在多行匹配内容" class="headerlink" title="grep如何在多行匹配内容"></a>grep如何在多行匹配内容</h3><p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/2686147/how-to-find-patterns-across-multiple-lines-using-grep">grep</a></p>
+<ul>
+<li><p>if ‘abc’ and ‘efg’ can be on the same line:</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl">grep <span class="token operator">-</span>zl <span class="token string">'abc.*efg'</span> <span class="token operator">&lt;</span>your list of files<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>if ‘abc’ and ‘efg’ must be on different lines:</p>
+<pre class="line-numbers language-perl" data-language="perl"><code class="language-perl">grep <span class="token operator">-</span>Pzl <span class="token string">'(?s)abc.*\n.*efg'</span> <span class="token operator">&lt;</span>your list of files<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li><code>-P</code> Use perl compatible regular expressions (PCRE).</li>
+<li><code>-z</code> Treat the input as a set of lines, each terminated by a zero byte instead of a newline. i.e. grep treats the input as a one big line. Note that if you don’t use <code>-l</code> it will display matches followed by a NUL char, see comments.</li>
+<li><code>-l</code> list matching filenames only.</li>
+<li><code>(?s)</code> activate PCRE_DOTALL, which means that ‘.’ finds any character or newline.</li>
+</ul>
+<h3 id="for-in-多行的困扰"><a href="#for-in-多行的困扰" class="headerlink" title="for in 多行的困扰"></a>for in 多行的困扰</h3><p>空格分隔，在for里面会当成一个整体。故，可以用sed 、tr等命令，进行转换。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 当成整体，结果只输出一行</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token string">'1 2 3 4'</span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span><span class="token keyword">done</span>
+
+<span class="token comment"># 转换多行</span>
+<span class="token builtin class-name">echo</span> <span class="token string">'1 2 3 4'</span> <span class="token operator">|</span><span class="token function">tr</span> <span class="token string">'[ ]'</span> <span class="token string">'<span class="token entity" title="\n">\n</span>'</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 再搭配for使用</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">$(</span><span class="token builtin class-name">echo</span> <span class="token string">'1 2 3 4'</span> <span class="token operator">|</span><span class="token function">tr</span> <span class="token string">'[ ]'</span> <span class="token string">'<span class="token entity" title="\n">\n</span>'</span><span class="token variable">)</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span><span class="token keyword">done</span>
+
+
+<span class="token assign-left variable">mytest</span><span class="token operator">=</span><span class="token string">'
+1
+2
+3
+4
+'</span>
+<span class="token comment"># echo $mytest 跟 echo "$mytest"  显示不一样，后者原样输出</span>
+<span class="token comment"># 按下面即可</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token string">"<span class="token variable">$mytest</span>"</span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span><span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="for-管道"><a href="#for-管道" class="headerlink" title="for + 管道"></a>for + 管道</h3><p>处理多行数据，我一般习惯用 <code>awk</code>，其实，for，也很好。</p>
+<p>备注：（done后面不能加分号，为啥？因为，写其他命令的时候，也没有加啊，sort 后面加;肯定也报错），另外，while也是可以的</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> **/*.jpg<span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$&#123;each<span class="token operator">%</span><span class="token operator">/</span>*&#125;</span><span class="token punctuation">;</span><span class="token keyword">done</span> <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span><span class="token function">uniq</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="while-read-管道"><a href="#while-read-管道" class="headerlink" title="while read + 管道"></a>while read + 管道</h3><p>直接将变量读入到each 中，然后进行处理。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">seq</span> <span class="token number">100</span><span class="token operator">|</span><span class="token keyword">while</span> <span class="token builtin class-name">read</span> each<span class="token punctuation">;</span><span class="token keyword">do</span>  <span class="token builtin class-name">echo</span> <span class="token variable">$each</span> <span class="token punctuation">;</span><span class="token builtin class-name">echo</span> <span class="token string">'####'</span><span class="token punctuation">;</span><span class="token keyword">done</span>
+<span class="token comment"># 再接输出</span>
+<span class="token function">seq</span> <span class="token number">100</span><span class="token operator">|</span><span class="token keyword">while</span> <span class="token builtin class-name">read</span> each<span class="token punctuation">;</span><span class="token keyword">do</span>  <span class="token builtin class-name">echo</span> <span class="token variable">$each</span> <span class="token punctuation">;</span><span class="token builtin class-name">echo</span> <span class="token string">'####'</span><span class="token punctuation">;</span><span class="token keyword">done</span><span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s/#/bb/g'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>对比for+管道，whileread更灵活。for貌似必须要放在最开始，参数，必须要先放到in后面的参数里面。</p>
+<h3 id="awk分隔文件"><a href="#awk分隔文件" class="headerlink" title="awk分隔文件"></a>awk分隔文件</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/emanlee/p/13905310.html">参考1</a>  <a target="_blank" rel="noopener" href="https://blog.csdn.net/chinnrai/article/details/14167571">参考2</a></p>
+<p>在数据分析的时候，希望将不同的数据拆分到不同的文件中。故可以使用下面的命令</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">10</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$0</span> >> <span class="token variable">$1</span>.txt&#125;'</span>
+
+<span class="token comment"># 字符串处理  注意，字符串拼接，直接使用双引号即可</span>
+<span class="token comment"># 没有right函数，使用 如下计算</span>
+<span class="token assign-left variable">fn</span><span class="token operator">=</span>substr<span class="token punctuation">(</span><span class="token variable">$1</span>,length<span class="token punctuation">(</span><span class="token variable">$1</span><span class="token punctuation">)</span>,1<span class="token punctuation">)</span><span class="token string">".txt"</span>
+
+<span class="token function">seq</span> <span class="token number">1</span> <span class="token number">100</span> <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;fn=substr(<span class="token variable">$1</span>,length(<span class="token variable">$1</span>),1)".txt";print <span class="token variable">$0</span> >> fn&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>文件拆分如下：</p>
+<p>貌似效率并不是太高（ &gt;&gt; 会频繁的打开、关闭文件吗？？？？）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'&#123;fn=substr(<span class="token variable">$4</span>,length(<span class="token variable">$4</span>)-4,4)".csv";print <span class="token variable">$0</span> >> fn&#125;'</span>   /etl/*/tb_*.csv<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>100G文件，大概10分钟</p>
+<h3 id="awk去重"><a href="#awk去重" class="headerlink" title="awk去重"></a>awk去重</h3><p>貌似也能按某列，去重。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'!a[<span class="token variable">$0</span>]++'</span> seq.txt <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="xargs-并发"><a href="#xargs-并发" class="headerlink" title="xargs 并发"></a>xargs 并发</h3><pre class="line-numbers language-none"><code class="language-none">xargs -P 并发数<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="bin-sh"><a href="#bin-sh" class="headerlink" title="bin/sh"></a>bin/sh</h3><p>好像是在一个容器内看到如下的代码：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">/bin/sh -c <span class="token assign-left variable"><span class="token environment constant">TERM</span></span><span class="token operator">=</span>xterm-256color<span class="token punctuation">;</span> <span class="token builtin class-name">export</span> <span class="token environment constant">TERM</span><span class="token punctuation">;</span> <span class="token punctuation">[</span> -x /bin/bash <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token punctuation">[</span> -x /usr/bin/script <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> /usr/bin/script -q -c <span class="token string">"/bin/bash"</span> /dev/null <span class="token operator">||</span> <span class="token builtin class-name">exec</span> /bin/bash<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token builtin class-name">exec</span> /bin/sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>代码大概的含义是：</p>
+<p><code>/bin/bash</code>如果存在，则优先运行<code>/usr/bin/script</code>，否则运行<code>/bin/bash</code>。</p>
+<p>不存在时，则运行  <code>/bin/sh</code>。（兜底方案）</p>
+<p>疑问：为啥<code>bash</code>、<code>sh</code>都是用 exec来运行呢？</p>
+<h3 id="json取巧处理"><a href="#json取巧处理" class="headerlink" title="json取巧处理"></a>json取巧处理</h3><p>懒得调用其他的脚本语言来处理了，直接使用很长的省略号，来匹配固定字数的字符。比如下面，是为了获取订单号。配合<code>awk</code>取出数字。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">curl</span>  -s --location --request GET <span class="token string">"<span class="token variable">$API_HOST</span>/v1/warning_order/list?&amp;limit=&amp;status=1"</span> <span class="token punctuation">\</span>
+--header <span class="token string">"token: <span class="token variable">$TOKEN</span>"</span> <span class="token punctuation">\</span>
+--header <span class="token string">'appId: w4vr9fowiwgjwyb8'</span> <span class="token punctuation">\</span>
+--header <span class="token string">'User-Agent: apifox/1.0.0 (https://www.apifox.cn)'</span> <span class="token operator">|</span><span class="token function">grep</span> -o <span class="token string">'"order_id":".................................'</span>  <span class="token operator">|</span><span class="token function">awk</span> -F<span class="token string">'"'</span>  <span class="token string">'&#123;print <span class="token variable">$4</span>&#125;'</span>  <span class="token operator">></span> undo_order_list.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果，上面的步骤，还需要在下一步处理，则可以，导出到文件，或者定义成一个函数。或者，懒的话，直接丢到<code>$()</code>等语法块，还可以配合管道，接上<code>while read each</code>等方式。</p>
+<p>也可以使用下面的方式，来匹配整</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">curl</span> <span class="token punctuation">..</span><span class="token punctuation">..</span>. <span class="token operator">|</span> <span class="token function">grep</span> -o <span class="token string">'"order_id":"[^"]*'</span><span class="token operator">|</span><span class="token function">grep</span> -o <span class="token punctuation">[</span><span class="token number">0</span>-9<span class="token punctuation">]</span>*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="grep直接正则匹配"><a href="#grep直接正则匹配" class="headerlink" title="grep直接正则匹配"></a>grep直接正则匹配</h3><p>grep参数<code>-P</code> 使用perl的正则匹配模式。</p>
+<pre class="line-numbers language-none"><code class="language-none">wget -O- https:&#x2F;&#x2F;zenodo.org&#x2F;record&#x2F;5092942 | grep -oP &#39;https:&#x2F;&#x2F;zenodo.org&#x2F;record&#x2F;5092942&#x2F;files&#x2F;flightlist_\d+_\d+\.csv\.gz&#39; | xargs wget<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="ps查看内存占用情况"><a href="#ps查看内存占用情况" class="headerlink" title="ps查看内存占用情况"></a>ps查看内存占用情况</h3><p>%cpu进程的cpu占用率%mem进程的内存占用率vsz进程所使用的虚存的大小</p>
+<p>Rss进程使用的驻留集大小或者是实际内存的大小</p>
+<p>TTY与进程关联的终端(TTY)</p>
+<p>STAT检查的状态:进程状态使用字符表示的，如R(运行正在运行或准备运行)、S(休眠睡眠)、I(空闲空闲)、Z(僵死)、D(不可中断的睡眠，通常是I/O))、P(等待交换页)、W(换出，表示当前页面不在内存)、N(低优先级任务))T(终止)、W没有驻留页面)</p>
+<p>START(进程启动时间和日期)</p>
+<p>TIME;(进程使用的总cpu时间)</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ps</span> aux <span class="token operator">|</span><span class="token function">grep</span> php  <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$6</span>/1024 "M" "<span class="token entity" title="\t">\t</span>" <span class="token variable">$0</span>&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>显示进程是什么时候启动的，<code>lstart</code></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">ps</span> -eo pid,lstart,etime,cmd <span class="token operator">|</span><span class="token function">grep</span> php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="k8s获取集群pod状态"><a href="#k8s获取集群pod状态" class="headerlink" title="k8s获取集群pod状态"></a>k8s获取集群pod状态</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">kubectl get pods -A <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'NR>1&#123;arr[<span class="token variable">$4</span>]+=1&#125;END&#123;for(n in arr)&#123;printf "%30-s<span class="token entity" title="\t">\t</span>%5d<span class="token entity" title="\n">\n</span>" ,n,arr[n]&#125;&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h3 id="查看网络连接"><a href="#查看网络连接" class="headerlink" title="查看网络连接"></a>查看网络连接</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查看网络连接</span>
+ss -t4n state time-wait sport <span class="token operator">=</span> :80
+
+<span class="token comment"># 使用awk 来统计</span>
+ss -t4n state time-wait sport <span class="token operator">=</span> :80 <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;split(<span class="token variable">$4</span>,ip);s[ip[1]]++&#125; END&#123;for (i in s )&#123; if (s[i]>10)print i,s[i]&#125;&#125;'</span>
+
+<span class="token comment"># 加入防火墙</span>
+<span class="token builtin class-name">echo</span> iptables -I INPUT -s <span class="token variable">$ip</span> -j DROP
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="awk多行为单位，统计"><a href="#awk多行为单位，统计" class="headerlink" title="awk多行为单位，统计"></a>awk多行为单位，统计</h3><p>使用ansible统计机器的cpu等信息。亮点在于：多行内容，提取感兴趣的内容。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+ansible all -m shell -a <span class="token string">"cat /proc/cpuinfo|grep proce|wc -l"</span> <span class="token operator">|</span><span class="token function">tee</span> log_cpu.txt
+
+<span class="token function">cat</span> log_cpu.txt  <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'NR%2==1&#123;printf <span class="token variable">$1</span> "<span class="token entity" title="\t">\t</span>"&#125;NR%2==0&#123;printf <span class="token variable">$0</span> "<span class="token entity" title="\n">\n</span>"&#125;'</span> <span class="token operator">></span> cpu.txt
+<span class="token comment"># 查看内存</span>
+ansible all -m shell -a <span class="token string">"free -h |grep Mem"</span><span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'NR%2==1&#123;printf <span class="token variable">$1</span> "<span class="token entity" title="\t">\t</span>"&#125;NR%2==0&#123;printf <span class="token variable">$2</span> "<span class="token entity" title="\n">\n</span>"&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h3><p>有个很疑惑的问题，为啥要使用 exec这个命令呢？ 直接使用vim不就可以了？</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">exec</span> <span class="token function">vim</span> <span class="token string">"<span class="token variable">$@</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+<h3 id="sed-grep-只替换指定文件"><a href="#sed-grep-只替换指定文件" class="headerlink" title="sed + grep 只替换指定文件"></a>sed + grep 只替换指定文件</h3><p><a target="_blank" rel="noopener" href="https://blog.fatedier.com/2016/03/25/using-sed-to-batch-replace-strings-in-files/">参考文章</a>。</p>
+<p>这应该是一种常用的套路。像sed、mv、wc等等命令都可以接n多个文件名。而这些文件名通过计算而来，比较方便。grep命令，<code>-r</code>代表递归查找当前文件夹，而<code>-l</code>参数，只显示文件名，而不显示具体查找出的内容（文件名只会出现一次）。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">sed</span> -n <span class="token string">"s?](.*|pic|?](http://xxx.clouddn.com|pic|?gp"</span> <span class="token variable"><span class="token variable">`</span><span class="token function">grep</span> <span class="token string">"|pic|"</span> -rl ./<span class="token variable">`</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h3 id="js资源版本号替换"><a href="#js资源版本号替换" class="headerlink" title="js资源版本号替换"></a>js资源版本号替换</h3><blockquote>
+<p>主要的难点：搞清楚，sed里面的\d不能用，只能使用[0-9]，另外，记得双引号内的变量才会解析。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token assign-left variable">VERSION</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">'+%Y%m%d%H%M%S'</span><span class="token variable">`</span></span>
+
+<span class="token function">sed</span> -i <span class="token string">"s/ver=[0-9]*/ver=<span class="token variable">$VERSION</span>/g"</span>  frontend/web/safe_list/*.html
+<span class="token function">sed</span> -i <span class="token string">"s/ver=[0-9]*/ver=<span class="token variable">$VERSION</span>/g"</span>  frontend/web/safe_list/html/*.html<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="找不到指定内容，则输出文件名称"><a href="#找不到指定内容，则输出文件名称" class="headerlink" title="找不到指定内容，则输出文件名称"></a>找不到指定内容，则输出文件名称</h3><p>一开始的想法是，先grep后获取文件命令，再对比，那些文件名不在列表中。感觉该思路略麻烦，遂直接采用下面的方式。</p>
+<blockquote>
+<p>for 直接用来遍历文件夹。 grep的输出结果直接丢弃。并根据是否成功，采取进一步的操作。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> backend/controllers/*.php<span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token function">grep</span> <span class="token string">'AccessControl'</span> <span class="token variable">$each</span> <span class="token operator">></span>/dev/null <span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -ne <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span> 
+        <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span>
+    <span class="token keyword">fi</span><span class="token punctuation">;</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="if-else"><a href="#if-else" class="headerlink" title="if-else"></a>if-else</h3><p>属于低配版的If else。当然，如果无论测试结果是否为true都执行，则更改为顺序语句即可。即<code>cmd1;cmd2;cmd3</code>。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span> <span class="token string">'yes'</span> <span class="token operator">==</span> <span class="token string">'yes'</span> <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token number">1</span> <span class="token operator">||</span> <span class="token builtin class-name">echo</span> <span class="token number">2</span>
+<span class="token comment"># 甚至嵌入到其他表达式中。``  或  $( 命令 )</span>
+<span class="token assign-left variable">RESULT</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token punctuation">[</span> <span class="token string">'yes'</span> <span class="token operator">==</span> <span class="token string">'yes'</span> <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token number">1</span> <span class="token operator">||</span> <span class="token builtin class-name">echo</span> <span class="token number">2</span><span class="token variable">)</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="CMD"><a href="#CMD" class="headerlink" title="$CMD"></a>$CMD</h3><p>适用于，先展示要执行的命令，后执行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#先展开，后执行</span>
+<span class="token assign-left variable">CMD</span><span class="token operator">=</span><span class="token string">"echo 1"</span>
+<span class="token variable">$CMD</span>  
+
+
+<span class="token comment"># 也可以，但是会作为一个整体，即不能加任何参数</span>
+<span class="token assign-left variable">CMD</span><span class="token operator">=</span><span class="token string">"ls"</span>
+<span class="token comment"># CMD="ls -alh" # 会作为一个整体识别，而出错。</span>
+<span class="token string">"<span class="token variable">$CMD</span>"</span>
+
+
+<span class="token comment"># 替代方法</span>
+<span class="token assign-left variable">CMD</span><span class="token operator">=</span><span class="token string">"ls -alh"</span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$CMD</span> <span class="token operator">|</span><span class="token function">sh</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$CMD</span>"</span> <span class="token operator">|</span><span class="token function">sh</span> <span class="token comment"># 暂未发现差别</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="gum"><a href="#gum" class="headerlink" title="gum"></a>gum</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span> <span class="token variable"><span class="token variable">$(</span>gum choose <span class="token function">yes</span> no<span class="token variable">)</span></span> <span class="token operator">==</span> <span class="token string">"yes"</span> <span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token function">yes</span> <span class="token operator">||</span> <span class="token builtin class-name">echo</span> no
+gum confirm <span class="token string">'continue ,now?'</span>  <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token function">yes</span> <span class="token operator">||</span> <span class="token builtin class-name">echo</span> no
+
+<span class="token comment"># 从指定文件中选择一个执行</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -type f -name <span class="token string">"*.sh"</span> -exec <span class="token function">grep</span> <span class="token string">"^docker"</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator">|</span><span class="token function">grep</span> run <span class="token operator">|</span><span class="token function">sort</span> -u <span class="token operator">|</span>gum filter<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="统计每个文件夹下的文件数量"><a href="#统计每个文件夹下的文件数量" class="headerlink" title="统计每个文件夹下的文件数量"></a>统计每个文件夹下的文件数量</h3><blockquote>
+<p>关注点：遍历文件，要防止文件名中有空格，故最好采用  <code>in  *.flv</code>这种格式，其返回的字符串，如果有空格，应该会包裹上引号，防止被空格拆分。而 ls后面的，也是一样的，继续包裹保护。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> *.flac<span class="token punctuation">;</span><span class="token keyword">do</span>  <span class="token builtin class-name">echo</span> <span class="token variable">$i</span>    <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> <span class="token string">"<span class="token variable">$i</span>/"</span>*<span class="token string">".flac"</span><span class="token operator">|</span><span class="token function">wc</span> -l<span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="拷贝目录"><a href="#拷贝目录" class="headerlink" title="拷贝目录"></a>拷贝目录</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -type d -exec <span class="token function">mkdir</span> -p <span class="token string">"/e/教程/"</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+
+<span class="token comment"># 清理空目录</span>
+ <span class="token function">find</span> <span class="token builtin class-name">.</span> -type d -empty -exec <span class="token function">rmdir</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="xargs并发请求示例"><a href="#xargs并发请求示例" class="headerlink" title="xargs并发请求示例"></a>xargs并发请求示例</h3><p>参数 -P 指定并发的进程数。</p>
+<p>-i   可以使用大括号，来表示要引用到的参数。</p>
+<p>-n 表示每次只消耗n个参数。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$1</span>&#125;'</span> /var/log/nginx/access.log <span class="token operator">|</span><span class="token function">sort</span> -u <span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span> -P <span class="token number">3</span> -i python ~/ip_location.py <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="awk之执行命令system"><a href="#awk之执行命令system" class="headerlink" title="awk之执行命令system"></a>awk之执行命令system</h3><p>使用system函数，来调用系统的命令，从而能调用其他任何的命令。需要注意的是，<code>system(&quot;这里面参数不会被解析&quot;)</code>，一般紧挨着双引号外面放即可。</p>
+<p>顺便讲一下，为啥awk命令参数，都用<code>&#39;&#123;print ...&#125;&#39;</code>这种单引号包裹，这是为了保护里面的<code>$1</code>这些变量，这些变量实际并不需要被外面的bash来带入进去，使用了<code>$</code>变量，而又没有保护的话，那么肯定会报错。</p>
+<p>那么，如果我真的需要外面的参数怎么办？<strong>放在引号外，即可。它在shell里面，即为字符串的拼接功能。</strong></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">awk</span> <span class="token string">'&#123;print <span class="token variable">$1</span>&#125;'</span> /var/log/nginx/access.log <span class="token operator">|</span><span class="token function">sort</span><span class="token operator">|</span><span class="token function">uniq</span> -c <span class="token operator">|</span><span class="token function">sort</span> -rn <span class="token operator">|</span><span class="token function">awk</span> <span class="token string">'&#123;printf <span class="token variable">$1</span>"<span class="token entity" title="\t">\t</span>";system("python3 /home/chaofml/git/snippet/python/ip_location.py "<span class="token variable">$2</span>)&#125;'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="查找md文件中的引入链接"><a href="#查找md文件中的引入链接" class="headerlink" title="查找md文件中的引入链接"></a>查找md文件中的引入链接</h3><p>核心点是，开启grep的perl模式。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> --help<span class="token operator">|</span><span class="token function">grep</span> regexp
+  -E, --extended-regexp     PATTERN is an extended regular expression <span class="token punctuation">(</span>ERE<span class="token punctuation">)</span>
+  -G, --basic-regexp        PATTERN is a basic regular expression <span class="token punctuation">(</span>BRE<span class="token punctuation">)</span>
+  -P, --perl-regexp         PATTERN is a Perl regular expression
+  -e, --regexp<span class="token operator">=</span>PATTERN      use PATTERN <span class="token keyword">for</span> matching
+  -w, --word-regexp         force PATTERN to match only whole words
+  -x, --line-regexp         force PATTERN to match only whole lines<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>正则部分讲解</p>
+<pre class="line-numbers language-none"><code class="language-none">https?:&#x2F;&#x2F;.*?             # 想要匹配的内容
+\(https?:&#x2F;&#x2F;.*?\)         # 带上边界条件，但又不是我想要的
+\(       \)              # 括号，本身也是正则内的语法，要用到转义
+(?&lt;&#x3D;\()                  # 反向预测 
+(?&#x3D;\))                   # 正向预测
+(?&lt;&#x3D;\()https?:&#x2F;&#x2F;.*?(?&#x3D;\))# 最终结果<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>4</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -maxdepth <span class="token number">4</span> -name <span class="token string">"*.md"</span>  -exec <span class="token function">grep</span> -oP <span class="token string">'(?&lt;=\()https?://.*?(?=\))'</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="split"><a href="#split" class="headerlink" title="split"></a>split</h3><blockquote>
+<p>使用cat * 来合并。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -maxdepth <span class="token number">1</span>  -type f  -size +100M -print<span class="token punctuation">;</span>
+
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -maxdepth <span class="token number">1</span>  -type f  -size +100M -exec <span class="token function">split</span> -b 80M <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>. <span class="token punctuation">\</span><span class="token punctuation">;</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -maxdepth <span class="token number">1</span>  -type f  -size +100M -exec <span class="token function">rm</span> -f <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+<h3 id="bash-sh"><a href="#bash-sh" class="headerlink" title="bash *.sh"></a>bash *.sh</h3><p>为啥不能直接使用<code>bash *.sh</code>这种方式呢？这是因为<code>bash test.sh 参数1 参数2</code>，其他都是作为参数传入的。</p>
+<pre class="line-numbers language-none"><code class="language-none">cat *.sh |bash |tee log.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="ab压测"><a href="#ab压测" class="headerlink" title="ab压测"></a>ab压测</h3><p>注意下，seq命令格式</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># seq 起 步长 终</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">100</span> <span class="token number">100</span> <span class="token number">2000</span><span class="token variable">`</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$i</span><span class="token punctuation">;</span> ab -n <span class="token number">100000</span> -c <span class="token variable">$i</span> -k http://10.172.41.206:8088/index.html <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">|</span><span class="token function">grep</span> <span class="token string">'Requests per second:'</span>  <span class="token punctuation">;</span><span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="watch-监控多条命令"><a href="#watch-监控多条命令" class="headerlink" title="watch 监控多条命令"></a>watch 监控多条命令</h3><p>多条指令，整体用引号包裹。注意，如果内部有引号，可能需要转义。</p>
+<pre class="line-numbers language-none"><code class="language-none">watch &quot;ls page* |wc -l ;ls -lht page*|head -2; ls detail* |wc -l ;ls -lht detail*|head -2;&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+<h3 id="scp-sh"><a href="#scp-sh" class="headerlink" title="scp *.sh"></a>scp *.sh</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token function">scp</span> <span class="token variable"><span class="token variable">`</span><span class="token function">find</span> <span class="token builtin class-name">.</span> -type f -mmin -480 <span class="token operator">|</span><span class="token function">grep</span> -v <span class="token string">'.git'</span><span class="token variable">`</span></span> jobvm:/home/chaofml/git/it-monitor-code
+
+
+<span class="token comment"># atime  -n_day   </span>
+<span class="token comment"># mtime  -n_day </span>
+
+<span class="token comment"># amin  -n_min</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+<h3 id="rm-find"><a href="#rm-find" class="headerlink" title="rm find"></a>rm find</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 配合 ctrl+a  ctrl+e 也非常方便</span>
+<span class="token comment"># 相当于  find -exec rm &#123;&#125; \;</span>
+<span class="token comment"># 如果有for each in ``;do done，则略微麻烦一些</span>
+<span class="token function">rm</span> <span class="token variable"><span class="token variable">`</span><span class="token function">find</span> <span class="token builtin class-name">.</span> -mmin <span class="token number">60</span><span class="token variable">`</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="对比重复文件"><a href="#对比重复文件" class="headerlink" title="对比重复文件"></a>对比重复文件</h3><p>简单的根据文件名，来查找文件是否重复。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span> <span class="token for-or-select variable">each</span> <span class="token keyword">in</span> *.pdf<span class="token punctuation">;</span><span class="token keyword">do</span>  <span class="token builtin class-name">echo</span> <span class="token variable">$each</span><span class="token punctuation">;</span><span class="token function">find</span> <span class="token punctuation">..</span> -type f -name <span class="token string">"<span class="token variable">$each</span>"</span> -exec md5sum <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="mybatis简单分析"><a href="#mybatis简单分析" class="headerlink" title="mybatis简单分析"></a>mybatis简单分析</h3><p>最好使用xml来解析，下面只是一种简单的方式。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> ./main/resources/mybatis  -type f  -iname <span class="token string">"*.xml"</span>  -exec <span class="token function">cat</span> -n <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token operator">></span> mybatis-all.xml
+<span class="token function">grep</span> <span class="token string">'&lt;delete '</span> mybatis-all.xml
+<span class="token function">grep</span> <span class="token string">'&lt;delete '</span> mybatis-all.xml <span class="token operator">|</span> <span class="token function">wc</span> -l
+
+
+<span class="token function">sed</span> -n <span class="token string">'/&lt;delete /,/&lt;\/delete/p;'</span> mybatis-all.xml
+<span class="token function">sed</span> -n <span class="token string">'/&lt;select /,/&lt;\/select/p;'</span> mybatis-all.xml
+<span class="token function">sed</span> -n <span class="token string">'/&lt;update /,/&lt;\/update/p;'</span> mybatis-all.xml
+
+
+<span class="token comment"># 循环</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> insert update <span class="token keyword">select</span> delete<span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$i</span><span class="token punctuation">;</span><span class="token function">sed</span> -n <span class="token string">"/&lt;<span class="token variable">$i</span> /,/&lt;\/<span class="token variable">$i</span>/p;"</span> mybatis-all.xml <span class="token operator">></span> mybatis-<span class="token string">"<span class="token variable">$i</span>"</span>.xml<span class="token punctuation">;</span> <span class="token keyword">done</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> insert update <span class="token keyword">select</span> delete<span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$i</span><span class="token punctuation">;</span><span class="token function">grep</span> <span class="token string">"&lt;<span class="token variable">$i</span> "</span> mybatis-all.xml <span class="token operator">|</span> <span class="token function">wc</span> -l <span class="token punctuation">;</span><span class="token keyword">done</span>
+
+<span class="token comment"># 查看占比</span>
+<span class="token function">wc</span> -l mybatis-*
+
+<span class="token comment"># 统计使用的标签</span>
+<span class="token function">grep</span> -Po <span class="token string">'&lt;[a-zA-Z]+'</span> mybatis-all.xml  <span class="token operator">|</span><span class="token function">sort</span> <span class="token operator">|</span><span class="token function">uniq</span> -c<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="spring-pom依赖"><a href="#spring-pom依赖" class="headerlink" title="spring pom依赖"></a>spring pom依赖</h3><p>快速查看项目的依赖</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -type f -name <span class="token string">"pom.xml"</span> -exec <span class="token function">cat</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span class="token operator">|</span><span class="token function">grep</span> <span class="token string">'artifactId'</span>
+
+<span class="token comment"># 方式2</span>
+<span class="token builtin class-name">shopt</span> -s globstar
+<span class="token function">grep</span> <span class="token string">'artifactId'</span> **/pom.xml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" rel="prev" title="PHP常用函数总结">
+                  <i class="fa fa-chevron-left"></i> PHP常用函数总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/13/docker/dockerfile%E5%AD%A6%E4%B9%A0/" rel="next" title="dockerfile学习">
+                  dockerfile学习 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

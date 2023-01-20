@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="最近在使用按键精灵来模拟按键。记录一下过程。重点推荐从图层中找。这样效率高，而且准确度也高。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="按键精灵">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/03/18/%E6%8C%89%E9%94%AE%E7%B2%BE%E7%81%B5/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="最近在使用按键精灵来模拟按键。记录一下过程。重点推荐从图层中找。这样效率高，而且准确度也高。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-18T14:28:54.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.032Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="vb">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/03/18/%E6%8C%89%E9%94%AE%E7%B2%BE%E7%81%B5/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>按键精灵 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">语法基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E5%B1%82%E6%9F%A5%E6%89%BE"><span class="nav-number">2.</span> <span class="nav-text">图层查找</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Element-find"><span class="nav-number">2.1.</span> <span class="nav-text">Element.find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Element-GetAllInJson"><span class="nav-number">2.2.</span> <span class="nav-text">Element.GetAllInJson</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Element-GetAll"><span class="nav-number">2.3.</span> <span class="nav-text">Element.GetAll</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Element-GetText"><span class="nav-number">2.4.</span> <span class="nav-text">Element.GetText</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%BE%E5%9B%BE%E6%89%BE%E8%89%B2"><span class="nav-number">3.</span> <span class="nav-text">找图找色</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%82%B9%E6%89%BE%E8%89%B2"><span class="nav-number">3.1.</span> <span class="nav-text">多点找色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%BE%E5%9B%BE"><span class="nav-number">3.2.</span> <span class="nav-text">找图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B6%E4%BD%9C%E5%AD%97%E4%BD%93"><span class="nav-number">4.</span> <span class="nav-text">制作字体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84"><span class="nav-number">5.</span> <span class="nav-text">代码架构</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/03/18/%E6%8C%89%E9%94%AE%E7%B2%BE%E7%81%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          按键精灵
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-18 14:28:54" itemprop="dateCreated datePublished" datetime="2021-03-18T14:28:54+00:00">2021-03-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>最近在使用按键精灵来模拟按键。记录一下过程。重点推荐从图层中找。这样效率高，而且准确度也高。</p>
+<a id="more"></a>
+
+<h2 id="语法基础"><a href="#语法基础" class="headerlink" title="语法基础"></a>语法基础</h2><p>其语法是mq，感觉是一种介于vbscript跟其他语言的混合语言。手机版中，还集成了Lua。所以，能使用的语法，有2种。下面主要讲vb</p>
+<pre class="line-numbers language-none"><code class="language-none">If Len(iId)&lt;&gt; 0 Then 
+	TracePrint &quot;真&quot;
+Else 
+	TracePrint &quot;假&quot;
+End If
+
+isNull<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="图层查找"><a href="#图层查找" class="headerlink" title="图层查找"></a>图层查找</h2><h3 id="Element-find"><a href="#Element-find" class="headerlink" title="Element.find"></a>Element.find</h3><p>用类名、文字查找对应的元素的。</p>
+<p><strong>要求两个参数缺一不可。而且，对图片类的，虽然有文字，但是也不好找。</strong></p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Dim Table &#x3D; element.Find(&quot;android.view.View&quot;,&quot;领100MB&quot;)
+Dim iId &#x3D; Table[1][&quot;resource-id&quot;]			&#x2F;&#x2F;没数据为空 
+Dim strClass &#x3D; Table[1][&quot;class&quot;]    &#x2F;&#x2F;没数据为空 &quot;&quot;
+Dim strText &#x3D; Table[1][&quot;text&quot;]   &#x2F;&#x2F;没数据为空 &quot;&quot;
+Dim iLeft &#x3D; Table[1][&quot;left&quot;]   &#x2F;&#x2F;没数据为 -1
+Dim iTop &#x3D; Table[1][&quot;top&quot;]      &#x2F;&#x2F;没数据为 -1
+Dim iRight &#x3D; Table[1][&quot;right&quot;]    &#x2F;&#x2F;没数据为 -1
+Dim iBottom &#x3D; Table[1][&quot;bottom&quot;]    &#x2F;&#x2F;没数据为 -1
+
+&#39; 上面如果找到，应该是很多的坐标值
+
+
+TracePrint Encode.TableToJson(Table)
+
+Dim i&#x3D; 13
+TracePrint UBound(Table)  &#39;好奇怪  Table可能是lua里面的东西。所以，使用了方括号，来查找。
+&#39; 跟vb里面的语法相差有点大。  Table[1] 第一个元素。最大的索引  UBound(Table) + 1
+
+
+TracePrint Table[i][&quot;left&quot;]
+TracePrint Table[i][&quot;top&quot;]
+TracePrint Table[i][&quot;right&quot;]
+TracePrint Table[i][&quot;bottom&quot;]
+
+&#39; TracePrint Table(i)[&quot;left&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对于屏幕上无法显示的图案，也能查找处理，但是坐标值，有点奇怪。比如宽、高可能很小。</p>
+<p>其他的几个功能函数，也很强大。但是，我还没有想到用他们的方法。<code>element.Find</code>可能是一种是同类的方法中的封装方法。</p>
+<h3 id="Element-GetAllInJson"><a href="#Element-GetAllInJson" class="headerlink" title="Element.GetAllInJson"></a>Element.GetAllInJson</h3><p>获取界面所有元素。相当于导出整个图层。注意，一般图层类似与[元素1，元素2]。其中元素2是我们想要的内容。这是因为，元素1，是指最顶部的时间格式。</p>
+<p><strong>反序列化，可能很费时</strong></p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Dim layout, layoutTable, allText
+layout &#x3D; Element.GetAllInJson()
+TracePrint layout
+layoutTable &#x3D; Encode.JsonToTable(layout)
+&#x2F;&#x2F;传入一个主要内容层的数据
+allText &#x3D; Element.GetText(layoutTable[Len(layoutTable)]) &#39;第2个才是目标元素
+For each text in allText
+    TracePrint text
+Next<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Element-GetAll"><a href="#Element-GetAll" class="headerlink" title="Element.GetAll"></a>Element.GetAll</h3><p>获取界面元素。上面的json数据，其实是嵌套的。使用该方法，则直接变成一维数组了。所以，<code>element.Find</code>正是利用了该元素的功能。</p>
+<p><strong>可见元素，对于容器，可能已经被过滤掉了。</strong></p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Dim Table, iId, sClass, sText
+Dim iLeft, iTop, iRight, iBottom
+Table &#x3D; Element.GetAll() 
+&#x2F;&#x2F;获取第一个元素属性内容
+For Each one In Table
+	TracePrint one[&quot;text&quot;]
+Next<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Element-GetText"><a href="#Element-GetText" class="headerlink" title="Element.GetText"></a>Element.GetText</h3><p>获取元素文本内容 。输入的是json（layout布局）转换后的table。然后聚焦在文本内容。</p>
+<p><code>Encode.JsonToTable(layout)</code>这个是最耗时的过程。</p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Dim layout, layoutTable, allText
+layout &#x3D; Element.GetAllInJson()
+TracePrint layout
+layoutTable &#x3D; Encode.JsonToTable(layout)  &#x2F;&#x2F;这一步，非常的耗时。
+&#x2F;&#x2F;传入一个主要内容层的数据
+allText &#x3D; Element.GetText(layoutTable[Len(layoutTable)])
+For each text in allText
+    TracePrint text
+Next<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="找图找色"><a href="#找图找色" class="headerlink" title="找图找色"></a>找图找色</h2><h3 id="多点找色"><a href="#多点找色" class="headerlink" title="多点找色"></a>多点找色</h3><p>多个点，找几个颜色，好像是：只要找到其中一个颜色，就认为成立了。</p>
+<p>除非是很纯的一块色块，一般都不容易找到。然后偏色、相似度相互配合。</p>
+<p>另外，如果确定是在某个区域，最好再限制一下区域。</p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Dim intX,intY
+FindMultiColor 0,0,0,0,&quot;61BDFF-111111&quot;,&quot;13|1|179FFF-111111&quot;,0,0.9,intX,intY
+If intX &gt; -1 And intY &gt; -1 Then
+	TracePrint intX
+	TracePrint intY
+End If<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>唉，反正找图找色也有很多的坑。</p>
+<h3 id="找图"><a href="#找图" class="headerlink" title="找图"></a>找图</h3><p>需要添加到附件中。</p>
+<h2 id="制作字体"><a href="#制作字体" class="headerlink" title="制作字体"></a>制作字体</h2><p>先在找图找色区域，调整好，提取要找的区域，然后切换到字体上，继续操作。（文档上没有说太清楚）</p>
+<p>但是不建议使用。误判高，效率低，而且还要制作字段。</p>
+<h2 id="代码架构"><a href="#代码架构" class="headerlink" title="代码架构"></a>代码架构</h2><p>对于按键类的操作，由于界面上什么情况都可能出现，为了使脚本更加的稳健，所以我们应该合理安排代码架构。我看到一篇文章这样设计：设计两个线程，主线程用来跑任务，而另外一个线程，用来跑监控，看屏幕当前是什么情况。</p>
+<p>对于按键精灵，指令可以分成两类：耗时、非耗时命令。任何耗时命令，执行完后，再执行下一条命令，当前应用是什么情况，（执行成功了、执行失败了）都是不确定的。所以，我这样设计：</p>
+<p>但是下面好像也并不是很理想。</p>
+<p>如果有两个任务。这样咋分解？</p>
+<p>下面的代码结构，仿佛就是操作系统的线程管理一样。如果需要交叉执行呢？</p>
+<pre class="line-numbers language-vbscript" data-language="vbscript"><code class="language-vbscript">Sub sub1()
+    &#39; 决策大脑
+    status &#x3D; &#39;应该是全局的操作
+    sleep_time  &#39;设计一下需要延迟的时间。
+    Do
+    Select Case status:
+    Case 0,1    &#39;可支持判断多个值,中间以逗号隔开
+        TracePrint &quot;执行进入主页，并延迟10秒&quot;
+	Case 2
+	    TracePrint &quot;执行进入签到页，并延迟10秒&quot;
+	Case Else
+        TracePrint &quot;我也不知道要做啥，就先延迟100秒吧。&quot;
+        &#39; 判断是否还需要延迟。
+        Delay 100
+	End Select
+    Loop
+End Sub
+
+
+Sub sub2()
+    &#39; 决策大脑
+    status &#x3D; &#39;应该是全局的操作
+    sleep_time  &#39;设计一下需要延迟的时间。
+    ......
+End Sub<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vb/" rel="tag"># vb</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/12/other/%E5%88%86%E9%9A%94%E4%B8%8B%E8%BD%BD/" rel="prev" title="分割下载">
+                  <i class="fa fa-chevron-left"></i> 分割下载
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/18/while/" rel="next" title="循环执行结构">
+                  循环执行结构 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="docker安装postgresql docker如何安装postgresql ，以及php如何来操作postgresql 。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker安装postgresql">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/11/25/docker/docker%E5%AE%89%E8%A3%85postgresql/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="docker安装postgresql docker如何安装postgresql ，以及php如何来操作postgresql 。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-25T13:04:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.951Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="postgresql">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/11/25/docker/docker%E5%AE%89%E8%A3%85postgresql/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>docker安装postgresql | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker%E5%AE%89%E8%A3%85postgresql"><span class="nav-number">1.</span> <span class="nav-text">docker安装postgresql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.0.1.</span> <span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PostgreSql%E7%9F%A5%E8%AF%86"><span class="nav-number">1.2.</span> <span class="nav-text">PostgreSql知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8Emysql%E5%AF%B9%E6%AF%94"><span class="nav-number">1.2.1.</span> <span class="nav-text">与mysql对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#php%E6%93%8D%E4%BD%9CPg%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text">php操作Pg数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#windows"><span class="nav-number">1.3.1.</span> <span class="nav-text">windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E5%AE%89%E8%A3%85pdo-pgsql%E6%89%A9%E5%B1%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">Linux安装pdo_pgsql扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#new-Pdo"><span class="nav-number">1.3.3.</span> <span class="nav-text">new Pdo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.3.4.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="nav-number">1.3.5.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-number">1.3.6.</span> <span class="nav-text">增删改查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="nav-number">1.4.</span> <span class="nav-text">问题排查</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pg-hba-conf%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="nav-number">1.4.1.</span> <span class="nav-text">pg_hba.conf访问权限</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/11/25/docker/docker%E5%AE%89%E8%A3%85postgresql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker安装postgresql
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-25 13:04:00" itemprop="dateCreated datePublished" datetime="2020-11-25T13:04:00+00:00">2020-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="docker安装postgresql"><a href="#docker安装postgresql" class="headerlink" title="docker安装postgresql"></a>docker安装postgresql</h1><blockquote>
+<p>docker如何安装postgresql ，以及php如何来操作postgresql 。</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker run -d <span class="token punctuation">\</span>
+    --name pg10.12 <span class="token punctuation">\</span>
+    -v /data/postgresql:/var/lib/postgresql/data <span class="token punctuation">\</span>
+    -e <span class="token assign-left variable">POSTGRES_PASSWORD</span><span class="token operator">=</span><span class="token number">123456</span> <span class="token punctuation">\</span>
+    -p <span class="token number">5432</span>:5432 <span class="token punctuation">\</span>
+    --restart<span class="token operator">=</span>always <span class="token punctuation">\</span>
+    postgres:10.12<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p> 如果创建时未指定 –restart=always ,可通过 update 命令 ,如下：</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker update --restart<span class="token operator">=</span>always some-postgres<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>可以使用navicat来进行连接，测试。能连接，但是可能是版本低，无法执行创建库、数据表的操作。</p>
+<h2 id="PostgreSql知识"><a href="#PostgreSql知识" class="headerlink" title="PostgreSql知识"></a>PostgreSql知识</h2><p>参考文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/whatday/article/details/102897134">文章</a></p>
+<h3 id="与mysql对比"><a href="#与mysql对比" class="headerlink" title="与mysql对比"></a>与mysql对比</h3><ul>
+<li><p>PostgreSql跟mysql还是有区别的，在查询方面，mysql使用Esc下面键的符号作为分隔，而PostgreSql使用双引号。</p>
+</li>
+<li><p>limit差别 ，每页两项，查询第10页</p>
+<pre class="line-numbers language-none"><code class="language-none"># mysql
+limit 2*(10-1),2
+# postgreSql
+limit 2 offset 2*(10-1)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>建表语句，比如指定了<code>ENGINE=MyISAM DEFAULT CHARSET=utf8;</code>在PostgreSql中是无效的。</p>
+<pre class="line-numbers language-mysql" data-language="mysql"><code class="language-mysql">CREATE TABLE &#96;student&#96; (
+    &#96;name&#96; varchar(255) DEFAULT NULL,
+    &#96;age&#96; int(11) DEFAULT NULL,
+    &#96;cat_id&#96; int(11) DEFAULT NULL
+  ) ENGINE&#x3D;MyISAM DEFAULT CHARSET&#x3D;utf8;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>pg</p>
+<pre class="line-numbers language-none"><code class="language-none">create table TESTCASE(
+    id INTEGER, 
+    task_class INTEGER,
+    age TEXT,
+    PRIMARY KEY(id, task_class)
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>1.基本类型：Integer, Numeric, String, Boolean<br>2.结构类型：Date/Time, Array, Range, UUID<br>3.文档类型：JSON/JSONB, XML, Key-value(Hstore)<br>4.几何类型：Point, Line, Circle, Polygon<br>5.自定义类型：Composite, Custom Types </p>
+<h2 id="php操作Pg数据库"><a href="#php操作Pg数据库" class="headerlink" title="php操作Pg数据库"></a>php操作Pg数据库</h2><p>如果是安装编译阶段，可以使用下面的指令指定，该扩展。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./configure --with-pdo-pgsql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>php.ini</p>
+<blockquote>
+<p>没有改扩展，在使用 new Pdo 来构建对象的时候，可能报错。</p>
+</blockquote>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token constant">extension</span><span class="token attr-value"><span class="token punctuation">=</span>pdo_pgsql</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>另外一种方式，使用函数来操作，需要安装扩展。这里省略。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$conn_string</span>  <span class="token operator">=</span>  <span class="token double-quoted-string string">"host=localhost port=5432 dbname=db_name user=root password=123456"</span> <span class="token punctuation">;</span> 
+<span class="token variable">$dbconn</span> <span class="token operator">=</span> <span class="token function">pg_connect</span><span class="token punctuation">(</span><span class="token variable">$conn_string</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h3><p>使用phpstudy，里面有，只需在php.ini中开启配置即可。</p>
+<h3 id="Linux安装pdo-pgsql扩展"><a href="#Linux安装pdo-pgsql扩展" class="headerlink" title="Linux安装pdo_pgsql扩展"></a>Linux安装pdo_pgsql扩展</h3><p>想从pecl获取源码，结果发现其上面的源码比较老久，大概是2006年的，然后勉强下载了，还提示解压有点问题，然后忽略，继续安装扩展，结果<code>make</code>的时候，直接报错，就停止了。</p>
+<p>由于windows下面，有直接现成的，只需要去掉扩展前面的的注释即可。然后，我在想，Linux下面怎么搞呢？居然藏在php的源码里面，然后我顺手，就把我电脑里面，存放的php7.3的源码，翻出来。在标准扩展ext目录下找到了文件。压缩zip格式文件，上传到Linux环境，然后按常规php安装方式，顺利的安装成功。</p>
+<p>附php源码下载地址：<a target="_blank" rel="noopener" href="https://www.php.net/downloads.php">https://www.php.net/downloads.php</a></p>
+<p>如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">unzip</span> pdo_pgsql.zip 
+<span class="token builtin class-name">cd</span> pdo_pgsql/
+/usr/local/php/bin/phpize
+./configure --with-php-config<span class="token operator">=</span>/usr/local/php/bin/php-config
+<span class="token function">make</span> 
+<span class="token function">sudo</span> <span class="token function">make</span> <span class="token function">install</span>
+<span class="token comment">#rm pdo_pgsql.zip </span>
+<span class="token comment">#rm -rf pdo_pgsql/</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在php.ini中开启扩展</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">extension</span><span class="token operator">=</span>pdo_pgsql<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>备注：另外还有一个pg的扩展，好像还有异步操作的特性。版本也比较新，但是git上星比较少。</p>
+<p>出错处理：</p>
+<p>若报如下错误：</p>
+<blockquote>
+<p>configure: error: Cannot find libpq-fe.h. Please specify correct PostgreSQL installation path</p>
+</blockquote>
+<p>则执行：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum -y <span class="token function">install</span> postgresql-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="new-Pdo"><a href="#new-Pdo" class="headerlink" title="new Pdo"></a>new Pdo</h3><p>可以使用下面三种方式，来操作。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">//方式一：DSN  + 数据库名称</span>
+<span class="token variable">$pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Pdo</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'pgsql:host=10.20.24.70;port=5432;dbname=testdb;user=postgres;password=123456;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//方式一：DSN  + 无数据库名称</span>
+<span class="token variable">$pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Pdo</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'pgsql:host=10.20.24.70;port=5432;user=postgres;password=123456;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//方式一：DSN  + 分开</span>
+<span class="token function">define</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'DB_DSN'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'pgsql:host=10.20.24.70;port=5432;dbname=testdb;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">define</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'DB_USER'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'postgres'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">define</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'DB_PASS'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'123456'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>PDO</span><span class="token punctuation">(</span><span class="token constant">DB_DSN</span><span class="token punctuation">,</span> <span class="token constant">DB_USER</span><span class="token punctuation">,</span> <span class="token constant">DB_PASS</span><span class="token punctuation">,</span> <span class="token keyword">array</span><span class="token punctuation">(</span>
+    \<span class="token package">PDO</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">ATTR_ERRMODE</span> <span class="token operator">=</span><span class="token operator">></span> \<span class="token package">PDO</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token constant">ERRMODE_EXCEPTION</span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><p>假设按前面的步骤已经正确的连上了数据库。创建数据库如下：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'create database testdb;'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token heredoc-string string"><span class="token delimiter symbol"><span class="token punctuation">&lt;&lt;&lt;</span>EOL</span>
+create table TEST1(
+    id INTEGER, 
+    task_class INTEGER,
+    age TEXT,
+    PRIMARY KEY(id, task_class)
+    );
+<span class="token delimiter symbol">EOL<span class="token punctuation">;</span></span></span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">exec</span><span class="token punctuation">(</span><span class="token variable">$sql</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//操作成功，返回 int(0),感觉好奇怪</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="增删改查"><a href="#增删改查" class="headerlink" title="增删改查"></a>增删改查</h3><p>假设使用snippet的database，如下：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">//查询</span>
+<span class="token variable">$db</span> <span class="token operator">=</span> Database<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">getDb</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getOne</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'testcase'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'*'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'1=1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getAll</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'testcase'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'*'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'1=1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//插入</span>
+<span class="token comment">// 与mysql最大的语法区别，不能使用 来进行分隔字段 `。</span>
+<span class="token variable">$row</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token single-quoted-string string">'id'</span><span class="token operator">=</span><span class="token operator">></span><span class="token number">4</span><span class="token punctuation">,</span>
+    <span class="token single-quoted-string string">'task_class'</span><span class="token operator">=</span><span class="token operator">></span><span class="token number">12</span><span class="token punctuation">,</span>
+    <span class="token single-quoted-string string">'age'</span><span class="token operator">=</span><span class="token operator">></span><span class="token single-quoted-string string">'15'</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">insert</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'testcase'</span><span class="token punctuation">,</span><span class="token variable">$row</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//修改 也取消了掉了 ` 的分隔符号。</span>
+<span class="token variable">$row</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token single-quoted-string string">'age'</span><span class="token operator">=</span><span class="token operator">></span><span class="token single-quoted-string string">'zhangsanshuo'</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">update</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'testcase'</span><span class="token punctuation">,</span><span class="token variable">$row</span> <span class="token punctuation">,</span> <span class="token single-quoted-string string">'where id = :id'</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'id'</span><span class="token operator">=</span><span class="token operator">></span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//删除   好奇怪，删除不存在的条目，也返回为 真。</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token variable">$db</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'testcase'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'id=:id'</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'id'</span><span class="token operator">=</span><span class="token operator">></span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="问题排查"><a href="#问题排查" class="headerlink" title="问题排查"></a>问题排查</h2><h3 id="pg-hba-conf访问权限"><a href="#pg-hba-conf访问权限" class="headerlink" title="pg_hba.conf访问权限"></a>pg_hba.conf访问权限</h3><p>以下是pdo_pgsql扩展访问时遇到的错误，</p>
+<pre class="line-numbers language-none"><code class="language-none">SQLSTATE[08006] [7] FATAL:  no pg_hba.conf entry for host &quot;10.131.39.144&quot;, user &quot;gpadmin&quot;, database &quot;develop&quot;, <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>网上说，要解决这个问题，只需要在PostgreSQL数据库的安装目录下找到/data/pg_hba.conf,找到“# IPv4 local connections:”  在其下加上请求连接的机器IP</p>
+<pre class="line-numbers language-none"><code class="language-none">host all all 127.0.0.1&#x2F;32 md5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>32是子网掩码的网段；md5是密码验证方法，可以改为trust。</p>
+<p>但实际上，我在docker文件里面，并没有找到该文件。另外，pgadmin工具连接时，没有权限时，大概也报了一个同样的错误。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/postgresql/" rel="tag"># postgresql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/24/php/php%E5%AE%89%E8%A3%85memcache/" rel="prev" title="php安装memcache">
+                  <i class="fa fa-chevron-left"></i> php安装memcache
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/26/php/%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php/" rel="next" title="">
+                   <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

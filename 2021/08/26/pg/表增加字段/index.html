@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="由于需求变更，需要增加字段。但是呢，发现postgre中使用的是标准的sql语法，并没有指定在哪个位置插入字段的语法，默认的ALTER TABLE table_name ADD COLUMN  new_field语法，不支持类似mysql的after语法，只能插在表的最后。网上大概找了下，也没有什么优化的方法。 有如下变通：1、新建表，复制旧数据到新表，删除旧表，2、或者创建视图，来保证顺序一致。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="表增加字段">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/08/26/pg/%E8%A1%A8%E5%A2%9E%E5%8A%A0%E5%AD%97%E6%AE%B5/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="由于需求变更，需要增加字段。但是呢，发现postgre中使用的是标准的sql语法，并没有指定在哪个位置插入字段的语法，默认的ALTER TABLE table_name ADD COLUMN  new_field语法，不支持类似mysql的after语法，只能插在表的最后。网上大概找了下，也没有什么优化的方法。 有如下变通：1、新建表，复制旧数据到新表，删除旧表，2、或者创建视图，来保证顺序一致。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-26T14:17:08.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.000Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="sql">
+<meta property="article:tag" content="pg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/08/26/pg/%E8%A1%A8%E5%A2%9E%E5%8A%A0%E5%AD%97%E6%AE%B5/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>表增加字段 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">一般语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E5%89%8D"><span class="nav-number">3.</span> <span class="nav-text">迁移前</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">临时表结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">目标表结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2%E8%84%9A%E6%9C%AC"><span class="nav-number">3.3.</span> <span class="nav-text">数据转换脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB"><span class="nav-number">4.</span> <span class="nav-text">迁移</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E8%A1%A8%E8%BF%81%E7%A7%BB"><span class="nav-number">4.1.</span> <span class="nav-text">临时表迁移</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%BC%8F%E8%A1%A8"><span class="nav-number">4.2.</span> <span class="nav-text">正式表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E8%BF%87%E7%A8%8B"><span class="nav-number">4.3.</span> <span class="nav-text">迁移过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E8%84%9A%E6%9C%AC"><span class="nav-number">4.4.</span> <span class="nav-text">替换脚本</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/08/26/pg/%E8%A1%A8%E5%A2%9E%E5%8A%A0%E5%AD%97%E6%AE%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          表增加字段
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-26 14:17:08" itemprop="dateCreated datePublished" datetime="2021-08-26T14:17:08+00:00">2021-08-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>由于需求变更，需要增加字段。但是呢，发现postgre中使用的是标准的sql语法，并没有指定在哪个位置插入字段的语法，默认的<code>ALTER TABLE table_name ADD COLUMN  new_field</code>语法，不支持类似mysql的<code>after</code>语法，只能插在表的最后。网上大概找了下，也没有什么优化的方法。</p>
+<p>有如下变通：1、新建表，复制旧数据到新表，删除旧表，2、或者创建视图，来保证顺序一致。（建立一个视图）</p>
+<p>本文记录一下方式1的迁移方法。</p>
+<a id="more"></a>
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>对表进行etl转换，最好将计算字段放到表的前面，这样方便后续的扩展。</p>
+<h2 id="一般语法"><a href="#一般语法" class="headerlink" title="一般语法"></a>一般语法</h2><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> table_name <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> kafka_time <span class="token keyword">timestamp</span> without <span class="token keyword">time</span> zone<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>只能在末尾增加字段。</p>
+<h2 id="迁移前"><a href="#迁移前" class="headerlink" title="迁移前"></a>迁移前</h2><h3 id="临时表结构"><a href="#临时表结构" class="headerlink" title="临时表结构"></a>临时表结构</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> i1_import_raw <span class="token punctuation">(</span>
+    ship_id <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    clraddr <span class="token keyword">text</span><span class="token punctuation">,</span>
+    <span class="token comment">-- 以下为新增字段</span>
+    psmdb_ft <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+    psmdb_loc <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+    Recv_Prov <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    Recv_City <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    Recv_Coty <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">with</span> <span class="token punctuation">(</span>appendonly<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span> compresslevel<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span> orientation<span class="token operator">=</span><span class="token keyword">column</span><span class="token punctuation">,</span> compresstype<span class="token operator">=</span>zlib<span class="token punctuation">)</span>
+<span class="token keyword">Distributed</span> <span class="token keyword">by</span> <span class="token punctuation">(</span>ship_id<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="目标表结构"><a href="#目标表结构" class="headerlink" title="目标表结构"></a>目标表结构</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> i1_order <span class="token punctuation">(</span>    
+    ship_id <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    clraddr <span class="token keyword">text</span><span class="token punctuation">,</span>
+    <span class="token comment">-- 欲在此处增加新字段</span>
+    batch_time <span class="token keyword">timestamp</span> without <span class="token keyword">time</span> zone<span class="token punctuation">,</span>  <span class="token comment">-- 批处理转换成时间戳</span>
+<span class="token punctuation">)</span> <span class="token keyword">with</span> <span class="token punctuation">(</span>appendonly<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span> compresslevel<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span> orientation<span class="token operator">=</span><span class="token keyword">column</span><span class="token punctuation">,</span> compresstype<span class="token operator">=</span>zlib<span class="token punctuation">)</span>
+<span class="token keyword">Distributed</span> <span class="token keyword">by</span> <span class="token punctuation">(</span>ship_id<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="数据转换脚本"><a href="#数据转换脚本" class="headerlink" title="数据转换脚本"></a>数据转换脚本</h3><p>由于导入数据的时候，先将数据导入到临时表，然后执行如下，将临时表的数据导入到正式表。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">psql -d develop -h  localhost -U gpadmin  -p <span class="token number">5432</span>  -c <span class="token string">"insert into i1_<span class="token variable">$table</span> select *,to_timestamp(substring(batch from 3),'yyyyMMddhh24miss') as batch_time from i1_import_raw;"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>正是由于，当时建表的时候，没有想到新增字段这样的需求，错误的将计算字段放到了末尾。结果导致新增字段时，需要重新迁移表。</p>
+<h2 id="迁移"><a href="#迁移" class="headerlink" title="迁移"></a>迁移</h2><h3 id="临时表迁移"><a href="#临时表迁移" class="headerlink" title="临时表迁移"></a>临时表迁移</h3><p>可以直接在表后面，增加字段。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_import_raw <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> psmdb_ft   <span class="token keyword">smallint</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_import_raw <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> psmdb_loc <span class="token keyword">smallint</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_import_raw <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> Recv_Prov  <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_import_raw <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> Recv_City  <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_import_raw <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> Recv_Coty  <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>正式表，却不能使用上面的方式来增加字段。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 无法工作</span>
+<span class="token keyword">ALTER</span> <span class="token keyword">TABLE</span> i1_order <span class="token keyword">ADD</span> <span class="token keyword">COLUMN</span> psmdb_ft <span class="token keyword">smallint</span> <span class="token keyword">after</span> <span class="token punctuation">;</span>
+<span class="token comment">-- 上面只能在最后添加，计算字段 batch_time 结果在中间，行不通。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>ALTER TABLE ADD COLUMN只会在最后添加新列,作为最后一列. 要在另一个位置创建新列,您需要重新创建表并从此新表中的旧/当前表中复制数据. </p>
+<h3 id="正式表"><a href="#正式表" class="headerlink" title="正式表"></a>正式表</h3><blockquote>
+<p> 重建表结构</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> i1_order2 <span class="token punctuation">(</span>
+    batch_time <span class="token keyword">timestamp</span> without <span class="token keyword">time</span> zone<span class="token punctuation">,</span>  <span class="token comment">-- 批处理转换成时间戳</span>
+    <span class="token comment">-- 注意，上面存放计算字段，下面存放临时表一样的结构，下次就可以直接 add修改了。</span>
+    ship_id <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    clraddr <span class="token keyword">text</span><span class="token punctuation">,</span>
+    <span class="token comment">-- 新增的字段</span>
+    psmdb_ft <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+    psmdb_loc <span class="token keyword">smallint</span><span class="token punctuation">,</span>
+    Recv_Prov <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    Recv_City <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    Recv_Coty <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token keyword">with</span> <span class="token punctuation">(</span>appendonly<span class="token operator">=</span><span class="token boolean">true</span><span class="token punctuation">,</span> compresslevel<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span> orientation<span class="token operator">=</span><span class="token keyword">column</span><span class="token punctuation">,</span> compresstype<span class="token operator">=</span>zlib<span class="token punctuation">)</span>
+<span class="token keyword">Distributed</span> <span class="token keyword">by</span> <span class="token punctuation">(</span>ship_id<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="迁移过程"><a href="#迁移过程" class="headerlink" title="迁移过程"></a>迁移过程</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 为了匹配上字段，每个都逐一增加列名</span>
+<span class="token comment">-- 一般方式</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> i1_order2 <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> i1_order <span class="token punctuation">;</span>
+<span class="token comment">-- 先测试 </span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> i1_order2 <span class="token punctuation">(</span>batch_time<span class="token punctuation">,</span>ship_id<span class="token punctuation">)</span> <span class="token keyword">select</span> batch_time<span class="token punctuation">,</span>ship_id <span class="token keyword">from</span> i1_order <span class="token keyword">limit</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token comment">-- 整体迁移</span>
+<span class="token comment">-- 字段列表   如 fields1,fields2</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> i1_order2 <span class="token punctuation">(</span>字段列表<span class="token punctuation">)</span> <span class="token keyword">select</span> 字段列表  <span class="token keyword">from</span> i1_order<span class="token punctuation">;</span>
+<span class="token comment">-- 经测试发现，及时部分字段，insert部分也能省略</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> i1_order2 <span class="token keyword">select</span> 字段列表  <span class="token keyword">from</span> i1_order<span class="token punctuation">;</span>
+
+<span class="token comment">-- 切换表名</span>
+<span class="token keyword">drop</span> <span class="token keyword">table</span> i1_order<span class="token punctuation">;</span>
+<span class="token keyword">alter</span> <span class="token keyword">table</span> i1_order2 <span class="token keyword">rename</span> <span class="token keyword">to</span> i1_order<span class="token punctuation">;</span>
+<span class="token comment">-- 其他，如统计新表的内容等。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="替换脚本"><a href="#替换脚本" class="headerlink" title="替换脚本"></a>替换脚本</h3><p>转换的时候，将计算字段放到最前面。这样方便后续增加字段。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 调整一下计算字段的顺序</span>
+psql -d  develop   -h  localhost   -U gpadmin  -p <span class="token number">5432</span>  -c <span class="token string">"insert into i1_<span class="token variable">$table</span> select to_timestamp(substring(batch from 3),'yyyyMMddhh24miss'),* as batch_time from i1_import_raw;"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sql/" rel="tag"># sql</a>
+              <a href="/tags/pg/" rel="tag"># pg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/24/python/pandas/" rel="prev" title="pandas">
+                  <i class="fa fa-chevron-left"></i> pandas
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/31/pg/%E7%89%A9%E7%90%86%E8%B5%84%E6%BA%90%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" rel="next" title="物理资源性能对比">
+                  物理资源性能对比 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

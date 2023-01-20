@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="折半插入_统计广告访问 最近在做广告访问统计。场景：打印广告，发放，用户访问后，需要对访问进行统计。mailno不是索引，但是created是创建的时间，而且考虑到只有最近一段的时间会访问，时间长了，历史数据应该没有人访问。如果不用mailno索引的时候，插入比较慢。所以，想到了折半插入的方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="折半插入_统计广告访问">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="折半插入_统计广告访问 最近在做广告访问统计。场景：打印广告，发放，用户访问后，需要对访问进行统计。mailno不是索引，但是created是创建的时间，而且考虑到只有最近一段的时间会访问，时间长了，历史数据应该没有人访问。如果不用mailno索引的时候，插入比较慢。所以，想到了折半插入的方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734509001.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734655168.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734743276.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734608762.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597735105508.png">
+<meta property="og:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597735140529.png">
+<meta property="article:published_time" content="2020-08-18T14:24:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.949Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734509001.png">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>折半插入_统计广告访问 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5-%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE"><span class="nav-number">1.</span> <span class="nav-text">折半插入_统计广告访问</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.0.1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sql%E5%AF%B9%E6%AF%94"><span class="nav-number">1.0.2.</span> <span class="nav-text">sql对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%B8%B8%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">正常查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%98%E5%8D%8A%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">折半查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%BA%E5%88%B6%E7%94%A8%E7%B4%A2%E5%BC%95%EF%BC%88%E6%8A%98%E5%8D%8A%E6%9F%A5%E8%AF%A2%EF%BC%89"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">强制用索引（折半查询）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%96%B9%E6%A1%88"><span class="nav-number">1.0.3.</span> <span class="nav-text">最终方案</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/08/18/better_coder/%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          折半插入_统计广告访问
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-08-18 14:24:00" itemprop="dateCreated datePublished" datetime="2020-08-18T14:24:00+00:00">2020-08-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="折半插入-统计广告访问"><a href="#折半插入-统计广告访问" class="headerlink" title="折半插入_统计广告访问"></a>折半插入_统计广告访问</h1><blockquote>
+<p>最近在做广告访问统计。场景：打印广告，发放，用户访问后，需要对访问进行统计。mailno不是索引，但是created是创建的时间，而且考虑到只有最近一段的时间会访问，时间长了，历史数据应该没有人访问。如果不用mailno索引的时候，插入比较慢。所以，想到了折半插入的方式。</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>代码如下：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$ip</span> <span class="token operator">=</span> ClientService<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">getIP</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//过滤引号</span>
+<span class="token variable">$other</span> <span class="token operator">=</span> \<span class="token package">addslashes</span><span class="token punctuation">(</span>ClientService<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">agent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$queryDate</span> <span class="token operator">=</span> <span class="token function">date</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'Y-m-d'</span><span class="token punctuation">,</span><span class="token function">strtotime</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"-5 day"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//mailno 不是索引，可能执行时间很长，改进为：利于create索引，折半插入。</span>
+<span class="token comment">//%s  取值>|&lt;=</span>
+<span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token double-quoted-string string">"UPDATE yc_advert_records FORCE INDEX(created) SET visit_count = visit_count + 1 ,visited = '<span class="token interpolation"><span class="token variable">$now</span></span>',visited_ip = '<span class="token interpolation"><span class="token variable">$ip</span></span>',other = '<span class="token interpolation"><span class="token variable">$other</span></span>' where created %s '<span class="token interpolation"><span class="token variable">$queryDate</span></span>' and mailno=<span class="token interpolation"><span class="token variable">$mailno</span></span>"</span><span class="token punctuation">;</span>
+<span class="token keyword">try</span><span class="token punctuation">&#123;</span>
+    <span class="token variable">$count</span> <span class="token operator">=</span> <span class="token variable">$pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">exec</span><span class="token punctuation">(</span>\<span class="token package">sprintf</span><span class="token punctuation">(</span><span class="token variable">$sql</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'>'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//$count int  受影响数。</span>
+    <span class="token comment">//如果未更新，则在另外一半中进行操作。</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$count</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$count</span> <span class="token operator">=</span> <span class="token variable">$pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">exec</span><span class="token punctuation">(</span>\<span class="token package">sprintf</span><span class="token punctuation">(</span><span class="token variable">$sql</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'&lt;='</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>\<span class="token package">Exception</span> <span class="token variable">$e</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token variable">$e</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token double-quoted-string string">"\r\n[SQL]<span class="token interpolation"><span class="token variable">$sql</span></span>"</span><span class="token punctuation">;</span>
+    DingService<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token variable">$msg</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>但是上面的代码提升不是特别明显。</p>
+<p>大概看了一下，说是：</p>
+<p>不用created折半插入的时候，</p>
+<blockquote>
+<p>此时用的是主键id索引。</p>
+</blockquote>
+<p>而用created折半插入的时候，</p>
+<blockquote>
+<p>此时用的是created索引。</p>
+</blockquote>
+<h3 id="sql对比"><a href="#sql对比" class="headerlink" title="sql对比"></a>sql对比</h3><h4 id="正常查询"><a href="#正常查询" class="headerlink" title="正常查询"></a>正常查询</h4><blockquote>
+<p>时间3.6秒</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">UPDATE</span> yc_advert_records <span class="token keyword">SET</span> visit_count <span class="token operator">=</span> visit_count <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">,</span>visited <span class="token operator">=</span> <span class="token string">'2020-08-18 12:54:54'</span><span class="token punctuation">,</span>visited_ip <span class="token operator">=</span> <span class="token string">'127.0.0.1'</span><span class="token punctuation">,</span>other <span class="token operator">=</span> <span class="token string">'1111'</span> <span class="token keyword">where</span> mailno<span class="token operator">=</span><span class="token number">4305185704781</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734509001.png" alt="1597734509001"></p>
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734655168.png" alt="1597734655168"></p>
+<h4 id="折半查询"><a href="#折半查询" class="headerlink" title="折半查询"></a>折半查询</h4><blockquote>
+<p>时间4.4秒</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">UPDATE</span> yc_advert_records <span class="token keyword">SET</span> visit_count <span class="token operator">=</span> visit_count <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">,</span>visited <span class="token operator">=</span> <span class="token string">'2020-08-18 12:54:54'</span><span class="token punctuation">,</span>visited_ip <span class="token operator">=</span> <span class="token string">'127.0.0.1'</span><span class="token punctuation">,</span>other <span class="token operator">=</span> <span class="token string">'1111'</span> <span class="token keyword">where</span> created <span class="token operator">></span> <span class="token string">'2020-08-13'</span> <span class="token operator">and</span> mailno<span class="token operator">=</span><span class="token number">4305185704781</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734743276.png" alt="1597734743276"></p>
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597734608762.png" alt="1597734608762"></p>
+<h4 id="强制用索引（折半查询）"><a href="#强制用索引（折半查询）" class="headerlink" title="强制用索引（折半查询）"></a>强制用索引（折半查询）</h4><blockquote>
+<p>增加FORCE INDEX(created)，然后时间上立马变化了。真是峰回路转。</p>
+</blockquote>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">UPDATE</span> yc_advert_records <span class="token keyword">FORCE</span> <span class="token keyword">INDEX</span><span class="token punctuation">(</span>created<span class="token punctuation">)</span> <span class="token keyword">SET</span> visit_count <span class="token operator">=</span> visit_count <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">,</span>visited <span class="token operator">=</span> <span class="token string">'2020-08-18 12:54:54'</span><span class="token punctuation">,</span>visited_ip <span class="token operator">=</span> <span class="token string">'127.0.0.1'</span><span class="token punctuation">,</span>other <span class="token operator">=</span> <span class="token string">'1111'</span> <span class="token keyword">where</span> created <span class="token operator">></span> <span class="token string">'2020-08-13'</span> <span class="token operator">and</span> mailno<span class="token operator">=</span><span class="token number">4305185704781</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597735105508.png" alt="1597735105508"></p>
+<p><img src="%E6%8A%98%E5%8D%8A%E6%8F%92%E5%85%A5_%E7%BB%9F%E8%AE%A1%E5%B9%BF%E5%91%8A%E8%AE%BF%E9%97%AE.assets/1597735140529.png" alt="1597735140529"></p>
+<h3 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h3><p>虽然上面折腾了很久，也终于利于上了其他索引，折腾查询，提升了性能。但是，直接增加mailno索引他不香吗？所以，直接利用索引，最终查询任何的速度都很快。代码回退，简单增加索引解决。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/08/12/html/input_file%E6%8E%A7%E4%BB%B6%E4%BD%BF%E7%94%A8accept%E8%BF%87%E6%BB%A4/" rel="prev" title="input_file控件使用accept过滤">
+                  <i class="fa fa-chevron-left"></i> input_file控件使用accept过滤
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/08/18/php/%E5%8A%A0%E5%AF%86/" rel="next" title="加密">
+                  加密 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

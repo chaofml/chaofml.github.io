@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="shell非常的灵活，一条简单的命令，往往能做很大的事情。别人说，web界面是方便输入的，而shell这种，更方便批量操作。 但是shell有时候非常的晦涩，尤其是大量的符号，比如无限复制进程的fork炸弹代码如下： :() &amp;#123; :|:&amp; &amp;#125;;:  符号虽然抽象，但是功能强大啊。一句胜过千言万语。 另外，听同事讲，shell里面的命令，基本上都是命令。比如 ((i&#x3D;i+">
+<meta property="og:type" content="article">
+<meta property="og:title" content="符号">
+<meta property="og:url" content="https://blog.chaofml.cn/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="shell非常的灵活，一条简单的命令，往往能做很大的事情。别人说，web界面是方便输入的，而shell这种，更方便批量操作。 但是shell有时候非常的晦涩，尤其是大量的符号，比如无限复制进程的fork炸弹代码如下： :() &amp;#123; :|:&amp; &amp;#125;;:  符号虽然抽象，但是功能强大啊。一句胜过千言万语。 另外，听同事讲，shell里面的命令，基本上都是命令。比如 ((i&#x3D;i+">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-22T13:33:14.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.023Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>符号 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%B1%E6%8B%AC%E5%8F%B7"><span class="nav-number">1.</span> <span class="nav-text">花括号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0%E4%BD%93%E6%97%B6%EF%BC%8C%E4%BD%BF%E7%94%A8%E3%80%82"><span class="nav-number">1.1.</span> <span class="nav-text">定义函数体时，使用。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97%EF%BC%9A%E9%87%8D%E5%AE%9A%E5%90%91%E8%BE%93%E5%87%BA"><span class="nav-number">1.2.</span> <span class="nav-text">代码块：重定向输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97%EF%BC%9A%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C"><span class="nav-number">1.3.</span> <span class="nav-text">代码块：后台运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E9%85%8D%E5%90%88"><span class="nav-number">1.4.</span> <span class="nav-text">变量配合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="nav-number">1.5.</span> <span class="nav-text">多个参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E6%8B%AC%E5%8F%B7"><span class="nav-number">2.</span> <span class="nav-text">中括号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E4%B8%AD%E6%8B%AC%E5%8F%B7"><span class="nav-number">2.1.</span> <span class="nav-text">单中括号[]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%B8%AD%E6%8B%AC%E5%8F%B7"><span class="nav-number">2.2.</span> <span class="nav-text">双中括号[[]]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link"><span class="nav-number">2.3.</span> <span class="nav-text">$[]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%BC%E5%90%88"><span class="nav-number">2.4.</span> <span class="nav-text">综合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E6%8B%AC%E5%8F%B7"><span class="nav-number">3.</span> <span class="nav-text">小括号</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E8%BF%9B%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">新进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E8%BF%94%E5%9B%9E"><span class="nav-number">3.2.</span> <span class="nav-text">封装返回</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E5%B0%8F%E6%8B%AC%E5%8F%B7"><span class="nav-number">3.3.</span> <span class="nav-text">双小括号</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7"><span class="nav-number">4.</span> <span class="nav-text">&#96;符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">5.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#-1"><span class="nav-number">5.1.</span> <span class="nav-text">$?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%84%9F%E5%8F%B9%E5%8F%B7"><span class="nav-number">6.</span> <span class="nav-text">感叹号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%BC%95%E5%8F%B7"><span class="nav-number">7.</span> <span class="nav-text">单引号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%BC%95%E5%8F%B7"><span class="nav-number">8.</span> <span class="nav-text">双引号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#heredoc"><span class="nav-number">9.</span> <span class="nav-text">heredoc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%8A%A0"><span class="nav-number">10.</span> <span class="nav-text">字符串相加</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%9F%E5%8F%B7"><span class="nav-number">11.</span> <span class="nav-text">星号 *</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E6%84%8F%E8%B7%AF%E5%BE%84"><span class="nav-number">12.</span> <span class="nav-text">任意路径**</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E5%8F%B7"><span class="nav-number">13.</span> <span class="nav-text">问号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%E5%8F%B7-amp-amp"><span class="nav-number">14.</span> <span class="nav-text">逻辑运算符号 &amp;&amp; ||</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#amp"><span class="nav-number">15.</span> <span class="nav-text">&amp;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0"><span class="nav-number">15.1.</span> <span class="nav-text">后台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%EF%BC%8C%E5%90%88%E5%B9%B6%E8%BE%93%E5%85%A5%E3%80%81%E9%94%99%E8%AF%AF%E6%B5%81"><span class="nav-number">15.2.</span> <span class="nav-text">定时任务，合并输入、错误流</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dockerfile%E7%9A%84%E5%A5%97%E8%B7%AF"><span class="nav-number">15.3.</span> <span class="nav-text">dockerfile的套路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8F%B7"><span class="nav-number">16.</span> <span class="nav-text">分号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E3%80%81%E8%BE%93%E5%87%BA"><span class="nav-number">17.</span> <span class="nav-text">输入、输出</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E3%80%81%E8%BE%93%E5%87%BA%E7%AC%A6%E5%8F%B7"><span class="nav-number">17.1.</span> <span class="nav-text">输入、输出符号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E9%81%93%E7%AC%A6%E5%8F%B7"><span class="nav-number">17.2.</span> <span class="nav-text">管道符号|</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%A1%E9%81%93%EF%BC%8C%E5%90%88%E5%B9%B6%E9%94%99%E8%AF%AF-amp"><span class="nav-number">17.3.</span> <span class="nav-text">管道，合并错误 |&amp;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%AD%E6%A8%AA%E7%BA%BF"><span class="nav-number">17.4.</span> <span class="nav-text">短横线</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E4%B9%89%E7%AC%A6%E5%8F%B7"><span class="nav-number">18.</span> <span class="nav-text">转义符号  \</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2022/02/22/shell/%E7%AC%A6%E5%8F%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          符号
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-22 13:33:14" itemprop="dateCreated datePublished" datetime="2022-02-22T13:33:14+00:00">2022-02-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>shell非常的灵活，一条简单的命令，往往能做很大的事情。别人说，web界面是方便输入的，而shell这种，更方便批量操作。</p>
+<p>但是shell有时候非常的晦涩，尤其是大量的符号，比如无限复制进程的fork炸弹代码如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">:<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token builtin class-name">:</span><span class="token operator">|</span><span class="token builtin class-name">:</span><span class="token operator">&amp;</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span class="token builtin class-name">:</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>符号虽然抽象，但是功能强大啊。一句胜过千言万语。</p>
+<p>另外，听同事讲，shell里面的命令，基本上都是命令。比如 <code>((i=i+1))</code>，两个括号就是命令，括号内的语法，模仿c语言的。中括号，也差不多。为啥要留空格呢，怕被识别成一个变量？？？</p>
+<a id="more"></a>
+
+
+
+<h3 id="花括号"><a href="#花括号" class="headerlink" title="花括号"></a>花括号</h3><h4 id="定义函数体时，使用。"><a href="#定义函数体时，使用。" class="headerlink" title="定义函数体时，使用。"></a>定义函数体时，使用。</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function-name function">greet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"hello"</span>,<span class="token variable">$1</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">#调用</span>
+greet zhangsan<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="代码块：重定向输出"><a href="#代码块：重定向输出" class="headerlink" title="代码块：重定向输出"></a>代码块：重定向输出</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">1</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">2</span>
+<span class="token punctuation">&#125;</span> <span class="token operator">></span> <span class="token number">22</span>.txt
+
+<span class="token comment"># 错误重定向，标准输出无内容，错误输出有内容。  </span>
+<span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">1</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">2</span>
+<span class="token punctuation">&#125;</span> <span class="token operator">></span><span class="token file-descriptor important">&amp;2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="代码块：后台运行"><a href="#代码块：后台运行" class="headerlink" title="代码块：后台运行"></a>代码块：后台运行</h4><p>不需要单独写个函数，然后封装成脚本后再运行，非常方便。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">&#123;</span>
+    <span class="token keyword">while</span> <span class="token boolean">true</span><span class="token punctuation">;</span><span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> hello world
+    <span class="token function">sleep</span> <span class="token number">1</span>
+    <span class="token keyword">done</span>
+<span class="token punctuation">&#125;</span> <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="变量配合"><a href="#变量配合" class="headerlink" title="变量配合"></a>变量配合</h4><p>见变量部分。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token variable">$&#123;hello&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="多个参数"><a href="#多个参数" class="headerlink" title="多个参数"></a>多个参数</h4><p>就像在bash中，会自动解析<code>*</code>的作用一样，会将花括号内的多个解析出来。</p>
+<p>格式：花括号内，用逗号分隔出多项。</p>
+<blockquote>
+<p>可以使用echo 来查看展开的内容。如：echo demo.txt{,.bak}</p>
+<p>echo {1,2,3,4}.txt    无论有没有这些文件，都会展开出来。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cp</span> demo.txt<span class="token punctuation">&#123;</span>,.bak<span class="token punctuation">&#125;</span>   <span class="token comment"># 等价于  cp demo.txt demo.txt.bak</span>
+<span class="token function">ls</span> cloud/<span class="token punctuation">&#123;</span>back,front<span class="token punctuation">&#125;</span>*/*.php
+
+
+<span class="token comment"># 使用转移符号 </span>
+<span class="token builtin class-name">echo</span> -e <span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">9</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">9</span><span class="token punctuation">&#125;</span><span class="token punctuation">&#123;</span><span class="token number">0</span><span class="token punctuation">..</span><span class="token number">9</span><span class="token punctuation">&#125;</span><span class="token string">'<span class="token entity" title="\n">\n</span>'</span>
+<span class="token comment"># 嵌套使用</span>
+<span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span><span class="token number">1</span><span class="token punctuation">..</span><span class="token number">20</span><span class="token punctuation">&#125;</span>,3<span class="token punctuation">&#125;</span>
+<span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>a<span class="token punctuation">..</span>z<span class="token punctuation">&#125;</span>,3<span class="token punctuation">&#125;</span>
+<span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>a<span class="token punctuation">..</span>z<span class="token punctuation">&#125;</span>,3,4,5,<span class="token punctuation">&#123;</span>b<span class="token punctuation">..</span>g<span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="中括号"><a href="#中括号" class="headerlink" title="中括号"></a>中括号</h3><h4 id="单中括号"><a href="#单中括号" class="headerlink" title="单中括号[]"></a>单中括号[]</h4><p>判断。配合特殊的语法，来实现逻辑运算。但是，记得中括号内两侧有空格。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">[</span> -z <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token punctuation">]</span>   <span class="token comment"># 如果字符串为空,true</span>
+<span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token punctuation">]</span>      <span class="token comment"># $1字符串不为空时，true</span>
+<span class="token punctuation">[</span> -eq <span class="token variable">$1</span> <span class="token number">10</span> <span class="token punctuation">]</span>  <span class="token comment"># 数字比较，相等</span>
+<span class="token punctuation">[</span> <span class="token operator">!</span> -eq <span class="token variable">$1</span> <span class="token number">10</span> <span class="token punctuation">]</span>  <span class="token comment"># 感叹号 否定</span>
+<span class="token comment"># 其他符号  -a 且   -o  或</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="双中括号"><a href="#双中括号" class="headerlink" title="双中括号[[]]"></a>双中括号[[]]</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h4 id=""><a href="#" class="headerlink" title="$[]"></a>$[]</h4><p>中括号两侧的空白符号，可有可无。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 数学表达式计算</span>
+$<span class="token punctuation">[</span> <span class="token number">1002</span>/12 <span class="token punctuation">]</span>
+
+<span class="token builtin class-name">echo</span> hello$<span class="token punctuation">[</span> <span class="token number">1024</span>*10 <span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="综合"><a href="#综合" class="headerlink" title="综合"></a>综合</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">read</span> -p <span class="token string">"Please input your score: "</span> score
+<span class="token comment"># 使用了正则</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$score</span> <span class="token operator">=</span>~ <span class="token punctuation">[</span>^0-9<span class="token punctuation">]</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"please input a int"</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">10</span>
+<span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$score</span> -gt <span class="token number">100</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"Your score is wrong"</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">20</span>
+<span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$score</span> -ge <span class="token number">85</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"Your score is very good"</span>
+<span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token variable">$score</span> -ge <span class="token number">60</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"Your score is soso"</span>
+<span class="token keyword">else</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"You are loser"</span>
+<span class="token keyword">fi</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="小括号"><a href="#小括号" class="headerlink" title="小括号"></a>小括号</h3><h4 id="新进程"><a href="#新进程" class="headerlink" title="新进程"></a>新进程</h4><p>新起一个进程运行。注意，括号内的变量，在外部访问不到。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token punctuation">(</span>while <span class="token boolean">true</span><span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> hello world<span class="token punctuation">;</span><span class="token function">sleep</span> <span class="token number">1</span><span class="token punctuation">;</span><span class="token assign-left variable">hello</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span><span class="token keyword">done</span><span class="token punctuation">)</span> 
+
+<span class="token comment"># 停止运行后，echo $hello   是没有输出的。而去掉括号，则可以。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="封装返回"><a href="#封装返回" class="headerlink" title="封装返回"></a>封装返回</h4><blockquote>
+<p>同样，使用于函数的返回</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">demo</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">ls</span> -alh<span class="token variable">)</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$demo</span>"</span>   <span class="token comment"># 原样输出</span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$demo</span>     <span class="token comment"># 输出一行</span>
+<span class="token comment"># 在字符串内，也会被解析。</span>
+<span class="token assign-left variable">demo</span><span class="token operator">=</span><span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">ls</span> -alh<span class="token variable">)</span></span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="双小括号"><a href="#双小括号" class="headerlink" title="双小括号"></a>双小括号</h4><p>比如for循环等等。运算符号。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token keyword">for</span><span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">))</span></span><span class="token punctuation">;</span><span class="token keyword">do</span> 
+    <span class="token variable"><span class="token punctuation">((</span>b<span class="token operator">=</span>i<span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">))</span></span><span class="token punctuation">;</span> <span class="token comment"># 独立的语句，还不能直接 echo</span>
+    <span class="token variable"><span class="token punctuation">((</span>c<span class="token operator">=</span><span class="token number">2</span><span class="token operator">*</span>i<span class="token punctuation">))</span></span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$b</span><span class="token punctuation">;</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="符号"><a href="#符号" class="headerlink" title="`符号"></a>`符号</h3><p>封装返回。跟<code>$( some code )</code>效果类似。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">demo</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> -alh<span class="token variable">`</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$demo</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>所有的变量以<code>$</code>前缀。</p>
+<p>对于脚本参数，以 <code>$1、$2...</code>数字前缀。 <code>$0</code>当前的脚本</p>
+<p>函数类似。</p>
+<p>参数个数。</p>
+<p>变量运算，参见<code>字符串处理</code>文章。</p>
+<h4 id="-1"><a href="#-1" class="headerlink" title="$?"></a>$?</h4><p>上次的执行结果。如果正常，则等于0。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 判断上次执行结果</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token variable">$?</span> -eq <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token keyword">then</span> <span class="token builtin class-name">echo</span> ok <span class="token punctuation">;</span><span class="token keyword">else</span> <span class="token builtin class-name">echo</span> fail <span class="token punctuation">;</span><span class="token keyword">fi</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>其实，另外一种方式</p>
+<h3 id="感叹号"><a href="#感叹号" class="headerlink" title="感叹号"></a>感叹号</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 执行最后1条命令</span>
+<span class="token operator">!</span><span class="token operator">!</span>
+
+<span class="token comment"># history中第n条命令</span>
+<span class="token operator">!</span><span class="token number">7</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="单引号"><a href="#单引号" class="headerlink" title="单引号"></a>单引号</h3><p>定义文本变量，其内的<code>$、*</code>等符号，会被保护起来。不会被解析。可以保持文本的换行符号。</p>
+<p>保护功能，参加error文章。</p>
+<h3 id="双引号"><a href="#双引号" class="headerlink" title="双引号"></a>双引号</h3><p>定义文本变量，允许变量注入。可以保持文本的换行符号。</p>
+<h3 id="heredoc"><a href="#heredoc" class="headerlink" title="heredoc"></a>heredoc</h3><p>3种格式如下：</p>
+<blockquote>
+<p>呼应的并一定非要<code>EOL</code>，任何和正文不冲突的符号都行。结尾，必须要顶头写，不能有空白字符。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">var</span><span class="token operator">=</span>hello
+<span class="token operator">&lt;&lt;</span><span class="token string">EOL
+		多行文本，这个里面的 <span class="token variable">$var</span> 变量会被 shell解析
+EOL</span>
+
+
+<span class="token operator">&lt;&lt;</span><span class="token string">'EOL'
+		多行文本，这个里面的 $var 变量会不会被 shell解析
+EOL</span>
+
+
+<span class="token operator">&lt;&lt;-</span><span class="token string">EOL
+		多行文本，这个里面的 <span class="token variable">$var</span> 变量会被 shell解析，制表符号会被移除。
+EOL</span>
+
+<span class="token comment"># 组合形式   &lt;&lt;-'EOL'</span>
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>备注：<code>-EOL</code>只能移除制表符号时，空格不会处理。</p>
+<h3 id="字符串相加"><a href="#字符串相加" class="headerlink" title="字符串相加"></a>字符串相加</h3><p>其实没有相加符号，只要两个文本或变量想靠近即可。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">var1</span><span class="token operator">=</span>haha
+<span class="token assign-left variable">var2</span><span class="token operator">=</span>qie
+<span class="token builtin class-name">echo</span> <span class="token variable">$var1</span><span class="token variable">$var2</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"hello"</span><span class="token variable">$var2</span>
+
+
+<span class="token comment"># 在命令行中</span>
+<span class="token assign-left variable">now</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">'+%Y%m%d%H%M%S'</span><span class="token variable">`</span></span>
+<span class="token function">sed</span> -i <span class="token string">'s#ver=version#ver='</span><span class="token variable">$now</span><span class="token string">'#g'</span> <span class="token string">"<span class="token variable">$each</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="星号"><a href="#星号" class="headerlink" title="星号 *"></a>星号 <code>*</code></h3><p>bash会自动对<code>*</code>解析，然后转换成多个参数，注入到脚本中。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">echo</span> my*.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果想避免解析，那么应该使用单引号、双引号保护起来。</p>
+<p>find查找命令，对于下面的<code>*.html</code>，带不带双引号，有很大的区别。不带双引号保护，会被shell解析，然后，</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -type f -name <span class="token string">"*.html"</span>`<span class="token punctuation">;</span><span class="token keyword">do</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果，变量需要内部的命令去解析，也要先用引号保护起来。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 比如，有个demo.sh 接收一个参数，参数实际上用在内部的sed上。</span>
+<span class="token function">sed</span> -i <span class="token string">"s///g"</span> <span class="token variable">$1</span>
+
+<span class="token comment"># 调用bash时， demo.sh  'backend/*.php' ，这个时候，'backend/*.php'在sed命令行中展开。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果，文件名中有空格，用引号保护，但是<code>*</code>号放在引号外。示例如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#Spring 事务一网打尽 (P12. 12.Spring事务传播性之MANDATORY).flv </span>
+<span class="token function">ls</span> <span class="token string">"Spring 事务一网打尽 (P12"</span>*    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="任意路径"><a href="#任意路径" class="headerlink" title="任意路径**"></a>任意路径<code>**</code></h3><blockquote>
+<p>非常好的命令，能避免很多场景下的for循环。比如，<code>grep target_string /path/to/**/*.php</code>。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查看</span>
+<span class="token builtin class-name">shopt</span> 
+<span class="token comment"># globstar        off</span>
+<span class="token comment"># 开启</span>
+<span class="token builtin class-name">shopt</span> -s globstar <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>开启后，就可以使用任意路径功能了。</p>
+<p>好出非常的大，最起码避免先查找文件、然后在for循环里面处理文件了。</p>
+<p>如：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> sometxt  cloud/frontend/**/*.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="问号"><a href="#问号" class="headerlink" title="问号"></a>问号</h3><p>路径参数中使用。</p>
+<p>作用，只能替代一个字符。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">touch</span> a1.txt
+<span class="token function">touch</span> a2.txt
+<span class="token comment"># 查找出a1、a2两个文件</span>
+<span class="token function">ls</span> a?.txt
+<span class="token comment"># 查找不到内容</span>
+<span class="token function">ls</span> a??.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="逻辑运算符号-amp-amp"><a href="#逻辑运算符号-amp-amp" class="headerlink" title="逻辑运算符号 &amp;&amp; ||"></a>逻辑运算符号 &amp;&amp; ||</h3><p>跟编程语言的逻辑运算符号类似，也有短路效果。</p>
+<p>如下，即判断是否存在<code>hello</code>这个文件夹，如果报错，则提示报错</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span>  hello <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> exist hello  <span class="token operator">||</span>  <span class="token builtin class-name">echo</span> no hello <span class="token function">dir</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>上面那种，是成功、或失败了才会执行相应的分支。</p>
+<p>其实还有一种情况，不管成功与否都要执行，其实，就是简单的分号，即可。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">domesomething<span class="token punctuation">;</span> ding.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="amp"><a href="#amp" class="headerlink" title="&amp;"></a>&amp;</h3><h4 id="后台"><a href="#后台" class="headerlink" title="后台"></a>后台</h4><p>程序需要挂到后台运行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nohup</span> /yd/td2/shell/import_job.sh <span class="token operator">>></span> /yd/td2/runtime/cron/log.txt <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="定时任务，合并输入、错误流"><a href="#定时任务，合并输入、错误流" class="headerlink" title="定时任务，合并输入、错误流"></a>定时任务，合并输入、错误流</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">01 00 * * * /yd/td2/shell/import_job.sh <span class="token operator">>></span> /yd/td2/runtime/cron/log.txt <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span>
+
+<span class="token comment"># 简写形式</span>
+ding.sh <span class="token operator">>&amp;</span> log.txt
+ding.sh <span class="token operator">&amp;></span> log.txt
+
+<span class="token comment"># 追加 ，只能按下面这样写</span>
+ding.sh <span class="token operator">&amp;>></span> log.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="dockerfile的套路"><a href="#dockerfile的套路" class="headerlink" title="dockerfile的套路"></a>dockerfile的套路</h4><p>在dockerfile，很喜欢将多条语句合成1条语句执行。如下，两个示例</p>
+<p><strong>方式一</strong>：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">RUN  <span class="token builtin class-name">echo</span> hello <span class="token operator">&amp;&amp;</span> <span class="token punctuation">\</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">1234</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">\</span>
+    <span class="token builtin class-name">echo</span> <span class="token number">4567</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>方式二</strong>：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">RUN  <span class="token builtin class-name">echo</span> hello <span class="token punctuation">\</span>
+    <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token number">1234</span> <span class="token punctuation">\</span>
+    <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">echo</span> <span class="token number">4567</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="分号"><a href="#分号" class="headerlink" title="分号"></a>分号</h3><p>代码的分隔符号。因为shell的结尾<code>;</code>不是必须的，如果要写在一行的话，则必须写。这跟<code>js</code>、<code>golang</code>都很像。</p>
+<p>比如docker需要执行多条命令，使用下面方式。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">bash</span> -c <span class="token string">'echo 123;echo 456'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="输入、输出"><a href="#输入、输出" class="headerlink" title="输入、输出"></a>输入、输出</h3><h4 id="输入、输出符号"><a href="#输入、输出符号" class="headerlink" title="输入、输出符号"></a>输入、输出符号</h4><p>输入内容</p>
+<p>简单的编辑代码</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> <span class="token operator">></span> test.sh <span class="token operator">&lt;&lt;</span><span class="token string">EOL
+echo 123
+echo 456
+echo 789
+EOL</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 没有echo  直接 重定向到文件，效果：清空文件</span>
+<span class="token operator">></span> backup.sh
+
+<span class="token comment"># 将输出重定想到文件</span>
+<span class="token builtin class-name">exec</span> <span class="token operator">></span> <span class="token number">2</span>.txt <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h4 id="管道符号"><a href="#管道符号" class="headerlink" title="管道符号|"></a>管道符号|</h4><p>一个程序的输出，作为另外一个程序的输入，注意，不是作为，另一个程序的参数。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">seq</span> <span class="token number">10</span><span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'s#^#big#'</span><span class="token operator">|</span><span class="token keyword">while</span> <span class="token builtin class-name">read</span> line<span class="token punctuation">;</span><span class="token keyword">do</span> <span class="token builtin class-name">echo</span> <span class="token variable">$line</span><span class="token string">"   chuangqi"</span><span class="token punctuation">;</span><span class="token keyword">done</span> <span class="token operator">|</span><span class="token function">cat</span> -n<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>作为参数时，有两种方案：</p>
+<p>xargs</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">seq</span> <span class="token number">10</span><span class="token operator">|</span><span class="token function">xargs</span> <span class="token builtin class-name">echo</span>
+
+<span class="token function">seq</span> <span class="token number">10</span><span class="token operator">|</span><span class="token function">xargs</span> -n <span class="token number">1</span>  <span class="token builtin class-name">echo</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>sed/awk… + bash</p>
+<p>相当于动态的生成一个shell，然后再去执行。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">seq</span> <span class="token number">10</span><span class="token operator">|</span><span class="token function">sed</span> <span class="token string">'s#^#echo #'</span><span class="token operator">|</span><span class="token function">sh</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h4 id="管道，合并错误-amp"><a href="#管道，合并错误-amp" class="headerlink" title="管道，合并错误 |&amp;"></a>管道，合并错误 |&amp;</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">grep</span> hello test.txt<span class="token operator">|&amp;</span><span class="token function">cat</span> -n    <span class="token comment"># 通过-n参数，观测到，通过管道传递给cat</span>
+     <span class="token number">1</span>  grep: test.txt: No such <span class="token function">file</span> or directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h4 id="短横线"><a href="#短横线" class="headerlink" title="短横线"></a>短横线</h4><p>一般习惯将 <code>-</code> 表示，从输入流获取内容。</p>
+<p>比如，tar、cat、nc等</p>
+<p>在文件末尾追加多行。<code>-</code>表示的输入刘。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> exa1.txt - <span class="token operator">></span> output <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+some lines you want to insert
+go here
+EOF</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>--</code> 缺省</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">kubectl <span class="token builtin class-name">exec</span> -it qingcloud-844ffd6575-pgjq2 -n qing-cloud -- <span class="token function">bash</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="转义符号"><a href="#转义符号" class="headerlink" title="转义符号  \"></a>转义符号  \</h3><p>如find命令后，exec的参数需要转移。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -type d -exec <span class="token builtin class-name">echo</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+
+<span class="token assign-left variable">hello</span><span class="token operator">=</span><span class="token number">1</span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$hello</span>
+<span class="token builtin class-name">echo</span> <span class="token punctuation">\</span><span class="token variable">$hello</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>字符串类的转义</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+<span class="token builtin class-name">echo</span> -e <span class="token string">"hello<span class="token entity" title="\n">\n</span>world"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>正则转义</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/22/mysql/mysql%E5%85%A5%E9%97%A8/" rel="prev" title="mysql入门">
+                  <i class="fa fa-chevron-left"></i> mysql入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/01/git/git%E6%9F%A5%E6%89%BE%E6%9C%80%E5%A4%A7%E7%9A%84%E6%96%87%E4%BB%B6%E5%B9%B6%E4%BB%8E%E5%8E%86%E5%8F%B2%E8%AE%B0%E5%BD%95%E4%B8%AD%E5%88%A0%E9%99%A4/" rel="next" title="git查找大文件并删除">
+                  git查找大文件并删除 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

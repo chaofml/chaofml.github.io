@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="提交表单设计增加了提交前的验证函数，利用一个dict映射数组，保存提示消息保。并利用循环，将映射的数组的关系进行查找，如果有此值，则提示响应的内容。 需要改进的地方。能否省略这个dict数组，将其存放到组件的属性中，直接获取组件的提示消息？ 猜想，估计能实行，利用getFields来进行如下操作。 var me&#x3D;this; var form &#x3D;me.down(&#39;form">
+<meta property="og:type" content="article">
+<meta property="og:title" content="提交表单设计">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/01/18/2019-01-18_formmenu/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="提交表单设计增加了提交前的验证函数，利用一个dict映射数组，保存提示消息保。并利用循环，将映射的数组的关系进行查找，如果有此值，则提示响应的内容。 需要改进的地方。能否省略这个dict数组，将其存放到组件的属性中，直接获取组件的提示消息？ 猜想，估计能实行，利用getFields来进行如下操作。 var me&#x3D;this; var form &#x3D;me.down(&#39;form">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-18T18:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.948Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2019/01/18/2019-01-18_formmenu/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>提交表单设计 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">提交表单设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D"><span class="nav-number">1.1.</span> <span class="nav-text">题外话</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/01/18/2019-01-18_formmenu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          提交表单设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-18 18:00:00" itemprop="dateCreated datePublished" datetime="2019-01-18T18:00:00+00:00">2019-01-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="提交表单设计"><a href="#提交表单设计" class="headerlink" title="提交表单设计"></a>提交表单设计</h1><p>增加了提交前的验证函数，利用一个dict映射数组，保存提示消息保。并利用循环，将映射的数组的关系进行查找，如果有此值，则提示响应的内容。</p>
+<p>需要改进的地方。能否省略这个dict数组，将其存放到组件的属性中，直接获取组件的提示消息？</p>
+<p>猜想，估计能实行，利用getFields来进行如下操作。</p>
+<pre class="line-numbers language-none"><code class="language-none">var me&#x3D;this;
+var form &#x3D;me.down(&#39;form&#39;).getForm();
+var data&#x3D;form.getFields();
+&#x2F;&#x2F;然后再遍历这个数组，如果有自定义的字段，则提示响应的消息。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>完整的代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">formSubmit:function()&#123;
+    var me&#x3D;this;
+    var form &#x3D;me.down(&#39;form&#39;).getForm();
+    var data&#x3D;form.getValues();
+    &#x2F;&#x2F;对数据进行验证
+    if(!me.formIsValid())&#123;
+        return;
+    &#125;
+    Ext.Msg.wait(&quot;保存中，请稍后... ...&quot;,&quot;操作提示&quot;);
+    form.submit(&#123;
+        submitEmptyText:false,
+        success: function(form, action) &#123;
+            Ext.Msg.hide();
+            if(parseInt(action.result.code)&gt;0)&#123;&#x2F;&#x2F;数据验证失败
+                var msg&#x3D;action.result.msg;
+                if(action.result.code&#x3D;&#x3D;1)&#123;&#x2F;&#x2F;一般错误提示
+                    Ext.Msg.show(&#123;
+                        title:&quot;操作提示&quot;,
+                        msg:msg,
+                        icon:Ext.Msg.WARNING,
+                        buttons:Ext.Msg.OK,
+                        minWidth:300
+                    &#125;);
+                &#125;
+                if(action.result.code&#x3D;&#x3D;2)&#123;&#x2F;&#x2F;时间冲突
+                    Ext.Msg.show(&#123;
+                        title: &quot;操作提示&quot;,
+                        msg: msg,
+                        minWidth: 300,
+                        icon: Ext.Msg.QUESTION,
+                        buttons: Ext.Msg.YESNO,
+                        fn: function (idx) &#123;
+                            if (&quot;yes&quot; &#x3D;&#x3D; idx) &#123;
+                                &#x2F;&#x2F;显示错误列表
+                                &#x2F;&#x2F;me.showConflictMeetingGrid(action.result.data,action.result.interval_time);
+                            &#125;
+                        &#125;
+                    &#125;);
+                &#125;
+            &#125;else&#123;&#x2F;&#x2F;数据验证成功
+                Ext.Msg.show(&#123;
+                    title:&quot;操作提示&quot;,
+                    msg:&quot;保存成功！&quot;,
+                    icon:Ext.Msg.INFO,
+                    buttons:Ext.Msg.OK,
+                    fn:function()&#123;						
+                       
+                    &#125;
+                &#125;);
+            &#125;
+        &#125;,
+        failure: function(form, action) &#123;
+            Ext.Msg.hide();
+            Ext.Msg.show(&#123;
+                title:&quot;操作提示&quot;,
+                msg:&quot;编辑失败，请检查输入的数据是否完整。&quot;,
+                icon:Ext.Msg.ERROR,
+                buttons:Ext.Msg.OK
+            &#125;);
+        &#125;
+    &#125;);
+&#125;,
+&#x2F;***********
+ * 2019年1月18日
+ * 表单验证
+ ***********&#x2F;
+formIsValid:function()&#123;
+    var me&#x3D;this;
+    var form &#x3D;me.down(&#39;form&#39;).getForm();
+    var data&#x3D;form.getValues();
+    var msg&#x3D;[];
+    var dict&#x3D;&#123;
+        &#39;conference_room_id&#39;:&#39;会议室&#39;,
+        &#39;meeting_type&#39;:&#39;会议类型&#39;,
+        &#39;meeting_video&#39;:&#39;会议属性&#39;,
+        &#39;meeting_logo&#39;:&#39;桌牌设置&#39;,
+        &#39;starttime&#39;:&#39;时间&#39;,
+        &#39;meeting_name&#39;:&#39;主题&#39;,
+        &#39;speaker&#39;:&#39;主讲人&#39;,
+        &#39;attend_desc&#39;:&#39;参与者&#39;,
+        &#39;template_id&#39;:&#39;模板&#39;
+    &#125;;
+    for(var key in dict)&#123;
+        if(!data[key])&#123;
+            msg.push(dict[key]);
+        &#125;
+    &#125;
+    if(msg.length&gt;0)&#123;
+        Ext.toast(&#39;请完善以下字段：&#39;+msg.join(&#39;、&#39;)+&#39;！&#39;);
+    &#125;
+    return msg.length&#x3D;&#x3D;&#x3D;0;
+&#125;,<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h2><p>本来想利用，input输入错误后，特殊的css样式来提示用户输入错误的，结果发现这样做，由于html的差别较大，实现起来较难。</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;这个是input标签，输入错误的对比
+x-form-field x-form-required-field x-form-text x-form-text-default  x-form-empty-field x-form-empty-field-default x-form-invalid-field x-form-invalid-field-default
+x-form-field x-form-required-field x-form-text x-form-text-default 
+&#x2F;&#x2F;这个是外层包裹的div，输入错误的对比
+x-form-text-wrap x-form-text-wrap-default x-form-text-wrap-invalid
+x-form-text-wrap x-form-text-wrap-default
+&#x2F;&#x2F;上面的方式，只适用于input框。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/17/2019-01-17_fastTesting/" rel="prev" title="快速测试">
+                  <i class="fa fa-chevron-left"></i> 快速测试
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/20/2019-01-1_meetingorderdesktop_order_selecttime/" rel="next" title="会议室选择时间设计">
+                  会议室选择时间设计 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

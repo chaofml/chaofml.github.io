@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="自动加载spl_autoload_register.php php中的类自动加载机制，及一些框架的示例。主要根据psr-4规范来定义自动加载机制，这样，可以利用composer工具，自动加载。一般情况下，是不需要自己来注册类的自动加载方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动加载spl_autoload_register.php">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/01/03/php/%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BDspl_autoload_register/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="自动加载spl_autoload_register.php php中的类自动加载机制，及一些框架的示例。主要根据psr-4规范来定义自动加载机制，这样，可以利用composer工具，自动加载。一般情况下，是不需要自己来注册类的自动加载方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-03T16:48:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.016Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/01/03/php/%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BDspl_autoload_register/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>自动加载spl_autoload_register.php | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BDspl-autoload-register-php"><span class="nav-number">1.</span> <span class="nav-text">自动加载spl_autoload_register.php</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%87%BD%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">关键函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Typecho%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.</span> <span class="nav-text">Typecho自动加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Thinkphp5-1"><span class="nav-number">4.</span> <span class="nav-text">Thinkphp5.1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zendframework-1"><span class="nav-number">5.</span> <span class="nav-text">Zendframework 1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%9A%84%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">传统的类加载方式</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/01/03/php/%E8%87%AA%E5%8A%A8%E5%8A%A0%E8%BD%BDspl_autoload_register/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自动加载spl_autoload_register.php
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-01-03 16:48:00" itemprop="dateCreated datePublished" datetime="2020-01-03T16:48:00+00:00">2020-01-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="自动加载spl-autoload-register-php"><a href="#自动加载spl-autoload-register-php" class="headerlink" title="自动加载spl_autoload_register.php"></a>自动加载spl_autoload_register.php</h1><blockquote>
+<p>php中的类自动加载机制，及一些框架的示例。主要根据psr-4规范来定义自动加载机制，这样，可以利用composer工具，自动加载。一般情况下，是不需要自己来注册类的自动加载方法。</p>
+</blockquote>
+<a id="more"></a>
+
+<p><strong>关于psr规范：</strong></p>
+<p> 第一份推荐规范PSR-0。第一份推荐标准被新发布的PSR-4替代了。 同样是实现类的自动加载机制。</p>
+<p><strong>PSR-4：自动加载器</strong></p>
+<p>PHP-FIG发布的第四个推荐规范就是描述一个标准的自动加载器。自动加载器的策略就是依赖PHP命名空间和文件系统目录结构查找并加载PHP类、接口和性状。定义顶级命令空间所对应的跟目录，然后</p>
+<h1 id="关键函数"><a href="#关键函数" class="headerlink" title="关键函数"></a>关键函数</h1><p><strong>spl_autoload_register</strong>：</p>
+<blockquote>
+<p>bool <strong>spl_autoload_register</strong>    ([ <a href="mk:@MSITStore:C:\Users\chaof\Desktop\手册\php_enhanced_zh.chm::/res/language.types.callable.html">callable</a> <code>$autoload_function</code>   [, bool <code>$throw</code> = true   [, bool <code>$prepend</code> = false  ]]] )</p>
+</blockquote>
+<p>函数式加载</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token function">spl_autoload_register</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'autoloader'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">autoloader</span><span class="token punctuation">(</span><span class="token variable">$classname</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">//加载实现逻辑</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>类形式：</p>
+<p>spl_autoload_register([‘类名’,’静态方法’]); </p>
+<p>spl_autoload_register([‘对象实例’,’方法’]);</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">class</span> <span class="token class-name">Loader</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">protected</span>  <span class="token keyword">static</span> <span class="token variable">$instance</span> <span class="token operator">=</span> <span class="token constant">null</span><span class="token punctuation">;</span>
+    
+    <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$instance</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$instance</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$instance</span> <span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$me</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">spl_autoload_register</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token variable">$me</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'loadClass'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">function</span> <span class="token function">loadClass</span><span class="token punctuation">(</span><span class="token variable">$classname</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$classPath</span> <span class="token operator">=</span> <span class="token function">dirname</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token single-quoted-string string">'/lib/'</span><span class="token punctuation">.</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'_'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'/'</span><span class="token punctuation">,</span><span class="token variable">$classname</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token single-quoted-string string">'.php'</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">file_exists</span><span class="token punctuation">(</span><span class="token variable">$classPath</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token keyword">include</span> <span class="token variable">$classPath</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean constant">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+            <span class="token comment">// 交给注册的下一个自动加载器处理  ？？？需要核实</span>
+            <span class="token keyword">return</span> <span class="token boolean constant">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">//注册 该方法</span>
+Loader<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="Typecho自动加载"><a href="#Typecho自动加载" class="headerlink" title="Typecho自动加载"></a>Typecho自动加载</h1><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token comment">/**
+* 自动载入类
+*/</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">__autoLoad</span><span class="token punctuation">(</span><span class="token variable">$className</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    @<span class="token keyword">include_once</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'\\'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'_'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'/'</span><span class="token punctuation">,</span> <span class="token variable">$className</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token single-quoted-string string">'.php'</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token comment">/** 设置自动载入函数 */</span>
+    <span class="token function">spl_autoload_register</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'Typecho_Common'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'__autoLoad'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/** 设置异常截获函数 */</span>
+    <span class="token function">set_exception_handler</span><span class="token punctuation">(</span><span class="token keyword">array</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'Typecho_Common'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'exceptionHandle'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="Thinkphp5-1"><a href="#Thinkphp5-1" class="headerlink" title="Thinkphp5.1"></a>Thinkphp5.1</h1><p>实现的有点复杂，还利用到了静态变量的缓存，而且register方法可以根据参数$autoload，灵活注册加载函数。还照顾到了composer，自动加载支持。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">class</span> <span class="token class-name">Loader</span><span class="token punctuation">&#123;</span>
+
+<span class="token comment">// 注册自动加载机制</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">register</span><span class="token punctuation">(</span><span class="token variable">$autoload</span> <span class="token operator">=</span> <span class="token single-quoted-string string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 注册系统自动加载</span>
+        <span class="token function">spl_autoload_register</span><span class="token punctuation">(</span><span class="token variable">$autoload</span> <span class="token operator">?</span><span class="token punctuation">:</span> <span class="token single-quoted-string string">'think\\Loader::autoload'</span><span class="token punctuation">,</span> <span class="token boolean constant">true</span><span class="token punctuation">,</span> <span class="token boolean constant">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$rootPath</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">getRootPath</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$composerPath</span> <span class="token operator">=</span> <span class="token variable">$rootPath</span> <span class="token punctuation">.</span> <span class="token single-quoted-string string">'vendor'</span> <span class="token punctuation">.</span> <span class="token constant">DIRECTORY_SEPARATOR</span> <span class="token punctuation">.</span> <span class="token single-quoted-string string">'composer'</span> <span class="token punctuation">.</span> <span class="token constant">DIRECTORY_SEPARATOR</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Composer自动加载支持</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_dir</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$composerPath</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">is_file</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$composerPath</span> <span class="token punctuation">.</span> <span class="token single-quoted-string string">'autoload_static.php'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">require</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$composerPath</span> <span class="token punctuation">.</span> <span class="token single-quoted-string string">'autoload_static.php'</span><span class="token punctuation">;</span>
+
+                <span class="token variable">$declaredClass</span> <span class="token operator">=</span> <span class="token function">get_declared_classes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token variable">$composerClass</span> <span class="token operator">=</span> <span class="token function">array_pop</span><span class="token punctuation">(</span><span class="token variable">$declaredClass</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">foreach</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token single-quoted-string string">'prefixLengthsPsr4'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'prefixDirsPsr4'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'fallbackDirsPsr4'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'prefixesPsr0'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'fallbackDirsPsr0'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'classMap'</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'files'</span><span class="token punctuation">]</span> <span class="token keyword">as</span> <span class="token variable">$attr</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">property_exists</span><span class="token punctuation">(</span><span class="token variable">$composerClass</span><span class="token punctuation">,</span> <span class="token variable">$attr</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                        self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$</span><span class="token punctuation">&#123;</span><span class="token variable">$attr</span><span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token variable">$composerClass</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$</span><span class="token punctuation">&#123;</span><span class="token variable">$attr</span><span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">registerComposerLoader</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$composerPath</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        
+       	
+       	<span class="token comment">// 自动加载</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">function</span> <span class="token function">autoload</span><span class="token punctuation">(</span><span class="token variable">$class</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$classAlias</span><span class="token punctuation">[</span><span class="token variable">$class</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token function">class_alias</span><span class="token punctuation">(</span>self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token variable">$classAlias</span><span class="token punctuation">[</span><span class="token variable">$class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$file</span> <span class="token operator">=</span> self<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">findFile</span><span class="token punctuation">(</span><span class="token variable">$class</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+            <span class="token comment">// Win环境严格区分大小写</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token constant">PHP_OS</span><span class="token punctuation">,</span> <span class="token single-quoted-string string">'WIN'</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token boolean constant">false</span> <span class="token operator">&amp;&amp;</span> <span class="token function">pathinfo</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">,</span> <span class="token constant">PATHINFO_FILENAME</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token function">pathinfo</span><span class="token punctuation">(</span><span class="token function">realpath</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">PATHINFO_FILENAME</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token keyword">return</span> <span class="token boolean constant">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+
+            <span class="token function">__include_file</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean constant">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+
+
+<span class="token comment">// 注册自动加载</span>
+Loader<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">register</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="Zendframework-1"><a href="#Zendframework-1" class="headerlink" title="Zendframework 1"></a>Zendframework 1</h1><p>其也有自动加载规范。</p>
+<h1 id="传统的类加载方式"><a href="#传统的类加载方式" class="headerlink" title="传统的类加载方式"></a>传统的类加载方式</h1><p>参见brophp中的实现，核心set_include_path跟__autoload函数。这种跟zendframe1框架，有点像。算是一种比较简单的加载，但是，这种方式已经不推荐呢。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+    <span class="token comment">//设置包含目录（类所在的全部目录）,  PATH_SEPARATOR 分隔符号 Linux(:) Windows(;)</span>
+	<span class="token variable">$include_path</span><span class="token operator">=</span><span class="token function">get_include_path</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                         <span class="token comment">//原基目录</span>
+	<span class="token variable">$include_path</span><span class="token punctuation">.</span><span class="token operator">=</span><span class="token constant">PATH_SEPARATOR</span><span class="token punctuation">.</span><span class="token constant">BROPHP_PATH</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"bases/"</span><span class="token punctuation">;</span>       <span class="token comment">//框架中基类所在的目录</span>
+	<span class="token variable">$include_path</span><span class="token punctuation">.</span><span class="token operator">=</span><span class="token constant">PATH_SEPARATOR</span><span class="token punctuation">.</span><span class="token constant">BROPHP_PATH</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"classes/"</span> <span class="token punctuation">;</span>    <span class="token comment">//框架中扩展类的目录</span>
+	<span class="token variable">$include_path</span><span class="token punctuation">.</span><span class="token operator">=</span><span class="token constant">PATH_SEPARATOR</span><span class="token punctuation">.</span><span class="token constant">BROPHP_PATH</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"libs/"</span> <span class="token punctuation">;</span>       <span class="token comment">//模板Smarty所在的目录</span>
+	<span class="token variable">$include_path</span><span class="token punctuation">.</span><span class="token operator">=</span><span class="token constant">PATH_SEPARATOR</span><span class="token punctuation">.</span><span class="token constant">PROJECT_PATH</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"classes/"</span><span class="token punctuation">;</span>    <span class="token comment">//项目中用的到的工具类</span>
+	<span class="token variable">$controlerpath</span><span class="token operator">=</span><span class="token constant">PROJECT_PATH</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"runtime/controls/"</span><span class="token punctuation">.</span><span class="token constant">TMPPATH</span><span class="token punctuation">;</span>  <span class="token comment">//生成控制器所在的路径</span>
+	<span class="token variable">$include_path</span><span class="token punctuation">.</span><span class="token operator">=</span><span class="token constant">PATH_SEPARATOR</span><span class="token punctuation">.</span><span class="token variable">$controlerpath</span><span class="token punctuation">;</span>             <span class="token comment">//当前应用的控制类所在的目录 </span>
+
+	<span class="token comment">//设置include包含文件所在的所有目录	</span>
+	<span class="token function">set_include_path</span><span class="token punctuation">(</span><span class="token variable">$include_path</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token comment">//自动加载类 	</span>
+	<span class="token keyword">function</span> <span class="token function">__autoload</span><span class="token punctuation">(</span><span class="token variable">$className</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$className</span><span class="token operator">==</span><span class="token double-quoted-string string">"memcache"</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>        <span class="token comment">//如果是系统的Memcache类则不包含</span>
+			<span class="token keyword">return</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$className</span><span class="token operator">==</span><span class="token double-quoted-string string">"Smarty"</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>    <span class="token comment">//如果类名是Smarty类，则直接包含</span>
+			<span class="token keyword">include</span> <span class="token double-quoted-string string">"Smarty.class.php"</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>                             <span class="token comment">//如果是其他类，将类名转为小写</span>
+			<span class="token keyword">include</span> <span class="token function">strtolower</span><span class="token punctuation">(</span><span class="token variable">$className</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token double-quoted-string string">".class.php"</span><span class="token punctuation">;</span>	
+		<span class="token punctuation">&#125;</span>
+		Debug<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">addmsg</span><span class="token punctuation">(</span><span class="token double-quoted-string string">"&lt;b> <span class="token interpolation"><span class="token variable">$className</span></span> &lt;/b>类"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//在debug中显示自动包含的类</span>
+	<span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/31/mysql/mysql%E6%9F%A5%E7%9C%8B%E8%BF%9E%E6%8E%A5%E6%95%B0/" rel="prev" title="mysql查看连接数">
+                  <i class="fa fa-chevron-left"></i> mysql查看连接数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/01/06/learn_code/workerman%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/" rel="next" title="workerman源码解读">
+                  workerman源码解读 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

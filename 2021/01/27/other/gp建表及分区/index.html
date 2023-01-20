@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="gp建表及分区摘抄：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b952fe212134">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gp建表及分区">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="gp建表及分区摘抄：https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;b952fe212134">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-27T09:26:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.984Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>gp建表及分区 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA"><span class="nav-number">1.</span> <span class="nav-text">gp建表及分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%91%98%E6%8A%84"><span class="nav-number">1.0.1.</span> <span class="nav-text">摘抄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E6%B5%8B%E8%AF%95%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="nav-number">1.0.2.</span> <span class="nav-text">自己测试的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%88%86%E5%8C%BA%E8%A1%A8"><span class="nav-number">1.0.3.</span> <span class="nav-text">转换为分区表</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/01/27/other/gp%E5%BB%BA%E8%A1%A8%E5%8F%8A%E5%88%86%E5%8C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          gp建表及分区
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-27 09:26:00" itemprop="dateCreated datePublished" datetime="2021-01-27T09:26:00+00:00">2021-01-27</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="gp建表及分区"><a href="#gp建表及分区" class="headerlink" title="gp建表及分区"></a>gp建表及分区</h1><p>摘抄：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b952fe212134">https://www.jianshu.com/p/b952fe212134</a></p>
+<a id="more"></a>
+
+<h3 id="摘抄"><a href="#摘抄" class="headerlink" title="摘抄"></a>摘抄</h3><p>以下内容，在创建分区可能有问题，并不能创建分区。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token number">1</span>、创建数据库：
+create database 库名<span class="token punctuation">;</span>
+
+<span class="token number">2</span>、删除数据库：
+drop database 库名<span class="token punctuation">;</span>
+
+<span class="token number">3</span>、创建表：
+create table 表名<span class="token punctuation">(</span>
+  <span class="token function">id</span> integer,
+  name text,
+  price numeric <span class="token punctuation">&#123;</span>精确度较高的小数型，同mysql的decimal<span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token number">3</span>-1、GP建表指定列级约束
+create table 表名<span class="token punctuation">(</span>
+  <span class="token function">id</span> integer primary key,       <span class="token punctuation">&#123;</span>主键约束<span class="token punctuation">&#125;</span>
+  name text not null,           <span class="token punctuation">&#123;</span>非空约束<span class="token punctuation">&#125;</span>
+  price numeric check<span class="token punctuation">(</span>price<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span>, <span class="token punctuation">&#123;</span>检查约束<span class="token punctuation">&#125;</span>
+  <span class="token builtin class-name">type</span> integer unique           <span class="token punctuation">&#123;</span>唯一约束<span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+【注】：主键、唯一键、随机分布不能共存
+
+<span class="token number">3</span>-2、声明表的分布策略
+GP的分布键作用是保证数据能够均匀分布在不同的存储节点上，充分利用并行计算带来的高性能。GP的分布策略包括HASH分布和随机分布。
+HASH分布的关键字是：distributed by<span class="token punctuation">(</span>列名<span class="token punctuation">)</span>
+随机分布的关键字是：distributed by randonly
+
+在创建表或者修改表定义的时候，必须使用distributed by来执行分布键，从而使数据均匀的存储在不同的segment上。
+如果指定的分布键<span class="token punctuation">(</span>列名<span class="token punctuation">)</span>不是主键，则无法创建<span class="token punctuation">(</span>指定的列必须是主键<span class="token punctuation">)</span>。
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>、声明hash分布
+create table 表名<span class="token punctuation">(</span>
+  <span class="token function">id</span> integer primary key,       <span class="token punctuation">&#123;</span>主键约束<span class="token punctuation">&#125;</span>
+  name text not null,           <span class="token punctuation">&#123;</span>非空约束<span class="token punctuation">&#125;</span>
+  price numeric check<span class="token punctuation">(</span>price<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span>, <span class="token punctuation">&#123;</span>检查约束<span class="token punctuation">&#125;</span>
+  <span class="token builtin class-name">type</span> integer unique           <span class="token punctuation">&#123;</span>唯一约束<span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>、声明随机分布
+create table 表名<span class="token punctuation">(</span>
+  <span class="token function">id</span> integer primary key,       <span class="token punctuation">&#123;</span>主键约束，这里就不能在声明主键约束<span class="token punctuation">&#125;</span>
+  name text not null,           <span class="token punctuation">&#123;</span>非空约束<span class="token punctuation">&#125;</span>
+  price numeric check<span class="token punctuation">(</span>price<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span>, <span class="token punctuation">&#123;</span>检查约束<span class="token punctuation">&#125;</span>
+  <span class="token builtin class-name">type</span> integer unique           <span class="token punctuation">&#123;</span>唯一约束，这里就不能在声明唯一约束<span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span>distributed by randonly<span class="token punctuation">;</span>       <span class="token punctuation">&#123;</span>指定随机分布<span class="token punctuation">&#125;</span>
+
+【注】：主键、唯一键、随机分布不能共存
+否则报错：ERROR:Primary key and distributed randonly are incompatible<span class="token punctuation">&#123;</span>不兼容的<span class="token punctuation">&#125;</span>
+【说明】：几何数据类型和自定义的数据类型不适合作为GP的分布键。如果没有适合的列可以保证数据的均匀分布，则使用随机分布
+
+
+<span class="token number">4</span>、分区表的特征
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>、对一张表作分区，实际上是创建了一张父表和多个子表
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>、每个分区在创建时都带有一个不同的检查约束<span class="token punctuation">(</span>check<span class="token punctuation">)</span>
+<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>、任何分区结构的修改或者表结构的修改都要通过父表使用partition字句结合alter table命令完成
+
+查看某张表是否为分区表：
+<span class="token keyword">select</span> count<span class="token punctuation">(</span>*<span class="token punctuation">)</span> from pg_partition where <span class="token assign-left variable">parrelid</span><span class="token operator">=</span><span class="token string">'测试schema.表名'</span>::regclass<span class="token punctuation">;</span>
+结果：如果有数据就是分区表，如果无数据则不为分区表
+
+<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>、分区选择性扫描的限制
+查询计划只可以用稳定的比较运算符 <span class="token operator">=</span> , <span class="token operator">&lt;</span> , <span class="token operator">></span> , <span class="token operator">&lt;</span><span class="token operator">=</span> , <span class="token operator">></span><span class="token operator">=</span> , <span class="token operator">&lt;></span>
+查询计划不能识别非稳定的函数来执行选择性扫描
+
+<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>、创建和管理分区表
+分区表类型        使用场景
+range             表示一个序列范围，如日期、数字、价格等       
+list              表示一个列表，如产品名称
+【注】：主键或是唯一键必须包含表中的所有分区键
+<span class="token number">1</span><span class="token punctuation">)</span>、定义range类型分区表，使用start，end，every定义分区增量让GP自动创建分区
+create table test<span class="token punctuation">(</span>
+    c1 integer,
+    c2 <span class="token function">date</span>
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>c1<span class="token punctuation">)</span> 
+partition by range<span class="token punctuation">(</span>c2<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+start<span class="token punctuation">(</span>date,<span class="token string">'2019-09-01'</span><span class="token punctuation">)</span>inclusive
+end<span class="token punctuation">(</span>date,<span class="token string">'2019-09-03'</span><span class="token punctuation">)</span>exclusive
+every<span class="token punctuation">(</span>interval <span class="token string">'1 day'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+创建结果：
+test（父表）
+test_1_part_1
+test_1_part_2
+test_1_part_3
+关键字说明：
+start：    分区开始值
+end:       分区结束值
+inclusive: 表示包含左边的取值
+exclusive: 表示不包含左边的取值
+every:     表示分区范围自增长的步长
+
+<span class="token number">2</span><span class="token punctuation">)</span>、定义日期范围分区表，且并给每个分区表单独命名
+create table test<span class="token punctuation">(</span>
+    c1 integer,
+    c2 <span class="token function">date</span>
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>c1<span class="token punctuation">)</span> 
+partition by range<span class="token punctuation">(</span>c2<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+partition one start<span class="token punctuation">(</span>date,<span class="token string">'2019-09-01'</span><span class="token punctuation">)</span>inclusive
+partition two start<span class="token punctuation">(</span>date,<span class="token string">'2019-09-02'</span><span class="token punctuation">)</span>inclusive
+partition thr start<span class="token punctuation">(</span>date,<span class="token string">'2019-09-03'</span><span class="token punctuation">)</span>inclusive
+end<span class="token punctuation">(</span>date,<span class="token string">'2019-09-04'</span><span class="token punctuation">)</span>exclusive
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+创建结果：
+test（父表）
+test_1_par_one
+test_1_par_two
+test_1_par_thr
+
+<span class="token number">3</span><span class="token punctuation">)</span>、定义数字范围分区表
+create table test2<span class="token punctuation">(</span>
+    <span class="token function">id</span> int,
+    year int
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+partition by range<span class="token punctuation">(</span>year<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+statr<span class="token punctuation">(</span><span class="token number">2014</span><span class="token punctuation">)</span>
+end<span class="token punctuation">(</span><span class="token number">2016</span><span class="token punctuation">)</span>
+every<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>,
+default partition extra
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+创建结果：
+test2（父表）
+test2_1_prt_extra
+test2_1_prt_2
+test2_1_prt_3
+
+<span class="token number">4</span><span class="token punctuation">)</span>、创建列表分区
+create table test2<span class="token punctuation">(</span>
+    <span class="token function">id</span> int,
+    gender char<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+partition by list<span class="token punctuation">(</span>gender<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+partition boys values<span class="token punctuation">(</span><span class="token string">'M'</span><span class="token punctuation">)</span>,
+partition girls values<span class="token punctuation">(</span><span class="token string">'F'</span><span class="token punctuation">)</span>,
+default partition thr
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+【说明】：default partition 分区名称   的作用是是定义默认分区，在分区检查约束范围内的数据会被放到对应的分区，不在各个
+分区表检查范围内的数据都会被放入到默认分区表中
+举例：
+insert into test2 value
+<span class="token punctuation">(</span><span class="token number">1</span>,<span class="token string">'M'</span><span class="token punctuation">)</span>,
+<span class="token punctuation">(</span><span class="token number">2</span>,<span class="token string">'M'</span><span class="token punctuation">)</span>,
+<span class="token punctuation">(</span><span class="token number">3</span>,<span class="token string">'F'</span><span class="token punctuation">)</span>,
+<span class="token punctuation">(</span><span class="token number">4</span>,<span class="token string">'K'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">select</span> * from test2_1_prt_boys<span class="token punctuation">;</span>
+结果：
+<span class="token number">1</span> M
+<span class="token number">2</span> M
+<span class="token keyword">select</span> * from test2_1_prt_girls<span class="token punctuation">;</span>
+结果：
+<span class="token number">3</span> F
+<span class="token keyword">select</span> * from test2_1_prt_thr<span class="token punctuation">;</span>
+结果：<span class="token punctuation">&#123;</span>K不等于M也不等与F，所以被存储到默认分区内<span class="token punctuation">&#125;</span>
+<span class="token number">4</span> K
+
+<span class="token number">5</span><span class="token punctuation">)</span>、定义多级分区表
+创建二级子分区表根据日期字段做一级分区，再根据地区列表做二级分区
+create table test2<span class="token punctuation">(</span>
+    <span class="token function">id</span> int,
+    dates date,
+    region text
+<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+partition by range<span class="token punctuation">(</span>dates<span class="token punctuation">)</span>
+subpartition by list<span class="token punctuation">(</span>region<span class="token punctuation">)</span>
+subpartition template
+    <span class="token punctuation">(</span>
+    subpartition usa values<span class="token punctuation">(</span><span class="token string">'usa'</span><span class="token punctuation">)</span>,
+    subpartition uk values<span class="token punctuation">(</span><span class="token string">'uk'</span><span class="token punctuation">)</span>,
+    subpartition ch values<span class="token punctuation">(</span><span class="token string">'ch'</span><span class="token punctuation">)</span>,
+    default subpartition otherRegions
+    <span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+    start<span class="token punctuation">(</span>date,<span class="token string">'2019-09-20'</span><span class="token punctuation">)</span>inclusive
+    end<span class="token punctuation">(</span>date,<span class="token string">'2019-09-22'</span><span class="token punctuation">)</span>exclusive
+    every<span class="token punctuation">(</span>interaval <span class="token string">'1 day'</span><span class="token punctuation">)</span>,
+    default partition otherDays
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token number">6</span><span class="token punctuation">)</span>、查看子分区是否被扫描
+explain <span class="token keyword">select</span> * from test2<span class="token punctuation">;</span>
+
+<span class="token number">7</span><span class="token punctuation">)</span>、交换分区<span class="token punctuation">(</span>待查方法<span class="token punctuation">)</span>
+
+<span class="token number">8</span><span class="token punctuation">)</span>、查看分区设计
+通过pg_partition视图查看分区表的设计情况
+<span class="token keyword">select</span> partitionboundry, partitiontablename, partitionname, partitionlevel, partitionrank from pg_partition<span class="token punctuation">;</span>
+
+通过pg_partition_templates查看子分区模板
+<span class="token keyword">select</span> * from pg_partition_templates where <span class="token assign-left variable">tablename</span><span class="token operator">=</span><span class="token string">'test2'</span><span class="token punctuation">;</span>
+
+通过pg_partition_columns查看分区键
+<span class="token keyword">select</span> * from pg_partition_columns where <span class="token assign-left variable">tablename</span><span class="token operator">=</span><span class="token string">'test2'</span><span class="token punctuation">;</span>
+
+
+
+<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>、维护分区表
+分区表的维护包括添加新分区，重命名，拆分，模板修改和删除分区等
+<span class="token number">1</span><span class="token punctuation">)</span>、添加新分区<span class="token punctuation">&#123;</span>原分区表中如果默认存在分区需要先drop掉默认分区<span class="token punctuation">&#125;</span>
+alter table test2 drop default partition<span class="token punctuation">;</span>
+alter table test2 <span class="token function">add</span> partition 分区名  start<span class="token punctuation">(</span><span class="token string">'2019-09-20'</span>::date<span class="token punctuation">)</span> end<span class="token punctuation">(</span><span class="token string">'2019-09-30'</span>::date<span class="token punctuation">)</span><span class="token punctuation">;</span>
+分区名如：p20200317
+
+<span class="token number">1</span>-1<span class="token punctuation">)</span>、创建一个新的空分区：
+create table 分区表名_y2008m02 partition OF 源表
+    <span class="token keyword">for</span> values from <span class="token punctuation">(</span><span class="token string">'2008-02-01'</span><span class="token punctuation">)</span> TO <span class="token punctuation">(</span><span class="token string">'2008-03-01'</span><span class="token punctuation">)</span>
+    TABLESPACE fasttablespace<span class="token punctuation">;</span>
+
+<span class="token number">2</span>、重命名分区<span class="token punctuation">&#123;</span>修改父表信息、会影响所有的分区表<span class="token punctuation">&#125;</span>
+alter table test2 <span class="token function">rename</span> to test22<span class="token punctuation">;</span>
+
+<span class="token number">3</span><span class="token punctuation">)</span>、只修改分区名称<span class="token punctuation">&#123;</span>for<span class="token punctuation">(</span><span class="token string">'2019-09-20'</span><span class="token punctuation">)</span>填写分区键的值这里即指test22_1_prt_4这个分区表<span class="token punctuation">&#125;</span>
+alter table test22 <span class="token function">rename</span> partition for<span class="token punctuation">(</span><span class="token string">'2019-09-20'</span><span class="token punctuation">)</span> to change_par<span class="token punctuation">;</span>
+结果：test22_1_prt_4-<span class="token operator">></span>改名为test22_1_prt_change_par
+
+<span class="token number">4</span><span class="token punctuation">)</span>、删除分区
+alter table schema.test22 drop default partition<span class="token punctuation">;</span>  删除默认分区
+alter table schema.test22 drop partition <span class="token keyword">if</span> exists <span class="token string">"partitionName"</span><span class="token punctuation">;</span>
+
+<span class="token number">5</span><span class="token punctuation">)</span>、清空分区数据
+alter table test22 truncate partition for<span class="token punctuation">(</span>rand<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+
+<span class="token number">6</span><span class="token punctuation">)</span>、修改子分区模板
+alter table test22 <span class="token builtin class-name">set</span> subpartition template
+<span class="token punctuation">(</span>
+    subpartition usa value<span class="token punctuation">(</span><span class="token string">'usa'</span><span class="token punctuation">)</span>,
+    subpartition africa value<span class="token punctuation">(</span><span class="token string">'africa'</span><span class="token punctuation">)</span>,
+    default subpartition other
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token number">7</span><span class="token punctuation">)</span>、拆分分区
+alter table 分区表名 <span class="token function">split</span> partition p20120105分区名 at<span class="token variable"><span class="token punctuation">((</span>'<span class="token number">2012</span><span class="token operator">-</span><span class="token number">01</span><span class="token operator">-</span><span class="token number">06</span>'<span class="token operator">:</span><span class="token operator">:</span>date<span class="token punctuation">))</span></span> into 
+<span class="token punctuation">(</span>PARTITION p20120105<span class="token punctuation">(</span>分区名<span class="token punctuation">)</span> ,PARTITION p20120106<span class="token punctuation">(</span>分区名<span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token number">8</span><span class="token punctuation">)</span>、交换分区
+alter table 分区表名 exchange partition p20120102<span class="token punctuation">(</span>分区名<span class="token punctuation">)</span> with table 新分区表名<span class="token punctuation">;</span>
+
+<span class="token number">5</span>、数据的存储方式
+推存储<span class="token punctuation">(</span>heap<span class="token punctuation">)</span>：适合数据经常变化的小表
+只追加存储<span class="token punctuation">(</span>Append-Only<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>即AO表<span class="token punctuation">&#125;</span>：适合大表，通常是批量装载数且只进行只读查询操作
+默认的建表存储模式为堆存储。
+
+创建堆存储表<span class="token punctuation">(</span>heap<span class="token punctuation">)</span>：
+create table test<span class="token punctuation">(</span>id int<span class="token punctuation">)</span>distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+创建AO表：
+create table test<span class="token punctuation">(</span>
+    <span class="token function">id</span> int,
+    name text not null,
+    sex text not null check<span class="token punctuation">(</span>sex in<span class="token punctuation">(</span><span class="token string">'male'</span>,<span class="token string">'famale'</span><span class="token punctuation">))</span>
+<span class="token punctuation">)</span>with <span class="token punctuation">(</span>appendonly<span class="token operator">=</span>true<span class="token punctuation">)</span>
+distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+【注】：AO表不支持主键、唯一约束
+
+
+<span class="token number">6</span>、快速建表
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>、在创建表的时候，如果要创建一张结构一模一样的表，可以利用create table like命令，但是创建表后的一些特殊属性并不会一样。如压缩、只增加<span class="token punctuation">(</span>appendonly<span class="token punctuation">)</span>属性等。
+如果不指定分布键，则默认分布键与源表一样
+create table test2 <span class="token punctuation">(</span>like test1<span class="token punctuation">)</span> distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#123;</span>注：使用create table like命令创建的表不带数据的，且<span class="token punctuation">(</span>like 源表<span class="token punctuation">)</span>得加上括号<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>、根据查询结果创建表，使用create table as 或 <span class="token keyword">select</span> into命令
+create table as 和 <span class="token keyword">select</span> into命令功能一样，但select into语法简单且不能手动指定分布键，只能使用默认的分布键
+<span class="token punctuation">&#123;</span>创建test2表<span class="token punctuation">&#125;</span>
+方式一:
+create table test2 as <span class="token keyword">select</span> id,name from test1 distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+方式二：
+<span class="token keyword">select</span> id,name into test1 from test2<span class="token punctuation">;</span>
+
+
+<span class="token number">7</span>、创建列存表
+选择列存储或行存储的场景：
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>、表中的数据需要做更新操作，选择行存储
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>、如果表经常有insert操作，选择行存储
+<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>、如果在select和where中涉及表的全部或大部分列时，选择行存储
+<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>、如果在where和having中对单列做聚合操作且返回少量的行，选择列存储
+<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>、行存储对于列多或行尺寸相对少的表更高效
+<span class="token punctuation">(</span><span class="token number">6</span><span class="token punctuation">)</span>、列存储只在访问宽表的少量列的查询中性能更高
+<span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span>、列存储根据有压缩优势
+<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span>、默认情况下，表是按行存储的方式存储
+<span class="token punctuation">(</span><span class="token number">9</span><span class="token punctuation">)</span>、列存储必须是AO表，否则无法创建成功，使用with<span class="token punctuation">(</span>orientation<span class="token operator">=</span>column<span class="token punctuation">)</span>指定为列存储
+
+如：
+create table test<span class="token punctuation">(</span>
+    <span class="token function">id</span> integer,
+    name text not null
+<span class="token punctuation">)</span>with<span class="token punctuation">(</span>orientation<span class="token operator">=</span>column,appendonly<span class="token operator">=</span>true<span class="token punctuation">)</span>
+distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span>
+
+<span class="token number">8</span>、创建压缩表
+表压缩的目的是为了减少占用存储空间，用于数据仓库中的事实表。不经常进行数据和表结构的操作。压缩表必须是AO表。
+GP数据库的压缩方式分为：表级压缩、列级压缩
+
+行存储： 表级压缩，列级压缩  压缩算法：ZLIB、QUICKLZ
+列存储： 表级压缩，列级压缩  压缩算法：RLE_TYPE、ZLIB、QUICKLZ
+
+<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>、表级压缩
+get_ao_distribution<span class="token punctuation">(</span>表名<span class="token punctuation">)</span>        查看AO表的分布情况
+get_ao_compression_ratio<span class="token punctuation">(</span>表名<span class="token punctuation">)</span>   查看AO表的压缩率
+pg_total_relation_size<span class="token punctuation">(</span>表名<span class="token punctuation">)</span>     查看AO表的占用空间大小（通常和函数pg_size_pretty<span class="token punctuation">(</span><span class="token punctuation">)</span>连用）
+
+查看AO表test1的分布情况
+<span class="token keyword">select</span> get_ao_distribution<span class="token punctuation">(</span>test1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+查看AO表test1的压缩率
+<span class="token keyword">select</span> get_ao_compression_ratio<span class="token punctuation">(</span>test1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+查看AO表test1的占用空间大小
+<span class="token keyword">select</span> pg_size_pretty<span class="token punctuation">(</span>pg_total_relation_size<span class="token punctuation">(</span>test1<span class="token punctuation">))</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>、创建压缩表（表级压缩）
+create table test1<span class="token punctuation">(</span>
+    <span class="token function">id</span> integer,
+    name text not null
+<span class="token punctuation">)</span>with<span class="token punctuation">(</span>appendonly<span class="token operator">=</span>true,compression<span class="token operator">=</span><span class="token string">'zlib'</span><span class="token punctuation">)</span>
+distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token number">3</span><span class="token punctuation">)</span>、创建压缩表（列级压缩）
+create table test1<span class="token punctuation">(</span>
+    <span class="token function">id</span> integer encoding<span class="token punctuation">(</span>compression<span class="token operator">=</span><span class="token string">'zlib'</span><span class="token punctuation">)</span>,
+    name text not null encoding<span class="token punctuation">(</span>compression<span class="token operator">=</span><span class="token string">'quickly'</span><span class="token punctuation">)</span>,
+    sex text not null encoding<span class="token punctuation">(</span>compression<span class="token operator">=</span>null<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>with<span class="token punctuation">(</span>appendonly<span class="token operator">=</span>true,orientation<span class="token operator">=</span>column<span class="token punctuation">)</span>
+distributed by<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+【注】：创建压缩表，同时使用了表级压缩和列级压缩，列级压缩会覆盖表级压缩的设置
+
+<span class="token number">9</span>、数据加载
+<span class="token number">1000</span>，0000条记录加载到数据库表
+<span class="token punctuation">\</span>copy test22 from <span class="token string">'/data/test.csv'</span> with delimeter <span class="token string">','</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="自己测试的例子"><a href="#自己测试的例子" class="headerlink" title="自己测试的例子"></a>自己测试的例子</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> test<span class="token punctuation">(</span>
+    c1 <span class="token keyword">integer</span><span class="token punctuation">,</span>
+    c2 <span class="token keyword">date</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">distributed</span> <span class="token keyword">by</span><span class="token punctuation">(</span>c1<span class="token punctuation">)</span> 
+<span class="token keyword">partition</span> <span class="token keyword">by</span> range<span class="token punctuation">(</span>c2<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+<span class="token keyword">partition</span> one <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-01'</span><span class="token punctuation">)</span>inclusive <span class="token punctuation">,</span>
+<span class="token keyword">partition</span> two <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-02'</span><span class="token punctuation">)</span>inclusive <span class="token punctuation">,</span>
+<span class="token keyword">partition</span> thr <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-03'</span><span class="token punctuation">)</span>inclusive 
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">---例子2</span>
+<span class="token keyword">create</span> <span class="token keyword">table</span> test2<span class="token punctuation">(</span>
+    c1 <span class="token keyword">integer</span><span class="token punctuation">,</span>
+    c2 <span class="token keyword">date</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">distributed</span> <span class="token keyword">by</span><span class="token punctuation">(</span>c1<span class="token punctuation">)</span> 
+<span class="token keyword">partition</span> <span class="token keyword">by</span> range<span class="token punctuation">(</span>c2<span class="token punctuation">)</span>
+<span class="token punctuation">(</span>
+<span class="token keyword">partition</span> one <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-01'</span><span class="token punctuation">)</span>inclusive <span class="token punctuation">,</span>
+<span class="token keyword">partition</span> two <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-02'</span><span class="token punctuation">)</span>inclusive <span class="token punctuation">,</span>
+<span class="token keyword">partition</span> thr <span class="token keyword">start</span> <span class="token punctuation">(</span> <span class="token string">'2019-09-03'</span><span class="token punctuation">)</span>inclusive <span class="token keyword">end</span><span class="token punctuation">(</span><span class="token string">'2019-09-04'</span><span class="token punctuation">)</span>exclusive
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="转换为分区表"><a href="#转换为分区表" class="headerlink" title="转换为分区表"></a>转换为分区表</h3><pre class="line-numbers language-none"><code class="language-none">------普通表 转 分区表 -------
+&#x3D;&#x3D;&gt;CREATE TABLE sales2 (LIKE sales)
+   PARTITION BY RANGE (date)
+   ( START (date &#39;2008-01-01&#39;) INCLUSIVE
+     END (date &#39;2009-01-01&#39;) EXCLUSIVE
+     EVERY (INTERVAL &#39;1 month&#39;) );
+&#x3D;&#x3D;&gt;INSERT INTO sales2 SELECT * FROM sales;
+&#x3D;&#x3D;&gt;DROP TABLE sales;
+&#x3D;&#x3D;&gt;ALTER TABLE sales2 RENAME TO sales;
+&#x3D;&#x3D;&gt;GRANT ALL PRIVILEGES ON sales TO admin;
+&#x3D;&#x3D;&gt;GRANT SELECT ON sales TO guest;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/26/mysql/%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E8%AE%B0%E5%BD%95%E4%BF%9D%E7%95%991%E6%9D%A1/" rel="prev" title="删除重复记录保留1条">
+                  <i class="fa fa-chevron-left"></i> 删除重复记录保留1条
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/01/27/python/celery%E5%88%9D%E6%8E%A2/" rel="next" title="celery初探">
+                  celery初探 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

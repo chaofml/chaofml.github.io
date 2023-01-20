@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="linux中find命令详解。对于使用各种条件来查找文件，该命令非常的重要，而且还能使用-exec参数，附加命令，(跟xargs很像)，完成更多的功能。 类似于资源管理器中的查找功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="find">
+<meta property="og:url" content="https://blog.chaofml.cn/2019/12/13/shell/find/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="linux中find命令详解。对于使用各种条件来查找文件，该命令非常的重要，而且还能使用-exec参数，附加命令，(跟xargs很像)，完成更多的功能。 类似于资源管理器中的查找功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-13T14:29:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.021Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2019/12/13/shell/find/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>find | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="nav-number">2.1.</span> <span class="nav-text">通用说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exec"><span class="nav-number">2.2.</span> <span class="nav-text">exec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type"><span class="nav-number">2.3.</span> <span class="nav-text">type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#name"><span class="nav-number">2.4.</span> <span class="nav-text">name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#emptys"><span class="nav-number">2.5.</span> <span class="nav-text">emptys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#atime"><span class="nav-number">2.6.</span> <span class="nav-text">atime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mtime"><span class="nav-number">2.7.</span> <span class="nav-text">mtime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mmin"><span class="nav-number">2.8.</span> <span class="nav-text">mmin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#depth"><span class="nav-number">2.9.</span> <span class="nav-text">depth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#regex"><span class="nav-number">2.10.</span> <span class="nav-text">regex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#newer"><span class="nav-number">2.11.</span> <span class="nav-text">newer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#perm"><span class="nav-number">2.12.</span> <span class="nav-text">perm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#group-user"><span class="nav-number">2.13.</span> <span class="nav-text">group&#x2F;user</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#size"><span class="nav-number">2.14.</span> <span class="nav-text">size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ok"><span class="nav-number">2.15.</span> <span class="nav-text">ok</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daystart"><span class="nav-number">2.16.</span> <span class="nav-text">daystart</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%9C%89%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90%E4%BD%86%E6%B2%A1%E6%9C%89%E5%8F%AF%E8%AF%BB%E6%9D%83%E9%99%90"><span class="nav-number">3.1.</span> <span class="nav-text">查找有执行权限但没有可读权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E7%A9%BA%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">删除空文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%90%9C%E7%B4%A2"><span class="nav-number">3.3.</span> <span class="nav-text">镜像搜索</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/12/13/shell/find/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          find
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-12-13 14:29:00" itemprop="dateCreated datePublished" datetime="2019-12-13T14:29:00+00:00">2019-12-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>linux中find命令详解。对于使用各种条件来查找文件，该命令非常的重要，而且还能使用<code>-exec</code>参数，附加命令，(跟xargs很像)，完成更多的功能。</p>
+<p>类似于资源管理器中的查找功能。</p>
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/hechunhua/p/4860544.html">Linux系统下用find命令查找最近修改过的文件</a></li>
+</ul>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="通用说明"><a href="#通用说明" class="headerlink" title="通用说明"></a>通用说明</h3><blockquote>
+<p>数字，+号代表 大于，-号代表小于。如： <code>find -mtime -10</code>，表示查找修改在10天以内的文件。具体的数字，代表的是那1天。</p>
+</blockquote>
+<ul>
+<li><code>atime</code>: 显示上一次读取或访问文件的时间。</li>
+<li><code>amin</code>: 显示上一次读取或访问文件是多少分钟之前</li>
+<li><code>mtime</code>: 显示文件或程序上一次修改文件的时间。更改或修改文件内容时，mtime也会更改。“修改”是指将某些数据附加到文件中，部分或全部重新组织或删除。</li>
+<li><code>mmin</code>: 显示几分钟内最后一次修改文件的时间。</li>
+<li><code>ctime</code>: 显示文件属性何时修改的</li>
+</ul>
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -name <span class="token string">"*.sh"</span> -exec <span class="token function">cat</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -name <span class="token string">"*.txt"</span> -exec <span class="token builtin class-name">echo</span>   <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span> <span class="token comment"># 出现两次也是可以的。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>说明： </p>
+<p>-exec参数后面跟的是command命令，它是以 ; 为结束标志，由于各个系统中分号会有不同的意义，因此在前面加上反斜杠。{} 代表前面find查找出来的文件名 </p>
+<p>关于分号的说明：避免其成为find的结束标志，其只是 -exec 的内容一部分，即结束标志，而且是不可或缺的。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查找目录并列出目录下的文件(为找到的每一个目录单独执行ls命令，没有选项-print时文件列表前一行不会显示目录名称)</span>
+<span class="token function">find</span> ./ -type d -print -exec <span class="token function">ls</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a>type</h3><p>文件类型</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 查找文件</span>
+<span class="token function">find</span> ./ -type f
+
+<span class="token comment">#查找目录</span>
+<span class="token function">find</span> ./ -type d<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="name"><a href="#name" class="headerlink" title="name"></a>name</h3><p>文件名称，可以使用<code>*</code>，<code>?</code>符号。<code>i</code>大小写忽略。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 当前目录下，txt格式，大小写忽略</span>
+<span class="token function">find</span> <span class="token builtin class-name">.</span> -type f -iname <span class="token string">"*.txt"</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="emptys"><a href="#emptys" class="headerlink" title="emptys"></a>emptys</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找空文件或空目录</span>
+<span class="token function">find</span> ./ -empty
+
+<span class="token comment">#查找空文件并删除</span>
+<span class="token function">find</span> ./ -empty -type f -print -delete<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="atime"><a href="#atime" class="headerlink" title="atime"></a>atime</h3><p>访问时间。</p>
+<h3 id="mtime"><a href="#mtime" class="headerlink" title="mtime"></a>mtime</h3><p>查找24小时内修改过的文件。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> -type f -mtime -1 
+
+<span class="token comment">#查找文件更新日时在距现在时刻二天以内的文件</span>
+<span class="token function">find</span> ./ -mtime -2
+
+<span class="token comment">#查找文件更新日时在距现在时刻二天以上的文件</span>
+<span class="token function">find</span> ./ -mtime +2
+
+<span class="token comment"># 查找文件更新日时在距现在时刻一天以上二天以内的文件</span>
+<span class="token function">find</span> ./ -mtime <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="mmin"><a href="#mmin" class="headerlink" title="mmin"></a>mmin</h3><p>修改，以分钟为单位。 m即modify。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找文件更新日时在距现在时刻二分以内的文件</span>
+<span class="token function">find</span> ./ -mmin -2
+
+<span class="token comment">#查找文件更新日时在距现在时刻二分以上的文件</span>
+<span class="token function">find</span> ./ -mmin +2
+
+<span class="token comment">#查找文件更新日时在距现在时刻一分以上二分以内的文件</span>
+<span class="token function">find</span> ./ -mmin <span class="token number">2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="depth"><a href="#depth" class="headerlink" title="depth"></a>depth</h3><p>depth深度优先选项。 意思是：在处理目录以前首先处理目录下的子内容。</p>
+<p>也即是说在不加-depth的时候， 处理顺序是首先处理目录本身，然后处理目录下的子内容。加不加-depth参数，会影响输出结构的输出顺序。 </p>
+<p>maxdepth最大深度。</p>
+<p>mindepth最小深度。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> <span class="token builtin class-name">.</span> -maxdepth <span class="token number">1</span> -mtime -10<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="regex"><a href="#regex" class="headerlink" title="regex"></a>regex</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找名字符合正则表达式的文件,注意前面的‘.*’(查找到的文件带有目录)</span>
+<span class="token function">find</span> ./ -regex .*so.*<span class="token punctuation">\</span>.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="newer"><a href="#newer" class="headerlink" title="newer"></a>newer</h3><p>比某个文件更新。居然没有older选项。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找文件更新时间比文件abc的内容更新时间新的文件</span>
+<span class="token function">find</span> ./ -newer abc
+
+<span class="token comment">#查找文件访问时间比文件abc的内容更新时间新的文件</span>
+<span class="token function">find</span> ./ -anewer abc<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="perm"><a href="#perm" class="headerlink" title="perm"></a>perm</h3><p>查找权限</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找权限为644的文件或目录(需完全符合)</span>
+<span class="token function">find</span> ./ -perm <span class="token number">664</span>
+
+<span class="token comment">#查找用户/组权限为读写，其他用户权限为读(其他权限不限)的文件或目录</span>
+<span class="token function">find</span> ./ -perm -664
+
+<span class="token comment">#查找用户有写权限或者组用户有写权限的文件或目录</span>
+<span class="token function">find</span> ./ -perm /220
+<span class="token function">find</span> ./ -perm /u+w,g+w
+<span class="token function">find</span> ./ -perm /u<span class="token operator">=</span>w,g<span class="token operator">=</span>w
+
+<span class="token comment">#查找所有者权限有读权限的目录或文件</span>
+<span class="token function">find</span> ./ -perm -u<span class="token operator">=</span>r
+
+<span class="token comment">#查找用户组权限有读权限的目录或文件</span>
+<span class="token function">find</span> ./ -perm -g<span class="token operator">=</span>r
+
+<span class="token comment">#查找其它用户权限有读权限的目录或文件</span>
+<span class="token function">find</span> ./ -perm -o<span class="token operator">=</span>r<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="group-user"><a href="#group-user" class="headerlink" title="group/user"></a>group/user</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">查找所有者为lzj的文件或目录
+<span class="token function">find</span> ./ -user lzj
+
+查找组名为gname的文件或目录
+<span class="token function">find</span> ./ -group gname
+
+查找文件的用户ID不存在的文件
+<span class="token function">find</span> ./ -nouser
+
+查找文件的组ID不存在的文件
+<span class="token function">find</span> ./ -nogroup<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="size"><a href="#size" class="headerlink" title="size"></a>size</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">查找文件size小于10个字节的文件或目录
+<span class="token function">find</span> ./ -size -10c
+
+查找文件size等于10个字节的文件或目录
+<span class="token function">find</span> ./ -size 10c
+
+查找文件size大于10个字节的文件或目录
+<span class="token function">find</span> ./ -size +10c
+
+查找文件size小于10k的文件或目录
+<span class="token function">find</span> ./ -size -10k
+
+查找文件size小于10M的文件或目录
+<span class="token function">find</span> ./ -size -10M
+
+查找文件size小于10G的文件或目录
+<span class="token function">find</span> ./ -size -10G <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="ok"><a href="#ok" class="headerlink" title="ok"></a>ok</h3><p>执行命令前需要确认，类似于<code>exec</code>。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">查找目录并列出目录下的文件<span class="token punctuation">(</span>为找到的每一个目录单独执行ls命令,执行命令前需要确认<span class="token punctuation">)</span>
+<span class="token function">find</span> ./ -type d -ok <span class="token function">ls</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span> <span class="token punctuation">\</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="daystart"><a href="#daystart" class="headerlink" title="daystart"></a>daystart</h3><p>daystart 选项测量从当天开始而不是24小时之前开始的时间。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">例如，要查找昨天编辑的所有pdf文件，请运行：
+
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># find /root/data/ -mtime 1 -daystart -iname "*.pdf"</span>
+要列出3-5天之前编辑的文件，请运行以下命令：
+
+<span class="token punctuation">[</span>root@localhost ~<span class="token punctuation">]</span><span class="token comment"># find /home/james/data/ -mtime 3 -mtime -5 -daystart -iname "*.pdf"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="查找有执行权限但没有可读权限"><a href="#查找有执行权限但没有可读权限" class="headerlink" title="查找有执行权限但没有可读权限"></a>查找有执行权限但没有可读权限</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#查找有执行权限但没有可读权限的文件</span>
+<span class="token function">find</span> ./ -executable <span class="token punctuation">\</span><span class="token operator">!</span> -readable<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="删除空文件"><a href="#删除空文件" class="headerlink" title="删除空文件"></a>删除空文件</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> */ -type f -empty -delete<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="镜像搜索"><a href="#镜像搜索" class="headerlink" title="镜像搜索"></a>镜像搜索</h3><p>公司用在registry的搜索方案。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">find</span> -type d   -name current   <span class="token operator">|</span><span class="token function">grep</span> current  <span class="token operator">|</span><span class="token function">grep</span>  tags <span class="token operator">></span>  images.list 
+<span class="token comment">#cat /root/yunda_deployments/dev_image_list/sed_delete_useless_tag.sh  </span>
+
+<span class="token function">sed</span> <span class="token string">'s|./docker/registry/v2/repositories/||g'</span> -i    images.list 
+<span class="token function">sed</span> <span class="token string">'s|_manifests/tags/||g'</span>  -i   images.list 
+<span class="token function">sed</span> <span class="token string">'s|/current/link||g'</span>  -i   images.list 
+<span class="token function">sed</span> <span class="token string">'s|/current||g'</span>  -i   images.list 
+<span class="token function">sed</span> <span class="token string">'/\d-\d/d'</span>  -i   images.list
+<span class="token comment"># 将最后出现的 /  再变分号</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/12/13/nginx/swoole%E8%B7%9Fnginx%E9%85%8D%E7%BD%AE/" rel="prev" title="swoole跟nginx配置">
+                  <i class="fa fa-chevron-left"></i> swoole跟nginx配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/12/13/php/php%E4%B8%ADshell_exec%E5%AE%9E%E7%8E%B0%E5%A4%9A%E8%BF%9B%E7%A8%8B/" rel="next" title="php中shell_exec实现多进程">
+                  php中shell_exec实现多进程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

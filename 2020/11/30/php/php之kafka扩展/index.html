@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="php之kafka扩展php安装kafka扩展，对接kafka消息中心。目前， 有两种选择，1、php写的composer包，不需要特别的安装，可以直接使用，（但是使用过程中，可能从源头上丢少量消息）。2、直接安装c扩展rdkafka。 但是，不管用何种扩展，其实跟业务逻辑，相差并不大。主要是编写一个handel，用来处理消息。剩下的处理消息的业务，可以编写成一个模块">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php之kafka扩展">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/11/30/php/php%E4%B9%8Bkafka%E6%89%A9%E5%B1%95/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="php之kafka扩展php安装kafka扩展，对接kafka消息中心。目前， 有两种选择，1、php写的composer包，不需要特别的安装，可以直接使用，（但是使用过程中，可能从源头上丢少量消息）。2、直接安装c扩展rdkafka。 但是，不管用何种扩展，其实跟业务逻辑，相差并不大。主要是编写一个handel，用来处理消息。剩下的处理消息的业务，可以编写成一个模块">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-30T09:36:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.015Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="php">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/11/30/php/php%E4%B9%8Bkafka%E6%89%A9%E5%B1%95/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>php之kafka扩展 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#php%E4%B9%8Bkafka%E6%89%A9%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">php之kafka扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">相关资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.1.</span> <span class="nav-text">编译安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8composer%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.2.</span> <span class="nav-text">使用composer安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-php"><span class="nav-number">1.1.3.</span> <span class="nav-text">kafka-php</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">1.2.</span> <span class="nav-text">问题解决</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/11/30/php/php%E4%B9%8Bkafka%E6%89%A9%E5%B1%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          php之kafka扩展
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-30 09:36:00" itemprop="dateCreated datePublished" datetime="2020-11-30T09:36:00+00:00">2020-11-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="php之kafka扩展"><a href="#php之kafka扩展" class="headerlink" title="php之kafka扩展"></a>php之kafka扩展</h1><p>php安装kafka扩展，对接kafka消息中心。目前， 有两种选择，1、php写的composer包，不需要特别的安装，可以直接使用，（但是使用过程中，可能从源头上丢少量消息）。2、直接安装c扩展rdkafka。</p>
+<p>但是，不管用何种扩展，其实跟业务逻辑，相差并不大。主要是编写一个handel，用来处理消息。剩下的处理消息的业务，可以编写成一个模块</p>
+<a id="more"></a>
+
+<h2 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h2><p><a target="_blank" rel="noopener" href="http://www.dahouduan.com/2017/09/14/php-install-kafka-extension/?_blank">参见文章</a></p>
+<p>pecl <a target="_blank" rel="noopener" href="https://pecl.php.net/package/rdkafka">https://pecl.php.net/package/rdkafka</a></p>
+<p>这个是一系列文章，感觉还不错。<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingyunzong/p/9004509.html">Kafka的简介</a>、<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qingyunzong/p/9004593.html">Kafka的架构</a></p>
+<h3 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h3><p>源代码地址：<a target="_blank" rel="noopener" href="https://github.com/arnaud-lb/php-rdkafka">https://github.com/arnaud-lb/php-rdkafka</a></p>
+<p>文档地址，从pecl可以找到，实际上在php官方手册里面。</p>
+<p>不能使用下面来安装</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install librdkafka<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>正确的安装方式如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 依赖扩展 </span>
+<span class="token function">tar</span> zxf librdkafka-1.5.3.tar.gz
+<span class="token builtin class-name">cd</span> librdkafka-1.5.3/
+./configure
+<span class="token function">make</span>
+<span class="token function">make</span> <span class="token function">install</span>
+
+<span class="token comment"># rdkafka   从pecl下载 </span>
+
+<span class="token function">tar</span> zxvf rdkafka-4.1.2.tgz
+<span class="token builtin class-name">cd</span> rdkafka-4.1.2/
+/usr/local/php73/bin/phpize
+./configure --with-php-config<span class="token operator">=</span>/usr/local/php73/bin/php-config<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>先安装</p>
+<p>上面的扩展安装，经过一翻折腾后，需要继续添加配置到php.ini中</p>
+<pre class="line-numbers language-ini" data-language="ini"><code class="language-ini"><span class="token constant">extension</span><span class="token attr-value"><span class="token punctuation">=</span>rdkafka.so</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="使用composer安装"><a href="#使用composer安装" class="headerlink" title="使用composer安装"></a>使用composer安装</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">composer</span> require <span class="token string">"nmred/kafka-php"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>仓库名称已经更换为：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/weiboad/kafka-php">https://github.com/weiboad/kafka-php</a></p>
+<p>kafka已使用docker安装成功，但是本机上没有安装到合适的php（实际上是卡在各种依赖的安装），最终安装失败，导致……耗费太久，折腾不下去了。</p>
+<h3 id="kafka-php"><a href="#kafka-php" class="headerlink" title="kafka-php"></a>kafka-php</h3><p>使用官方的例子、官方的consumer，基本上能完成一些基本操作。针对不同的topic，编写不同的类，并将消息作为key，对应的处理类的实例作为value，形成一个关联数组，并根据接收到的消息，从中选择一个适合的类，来处理当前的消息。</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>一般来说，安装需要安装gcc、autoconf等工具库，如果没有，则需要先安装。</p>
+<p>如下提示，则需要安装autoconf 工具链。</p>
+<blockquote>
+<p>Cannot find autoconf. Please check your autoconf installation and the<br>$PHP_AUTOCONF environment variable. Then, rerun this script.</p>
+</blockquote>
+<p>提示，没有安装gcc</p>
+<blockquote>
+<p>configure: error: no acceptable C compiler found in $PATH<br>See `config.log’ for more details</p>
+</blockquote>
+<p>有一些需要make、gcc-c++工具 </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/php/" rel="tag"># php</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/26/php/%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php/" rel="prev" title="">
+                  <i class="fa fa-chevron-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/30/docker/docker%E5%AE%89%E8%A3%85kafka/" rel="next" title="docker安装kafka">
+                  docker安装kafka <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

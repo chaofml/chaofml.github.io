@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="模板编辑器 一直想着搞个代码生成器的工具，记得之前有写过这方面的文章，但是找不到了。现在重新记录一下。 另外，php是天然的模板引擎，用他来生成代码，非常的好用。要这样想，html，不就是用php动态来生产的吗？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模板编辑器">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/09/07/php/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%BE%91%E5%99%A8/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="模板编辑器 一直想着搞个代码生成器的工具，记得之前有写过这方面的文章，但是找不到了。现在重新记录一下。 另外，php是天然的模板引擎，用他来生成代码，非常的好用。要这样想，html，不就是用php动态来生产的吗？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-07T12:17:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.001Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="php">
+<meta property="article:tag" content="模板">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/09/07/php/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%BE%91%E5%99%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>模板编辑器 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%BE%91%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">模板编辑器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">1.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E7%BB%86%E8%8A%82"><span class="nav-number">1.2.</span> <span class="nav-text">技术细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.2.2.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AB%E6%8D%A2%E8%A1%8C"><span class="nav-number">1.2.3.</span> <span class="nav-text">文末换行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php%E7%81%AD%E6%B4%BB%E5%A4%84%E7%90%86"><span class="nav-number">1.2.4.</span> <span class="nav-text">php灭活处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.5.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88"><span class="nav-number">1.3.</span> <span class="nav-text">其他技术方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.3.1.</span> <span class="nav-text">shell模板</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/09/07/php/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%BE%91%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          模板编辑器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-07 12:17:00" itemprop="dateCreated datePublished" datetime="2020-09-07T12:17:00+00:00">2020-09-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="模板编辑器"><a href="#模板编辑器" class="headerlink" title="模板编辑器"></a>模板编辑器</h1><blockquote>
+<p>一直想着搞个代码生成器的工具，记得之前有写过这方面的文章，但是找不到了。现在重新记录一下。</p>
+<p>另外，php是天然的模板引擎，用他来生成代码，非常的好用。要这样想，html，不就是用php动态来生产的吗？</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>1、基于config，加载config，然后读模板、并渲染模板。为了简单，前期的时候，config可由手动填写，后期的话，基本表单，从web视图上动态的渲染模板。</p>
+<p>2、关于渲染php的模板。</p>
+<blockquote>
+<p>由于生成的代码也是php，这样就形成了渲染、最终代码两者之间，有冲突。由于渲染php模板，难面会和目标代码冲突，整体思路是，目标的php tag标记，先用其他的表示符号替换，这样，目标代码就不会执行。</p>
+<p>在这里，不妨分为渲染阶段、跟目标代码执行阶段。</p>
+</blockquote>
+<p>示例代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">我见到过为了避免渲染文件，直接省略的 &lt;?php的标记，这样确实避免执行了目标php代码，而整体代码比较简单。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>具体，如html文件中，包含了php代码。如：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">echo</span> <span class="token variable">$var</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span>
+为了输出上面的标记，则：
+<span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">echo</span> <span class="token single-quoted-string string">'&lt;?php'</span> <span class="token delimiter important">?></span></span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>总而言之，希望渲染阶段执行的代码，与目标代码之间不发生冲突。所以，凡是目标代码的标记，进行替换。替换规则如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;?php   &#x3D;&gt;   &lt;#PHP
+?&gt;      &#x3D;&gt;   PHP#&gt;
+针对与简短标记
+&lt;?      &#x3D;&gt;   &lt;#%
+?&gt;      &#x3D;&gt;   #%&gt;
+上面的替换，一般来说，不是很常见，理论上不会发生冲突。
+由于替换逻辑，并不会解析语义，所以，算是暴力处理，所以要求不会冲突。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>但是实际上发现，只需要替换成左半边的标记即可，就能让php代码不执行。降低难度。</p>
+<p><strong>通过只替换坐半边，渲染代码最好简短，否则，渲染期的代码跟目标代码易混合在一起。</strong></p>
+<p>3、关于模板的编写</p>
+<blockquote>
+<p>不要一上来，就试图想着搞个多么高大上的引擎，我们先试图这样想，先能针对一般的模板，进行简单的替换。</p>
+<p>后期的话，如果有必要，再针对复杂的地方，也换成模板渲染。</p>
+</blockquote>
+<p>4、模式</p>
+<p>config=&gt;模板（简单变量替换）=&gt;目标代码。</p>
+<p>web界面=&gt; config =&gt; 模板 =&gt; 目标代码</p>
+<h2 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h2><h3 id="方式"><a href="#方式" class="headerlink" title="方式"></a>方式</h3><p>用配置 + 模板，生成代码。而配置本身，也可以用模板生成，然后自己手动修改。</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>如下的循环，输出后，foreach标记的两行，其实没有任何输出的。而且注意副作用，它会消耗掉一个紧跟着的换行符号。理解起来，我们的代码片段，如果没有任何输出，不管它用几行，应该也不会产生输出。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">        type: number
+<span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token function">cfg</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'fields'</span><span class="token punctuation">)</span> <span class="token keyword">as</span> <span class="token variable">$k</span><span class="token operator">=</span><span class="token operator">></span><span class="token variable">$v</span> <span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token delimiter important">?></span></span>
+      - in: query
+        name: <span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token variable">$k</span><span class="token delimiter important">?></span></span><span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token constant">PHP_EOL</span><span class="token delimiter important">?></span></span>
+        description: <span class="token php language-php"><span class="token delimiter important">&lt;?=</span> <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$v</span><span class="token punctuation">)</span><span class="token operator">?</span><span class="token variable">$v</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token variable">$v</span><span class="token delimiter important">?></span></span><span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token constant">PHP_EOL</span><span class="token delimiter important">?></span></span>
+        required: false
+        type: <span class="token php language-php"><span class="token delimiter important">&lt;?=</span> <span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$v</span><span class="token punctuation">)</span><span class="token operator">?</span><span class="token variable">$v</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">:</span><span class="token single-quoted-string string">'string'</span><span class="token delimiter important">?></span></span><span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token constant">PHP_EOL</span><span class="token delimiter important">?></span></span>
+<span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">endforeach</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span>
+      - in: query<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="文末换行"><a href="#文末换行" class="headerlink" title="文末换行"></a>文末换行</h3><p>正是由于前面的副作用，所以，我们要消除。所以呢，我们手动在php标记结尾的地方，增加换行符号。</p>
+<pre class="line-numbers language-none"><code class="language-none">description: 通过条件搜索，查询&lt;?&#x3D;cfg(&#39;cn_name&#39;)?&gt;&lt;?&#x3D;PHP_EOL?&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="php灭活处理"><a href="#php灭活处理" class="headerlink" title="php灭活处理"></a>php灭活处理</h3><p>如果要处理的模板本身就是php，那我们需要灭活。每次出现php标记的地方，都使用下面的方式来处理。</p>
+<p>短标记也是一样。</p>
+<p>省事的话，只处理开头的那个标记，即可。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token single-quoted-string string">'&lt;?php'</span><span class="token delimiter important">?></span></span>
+
+namespace api\controllers\v1;
+use api\controllers\BaseController;
+use Yii;
+use common\models\<span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token function">cfg</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'model_name'</span><span class="token punctuation">)</span><span class="token delimiter important">?></span></span>;
+use common\models\<span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token function">cfg</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'model_name'</span><span class="token punctuation">)</span><span class="token delimiter important">?></span></span>Search;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>比如对上面的短标记进行灭活处理</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">use common\models\<span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token single-quoted-string string">'&lt;?'</span><span class="token delimiter important">?></span></span>=cfg('model_name')?>;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果觉得冲突不好辨别，则自己定义变量，如 <code>$ptag=&#39;&lt;?&#39;</code></p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>核心代码，就最后几行。</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+
+<span class="token variable">$cfg_file</span> <span class="token operator">=</span> <span class="token variable">$argv</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token function">define</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'APP_ROOT'</span><span class="token punctuation">,</span><span class="token function">dirname</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">function</span> <span class="token function">cfg</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token operator">=</span><span class="token boolean constant">false</span><span class="token punctuation">,</span><span class="token variable">$default</span><span class="token operator">=</span><span class="token single-quoted-string string">''</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">global</span> <span class="token variable">$cfg_file</span><span class="token punctuation">;</span>
+    <span class="token keyword">static</span> <span class="token variable">$config</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token operator">===</span><span class="token boolean constant">true</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token variable">$config</span> <span class="token operator">=</span> <span class="token keyword">require</span>  <span class="token constant">APP_ROOT</span><span class="token punctuation">.</span><span class="token double-quoted-string string">"/cfg/<span class="token interpolation"><span class="token variable">$cfg_file</span></span>"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$key</span><span class="token operator">===</span><span class="token boolean constant">false</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token variable">$config</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token function">map_value</span><span class="token punctuation">(</span><span class="token variable">$config</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">,</span><span class="token variable">$default</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">/**
+ * 返回关联数组的索引。
+ * 如： \map_value($data,'user.age'); 返回 $data['user']['age']
+ */</span>
+
+<span class="token keyword">function</span> <span class="token function">map_value</span><span class="token punctuation">(</span><span class="token variable">$map</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">,</span><span class="token variable">$default</span><span class="token operator">=</span><span class="token single-quoted-string string">''</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+	<span class="token variable">$keys</span> <span class="token operator">=</span> <span class="token function">explode</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'.'</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token variable">$keys</span> <span class="token keyword">as</span> <span class="token variable">$curkey</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$map</span><span class="token punctuation">[</span><span class="token variable">$curkey</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> <span class="token variable">$default</span><span class="token punctuation">;</span> <span class="token comment">//返回默认值</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token variable">$map</span> <span class="token operator">=</span> <span class="token variable">$map</span><span class="token punctuation">[</span><span class="token variable">$curkey</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> <span class="token variable">$map</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token function">cfg</span><span class="token punctuation">(</span><span class="token boolean constant">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token variable">$table</span> <span class="token operator">=</span> <span class="token function">cfg</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'table_name'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+\<span class="token package">ob_start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">include</span> <span class="token constant">APP_ROOT</span><span class="token punctuation">.</span><span class="token single-quoted-string string">'/tpl/swagger.txt'</span><span class="token punctuation">;</span>
+<span class="token variable">$content</span> <span class="token operator">=</span> \<span class="token package">ob_get_clean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">file_put_contents</span><span class="token punctuation">(</span><span class="token variable">$table</span><span class="token punctuation">.</span><span class="token single-quoted-string string">'_swagger.yaml'</span><span class="token punctuation">,</span><span class="token variable">$content</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>防止文件覆盖，对另外一种灭火处理</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php">/**********************
+ * 生成控制器
+ * 2021-06-15 9:48
+ **********************/
+function gen_controller()&#123;
+    $model_name = cfg('model_name');
+    $fn = APP_ROOT.'/../cloud/api/controllers/v1/'.$model_name.'Controller.php';
+    if(!is_file($fn))&#123;
+        \ob_start();
+        include APP_ROOT.'/tpl/controller.php';
+        $content = ob_get_clean();
+        $content = strtr($content,[
+            '&lt;#PHP'=>'<span class="token php language-php"><span class="token delimiter important">&lt;?</span>php<span class="token single-quoted-string string">',
+            '</span><span class="token operator">&lt;</span><span class="token shell-comment comment">#%'=>'&lt;?',</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        \<span class="token package">file_put_contents</span><span class="token punctuation">(</span><span class="token variable">$fn</span><span class="token punctuation">,</span><span class="token variable">$content</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">echo</span> <span class="token double-quoted-string string">"控制器文件:<span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token variable">$fn</span><span class="token punctuation">&#125;</span></span> 生成成功。\n"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">echo</span> <span class="token double-quoted-string string">"控制器文件:<span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token variable">$fn</span><span class="token punctuation">&#125;</span></span> 已存在，无法生成，请先删除，再生成。\n"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="其他技术方案"><a href="#其他技术方案" class="headerlink" title="其他技术方案"></a>其他技术方案</h2><p>其他语言，也会有相应的模板引擎。故，选择任意一个带引擎的，都可以实现用模板生成代码。</p>
+<p>另外一种，简便方式的模板引擎。shell。</p>
+<h3 id="shell模板"><a href="#shell模板" class="headerlink" title="shell模板"></a>shell模板</h3><p>仅考虑，替换模板中的变量，但不支持if、</p>
+<ul>
+<li><p>方式1</p>
+<p>直接cat，里面的变量会自动的注入。</p>
+</li>
+<li><p>方式2</p>
+<p>使用sed来替换。</p>
+<p>1、使用特殊的标记，比如{} ，或者直接唯一标记。</p>
+<p>2、直接将里面的具体值，替换掉。这种呢，需要自己清楚的知道里面的值全部替换没有问题。</p>
+<p>简单的判断，也能拥下面的方式来处理。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 生成测试文本</span>
+<span class="token function">seq</span>  <span class="token number">1</span>  <span class="token number">20</span>  <span class="token operator">></span> test.txt
+<span class="token comment"># 然后手动的插入  --#&lt;    --#>  标记</span>
+<span class="token comment"># 表示上面的给删除掉。</span>
+
+<span class="token comment"># 用法，成对出现的，都能正常删除掉，如果少1个，则可能删除到结尾。</span>
+<span class="token function">sed</span>  <span class="token string">'/^--#&lt;/,/^--#>/d'</span> test.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/php/" rel="tag"># php</a>
+              <a href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag"># 模板</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/08/26/code-server/" rel="prev" title="code-server.php">
+                  <i class="fa fa-chevron-left"></i> code-server.php
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/24/js/print/Lodop/" rel="next" title="Lodop">
+                  Lodop <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

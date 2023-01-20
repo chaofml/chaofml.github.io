@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="php中闭包的使用，需要手动声明要引用的外层函数内的变量，而且还要指定是否是引用的形式，如：use(&amp;$data)。这跟js的闭包有区别。js中，直接就可以引用外层的变量，而且是以引用的形式。区别在于变量的声名：php，变量不需要声明，而且变量的作用域并不会扩散到全局作用域，如果需要使用全局的变量，则需要刻意的指明global $data。而js，则相反，如果想要变量不扩散到全局作用域，则">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php闭包">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/04/02/php/php%E9%97%AD%E5%8C%85/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="php中闭包的使用，需要手动声明要引用的外层函数内的变量，而且还要指定是否是引用的形式，如：use(&amp;$data)。这跟js的闭包有区别。js中，直接就可以引用外层的变量，而且是以引用的形式。区别在于变量的声名：php，变量不需要声明，而且变量的作用域并不会扩散到全局作用域，如果需要使用全局的变量，则需要刻意的指明global $data。而js，则相反，如果想要变量不扩散到全局作用域，则">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-02T16:52:29.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.016Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="php">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/04/02/php/php%E9%97%AD%E5%8C%85/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>php闭包 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/04/02/php/php%E9%97%AD%E5%8C%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          php闭包
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-02 16:52:29" itemprop="dateCreated datePublished" datetime="2021-04-02T16:52:29+00:00">2021-04-02</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>php中闭包的使用，需要手动声明要引用的外层函数内的变量，而且还要指定是否是引用的形式，如：<code>use(&amp;$data)</code>。这跟js的闭包有区别。js中，直接就可以引用外层的变量，而且是以引用的形式。区别在于变量的声名：php，变量不需要声明，而且变量的作用域并不会扩散到全局作用域，如果需要使用全局的变量，则需要刻意的指明<code>global $data</code>。而js，则相反，如果想要变量不扩散到全局作用域，则需要用var来声明。而js本身对复杂变量，是引用形式的。</p>
+<p>遇到这种困惑，是因为在chunk的callback方法中无法改变外层的变量，故记录本文。</p>
+<a id="more"></a>
+
+
+
+<p>代码：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">// 下面的chunk 启动利用use($data) 来访问外部的变量，但是无法传递过去。这是什么呢？要用引用形式</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token constant">DB</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'log'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'id'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'asc'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">chunk</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token variable">$msgs</span><span class="token punctuation">)</span> <span class="token keyword">use</span><span class="token punctuation">(</span><span class="token operator">&amp;</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token variable">$msgs</span> <span class="token keyword">as</span> <span class="token variable">$msg</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$data</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span>  <span class="token variable">$msg</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">id</span> <span class="token punctuation">.</span> <span class="token variable">$msg</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">msg</span> <span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token variable">$data</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>作为对比：</p>
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token comment">// 下面的chunk 启动利用use($data) 来访问外部的变量，但是无法传递过去。这是什么呢？要用引用形式</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token constant">DB</span><span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">table</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'log'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token single-quoted-string string">'id'</span><span class="token punctuation">,</span><span class="token single-quoted-string string">'asc'</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">chunk</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token variable">$msgs</span><span class="token punctuation">)</span> <span class="token keyword">use</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//每次都打印出 [1,2,3]</span>
+    <span class="token variable">$data</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token keyword">foreach</span><span class="token punctuation">(</span><span class="token variable">$msgs</span> <span class="token keyword">as</span> <span class="token variable">$msg</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$data</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span>  <span class="token variable">$msg</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">id</span> <span class="token punctuation">.</span> <span class="token variable">$msg</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">msg</span> <span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token function">var_dump</span><span class="token punctuation">(</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//每次都打印出 [1,2,3,4] </span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token variable">$data</span><span class="token punctuation">;</span>  <span class="token comment">//结果还是 [1,2,3]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>参考这篇文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/echojson/article/details/80633118">https://blog.csdn.net/echojson/article/details/80633118</a> 讲解的详细一些。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/php/" rel="tag"># php</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/30/other/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D/" rel="prev" title="记一次安全漏洞修复">
+                  <i class="fa fa-chevron-left"></i> 记一次安全漏洞修复
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/09/js/webSql/" rel="next" title="webSql">
+                  webSql <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

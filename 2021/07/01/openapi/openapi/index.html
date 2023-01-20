@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="关于openapi的一些知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openapi">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/07/01/openapi/openapi/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="关于openapi的一些知识。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-01T11:09:02.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.982Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="openapi">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/07/01/openapi/openapi/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>openapi | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%98%E7%BD%91"><span class="nav-number">1.</span> <span class="nav-text">官网</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%B7%B1%E9%83%A8%E7%BD%B2%E9%95%9C%E5%83%8F"><span class="nav-number">1.1.</span> <span class="nav-text">自己部署镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E9%9B%86%E6%88%90"><span class="nav-number">1.2.</span> <span class="nav-text">项目集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">基本结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81"><span class="nav-number">1.4.</span> <span class="nav-text">登录认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%96%87%E6%A1%A3%E7%9A%84%E6%A0%BC%E5%BC%8Fcontent-type"><span class="nav-number">1.5.</span> <span class="nav-text">返回文档的格式content-type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%AD%97%E6%AE%B5%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.</span> <span class="nav-text">动态字段问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#consumes-produces"><span class="nav-number">1.7.</span> <span class="nav-text">consumes&#x2F;produces</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/07/01/openapi/openapi/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openapi
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-01 11:09:02" itemprop="dateCreated datePublished" datetime="2021-07-01T11:09:02+00:00">2021-07-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>关于openapi的一些知识。</p>
+<a id="more"></a>
+
+<h2 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://editor.swagger.io/">https://editor.swagger.io/</a></li>
+</ul>
+<h3 id="自己部署镜像"><a href="#自己部署镜像" class="headerlink" title="自己部署镜像"></a>自己部署镜像</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">docker pull swaggerapi/swagger-editor<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>跟官网的编辑页面一样，核心是是一些<code>html</code>等。</p>
+<h3 id="项目集成"><a href="#项目集成" class="headerlink" title="项目集成"></a>项目集成</h3><p>在自己的项目中集成。在nginx、apache等服务目录中，增加静态页面即可。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">kubectl <span class="token function">cp</span> -n codegen swagger-edit-645ff8fd6c-zh8ln:usr/share/nginx/html html
+kubectl <span class="token function">cp</span> -n qing-cloud html qingcloud-676875ff49-tkg6d:yd/swagger<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="基本结构"><a href="#基本结构" class="headerlink" title="基本结构"></a>基本结构</h3><p>云课堂的基础结构如下：</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">swagger</span><span class="token punctuation">:</span> <span class="token string">'2.0'</span>
+<span class="token key atrule">info</span><span class="token punctuation">:</span>
+  <span class="token key atrule">description</span><span class="token punctuation">:</span> qingcloud<span class="token punctuation">-</span>api swagger<span class="token punctuation">-</span>ui<span class="token punctuation">-</span>uat2 http<span class="token punctuation">:</span>//10.131.236.12<span class="token punctuation">:</span><span class="token number">39062</span>
+  <span class="token key atrule">version</span><span class="token punctuation">:</span> 4.5.5
+  <span class="token key atrule">title</span><span class="token punctuation">:</span> 云课堂接口文档
+<span class="token key atrule">securityDefinitions</span><span class="token punctuation">:</span>
+  <span class="token key atrule">apiKey</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> apiKey
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> token
+    <span class="token key atrule">in</span><span class="token punctuation">:</span> header
+<span class="token key atrule">security</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiKey</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token key atrule">tags</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> gitlab
+  <span class="token key atrule">description</span><span class="token punctuation">:</span> 员工仓库地址相关接口
+<span class="token key atrule">paths</span><span class="token punctuation">:</span>
+  <span class="token key atrule">/v1/gitlab/url/add</span><span class="token punctuation">:</span>
+    <span class="token key atrule">post</span><span class="token punctuation">:</span>
+      <span class="token key atrule">tags</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> gitlab
+      <span class="token key atrule">summary</span><span class="token punctuation">:</span> 添加员工git仓库地址
+      <span class="token key atrule">operationId</span><span class="token punctuation">:</span> gitlab_url_add
+      <span class="token key atrule">description</span><span class="token punctuation">:</span> 添加员工git 仓库地址
+      <span class="token key atrule">parameters</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">in</span><span class="token punctuation">:</span> formData
+        <span class="token key atrule">name</span><span class="token punctuation">:</span> job_number
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> string
+        <span class="token key atrule">required</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
+        <span class="token key atrule">description</span><span class="token punctuation">:</span> 员工工号
+      <span class="token key atrule">responses</span><span class="token punctuation">:</span>
+        <span class="token key atrule">200</span><span class="token punctuation">:</span>
+          <span class="token key atrule">description</span><span class="token punctuation">:</span> 操作成功
+          <span class="token key atrule">schema</span><span class="token punctuation">:</span> 
+            <span class="token key atrule">$ref</span><span class="token punctuation">:</span> <span class="token string">'#/definitions/success'</span>
+        <span class="token key atrule">400</span><span class="token punctuation">:</span>
+          <span class="token key atrule">description</span><span class="token punctuation">:</span> 操作失败
+          <span class="token key atrule">schema</span><span class="token punctuation">:</span>
+            <span class="token key atrule">$ref</span><span class="token punctuation">:</span> <span class="token string">'#/definitions/error'</span>
+<span class="token key atrule">definitions</span><span class="token punctuation">:</span>
+  <span class="token key atrule">success</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> object
+    <span class="token key atrule">required</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> data
+    <span class="token punctuation">-</span> code
+    <span class="token punctuation">-</span> message
+    <span class="token key atrule">properties</span><span class="token punctuation">:</span>
+      <span class="token key atrule">code</span><span class="token punctuation">:</span>
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> number
+        <span class="token key atrule">example</span><span class="token punctuation">:</span> <span class="token number">200</span>
+      <span class="token key atrule">data</span><span class="token punctuation">:</span>
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> object
+        <span class="token key atrule">example</span><span class="token punctuation">:</span> <span class="token null important">null</span>
+      <span class="token key atrule">message</span><span class="token punctuation">:</span>
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> string
+        <span class="token key atrule">example</span><span class="token punctuation">:</span> 操作成功
+<span class="token key atrule">consumes</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> application/x<span class="token punctuation">-</span>www<span class="token punctuation">-</span>form<span class="token punctuation">-</span>urlencoded
+<span class="token punctuation">-</span> application/json
+<span class="token key atrule">produces</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> application/x<span class="token punctuation">-</span>www<span class="token punctuation">-</span>form<span class="token punctuation">-</span>urlencoded
+<span class="token punctuation">-</span> application/json
+<span class="token punctuation">-</span> application/xml
+<span class="token key atrule">host</span><span class="token punctuation">:</span> 10.20.26.93<span class="token punctuation">:</span><span class="token number">8010</span>
+<span class="token key atrule">basePath</span><span class="token punctuation">:</span> /loc/api/web/index.php
+<span class="token key atrule">schemes</span><span class="token punctuation">:</span>
+ <span class="token punctuation">-</span> http<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="登录认证"><a href="#登录认证" class="headerlink" title="登录认证"></a>登录认证</h3><p>swagger2.0 是这样的</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">securityDefinitions</span><span class="token punctuation">:</span>
+  <span class="token key atrule">apiKey</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> apiKey
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> token
+    <span class="token key atrule">in</span><span class="token punctuation">:</span> header
+<span class="token key atrule">security</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">apiKey</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>openapi3.0是这样的</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/29817270/using-an-api-key-secret-for-swagger-security-scheme">https://stackoverflow.com/questions/29817270/using-an-api-key-secret-for-swagger-security-scheme</a></p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">components</span><span class="token punctuation">:</span>
+  <span class="token key atrule">securitySchemes</span><span class="token punctuation">:</span>
+    <span class="token key atrule">key</span><span class="token punctuation">:</span> 
+      <span class="token key atrule">type</span><span class="token punctuation">:</span> apiKey
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> token
+      <span class="token key atrule">in</span><span class="token punctuation">:</span> header
+    <span class="token key atrule">secret_key</span><span class="token punctuation">:</span>
+      <span class="token key atrule">type</span><span class="token punctuation">:</span> apiKey
+      <span class="token key atrule">name</span><span class="token punctuation">:</span> SecretKey
+      <span class="token key atrule">in</span><span class="token punctuation">:</span> header<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>除此之外，每个路径都要添加如下：（保持空就可以，在界面上填一下就ok了）</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">/records/api_token</span><span class="token punctuation">:</span>
+  <span class="token key atrule">get</span><span class="token punctuation">:</span>
+    <span class="token key atrule">security</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">key</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">secret_key</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果上面两个都设置了，大概会是这样的：</p>
+<blockquote>
+<p>这个是用的是SecretKey，两个都生效的效果。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">curl</span> -X <span class="token string">'GET'</span> <span class="token punctuation">\</span>
+  <span class="token string">'http://qingcloud.yundasys.com/backend/web/myadmin.php/records/api_token'</span> <span class="token punctuation">\</span>
+  -H <span class="token string">'accept: application/json'</span> <span class="token punctuation">\</span>
+  -H <span class="token string">'token: ffdfdfrZ'</span> <span class="token punctuation">\</span>
+  -H <span class="token string">'SecretKey: 23232'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="返回文档的格式content-type"><a href="#返回文档的格式content-type" class="headerlink" title="返回文档的格式content-type"></a>返回文档的格式content-type</h3><p>如果需要对返回的文档格式化，比如  <code>json</code>更美观一些，必须要返回<code>content-type: application/json</code>。</p>
+<pre class="line-numbers language-none"><code class="language-none">content-type: application&#x2F;json; charset&#x3D;utf-8 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h3 id="动态字段问题"><a href="#动态字段问题" class="headerlink" title="动态字段问题"></a>动态字段问题</h3><p><a target="_blank" rel="noopener" href="https://learnku.com/articles/51251">https://learnku.com/articles/51251</a></p>
+<p><code>additionalProperties</code>是关键</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">definitions</span><span class="token punctuation">:</span>
+  <span class="token key atrule">deployImagesItem</span><span class="token punctuation">:</span>
+    <span class="token key atrule">type</span><span class="token punctuation">:</span> object
+    <span class="token key atrule">additionalProperties</span><span class="token punctuation">:</span> 
+      <span class="token key atrule">type</span><span class="token punctuation">:</span> array
+      <span class="token key atrule">items</span><span class="token punctuation">:</span> 
+        <span class="token key atrule">type</span><span class="token punctuation">:</span> object
+        <span class="token key atrule">properties</span><span class="token punctuation">:</span>
+          <span class="token key atrule">images</span><span class="token punctuation">:</span>
+            <span class="token key atrule">type</span><span class="token punctuation">:</span> string
+            <span class="token key atrule">example</span><span class="token punctuation">:</span> 10.131.9.12<span class="token punctuation">:</span>5000/qingcloud/cloud<span class="token punctuation">-</span>teacher<span class="token punctuation">:</span>4.5.3_f7b9970
+          <span class="token key atrule">created_time</span><span class="token punctuation">:</span>
+            <span class="token key atrule">type</span><span class="token punctuation">:</span> string
+            <span class="token key atrule">example</span><span class="token punctuation">:</span> <span class="token string">'2021-06-25 11:52:16'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当然，另外一种方式，是消除动态字段。将结果包裹在稳定的结构中。</p>
+<p>按如下方式，重新封装一下。</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+	<span class="token punctuation">&#123;</span>
+		'key'<span class="token operator">:</span><span class="token string">"原来的动态字段"</span><span class="token punctuation">,</span>
+        'list'<span class="token operator">:</span><span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>....<span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span>
+	<span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="consumes-produces"><a href="#consumes-produces" class="headerlink" title="consumes/produces"></a>consumes/produces</h3><p>我发现<code>consumes</code>、<code>produces</code>字段居然不必每个url 下都写。直接放到根节点下。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/openapi/" rel="tag"># openapi</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/01/other/openapi/" rel="prev" title="openapi">
+                  <i class="fa fa-chevron-left"></i> openapi
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/07/03/shell/socat/" rel="next" title="socat">
+                  socat <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

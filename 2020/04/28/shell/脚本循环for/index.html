@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="脚本循环for 中文">
+<meta property="og:type" content="article">
+<meta property="og:title" content="脚本循环for">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/04/28/shell/%E8%84%9A%E6%9C%AC%E5%BE%AA%E7%8E%AFfor/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="脚本循环for 中文">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-28T08:54:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.023Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta property="article:tag" content="for">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/04/28/shell/%E8%84%9A%E6%9C%AC%E5%BE%AA%E7%8E%AFfor/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>脚本循环for | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%BE%AA%E7%8E%AFfor"><span class="nav-number">1.</span> <span class="nav-text">脚本循环for</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell-%E8%84%9A%E6%9C%AC%E5%85%B3%E4%BA%8E%E5%BE%AA%E7%8E%AF%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%BB%E7%BB%93"><span class="nav-number">1.1.</span> <span class="nav-text">Shell 脚本关于循环的一些总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#for-%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">for 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while-%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">while 循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E5%A5%97%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.1.3.</span> <span class="nav-text">循环套循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%86%85%E5%AE%B9%E6%98%AF%E5%8F%98%E5%8C%96%E7%9A%84"><span class="nav-number">1.1.4.</span> <span class="nav-text">循环的内容是变化的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%80%BC%E6%A3%80%E6%9F%A5"><span class="nav-number">1.1.5.</span> <span class="nav-text">变量值检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E8%BE%93%E5%87%BA%E6%96%87%E6%9C%AC%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="nav-number">1.1.6.</span> <span class="nav-text">循环输出文本文件内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%BB%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.1.7.</span> <span class="nav-text">死循环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E9%85%8Dseq%E7%9A%84for%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.1.8.</span> <span class="nav-text">搭配seq的for循环</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/04/28/shell/%E8%84%9A%E6%9C%AC%E5%BE%AA%E7%8E%AFfor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          脚本循环for
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-04-28 08:54:00" itemprop="dateCreated datePublished" datetime="2020-04-28T08:54:00+00:00">2020-04-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="脚本循环for"><a href="#脚本循环for" class="headerlink" title="脚本循环for"></a>脚本循环for</h1><blockquote>
+<p>中文</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Shell-脚本关于循环的一些总结"><a href="#Shell-脚本关于循环的一些总结" class="headerlink" title="Shell 脚本关于循环的一些总结"></a>Shell 脚本关于循环的一些总结</h2><p>以下文章来源于良许Linux ，作者良许</p>
+<p>（给Linux爱好者加星标，提升Linux技能）</p>
+<blockquote>
+<p>转自：良许Linux</p>
+</blockquote>
+<p>不管是哪一门计算机语言，循环都是不可绕开的一个话题，Shell 当然也不是例外。下面总结一些 Shell 脚本里常用的循环相关的知识点，新手朋友可以参考。</p>
+<h3 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h3><p>Shell 脚本里最简单的循环当属 <code>for</code> 循环，有编程基础的朋友应该都有使用过 for 循环。最简单的 for 循环如下所示，你只需将变量值依次写在 in 后面即可：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">num</span> <span class="token keyword">in</span> <span class="token number">1</span> <span class="token number">2</span> <span class="token number">3</span> <span class="token number">4</span>
+<span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$num</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>如果要循环的内容是字母表里的连续字母或连续数字，那么就可以按以下语法来写脚本：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">x</span> <span class="token keyword">in</span> <span class="token punctuation">&#123;</span>a<span class="token punctuation">..</span>z<span class="token punctuation">&#125;</span>
+<span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$x</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="while-循环"><a href="#while-循环" class="headerlink" title="while 循环"></a>while 循环</h3><p>除了 for 循环，Shell 同样提供了 <code>while</code> 循环。对于其它语言，如果你见过 for 循环却没见过 while 循环，那么你一定是学了个假语言。</p>
+<p>在 while 循环里，每进行一次循环，条件都会被判断一次，来确定本次循环是否该继续。其实在循环次数比较少的情况下，for 循环与 while 循环效果差不多，但如果循环次数比较多，比如 10 万次，那么 while 循环的优势就体现出来了。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token assign-left variable">n</span><span class="token operator">=</span><span class="token number">1</span>
+
+<span class="token keyword">while</span> <span class="token punctuation">[</span> <span class="token variable">$n</span> -le <span class="token number">4</span> <span class="token punctuation">]</span>
+<span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$n</span>
+    <span class="token variable"><span class="token punctuation">((</span>n<span class="token operator">++</span><span class="token punctuation">))</span></span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="循环套循环"><a href="#循环套循环" class="headerlink" title="循环套循环"></a>循环套循环</h3><p>像其它高级语言一样，循环是可以互相嵌套的。比如下面这个例子，我们在 while 循环里再套入一个 for 循环：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token assign-left variable">n</span><span class="token operator">=</span><span class="token number">1</span>
+
+<span class="token keyword">while</span> <span class="token punctuation">[</span> <span class="token variable">$n</span> -lt <span class="token number">6</span> <span class="token punctuation">]</span>
+<span class="token keyword">do</span>
+    <span class="token keyword">for</span> <span class="token for-or-select variable">l</span> <span class="token keyword">in</span> <span class="token punctuation">&#123;</span>a<span class="token punctuation">..</span>d<span class="token punctuation">&#125;</span>
+    <span class="token keyword">do</span>
+        <span class="token builtin class-name">echo</span> <span class="token variable">$n</span><span class="token variable">$l</span>
+    <span class="token keyword">done</span>
+    <span class="token variable"><span class="token punctuation">((</span>n<span class="token operator">++</span><span class="token punctuation">))</span></span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这个脚本执行的结果应该是 1a, 1b, 1c, 1d, 2a, 2b … 5d。</p>
+<h3 id="循环的内容是变化的"><a href="#循环的内容是变化的" class="headerlink" title="循环的内容是变化的"></a>循环的内容是变化的</h3><p>我们上面提到的 for 循环，循环变量要赋的值都列在了 in 后面的列表里了。但这样灵活性太差，因为在很多情况下，循环变量要获得的值是不固定的。</p>
+<p>就比如，有个变量要获得当前系统上所有用户，但因为每台电脑用户都不一样，我们根本就没办法将这个变量写死。</p>
+<p>在这种情况下，我们可以使用 ls 命令将 /home 目录下所有用户都列出来，然后用循环变量依次获取它们。完整代码如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">user</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">ls</span> /home<span class="token variable">`</span></span>
+<span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> <span class="token variable">$user</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>当然，除了 ls ，Shell 还支持其它命令。比如我们可以使用 date 命令获取当前系统时间，再依次打印出来：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">$ <span class="token keyword">for</span> <span class="token for-or-select variable">word</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">date</span><span class="token variable">`</span></span>
+<span class="token operator">></span> <span class="token keyword">do</span>
+<span class="token operator">></span>     <span class="token builtin class-name">echo</span> <span class="token variable">$word</span>
+<span class="token operator">></span> <span class="token keyword">done</span>
+Thu
+Apr
+<span class="token number">9</span>
+08:12:09
+CST
+<span class="token number">2020</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="变量值检查"><a href="#变量值检查" class="headerlink" title="变量值检查"></a>变量值检查</h3><p>我们在使用 while 循环时，经常需要判断一个变量的值是否大于或者小于某个数。有时候这个数也是用另一个变量来表示，那么我们就需要判断这个变量的值是否是数字。有三种判断方法：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token builtin class-name">echo</span> -n <span class="token string">"How many times should I say hello? "</span>
+<span class="token builtin class-name">read</span> ans
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$ans</span>"</span> -eq <span class="token string">"<span class="token variable">$ans</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> ok1
+<span class="token keyword">fi</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token variable">$ans</span> <span class="token operator">=</span> *<span class="token punctuation">[</span><span class="token punctuation">[</span>:digit:<span class="token punctuation">]</span><span class="token punctuation">]</span>* <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> ok2
+<span class="token keyword">fi</span>
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$ans</span>"</span> <span class="token operator">=</span>~ ^<span class="token punctuation">[</span><span class="token number">0</span>-9<span class="token punctuation">]</span>+$ <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token builtin class-name">echo</span> ok3
+<span class="token keyword">fi</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>第一种方法看起来似乎是个废话，但实际上，<code>-eq</code> 只能用于数值间判断，如果是字符串则判断不通过，所以这就保证了 ans 是个数值型变量。</p>
+<p>第二种方法是直接使用 Shell 的通配符对变量进行判断。</p>
+<p>第三种方法就更直接了，使用正则表达式对变量进行判断。</p>
+<p>我们直接来看一个例子：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token builtin class-name">echo</span> -n <span class="token string">"How many times should I say hello? "</span>
+<span class="token builtin class-name">read</span> ans
+
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$ans</span>"</span> -eq <span class="token string">"<span class="token variable">$ans</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token assign-left variable">n</span><span class="token operator">=</span><span class="token number">1</span>
+  <span class="token keyword">while</span> <span class="token punctuation">[</span> <span class="token variable">$n</span> -le <span class="token variable">$ans</span> <span class="token punctuation">]</span>
+  <span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> hello
+    <span class="token variable"><span class="token punctuation">((</span>n<span class="token operator">++</span><span class="token punctuation">))</span></span>
+  <span class="token keyword">done</span>
+<span class="token keyword">fi</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在这个脚本里，我将要循环的次数传入到 ans 变量，然后脚本就具体打印几次 hello 。为了保证我们传入的内容是数字，我们使用了 <code>if [ &quot;$ans&quot; -eq &quot;$ans&quot; ]</code> 语句来判断。如果我们传入的不是数字，则不会进入 while 循环。</p>
+<h3 id="循环输出文本文件内容"><a href="#循环输出文本文件内容" class="headerlink" title="循环输出文本文件内容"></a>循环输出文本文件内容</h3><p>如果你想按行依次循环输出文本文件的内容，可以这样操作：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token builtin class-name">echo</span> -n <span class="token string">"File> "</span>
+<span class="token builtin class-name">read</span> <span class="token function">file</span>
+<span class="token assign-left variable">n</span><span class="token operator">=</span><span class="token number">0</span>
+
+<span class="token keyword">while</span> <span class="token builtin class-name">read</span> line<span class="token punctuation">;</span> <span class="token keyword">do</span>
+  <span class="token variable"><span class="token punctuation">((</span>n<span class="token operator">++</span><span class="token punctuation">))</span></span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$n</span>: <span class="token variable">$line</span>"</span>
+<span class="token keyword">done</span> <span class="token operator">&lt;</span> <span class="token variable">$file</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在这里，我们使用 read 命令将文本文件的内容读取存入 file 变量，然后再使用重定向（上述脚本最后一行）将 file 内容依次传入 while 循环处理再打印出来。</p>
+<h3 id="死循环"><a href="#死循环" class="headerlink" title="死循环"></a>死循环</h3><p>有时候我们需要一直永远循环做某件事，那么我们就可以使用死循环。达到这个目的很简单，只需使用 <code>while true</code> 即可。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+<span class="token keyword">while</span> <span class="token boolean">true</span>
+<span class="token keyword">do</span>
+    <span class="token builtin class-name">echo</span> -n <span class="token string">"Still running at "</span>
+    <span class="token function">date</span>
+    <span class="token function">sleep</span> <span class="token number">1</span>
+<span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在以上这个脚本里，将每隔 1 秒打印一次 <code>Still running at 具体时间</code> ，直到你按 Ctrl + C 终止这个脚本。</p>
+<h3 id="搭配seq的for循环"><a href="#搭配seq的for循环" class="headerlink" title="搭配seq的for循环"></a>搭配seq的for循环</h3><p>对于常用的for循环，可以配合seq来用：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment">#seq格式</span>
+<span class="token function">seq</span> start step end
+
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span><span class="token function">seq</span> <span class="token number">1</span> <span class="token number">1</span> <span class="token number">10</span><span class="token variable">`</span></span><span class="token punctuation">;</span>
+   <span class="token keyword">do</span>
+      <span class="token builtin class-name">echo</span> <span class="token variable">$i</span>
+   <span class="token keyword">done</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+              <a href="/tags/for/" rel="tag"># for</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/23/%E5%BC%80%E6%9C%BA%E5%90%AF%E5%8A%A8/" rel="prev" title="开机启动">
+                  <i class="fa fa-chevron-left"></i> 开机启动
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/07/go/%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%89%93%E5%8C%85rice/" rel="next" title="静态资源打包rice">
+                  静态资源打包rice <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

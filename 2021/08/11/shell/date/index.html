@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="常用格式时分秒格式  备注，如果格式里面没有空格，则可以不加引号。  date &#39;+%Y-%m-%d %H:%M:%S&#39;   # 时间戳格式 current&#x3D;&#96;date &quot;+%Y-%m-%d %H:%M:%S&quot;&#96; timeStamp&#x3D;&#96;date -d &quot;$current&quot; +%s&#96;   #将current转换为时间戳，精确到毫秒 currentTimeStamp&#x3D;$((timeStamp*1000">
+<meta property="og:type" content="article">
+<meta property="og:title" content="date的用法">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/08/11/shell/date/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="常用格式时分秒格式  备注，如果格式里面没有空格，则可以不加引号。  date &#39;+%Y-%m-%d %H:%M:%S&#39;   # 时间戳格式 current&#x3D;&#96;date &quot;+%Y-%m-%d %H:%M:%S&quot;&#96; timeStamp&#x3D;&#96;date -d &quot;$current&quot; +%s&#96;   #将current转换为时间戳，精确到毫秒 currentTimeStamp&#x3D;$((timeStamp*1000">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-11T14:42:24.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.021Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="转载">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/08/11/shell/date/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>date的用法 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">常用格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">2.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">3.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E7%AC%A6%E5%8F%B7"><span class="nav-number">3.1.</span> <span class="nav-text">格式符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E5%B7%AE"><span class="nav-number">3.2.</span> <span class="nav-text">时间差</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/08/11/shell/date/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          date的用法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-11 14:42:24" itemprop="dateCreated datePublished" datetime="2021-08-11T14:42:24+00:00">2021-08-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="常用格式"><a href="#常用格式" class="headerlink" title="常用格式"></a>常用格式</h2><p>时分秒格式</p>
+<blockquote>
+<p>备注，如果格式里面没有空格，则可以不加引号。</p>
+</blockquote>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">date</span> <span class="token string">'+%Y-%m-%d %H:%M:%S'</span>
+
+
+<span class="token comment"># 时间戳格式</span>
+<span class="token assign-left variable">current</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> <span class="token string">"+%Y-%m-%d %H:%M:%S"</span><span class="token variable">`</span></span>
+<span class="token assign-left variable">timeStamp</span><span class="token operator">=</span><span class="token variable"><span class="token variable">`</span><span class="token function">date</span> -d <span class="token string">"<span class="token variable">$current</span>"</span> +%s<span class="token variable">`</span></span>
+
+
+<span class="token comment">#将current转换为时间戳，精确到毫秒</span>
+<span class="token assign-left variable">currentTimeStamp</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$((</span>timeStamp<span class="token operator">*</span><span class="token number">1000</span><span class="token operator">+</span>`date "<span class="token operator">+</span><span class="token operator">%</span>N"`<span class="token operator">/</span><span class="token number">1000000</span><span class="token variable">))</span></span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$currentTimeStamp</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<a id="more"></a>
+
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/alsodzy/p/8403870.html">https://www.cnblogs.com/alsodzy/p/8403870.html</a></p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="格式符号"><a href="#格式符号" class="headerlink" title="格式符号"></a>格式符号</h3><p>在shell脚本里date命令的用法：</p>
+<pre class="line-numbers language-none"><code class="language-none">%%  一个文字的 %  
+%a  当前locale 的星期名缩写(例如： 日，代表星期日)  
+%A  当前locale 的星期名全称 (如：星期日)  
+%b  当前locale 的月名缩写 (如：一，代表一月)  
+%B  当前locale 的月名全称 (如：一月)  
+%c  当前locale 的日期和时间 (如：2005年3月3日 星期四 23:05:25)  
+%C  世纪；比如 %Y，通常为省略当前年份的后两位数字(例如：20)  
+%d  按月计的日期(例如：01)  
+%D  按月计的日期；等于%m&#x2F;%d&#x2F;%y  
+%e  按月计的日期，添加空格，等于%_d  
+%F  完整日期格式，等价于 %Y-%m-%d  
+%g  ISO-8601 格式年份的最后两位 (参见%G)  
+%G  ISO-8601 格式年份 (参见%V)，一般只和 %V 结合使用  
+%h  等于%b  
+%H  小时(00-23)  
+%I  小时(00-12)  
+%j  按年计的日期(001-366)  
+%k   hour, space padded ( 0..23); same as %_H  
+%l   hour, space padded ( 1..12); same as %_I  
+%m   month (01..12)  
+%M   minute (00..59)  
+%n  换行  
+%N  纳秒(000000000-999999999)  
+%p  当前locale 下的&quot;上午&quot;或者&quot;下午&quot;，未知时输出为空  
+%P  与%p 类似，但是输出小写字母  
+%r  当前locale 下的 12 小时时钟时间 (如：11:11:04 下午)  
+%R  24 小时时间的时和分，等价于 %H:%M  
+%s  自UTC 时间 1970-01-01 00:00:00 以来所经过的秒数  
+%S  秒(00-60)  
+%t  输出制表符 Tab  
+%T  时间，等于%H:%M:%S  
+%u  星期，1 代表星期一  
+%U  一年中的第几周，以周日为每星期第一天(00-53)  
+%V  ISO-8601 格式规范下的一年中第几周，以周一为每星期第一天(01-53)  
+%w  一星期中的第几日(0-6)，0 代表周一  
+%W  一年中的第几周，以周一为每星期第一天(00-53)  
+%x  当前locale 下的日期描述 (如：12&#x2F;31&#x2F;99)  
+%X  当前locale 下的时间描述 (如：23:13:48)  
+%y  年份最后两位数位 (00-99)  
+%Y  年份  
+%z +hhmm        数字时区(例如，-0400)  
+%:z +hh:mm      数字时区(例如，-04:00)  
+%::z +hh:mm:ss  数字时区(例如，-04:00:00)  
+%:::z           数字时区带有必要的精度 (例如，-04，+05:30)  
+%Z          按字母表排序的时区缩写 (例如，EDT) <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>date命令可以打印和设置系统日期和时间，用法示例如下</p>
+<p>date命令常用选项-d</p>
+<pre class="line-numbers language-none"><code class="language-none">[keysystem@localhost ~]$ date -d &#39;now&#39;    #显示当前时间
+Fri Feb  2 09:29:28 CST 2018
+[keysystem@localhost ~]$ 
+[keysystem@localhost ~]$ date -d &#39;2 days ago&#39;    #显示2天前的时间
+Wed Jan 31 09:29:40 CST 2018
+[keysystem@localhost ~]$ date -d &#39;3 month 1 day&#39;    #显示3月零1天以后的时间 
+Thu May  3 09:30:16 CST 2018
+[keysystem@localhost ~]$ date -d &#39;25 Dec&#39; +%j    #显示12月25日在当年的哪一天
+359
+[keysystem@localhost ~]$ date -d &#39;30 second ago&#39;    #显示30秒前的时间
+Fri Feb  2 09:41:03 CST 2018<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="时间差"><a href="#时间差" class="headerlink" title="时间差"></a>时间差</h3><p>往前、往后推几天</p>
+<pre class="line-numbers language-none"><code class="language-none">##在当前时间的基础上往前或往后推[keysystem@localhost ~]$ date -d &quot;+3 day&quot;
+Mon Feb  5 09:45:52 CST 2018
+[keysystem@localhost ~]$ date -d &quot;-3 day&quot; 
+Tue Jan 30 09:46:04 CST 2018
+[keysystem@localhost ~]$ date -d &quot;-3 month&quot;
+Thu Nov  2 09:46:16 CST 2017
+[keysystem@localhost ~]$ date -d &quot;+3 month&quot; 
+Wed May  2 09:46:24 CST 2018
+[keysystem@localhost ~]$ date -d &quot;+3 year&quot; 
+Tue Feb  2 09:46:35 CST 2021
+[keysystem@localhost ~]$ date -d &quot;-3 year&quot; 
+Mon Feb  2 09:46:40 CST 2015
+[keysystem@localhost ~]$ date -d &quot;-3 hour&quot; 
+Fri Feb  2 06:46:59 CST 2018
+[keysystem@localhost ~]$ date -d &quot;+3 hour&quot; 
+Fri Feb  2 12:47:02 CST 2018
+[keysystem@localhost ~]$ date -d &quot;+3 minute&quot;
+Fri Feb  2 09:50:09 CST 2018
+[keysystem@localhost ~]$ date -d &quot;-3 minute&quot; 
+Fri Feb  2 09:44:12 CST 2018
+[keysystem@localhost ~]$ date -d &quot;-3 second&quot;
+Fri Feb  2 09:47:21 CST 2018
+[keysystem@localhost ~]$ date -d &quot;+3 second&quot; 
+Fri Feb  2 09:47:31 CST 2018<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">#显示本月的第一天
+[keysystem@localhost ~]$ date -d &#96;date +%y%m01&#96;
+Thu Feb  1 00:00:00 CST 2018
+[keysystem@localhost ~]$ date +%y%m01
+180201
+[keysystem@localhost ~]$ date +%Y%m01
+20180201<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">#上个月最后一天
+[keysystem@localhost ~]$ date -d &#96;date +%y%m01&#96;&quot;-1 day&quot;
+Wed Jan 31 00:00:00 CST 2018
+#4个月前的最后一天
+[keysystem@localhost ~]$ date -d &#96;date -d &quot;-3 month&quot; +%y%m01&#96;&quot;-1 day&quot;
+Tue Oct 31 00:00:00 CST 2017
+#11个月后的第一天
+[keysystem@localhost ~]$ date -d &#96;date -d &quot;+12 month&quot; +%y%m01&#96;&quot;-1 day&quot;
+Thu Jan 31 00:00:00 CST 2019
+#11个月后的最后一天
+[keysystem@localhost ~]$ date -d &#96;date -d &quot;+12 month&quot; +%y%m01&#96;&quot;-1 day&quot; +%Y%m%d
+20190131<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>显示当前的日期和时间</p>
+<pre class="line-numbers language-none"><code class="language-none">[keysystem@localhost ~]$ date +%Y%m%d
+20180202
+[keysystem@localhost ~]$ date +%Y%m%d%H%M%S
+20180202101334<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>设置日期和时间（date后面的数字代表月日时分年，还可以加秒，需要后面跟英文状态下的句号字符”.”）</p>
+<pre class="line-numbers language-none"><code class="language-none">[keysystem@localhost ~]$ date +%m%d%H%M%y
+0202102418
+[keysystem@localhost ~]$ date 0202102418
+date: cannot set date: Operation not permitted
+Fri Feb  2 10:24:00 CST 2018
+[keysystem@localhost ~]$ date +%m%d%H%M%y.%S
+0202102518.11
+[keysystem@localhost ~]$ date 0202102518.11
+date: cannot set date: Operation not permitted
+Fri Feb  2 10:25:11 CST 2018<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">[keysystem@localhost ~]$ date &#96;date -d &quot;3 days ago&quot; +%m%d%H%M%Y.%S&#96;
+date: cannot set date: Operation not permitted
+Tue Jan 30 10:26:27 CST 2018
+[keysystem@localhost ~]$ date &#96;date -d &quot;$((3600*24)) seconds ago&quot; +%m%d%H%M%Y.%S&#96;
+date: cannot set date: Operation not permitted
+Thu Feb  1 10:27:10 CST 2018
+[keysystem@localhost ~]$ <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag"># 转载</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/11/shell/error/" rel="prev" title="error">
+                  <i class="fa fa-chevron-left"></i> error
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/11/pg/plpgsql/" rel="next" title="plpgsql">
+                  plpgsql <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

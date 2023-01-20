@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="源码安装php首先，源码安装php，如果只是单纯的安装php，那么应该非常简单。本文，只是简单的叙述一下。如果需要使用到pthtread扩展，需要编译php时，添加参数--enable-maintainer-zts，没有使用该参数编译，则需要重新编译才能使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超凡魔力">
+<meta property="og:url" content="https://blog.chaofml.cn/2020/11/26/php/%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="源码安装php首先，源码安装php，如果只是单纯的安装php，那么应该非常简单。本文，只是简单的叙述一下。如果需要使用到pthtread扩展，需要编译php时，添加参数--enable-maintainer-zts，没有使用该参数编译，则需要重新编译才能使用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-26T14:40:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.016Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="个人博客、超凡魔力">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2020/11/26/php/%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title> | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php"><span class="nav-number">1.</span> <span class="nav-text">源码安装php</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.</span> <span class="nav-text">参考资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">编译安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9F%B5%E7%AD%B9%E8%84%9A%E6%9C%AC%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">韵筹脚本服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%88%E6%9C%AC7-3"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">版本7.3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%AE%89%E8%A3%85%E7%9A%84php5-6"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">默认安装的php5.6</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#phpstudy%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">phpstudy的配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E5%AE%89%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">扩展安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pdo-pgsql"><span class="nav-number">1.3.1.</span> <span class="nav-text">pdo_pgsql</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pthreads"><span class="nav-number">1.3.2.</span> <span class="nav-text">pthreads</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF"><span class="nav-number">2.</span> <span class="nav-text">常见错误</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/11/26/php/%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85php/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-11-26 14:40:00" itemprop="dateCreated datePublished" datetime="2020-11-26T14:40:00+00:00">2020-11-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="源码安装php"><a href="#源码安装php" class="headerlink" title="源码安装php"></a>源码安装php</h1><p>首先，源码安装php，如果只是单纯的安装php，那么应该非常简单。本文，只是简单的叙述一下。如果需要使用到pthtread扩展，需要编译php时，添加参数<code>--enable-maintainer-zts</code>，没有使用该参数编译，则需要重新编译才能使用。</p>
+<a id="more"></a>
+
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/rryqszq4/ngx_php7">仓库</a>主要将如何编译安装php-ngx，本文从发点，也是安装该仓库。但是，实际上，并未安装完，而且到了安装nginx阶段，还报了一个错误，暂时搁浅。</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/linst/p/11182210.html">文章</a>指出了，安装php需要安装扩展，针对centos，则</p>
+</li>
+</ul>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum <span class="token function">install</span> libxml2-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>如果不安装（实际上系统里面安装有libxml2扩展），则会提示</p>
+<blockquote>
+<p> configure: error: libxml2 not found. Please check your libxml2 installation. </p>
+</blockquote>
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><p>1、安装php</p>
+<p>需要先安装前面讲的扩展。再执行下面。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">wget</span> <span class="token string">'http://php.net/distributions/php-7.3.10.tar.gz'</span>
+<span class="token function">tar</span> xf php-7.3.10.tar.gz
+<span class="token builtin class-name">cd</span> php-7.3.10
+
+./configure --prefix<span class="token operator">=</span>/path/to/php --enable-embed
+<span class="token function">make</span> <span class="token operator">&amp;&amp;</span> <span class="token function">make</span> <span class="token function">install</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>说明：</p>
+<blockquote>
+<p>直接下载php的源码，比较慢，我使用了国外的主机进行下载，下载完成后，使用该命令完成复制。</p>
+<p>scp -r -P 62222 root@远程主机IP:/root/php    .</p>
+<p>上述命令，由于拷贝整个文件夹，所以，就加了 -r参数，如果单个文件，则不需要添加该命令。另外-P 是指定远程的ssh端口。</p>
+<p>实际上，configure命令，要跟上一大堆的配置，方便自己使用。</p>
+</blockquote>
+<ul>
+<li><p>常用的配置选项<br>PHP 选项<br>–prefix[=PREFIX]：安装路径的前缀，可以自定义，例如 /tdata/soft/php。指定prefix，可执行文件默认放在/usr/local/bin，库文件默认放在/usr/local/lib，配置文件默认放在/usr/local/etc，其它的资源文件放在/usr/local/share，很凌乱。指定 prefix，直接删掉一个文件夹就够了。<br>–with-config-file-path=PATH：设置 php.ini 的搜索路径。默认为 PREFIX/lib。<br>–disable-short-tags：默认禁用短形式的开始标签 &lt;? 。</p>
+</li>
+<li><p>PHP 扩展<br>每个扩展对应的选项，需要在具体的扩展文档里找。大部分可以安装 PHP 之后再安装。</p>
+</li>
+</ul>
+<p>–enable-mbstring：开启 mbstring 多字节扩展<br>–with-gd[=DIR]：激活 GD 支持，可以指定扩展位置。编译 GD 库需要libpng 和 libjpeg。建议通过 sudo apt-get install php7.2-gd 或 yum install php72w-gt 安装。<br>–with-pear：安装 PEAR 扩展。<br>–with-zip[=DIR]：提供 zip 支持，[DIR]是 ZZIPlib 库安装路径。建议通过 通过 PECL 安装。</p>
+<p>进程控制扩展：<br>–enable-pcntl：开启 PCNTL 进程控制扩展，只能编译安装。</p>
+<p>网络相关扩展：<br>–with-openssl[=DIR]：开启 OpenSSL 扩展，可以指定扩展位置<br>–enable-ftp：开启 FTP 扩展<br>–with-curl：支持 cURL<br>–enable-sockets：开启 socket 扩展<br>–enable-soap：支持 SOAP<br>–enable-fpm：激活 FPM 支持</p>
+<p>数据库扩展：<br>–with-mysql=mysqlnd<br>–with-mysqli=mysqlnd<br>–with-pdo-mysql=mysqlnd</p>
+<p>–with-mysql=/usr/bin/mysql_config<br>–with-mysqli=mysqlnd<br>–with-pdo-mysql=mysqlnd</p>
+<h3 id="韵筹脚本服务器"><a href="#韵筹脚本服务器" class="headerlink" title="韵筹脚本服务器"></a>韵筹脚本服务器</h3><h4 id="版本7-3"><a href="#版本7-3" class="headerlink" title="版本7.3"></a>版本7.3</h4><p>版本7.3，因于老版本共存，所以目录就安装到了<code>/usr/local/php73</code>。否则，可以将<code>php73</code>替换成<code>php</code></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./configure <span class="token punctuation">\</span>
+    --prefix<span class="token operator">=</span>/usr/local/php73 <span class="token punctuation">\</span>
+    --with-config-file-path<span class="token operator">=</span>/usr/local/php73/etc <span class="token punctuation">\</span>
+    --with-config-file-scan-dir<span class="token operator">=</span>/usr/local/php73/conf.d <span class="token punctuation">\</span>
+    --enable-fpm <span class="token punctuation">\</span>
+    --with-fpm-user<span class="token operator">=</span>www <span class="token punctuation">\</span>
+    --with-fpm-group<span class="token operator">=</span>www <span class="token punctuation">\</span>
+    --enable-mysqlnd <span class="token punctuation">\</span>
+    --with-mysqli<span class="token operator">=</span>mysqlnd <span class="token punctuation">\</span>
+    --with-pdo-mysql<span class="token operator">=</span>mysqlnd <span class="token punctuation">\</span>
+    --with-iconv-dir <span class="token punctuation">\</span>
+    --with-freetype-dir<span class="token operator">=</span>/usr/local/freetype <span class="token punctuation">\</span>
+    --with-jpeg-dir <span class="token punctuation">\</span>
+    --with-png-dir <span class="token punctuation">\</span>
+    --with-zlib <span class="token punctuation">\</span>
+    --with-libxml-dir<span class="token operator">=</span>/usr <span class="token punctuation">\</span>
+    --enable-xml <span class="token punctuation">\</span>
+    --disable-rpath <span class="token punctuation">\</span>
+    --enable-bcmath <span class="token punctuation">\</span>
+    --enable-shmop <span class="token punctuation">\</span>
+    --enable-sysvsem <span class="token punctuation">\</span>
+    --enable-inline-optimization <span class="token punctuation">\</span>
+    --with-curl <span class="token punctuation">\</span>
+    --enable-mbregex <span class="token punctuation">\</span>
+    --enable-mbstring <span class="token punctuation">\</span>
+    --enable-intl <span class="token punctuation">\</span>
+    --enable-ftp <span class="token punctuation">\</span>
+    --with-gd <span class="token punctuation">\</span>
+    --with-mhash <span class="token punctuation">\</span>
+    --enable-pcntl <span class="token punctuation">\</span>
+    --enable-sockets <span class="token punctuation">\</span>
+    --with-xmlrpc <span class="token punctuation">\</span>
+    --enable-zip <span class="token punctuation">\</span>
+    --without-libzip <span class="token punctuation">\</span>
+    --enable-soap <span class="token punctuation">\</span>
+    --with-gettext <span class="token punctuation">\</span>
+    --enable-opcache<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>备注，在一台机器上，下面的依赖不用安装，也能成功。但是，在某台生产上的机器上，需要自己安装以下依赖，才行。</p>
+<p>依赖总结：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum <span class="token function">install</span> -y libjpeg libjpeg-devel <span class="token punctuation">\</span>
+    libpng libpng-devel <span class="token punctuation">\</span>
+    freetype freetype-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>依赖一：</p>
+<pre class="line-numbers language-none"><code class="language-none">If configure fails try --with-webp-dir&#x3D;&lt;DIR&gt;
+configure: error: jpeglib.h not found.
+
+# 安装如下依赖
+yum install libjpeg libjpeg-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>依赖二：</p>
+<pre class="line-numbers language-none"><code class="language-none">checking for jpeg_read_header in -ljpeg... yes
+configure: error: png.h not found.
+
+# 安装如下依赖
+yum install -y libpng libpng-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>依赖三：</p>
+<pre class="line-numbers language-none"><code class="language-none">checking for png_write_image in -lpng... yes
+If configure fails try --with-xpm-dir&#x3D;&lt;DIR&gt;
+configure: error: freetype-config not found.
+
+yum install -y freetype freetype-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="默认安装的php5-6"><a href="#默认安装的php5-6" class="headerlink" title="默认安装的php5.6"></a>默认安装的php5.6</h4><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">./configure <span class="token punctuation">\</span>
+    --prefix<span class="token operator">=</span>/usr/local/php <span class="token punctuation">\</span>
+    --with-config-file-path<span class="token operator">=</span>/usr/local/php/etc <span class="token punctuation">\</span>
+    --with-config-file-scan-dir<span class="token operator">=</span>/usr/local/php/conf.d <span class="token punctuation">\</span>
+    --enable-fpm <span class="token punctuation">\</span>
+    --with-fpm-user<span class="token operator">=</span>www <span class="token punctuation">\</span>
+    --with-fpm-group<span class="token operator">=</span>www <span class="token punctuation">\</span>
+    --enable-mysqlnd <span class="token punctuation">\</span>
+    --with-mysqli<span class="token operator">=</span>mysqlnd <span class="token punctuation">\</span>
+    --with-pdo-mysql<span class="token operator">=</span>mysqlnd <span class="token punctuation">\</span>
+    --with-iconv-dir <span class="token punctuation">\</span>
+    --with-freetype-dir<span class="token operator">=</span>/usr/local/freetype <span class="token punctuation">\</span>
+    --with-jpeg-dir <span class="token punctuation">\</span>
+    --with-png-dir <span class="token punctuation">\</span>
+    --with-zlib <span class="token punctuation">\</span>
+    --with-libxml-dir<span class="token operator">=</span>/usr <span class="token punctuation">\</span>
+    --enable-xml <span class="token punctuation">\</span>
+    --disable-rpath <span class="token punctuation">\</span>
+    --enable-bcmath <span class="token punctuation">\</span>
+    --enable-shmop <span class="token punctuation">\</span>
+    --enable-sysvsem <span class="token punctuation">\</span>
+    --enable-inline-optimization <span class="token punctuation">\</span>
+    --with-curl <span class="token punctuation">\</span>
+    --enable-mbregex <span class="token punctuation">\</span>
+    --enable-mbstring <span class="token punctuation">\</span>
+    --enable-intl <span class="token punctuation">\</span>
+    --enable-pcntl <span class="token punctuation">\</span>
+    --enable-ftp <span class="token punctuation">\</span>
+    --with-gd <span class="token punctuation">\</span>
+    --with-mhash <span class="token punctuation">\</span>
+    --enable-pcntl <span class="token punctuation">\</span>
+    --enable-sockets <span class="token punctuation">\</span>
+    --with-xmlrpc <span class="token punctuation">\</span>
+    --enable-zip <span class="token punctuation">\</span>
+    --without-libzip <span class="token punctuation">\</span>
+    --enable-soap <span class="token punctuation">\</span>
+    --with-gettext <span class="token punctuation">\</span>
+    --enable-opcache <span class="token punctuation">\</span>
+    --with-xsl <span class="token punctuation">\</span>
+    --with-pear <span class="token punctuation">\</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="phpstudy的配置"><a href="#phpstudy的配置" class="headerlink" title="phpstudy的配置"></a>phpstudy的配置</h3><pre class="line-numbers language-none"><code class="language-none">cscript &#x2F;nologo configure.js &quot;--enable-snapshot-build&quot; &quot;--enable-debug-pack&quot; &quot;--disable-zts&quot; &quot;--with-pdo-oci&#x3D;c:\php-snap-build\deps_aux\oracle\x64\instantclient_12_1\sdk,shared&quot; &quot;--with-oci8-12c&#x3D;c:\php-snap-build\deps_aux\oracle\x64\instantclient_12_1\sdk,shared&quot; &quot;--enable-object-out-dir&#x3D;..&#x2F;obj&#x2F;&quot; &quot;--enable-com-dotnet&#x3D;shared&quot; &quot;--without-analyzer&quot; &quot;--with-pgo&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h2 id="扩展安装"><a href="#扩展安装" class="headerlink" title="扩展安装"></a>扩展安装</h2><p>经常需要安装php的各种扩展，其实，扩展的编写是严格按照php规范来写的，否则，它也无法运行。所以，所有的扩展的安装基本上都一个样，没有差别。</p>
+<p>套路如下：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 进入到插件源码根目录</span>
+<span class="token builtin class-name">cd</span> /src
+/usr/local/php/bin/phpize
+<span class="token comment"># 如果有其他参数，则加上即可。</span>
+./configure --with-php-config<span class="token operator">=</span>/usr/local/php/bin/php-config<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="pdo-pgsql"><a href="#pdo-pgsql" class="headerlink" title="pdo_pgsql"></a>pdo_pgsql</h3><blockquote>
+<p>该扩展安装也不复杂，可能需要提前安装<code>postgresql-devel</code>扩展。剩下的就是常规操作。另外，该扩展其实是php源码提供的，可能是在安装php的时候，并没有一道安装，所以，从php源码，就能提取到pdo_pgsql.zip 安装包。</p>
+</blockquote>
+<p>报如下错误报错：</p>
+<pre class="line-numbers language-none"><code class="language-none">checking for re2c... no
+configure: WARNING: You will need re2c 0.13.4 or later if you want to regenerate PHP parsers.
+checking for gawk... gawk
+checking for PostgreSQL support for PDO... yes, shared
+checking for pg_config... not found
+configure: error: Cannot find libpq-fe.h. Please specify correct PostgreSQL installation path<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>则执行下面的语句：</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install postgresql-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>再正常安装：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># 上传到临时目录，解压。</span>
+<span class="token function">unzip</span> pdo_pgsql.zip 
+<span class="token builtin class-name">cd</span> pdo_pgsql/
+<span class="token comment"># 确定php版本及安装目录</span>
+php -v
+<span class="token function">ls</span> /usr/local/php73/bin/
+<span class="token comment"># 执行以下命令安装，假入上面ls执行，有结果，而且php版本为7.3</span>
+/usr/local/php73/bin/phpize
+./configure --with-php-config<span class="token operator">=</span>/usr/local/php73/bin/php-config
+<span class="token function">make</span> <span class="token operator">&amp;&amp;</span> <span class="token function">make</span> <span class="token function">install</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>在<code>php.ini</code>中开启该扩展</p>
+<p>假入上一步安装成功后，记住提示的目录：</p>
+<pre class="line-numbers language-none"><code class="language-none">vi &#x2F;usr&#x2F;local&#x2F;php73&#x2F;etc&#x2F;php.ini<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>加入如下内容：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token assign-left variable">extension</span><span class="token operator">=</span>上一步安装成功的目录/pdo_pgsql.so<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>清理安装文件：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>
+<span class="token function">rm</span> -rf pdo_pgsql/
+<span class="token function">rm</span> pdo_pgsql.zip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="pthreads"><a href="#pthreads" class="headerlink" title="pthreads"></a>pthreads</h3><p>到pecl下下载，源码安装，没有什么特别的。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>安装php8（2020-11-30 15:14）遇到了下列各种问题，解决如下：</p>
+<blockquote>
+<p>一台机器卡在无法yum install oniguruma-devel，（按抢占模式购买的阿里云服务器centos8.2）。</p>
+<p>另外一台机器，卡在configure: error: iconv does not support errno。真是郁闷。（腾讯云服务器）</p>
+<p>所以，lnmp一键脚本真的是牛b。</p>
+<p>后来，在自己的vps（centos8.2），成功的.configure成功，基本上等于要安装成功了，结果，可能由于vps只有500M内存的原因 ，结果在make 过程中报错。</p>
+<p>另外，按php7.3的configure命令配置，结果提示有好几个命令，不识别，即不需要再配置了。</p>
+</blockquote>
+<ul>
+<li>错误1：</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">configure: error: Package requirements (libcurl &gt;&#x3D; 7.29.0) were not met:
+
+Package &#39;libcurl&#39;, required by &#39;virtual:world&#39;, not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>安装</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum <span class="token function">install</span> -y libcurl-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>错误2 ：</li>
+</ul>
+<p>描述类似于错误1，缺失sqlite3</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum <span class="token function">install</span> sqlite-devel
+<span class="token comment"># 或</span>
+<span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> libsqlite3-dev<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>错误3：</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">configure: error: Package requirements (icu-uc &gt;&#x3D; 50.1 icu-io icu-i18n) were not met:
+
+Package &#39;icu-uc&#39;, required by &#39;virtual:world&#39;, not found
+Package &#39;icu-io&#39;, required by &#39;virtual:world&#39;, not found
+Package &#39;icu-i18n&#39;, required by &#39;virtual:world&#39;, not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>安装</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install libicu-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>错误4：</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">configure: error: C++ preprocessor &quot;&#x2F;lib&#x2F;cpp&quot; fails sanity check<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>安装：</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install gcc-c++<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>错误5：</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">configure: error: Package requirements (oniguruma) were not met:
+
+Package &#39;oniguruma&#39;, required by &#39;virtual:world&#39;, not found<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>安装：</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install oniguruma oniguruma-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>大概还会遇到无法安装<code>oniguruma-devel</code>的错误，针对centos8，则可以使用</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum config-manager --set-enabled PowerTools
+yum -y <span class="token function">install</span> oniguruma oniguruma-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>然后，即可安装成功。</p>
+<p><a target="_blank" rel="noopener" href="https://www.24kplus.com/linux/1614.html">https://www.24kplus.com/linux/1614.html</a> 参见文章。</p>
+<p>oniguruma这个是一个正则的库。</p>
+<p>错误6：</p>
+<p>安装的vps内存太小，出如下报错：</p>
+<pre class="line-numbers language-none"><code class="language-none">compilation terminated.
+make: *** [Makefile:904: ext&#x2F;fileinfo&#x2F;libmagic&#x2F;apprentice.lo] Error 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<blockquote>
+<p>是因为服务器内存不足1G。<br>只需要在配置命令中添加 –disable-fileinfo即可 。</p>
+</blockquote>
+<p><strong>总结，先安装常用扩展：</strong></p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">yum config-manager --set-enabled PowerTools
+yum <span class="token function">install</span> -y <span class="token punctuation">\</span>
+    libxml2-devel <span class="token punctuation">\</span>
+    libcurl-devel <span class="token punctuation">\</span>
+    sqlite-devel <span class="token punctuation">\</span>
+    libicu-devel <span class="token punctuation">\</span>
+    gcc-c++ <span class="token punctuation">\</span>
+    oniguruma oniguruma-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h1><p>解决 <code>error: the HTTP XSLT module requires the libxml2/libxslt</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install libxml2 libxml2-dev
+yum -y install libxslt-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>解决 <code>error: the HTTP image filter module requires the GD library.</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install gd-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>error: the GeoIP module requires the GeoIP library. </code>错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install GeoIP GeoIP-devel GeoIP-data<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>error: the Google perftools module requires the Google perftools</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install gperftools<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>error: libatomic_ops library was not found. </code>错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install libuuid-devel libblkid-devel libudev-devel fuse-devel libedit-devel libatomic_ops-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>error trying to exec &#39;cc1plus&#39;: execvp: No such file or directory</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install gcc-c++<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>error: [pool www] cannot get uid for user &#39;www-data&#39;</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">groupadd www-data
+useradd -g www-data www-data<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>解决<code>configure: error: mbed TLS libraries not found.</code> 错误。</p>
+<p>需要安装mbedtls，教程：<a target="_blank" rel="noopener" href="https://www.24kplus.com/linux/281.html">https://www.24kplus.com/linux/281.html</a></p>
+<p>解决 <code>error: Cannot find OpenSSL&#39;s </code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install openssl openssl-devel
+ln -s &#x2F;usr&#x2F;lib64&#x2F;libssl.so &#x2F;usr&#x2F;lib&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>解决 <code>error: Libtool library used but &#39;LIBTOOL&#39; is undefined</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install libtool<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>exec: g++: not found</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y update gcc
+yum -y install gcc+ gcc-c++<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: tss lib not found: libtspi.so</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install trousers-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>Can&#39;t exec &quot;autopoint&quot;: No such file or directory</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install gettext gettext-devel gettext-common-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: libcrypto not found.</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum remove openssl-devel
+yum -y install openssl-devel<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: Package requirements (libffi &gt;= 3.0.0) were not met: No package &#39;libffi&#39; found</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install libffi-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>fatal error: uuid.h: No such file or directory</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install e2fsprogs-devel uuid-devel libuuid-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: openssl lib not found: libcrypto.so</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install openssl-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>tar (child): lbzip2: Cannot exec: No such file or directory</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum -y install bzip2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: C++ preprocessor &quot;/lib/cpp&quot; fails sanity check</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install gcc-c++<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: Please reinstall the BZip2 distribution</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install bzip2 bzip2-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: cURL version 7.15.5 or later is required to compile php with cURL support</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install curl-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: not found. Please provide a path to MagickWand-config or Wand-config program</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install ImageMagick-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: no acceptable C compiler found in $PATH</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install gcc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: Package requirements (icu-uc &gt;= 50.1 icu-io icu-i18n) were not met:</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install libicu-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: Package requirements (sqlite3 &gt; 3.7.4) were not met: No package &#39;sqlite3&#39; found</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install sqlite-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>解决 <code>configure: error: Package requirements (oniguruma) were not met: No package &#39;oniguruma&#39; found</code> 错误</p>
+<pre class="line-numbers language-none"><code class="language-none">yum install oniguruma oniguruma-devel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/11/25/docker/docker%E5%AE%89%E8%A3%85postgresql/" rel="prev" title="docker安装postgresql">
+                  <i class="fa fa-chevron-left"></i> docker安装postgresql
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/30/php/php%E4%B9%8Bkafka%E6%89%A9%E5%B1%95/" rel="next" title="php之kafka扩展">
+                  php之kafka扩展 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

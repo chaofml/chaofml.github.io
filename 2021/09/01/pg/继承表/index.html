@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="继承表、分区表，不同，但是又有很多相同的地方。 表继承（Table Inheritance）是PostgreSQL的独有特性，很多数据库（如MySQL）是不支持该特性的。SQL：1999及之后的标准定义了类型继承特性，不过PostgreSQL的表继承在很多方面与它有差异。 类似于编程语言中的继承概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="继承表">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/09/01/pg/%E7%BB%A7%E6%89%BF%E8%A1%A8/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="继承表、分区表，不同，但是又有很多相同的地方。 表继承（Table Inheritance）是PostgreSQL的独有特性，很多数据库（如MySQL）是不支持该特性的。SQL：1999及之后的标准定义了类型继承特性，不过PostgreSQL的表继承在很多方面与它有差异。 类似于编程语言中的继承概念。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-01T15:43:29.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:57.985Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="pg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/09/01/pg/%E7%BB%A7%E6%89%BF%E8%A1%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>继承表 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%88%B6%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">创建父表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E8%A1%A8%EF%BC%8C%E7%BB%A7%E6%89%BF%E7%88%B6%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">子表，继承父表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E7%BA%A6%E6%9D%9F%E5%85%B3%E7%B3%BB"><span class="nav-number">3.</span> <span class="nav-text">继承约束关系</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/09/01/pg/%E7%BB%A7%E6%89%BF%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          继承表
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-01 15:43:29" itemprop="dateCreated datePublished" datetime="2021-09-01T15:43:29+00:00">2021-09-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:57" itemprop="dateModified" datetime="2023-01-20T05:51:57+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>继承表、分区表，不同，但是又有很多相同的地方。</p>
+<p>表继承（Table Inheritance）是PostgreSQL的独有特性，很多数据库（如MySQL）是不支持该特性的。SQL：1999及之后的标准定义了类型继承特性，不过PostgreSQL的表继承在很多方面与它有差异。</p>
+<p>类似于编程语言中的继承概念。</p>
+<a id="more"></a>
+
+<h3 id="创建父表"><a href="#创建父表" class="headerlink" title="创建父表"></a>创建父表</h3><pre class="line-numbers language-none"><code class="language-none">CREATE TABLE vehicles(
+	name text PRIMARY KEY,--车辆名字
+	color text, --车身颜色
+	weight float, --车身重量
+	area text,  --产地
+	manufacturerid int --制造商标识
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="子表，继承父表"><a href="#子表，继承父表" class="headerlink" title="子表，继承父表"></a>子表，继承父表</h3><pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> bikes <span class="token punctuation">(</span>
+	size <span class="token keyword">FLOAT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token comment">-- 车架尺寸</span>
+<span class="token punctuation">)</span> INHERITS <span class="token punctuation">(</span>vehicles<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> cars <span class="token punctuation">(</span>
+	displacement <span class="token keyword">FLOAT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token comment">--排量</span>
+<span class="token punctuation">)</span> INHERITS <span class="token punctuation">(</span>vehicles<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> trucks <span class="token punctuation">(</span>
+	<span class="token keyword">load</span> <span class="token keyword">FLOAT</span> <span class="token operator">NOT</span> <span class="token boolean">NULL</span> <span class="token comment">--最大载重</span>
+<span class="token punctuation">)</span> INHERITS <span class="token punctuation">(</span>vehicles<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>执行成功，但是会有如下提示：</p>
+<blockquote>
+<p>NOTICE:  table has parent, setting distribution columns to match parent table</p>
+</blockquote>
+<p>插入数据：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> bikes <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'bike002'</span><span class="token punctuation">,</span><span class="token string">'RED'</span><span class="token punctuation">,</span><span class="token number">35</span><span class="token punctuation">,</span><span class="token string">'重庆'</span><span class="token punctuation">,</span><span class="token number">1002</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> bikes <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'bike003'</span><span class="token punctuation">,</span><span class="token string">'YELLOW'</span><span class="token punctuation">,</span><span class="token number">30</span><span class="token punctuation">,</span><span class="token string">'重庆'</span><span class="token punctuation">,</span><span class="token number">1002</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> trucks <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'truck002'</span><span class="token punctuation">,</span><span class="token string">'RED'</span><span class="token punctuation">,</span><span class="token number">1055</span><span class="token punctuation">,</span><span class="token string">'重庆'</span><span class="token punctuation">,</span><span class="token number">1002</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> cars <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token string">'truck002'</span><span class="token punctuation">,</span><span class="token string">'RED'</span><span class="token punctuation">,</span><span class="token number">1055</span><span class="token punctuation">,</span><span class="token string">'重庆'</span><span class="token punctuation">,</span><span class="token number">1002</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>对仅操作父表的内容时，则需要指定ONLY关键字。</p>
+<p>但是insert操作并不支持，因为它并不知道，你要查到哪个字表。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token comment">-- 只查父表的内容</span>
+<span class="token keyword">SELECT</span> <span class="token keyword">FROM</span> ONLY vehicles<span class="token punctuation">;</span>
+
+<span class="token comment">-- 查父表、子表的内容</span>
+<span class="token keyword">SELECT</span> <span class="token operator">*</span> <span class="token keyword">FROM</span> vehicles<span class="token punctuation">;</span>
+<span class="token comment">-- 删除</span>
+<span class="token keyword">DELETE</span> <span class="token keyword">FROM</span> vehicles <span class="token keyword">WHERE</span> name <span class="token operator">LIKE</span> <span class="token string">'truck%'</span>s<span class="token punctuation">;</span>
+
+<span class="token comment">-- 插入，指定不同的表名，插入不同的表中</span>
+
+<span class="token comment">-- 更新父表和子表</span>
+<span class="token keyword">UPDATE</span> vehicles <span class="token keyword">SET</span> weight<span class="token operator">=</span><span class="token number">1160</span> <span class="token keyword">WHERE</span> name<span class="token operator">=</span><span class="token string">'truck002'</span><span class="token punctuation">;</span>
+
+<span class="token comment">-- 只更新父表</span>
+<span class="token keyword">UPDATE</span> ONLY vehicles <span class="token keyword">SET</span> weight<span class="token operator">=</span><span class="token number">1160</span> <span class="token keyword">WHERE</span> name<span class="token operator">=</span><span class="token string">'truck002'</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="继承约束关系"><a href="#继承约束关系" class="headerlink" title="继承约束关系"></a>继承约束关系</h3><p>如果父表设置了一些约束（Constraints），如检查约束（Check）、非空约束（Not-Null）、唯一约束（Unique）、主键约束（Primary Keys）、外键约束（Foreign Keys）、排他约束（Exclusion），那么子表是否会自动继承这些约束呢？答案是，子表只会继承检查约束和非空约束，其他约束都不会被继承。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pg/" rel="tag"># pg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/01/pg/GreenPlum%E5%88%86%E5%8C%BA%E8%A1%A8%E7%BB%B4%E6%8A%A4/" rel="prev" title="GreenPlum分区表维护">
+                  <i class="fa fa-chevron-left"></i> GreenPlum分区表维护
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/02/install/grafana%E5%AE%89%E8%A3%85/" rel="next" title="grafana安装">
+                  grafana安装 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

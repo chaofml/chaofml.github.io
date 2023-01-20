@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="如何用shell来做一个命令行工具。最简单的，可能是判断用户的输入 $?，另外还有 getopt函数。本文收集了多个shell的命令行解析方式。 脚本首行的，set -o errexit不确定是什么作用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="命令解析">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/04/25/shell/%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="如何用shell来做一个命令行工具。最简单的，可能是判断用户的输入 $?，另外还有 getopt函数。本文收集了多个shell的命令行解析方式。 脚本首行的，set -o errexit不确定是什么作用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-25T16:04:37.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.024Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/04/25/shell/%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>命令解析 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#set"><span class="nav-number">1.</span> <span class="nav-text">set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case-shift"><span class="nav-number">2.</span> <span class="nav-text">case + shift</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B1"><span class="nav-number">2.1.</span> <span class="nav-text">示例1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B2"><span class="nav-number">2.2.</span> <span class="nav-text">示例2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B3"><span class="nav-number">2.3.</span> <span class="nav-text">示例3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getopts"><span class="nav-number">3.</span> <span class="nav-text">getopts</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B1-1"><span class="nav-number">3.1.</span> <span class="nav-text">示例1</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/04/25/shell/%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          命令解析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-25 16:04:37" itemprop="dateCreated datePublished" datetime="2021-04-25T16:04:37+00:00">2021-04-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>如何用shell来做一个命令行工具。最简单的，可能是判断用户的输入 <code>$?</code>，另外还有 <code>getopt</code>函数。本文收集了多个shell的命令行解析方式。</p>
+<p>脚本首行的，<code>set -o errexit</code>不确定是什么作用。</p>
+<a id="more"></a>
+
+<h2 id="set"><a href="#set" class="headerlink" title="set"></a>set</h2><p> -e 脚本中的命令一旦运行失败就终止脚本的执行<br>-x 用于显示出命令与其执行结果（默认shell脚本中只显示执行结果） </p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">set</span> -x
+<span class="token builtin class-name">echo</span> <span class="token string">"Hello World !"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>效果就是，执行一行，输出当前正在执行的命令。 其实效果和sh -x xx.sh一样会打印执行过程 </p>
+<p>执行效果为：</p>
+<blockquote>
+<p>+ echo Hello World !<br>Hello World !</p>
+</blockquote>
+<p>set -e 遇到错误就终止执行。</p>
+<pre class="line-numbers language-dockerfile" data-language="dockerfile"><code class="language-dockerfile">FROM nginx:1.19
+RUN set -ex \
+    &amp;&amp; rm -rf &#x2F;etc&#x2F;nginx&#x2F;conf.d&#x2F;default.conf<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="case-shift"><a href="#case-shift" class="headerlink" title="case + shift"></a>case + shift</h2><h3 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h3><p>以下示例，演示如何在shell中解析命令，例子来源istio-1.9.3提供的示例代码。<code>*)</code>可以完善为提示工具用法。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token builtin class-name">set</span> -euo pipefail
+
+<span class="token assign-left variable">INCLUDE_SERVICE</span><span class="token operator">=</span><span class="token variable">$&#123;INCLUDE_SERVICE<span class="token operator">:-</span>"true"&#125;</span>
+<span class="token assign-left variable">INCLUDE_DEPLOYMENT</span><span class="token operator">=</span><span class="token variable">$&#123;INCLUDE_DEPLOYMENT<span class="token operator">:-</span>"true"&#125;</span>
+<span class="token assign-left variable">SERVICE_VERSION</span><span class="token operator">=</span><span class="token variable">$&#123;SERVICE_VERSION<span class="token operator">:-</span>"v1"&#125;</span>
+<span class="token keyword">while</span> <span class="token variable"><span class="token punctuation">((</span> "$#" <span class="token punctuation">))</span></span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+  <span class="token keyword">case</span> <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token keyword">in</span>
+    --version<span class="token punctuation">)</span>
+      <span class="token assign-left variable">SERVICE_VERSION</span><span class="token operator">=</span><span class="token variable">$2</span>
+      <span class="token builtin class-name">shift</span> <span class="token number">2</span>
+      <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+    --includeService<span class="token punctuation">)</span>
+      <span class="token assign-left variable">INCLUDE_SERVICE</span><span class="token operator">=</span><span class="token variable">$2</span>
+      <span class="token builtin class-name">shift</span> <span class="token number">2</span>
+      <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+    --includeDeployment<span class="token punctuation">)</span>
+      <span class="token assign-left variable">INCLUDE_DEPLOYMENT</span><span class="token operator">=</span><span class="token variable">$2</span>
+      <span class="token builtin class-name">shift</span> <span class="token number">2</span>
+      <span class="token punctuation">;</span><span class="token punctuation">;</span>
+
+    *<span class="token punctuation">)</span>
+      <span class="token builtin class-name">echo</span> <span class="token string">"Error: Unsupported flag <span class="token variable">$1</span>"</span> <span class="token operator">></span><span class="token file-descriptor important">&amp;2</span>
+      <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+      <span class="token punctuation">;</span><span class="token punctuation">;</span>
+  <span class="token keyword">esac</span>
+<span class="token keyword">done</span>
+
+<span class="token assign-left variable">SERVICE_YAML</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+    service: helloworld
+spec:
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: helloworld
+EOF</span>
+<span class="token variable">)</span></span>
+
+<span class="token assign-left variable">DEPLOYMENT_YAML</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> <span class="token operator">&lt;&lt;</span><span class="token string">EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-<span class="token variable">$&#123;SERVICE_VERSION&#125;</span>
+  labels:
+    app: helloworld
+    version: <span class="token variable">$&#123;SERVICE_VERSION&#125;</span>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      version: <span class="token variable">$&#123;SERVICE_VERSION&#125;</span>
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: <span class="token variable">$&#123;SERVICE_VERSION&#125;</span>
+    spec:
+      containers:
+      - name: helloworld
+        env:
+        - name: SERVICE_VERSION
+          value: <span class="token variable">$&#123;SERVICE_VERSION&#125;</span>
+        image: docker.io/istio/examples-helloworld-v1
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+EOF</span>
+<span class="token variable">)</span></span>
+
+<span class="token assign-left variable">OUT</span><span class="token operator">=</span><span class="token string">""</span>
+
+<span class="token comment"># Add the service to the output.</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$INCLUDE_SERVICE</span>"</span> <span class="token operator">==</span> <span class="token string">"true"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token assign-left variable">OUT</span><span class="token operator">=</span><span class="token string">"<span class="token variable">$&#123;SERVICE_YAML&#125;</span>"</span>
+<span class="token keyword">fi</span>
+
+<span class="token comment"># Add the deployment to the output.</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">$INCLUDE_DEPLOYMENT</span>"</span> <span class="token operator">==</span> <span class="token string">"true"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+  <span class="token comment"># Add a separator</span>
+  <span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> -n <span class="token string">"<span class="token variable">$OUT</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+    <span class="token assign-left variable">OUT</span><span class="token operator">+=</span><span class="token string">"
+---
+"</span>
+  <span class="token keyword">fi</span>
+  <span class="token assign-left variable">OUT</span><span class="token operator">+=</span><span class="token string">"<span class="token variable">$&#123;DEPLOYMENT_YAML&#125;</span>"</span>
+<span class="token keyword">fi</span>
+
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$OUT</span>"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h3><p>下面这个例子，使用了<code>$@</code>，函数，等功能。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/usr/bin/env bash</span>
+
+<span class="token comment"># start containers</span>
+<span class="token keyword">function</span> <span class="token function-name function">up</span> <span class="token punctuation">&#123;</span>
+  docker-compose up -d <span class="token variable">$@</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># stop containers</span>
+<span class="token keyword">function</span> <span class="token function-name function">down</span> <span class="token punctuation">&#123;</span>
+  docker-compose down
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># initialize application</span>
+<span class="token keyword">function</span> <span class="token function-name function">init</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"Stating Initialization..."</span>
+
+  <span class="token builtin class-name">echo</span> <span class="token string">"Copy .env file..."</span>
+  <span class="token function">cp</span> .env.example .env
+
+  <span class="token builtin class-name">echo</span> <span class="token string">"Install PHP dependencies..."</span>
+  docker-compose run roadrunner <span class="token function">sh</span> -c <span class="token string">'composer require spiral/roadrunner:<span class="token variable">$&#123;RR_VERSION&#125;</span>'</span>
+
+  <span class="token builtin class-name">echo</span> <span class="token string">"Initialization completed!"</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># login to container</span>
+<span class="token keyword">function</span> <span class="token function-name function">login</span> <span class="token punctuation">&#123;</span>
+  <span class="token assign-left variable">container</span><span class="token operator">=</span><span class="token variable">$&#123;1<span class="token operator">:-</span>roadrunner&#125;</span>
+
+  <span class="token builtin class-name">echo</span> <span class="token string">"Attempt to login <span class="token variable">$&#123;container&#125;</span> container..."</span>
+  docker-compose <span class="token builtin class-name">exec</span> <span class="token variable">$&#123;container&#125;</span> <span class="token function">bash</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># show container logs</span>
+<span class="token keyword">function</span> <span class="token function-name function">logs</span> <span class="token punctuation">&#123;</span>
+  docker-compose logs <span class="token variable">$1</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># execute RoadRunner command</span>
+<span class="token keyword">function</span> <span class="token function-name function">rr</span> <span class="token punctuation">&#123;</span>
+  docker-compose <span class="token builtin class-name">exec</span> roadrunner rr -c /etc/rr.yaml <span class="token variable">$1</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token assign-left variable">subcommand</span><span class="token operator">=</span><span class="token variable">$1</span>
+<span class="token builtin class-name">shift</span>
+
+<span class="token keyword">case</span> <span class="token variable">$subcommand</span> <span class="token keyword">in</span>
+up<span class="token punctuation">)</span>
+  up <span class="token variable">$@</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+down<span class="token punctuation">)</span>
+  down
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+init<span class="token punctuation">)</span>
+  init
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+login<span class="token punctuation">)</span>
+  login <span class="token variable">$1</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+logs<span class="token punctuation">)</span>
+  logs <span class="token variable">$1</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+rr<span class="token punctuation">)</span>
+  rr <span class="token variable">$1</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+*<span class="token punctuation">)</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"help"</span>
+  <span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token keyword">esac</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>为了演示上面的用到的一些功能，我写了如下一个例子。最终，使用<code>bash cmd.sh  zhang  shuo ai wo </code>来调用一下。（所以，我们发现，脚本在函数功，还支持默认参数功能。）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+<span class="token comment"># 函数内的，只能显示，调用该函数的参数，而不是脚本传入的参数 。</span>
+<span class="token keyword">function</span> <span class="token function-name function">hello</span> <span class="token punctuation">&#123;</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$#</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$1</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$2</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$3</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$@</span> 
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function-name function">init</span> <span class="token punctuation">&#123;</span>
+   <span class="token comment">#msg=$&#123;1:-defaultmsg&#125;  # 相当于指定了默认参数。</span>
+   <span class="token assign-left variable">msg</span><span class="token operator">=</span><span class="token variable">$&#123;1<span class="token operator">:-</span>defaultmsg some&#125;</span>
+   <span class="token builtin class-name">echo</span> <span class="token variable">$msg</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token builtin class-name">echo</span> <span class="token variable">$@</span>
+<span class="token builtin class-name">shift</span>  <span class="token comment"># 该参数，会移除传入脚本的第1个参数，前后两个命令正好对比。</span>
+<span class="token builtin class-name">echo</span> <span class="token variable">$@</span>
+
+hello  liu xiao ming
+
+<span class="token comment"># init 必须要先定义才能使用</span>
+init
+init custom_msg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="示例3"><a href="#示例3" class="headerlink" title="示例3"></a>示例3</h3><p><code>echo -e &quot;a\nb\nc&quot;</code> 是可以支持使用转义符号的。</p>
+<p>shell里面直接调用另外一个脚本，（把它想象成，在shell中执行命令，绝对路径访问即可）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token builtin class-name">set</span> -o errexit
+<span class="token function-name function">display_usage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin class-name">echo</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"USAGE: ./build_push_update_images.sh &lt;version> [-h|--help] [--prefix=value] [--scan-images]"</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"	version : Version of the sample app images (Required)"</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"	-h|--help : Prints usage information"</span>
+    <span class="token builtin class-name">echo</span> <span class="token string">"	--prefix: Use the value as the prefix for image names. By default, 'istio' is used"</span>
+    <span class="token builtin class-name">echo</span> -e <span class="token string">"	--scan-images : Enable security vulnerability scans for docker images <span class="token entity" title="\n">\n</span><span class="token entity" title="\t">\t</span><span class="token entity" title="\t">\t</span><span class="token entity" title="\t">\t</span>related to bookinfo sample apps. By default, this feature <span class="token entity" title="\n">\n</span><span class="token entity" title="\t">\t</span><span class="token entity" title="\t">\t</span><span class="token entity" title="\t">\t</span>is disabled."</span>
+    <span class="token builtin class-name">exit</span> <span class="token number">1</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment"># Check if there is atleast one input argument</span>
+<span class="token keyword">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> -z <span class="token string">"<span class="token variable">$1</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"Missing version parameter"</span>
+        display_usage
+<span class="token keyword">else</span>
+	<span class="token assign-left variable">VERSION</span><span class="token operator">=</span><span class="token string">"<span class="token variable">$1</span>"</span>
+	<span class="token builtin class-name">shift</span>
+<span class="token keyword">fi</span>
+
+<span class="token comment"># Process the input arguments. By default, image scanning is disabled.</span>
+<span class="token assign-left variable">PREFIX</span><span class="token operator">=</span>istio
+<span class="token assign-left variable">ENABLE_IMAGE_SCAN</span><span class="token operator">=</span>false
+<span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">$@</span>"</span>
+<span class="token keyword">for</span> <span class="token for-or-select variable">i</span> <span class="token keyword">in</span> <span class="token string">"<span class="token variable">$@</span>"</span>
+<span class="token keyword">do</span>
+	<span class="token keyword">case</span> <span class="token string">"<span class="token variable">$i</span>"</span> <span class="token keyword">in</span>
+		--prefix<span class="token operator">=</span>* <span class="token punctuation">)</span>
+		   <span class="token assign-left variable">PREFIX</span><span class="token operator">=</span><span class="token string">"<span class="token variable">$&#123;i<span class="token operator">#</span>--prefix=&#125;</span>"</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+		--scan-images <span class="token punctuation">)</span>
+		   <span class="token assign-left variable">ENABLE_IMAGE_SCAN</span><span class="token operator">=</span>true <span class="token punctuation">;</span><span class="token punctuation">;</span>
+		-h<span class="token operator">|</span>--help <span class="token punctuation">)</span>
+		   <span class="token builtin class-name">echo</span>
+		   <span class="token builtin class-name">echo</span> <span class="token string">"Build the docker images for bookinfo sample apps, push them to docker hub and update the yaml files."</span>
+		   display_usage <span class="token punctuation">;</span><span class="token punctuation">;</span>
+		* <span class="token punctuation">)</span>
+		   <span class="token builtin class-name">echo</span> <span class="token string">"Unknown argument: <span class="token variable">$i</span>"</span>
+		   display_usage <span class="token punctuation">;</span><span class="token punctuation">;</span>
+	<span class="token keyword">esac</span>
+<span class="token keyword">done</span>
+
+<span class="token comment">#Build docker images  直接调用，另外一个脚本</span>
+src/build-services.sh <span class="token string">"<span class="token variable">$&#123;VERSION&#125;</span>"</span> <span class="token string">"<span class="token variable">$&#123;PREFIX&#125;</span>"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="getopts"><a href="#getopts" class="headerlink" title="getopts"></a>getopts</h2><h3 id="示例1-1"><a href="#示例1-1" class="headerlink" title="示例1"></a>示例1</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token shebang important">#!/bin/bash</span>
+
+
+<span class="token function-name function">usage</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin class-name">echo</span> -e <span class="token string">"<span class="token entity" title="\033">\033</span>[31mIMPORTANT: Run As Root<span class="token entity" title="\033">\033</span>[0m"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">""</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"Usage:	docker.sh [OPTIONS]"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">""</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"A docker written by shell"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">""</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"Options:"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-c string	docker command"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"				(<span class="token entity" title="\&quot;">\"</span>run<span class="token entity" title="\&quot;">\"</span>)"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-m		memory"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"				(<span class="token entity" title="\&quot;">\"</span>100M, 200M, 300M...<span class="token entity" title="\&quot;">\"</span>)"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-C string	container name"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-I string	image name"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-V string	volume"</span>
+	<span class="token builtin class-name">echo</span> <span class="token string">"		-P string	program to run in container"</span>
+
+	<span class="token builtin class-name">return</span> <span class="token number">0</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">if</span> <span class="token builtin class-name">test</span> <span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">whoami</span><span class="token variable">)</span></span>"</span> <span class="token operator">!=</span> root
+<span class="token keyword">then</span>
+	usage
+	<span class="token builtin class-name">exit</span> -1
+<span class="token keyword">fi</span>
+
+<span class="token keyword">while</span> <span class="token builtin class-name">getopts</span> c:m:C:I:V:P: option
+<span class="token keyword">do</span>
+	<span class="token keyword">case</span> <span class="token string">"<span class="token variable">$option</span>"</span>
+	<span class="token keyword">in</span>
+		c<span class="token punctuation">)</span> <span class="token assign-left variable">cmd</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		m<span class="token punctuation">)</span> <span class="token assign-left variable">memory</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		C<span class="token punctuation">)</span> <span class="token assign-left variable">container</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		I<span class="token punctuation">)</span> <span class="token assign-left variable">image</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		V<span class="token punctuation">)</span> <span class="token assign-left variable">volume</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		P<span class="token punctuation">)</span> <span class="token assign-left variable">program</span><span class="token operator">=</span><span class="token variable">$OPTARG</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+		<span class="token punctuation">\</span>?<span class="token punctuation">)</span> usage
+		    <span class="token builtin class-name">exit</span> -2<span class="token punctuation">;</span><span class="token punctuation">;</span>
+	<span class="token keyword">esac</span>
+<span class="token keyword">done</span>
+
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">cmd</span><span class="token operator">=</span><span class="token variable">$cmd</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">memory</span><span class="token operator">=</span><span class="token variable">$memory</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">container</span><span class="token operator">=</span><span class="token variable">$container</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">image</span><span class="token operator">=</span><span class="token variable">$image</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">volume</span><span class="token operator">=</span><span class="token variable">$volume</span>
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">program</span><span class="token operator">=</span><span class="token variable">$program</span>
+
+unshare --uts --mount --pid --fork ./container.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/23/shell/docker_shell/" rel="prev" title="docker_shell">
+                  <i class="fa fa-chevron-left"></i> docker_shell
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/27/shell/history/" rel="next" title="history">
+                  history <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

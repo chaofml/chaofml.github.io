@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="有幸安装成功了一次greenplum，便想测试一下已安装的机器的性能。故如下对比。gp的版本一致。安装的方式，也是参照相同的安装方式。 性能对比，结论：插入性能相差不大，但是在计算最值，速度相差有10倍以上。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="物理资源性能对比">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/08/31/pg/%E7%89%A9%E7%90%86%E8%B5%84%E6%BA%90%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="有幸安装成功了一次greenplum，便想测试一下已安装的机器的性能。故如下对比。gp的版本一致。安装的方式，也是参照相同的安装方式。 性能对比，结论：插入性能相差不大，但是在计算最值，速度相差有10倍以上。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-31T14:35:00.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.000Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="pg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/08/31/pg/%E7%89%A9%E7%90%86%E8%B5%84%E6%BA%90%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>物理资源性能对比 | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#72%E6%A0%B8"><span class="nav-number">1.1.</span> <span class="nav-text">72核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%E6%A0%B8"><span class="nav-number">1.2.</span> <span class="nav-text">4核</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gpstate"><span class="nav-number">2.</span> <span class="nav-text">gpstate</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/08/31/pg/%E7%89%A9%E7%90%86%E8%B5%84%E6%BA%90%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          物理资源性能对比
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-31 14:35:00" itemprop="dateCreated datePublished" datetime="2021-08-31T14:35:00+00:00">2021-08-31</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>有幸安装成功了一次greenplum，便想测试一下已安装的机器的性能。故如下对比。gp的版本一致。安装的方式，也是参照相同的安装方式。</p>
+<p>性能对比，结论：插入性能相差不大，但是在计算最值，速度相差有10倍以上。</p>
+<a id="more"></a>
+
+<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><h3 id="72核"><a href="#72核" class="headerlink" title="72核"></a>72核</h3><p>机器的具体配置：</p>
+<blockquote>
+<p>uname -r<br>3.10.0-957.el7.x86_64<br>uname -a<br>Linux sz53011 3.10.0-957.el7.x86_64 #1 SMP Thu Oct 4 20:48:51 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</p>
+</blockquote>
+<p>6个固态硬盘，24个seg</p>
+<p>内存</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th></th>
+<th>total</th>
+<th>used</th>
+<th>free</th>
+<th>shared</th>
+<th>buff/cache</th>
+<th>available</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>Mem:</td>
+<td>377G</td>
+<td>9.0G</td>
+<td>197G</td>
+<td>6.2G</td>
+<td>171G</td>
+<td>360G</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Swap:</td>
+<td>31G</td>
+<td>64M</td>
+<td>31G</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li>创建表，并插入1千万数据</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> test_demo_gen <span class="token keyword">WITH</span> <span class="token punctuation">(</span>
+    APPENDONLY <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+    COMPRESSLEVEL <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    ORIENTATION <span class="token operator">=</span> <span class="token keyword">COLUMN</span><span class="token punctuation">,</span>
+    COMPRESSTYPE <span class="token operator">=</span> ZLIB
+<span class="token punctuation">)</span> <span class="token keyword">AS</span> 
+<span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd
+<span class="token keyword">DISTRIBUTED</span> <span class="token keyword">BY</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">SELECT 10000000
+Time: 10392.693 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>插入上亿数据测试</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> test_demo_gen <span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">100000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">ERROR:  Canceling query because of high VMEM usage. Used: 7332MB, available 814MB, red zone: 7372MB (runaway_cleaner.c:202)  (seg10 slice1 10.181.86.12:55010 pid&#x3D;6174) (runaway_cleaner.c:202)
+Time: 19431.844 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<ul>
+<li>插入1千万数据</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> test_demo_gen <span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">INSERT 0 10000000
+Time: 10275.093 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>查找性能</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">max</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">min</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">max</span><span class="token punctuation">(</span>rnd<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">min</span><span class="token punctuation">(</span>rnd<span class="token punctuation">)</span> <span class="token keyword">from</span> test_demo_gen<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">  count   |   max    | min |               max                |               min                
+----------+----------+-----+----------------------------------+----------------------------------
+ 20000000 | 10000000 |   1 | d684e87496865c1d12093354e9e96b68 | 5ba528f623dc140aa826324dede1f3d9
+(1 row)
+
+Time: 2511.471 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="4核"><a href="#4核" class="headerlink" title="4核"></a>4核</h3><p>机器配置</p>
+<p>4 vCPU 16 GiB （I/O优化）</p>
+<p>ecs.g5.xlarge   50Mbps （峰值）</p>
+<p>4个seg，共用一个固态硬盘</p>
+<ul>
+<li>创建表，并插入1千万数据</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> test_demo_gen <span class="token keyword">WITH</span> <span class="token punctuation">(</span>
+    APPENDONLY <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+    COMPRESSLEVEL <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span>
+    ORIENTATION <span class="token operator">=</span> <span class="token keyword">COLUMN</span><span class="token punctuation">,</span>
+    COMPRESSTYPE <span class="token operator">=</span> ZLIB
+<span class="token punctuation">)</span> <span class="token keyword">AS</span> 
+
+
+<span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd
+
+<span class="token keyword">DISTRIBUTED</span> <span class="token keyword">BY</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">SELECT 10000000
+Time: 14633.800 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>插入速度，相差不大。</p>
+<ul>
+<li>插入上亿数据测试</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> test_demo_gen <span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">100000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">ERROR:  Canceling query because of high VMEM usage. Used: 7379MB, available 813MB, red zone: 7372MB (runaway_cleaner.c:202)  (seg2 slice1 172.19.241.151:55002 pid&#x3D;9274) (runaway_cleaner.c:202)
+Time: 27627.163 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>一样会报错，可能是执行的sql内容太大，耗费内存。</p>
+<ul>
+<li>插入1千万数据</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> test_demo_gen <span class="token keyword">select</span> generate_series<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10000000</span><span class="token punctuation">)</span> <span class="token keyword">as</span> id <span class="token punctuation">,</span>md5<span class="token punctuation">(</span>random<span class="token punctuation">(</span><span class="token punctuation">)</span>::<span class="token keyword">text</span><span class="token punctuation">)</span> <span class="token keyword">as</span> rnd<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">INSERT 0 10000000
+Time: 14438.655 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>性能相差不大。略多一点</p>
+<ul>
+<li>查找性能</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token function">count</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">max</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">min</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">max</span><span class="token punctuation">(</span>rnd<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">min</span><span class="token punctuation">(</span>rnd<span class="token punctuation">)</span> <span class="token keyword">from</span> test_demo_gen<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<pre class="line-numbers language-none"><code class="language-none">  count   |   max    | min |               max                |               min                
+----------+----------+-----+----------------------------------+----------------------------------
+ 20000000 | 10000000 |   1 | e91532e79ea5fb8dc0edac23fb3f0e23 | 5b1e2a40c78aedc9bd5412a8b92588aa
+(1 row)
+Time: 33523.427 ms<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>速度相差10倍以上，貌似差别可能是在cpu上，也有可能在固态硬盘、或者节点上。</p>
+<h2 id="gpstate"><a href="#gpstate" class="headerlink" title="gpstate"></a>gpstate</h2><p>72核如下</p>
+<pre class="line-numbers language-none"><code class="language-none">-Starting gpstate with args: 
+-local Greenplum Version: &#39;postgres (Greenplum Database) 6.8.1 build commit:7118e8aca825b743dd9477d19406fcc06fa53852&#39;
+-master Greenplum Version: &#39;PostgreSQL 9.4.24 (Greenplum Database 6.8.1 build commit:7118e8aca825b743dd9477d19406fcc06fa53852) on x86_64-unknown-linux-gnu, compiled by gcc (GCC) 6.4.0, 64-bit compiled on Jun 11 2020 03:23:56&#39;
+-Obtaining Segment details from master...
+-Gathering data from segments...
+-Greenplum instance status summary
+-----------------------------------------------------
+-   Master instance                                &#x3D; Active
+-   Master standby                                 &#x3D; No master standby configured
+-   Total segment instance count from metadata     &#x3D; 24
+-----------------------------------------------------
+-   Primary Segment Status
+-----------------------------------------------------
+-   Total primary segments                         &#x3D; 24
+-   Total primary segment valid (at master)        &#x3D; 24
+-   Total primary segment failures (at master)     &#x3D; 0
+-   Total number of postmaster.pid files missing   &#x3D; 0
+-   Total number of postmaster.pid files found     &#x3D; 24
+-   Total number of postmaster.pid PIDs missing    &#x3D; 0
+-   Total number of postmaster.pid PIDs found      &#x3D; 24
+-   Total number of &#x2F;tmp lock files missing        &#x3D; 0
+-   Total number of &#x2F;tmp lock files found          &#x3D; 24
+-   Total number postmaster processes missing      &#x3D; 0
+-   Total number postmaster processes found        &#x3D; 24
+-----------------------------------------------------
+-   Mirror Segment Status
+-----------------------------------------------------
+-   Mirrors not configured on this array
+-----------------------------------------------------<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>插入速度，其实相差不大，都会遇到耗费大内存的sql，跑不动的现象。但是，在计算性能上相差比较大，可能受节点数、硬盘数、cpu的影响。不确定是哪方面的原因。</p>
+<p>之所以，插入性能相差不大，难道是因为插入的时候，只有主节点在工作？貌似不似。</p>
+<p>故猜测，可能是因为cpu的原因。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pg/" rel="tag"># pg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/26/pg/%E8%A1%A8%E5%A2%9E%E5%8A%A0%E5%AD%97%E6%AE%B5/" rel="prev" title="表增加字段">
+                  <i class="fa fa-chevron-left"></i> 表增加字段
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/31/pg/%E5%AE%89%E8%A3%85gp/" rel="next" title="安装gp">
+                  安装gp <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>

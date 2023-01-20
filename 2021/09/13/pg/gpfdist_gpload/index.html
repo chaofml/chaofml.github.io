@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="使用外部表的形式来高速加载数据，避免直接使用copy命令时，只有master节点，在解析、工作。从而提高数据的加载速度。重点掌握该工具，来达到快速的加载数据。 gpfdist基于libevent的高速并行文件加载工具；充分利用多节点优势，并行加载；加载性能非常好；可水平扩展。 实践过程中，利用域名解析，如将运行gpfdist的机器的ip加入到本地域名中etl。好处是：外部表的定义不用更改，可以方便">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gpfdist">
+<meta property="og:url" content="https://blog.chaofml.cn/2021/09/13/pg/gpfdist_gpload/index.html">
+<meta property="og:site_name" content="超凡魔力">
+<meta property="og:description" content="使用外部表的形式来高速加载数据，避免直接使用copy命令时，只有master节点，在解析、工作。从而提高数据的加载速度。重点掌握该工具，来达到快速的加载数据。 gpfdist基于libevent的高速并行文件加载工具；充分利用多节点优势，并行加载；加载性能非常好；可水平扩展。 实践过程中，利用域名解析，如将运行gpfdist的机器的ip加入到本地域名中etl。好处是：外部表的定义不用更改，可以方便">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-09-13T17:02:24.000Z">
+<meta property="article:modified_time" content="2023-01-20T05:51:58.000Z">
+<meta property="article:author" content="chaofml">
+<meta property="article:tag" content="greenplum">
+<meta property="article:tag" content="pg">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.chaofml.cn/2021/09/13/pg/gpfdist_gpload/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>gpfdist | 超凡魔力</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">超凡魔力</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">参考资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gpfdist%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">gpfdist加载数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gpload%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">gpload加载数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E9%81%93%E5%8A%A0%E8%BD%BD%EF%BC%8C%E5%AE%9E%E7%8E%B0%E4%B8%8D%E8%90%BD%E7%9B%98"><span class="nav-number">4.</span> <span class="nav-text">管道加载，实现不落盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gpfdist%E5%A4%9A%E5%AE%9E%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">gpfdist多实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpfdist"><span class="nav-number">5.1.</span> <span class="nav-text">gpfdist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpload"><span class="nav-number">5.2.</span> <span class="nav-text">gpload</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BDjson%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">加载json文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mapping%E5%8A%A0%E8%BD%BD"><span class="nav-number">7.</span> <span class="nav-text">mapping加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gpload%E5%8A%A0%E8%BD%BDjson"><span class="nav-number">8.</span> <span class="nav-text">gpload加载json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">9.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpfdist-1"><span class="nav-number">9.1.</span> <span class="nav-text">gpfdist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpload-1"><span class="nav-number">9.2.</span> <span class="nav-text">gpload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%87%BA%E9%94%99%E7%9A%84%E4%B8%80%E4%BA%9B%E9%80%89%E9%A1%B9"><span class="nav-number">9.2.1.</span> <span class="nav-text">关于出错的一些选项</span></a></li></ol></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">chaofml</p>
+  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">369</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">99</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2021/09/13/pg/gpfdist_gpload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="chaofml">
+      <meta itemprop="description" content="思绪偶尔会在这里停留">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="超凡魔力">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          gpfdist
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-13 17:02:24" itemprop="dateCreated datePublished" datetime="2021-09-13T17:02:24+00:00">2021-09-13</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>使用外部表的形式来高速加载数据，避免直接使用<code>copy</code>命令时，只有master节点，在解析、工作。从而提高数据的加载速度。<strong>重点掌握该工具，来达到快速的加载数据。</strong></p>
+<p>gpfdist基于libevent的高速并行文件加载工具；充分利用多节点优势，并行加载；加载性能非常好；可水平扩展。</p>
+<p>实践过程中，利用域名解析，如将运行gpfdist的机器的ip加入到本地域名中<code>etl</code>。好处是：外部表的定义不用更改，可以方便的指向真实ip。</p>
+<a id="more"></a>
+
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><p>官方手册</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gpdb.docs.pivotal.io/6-17/utility_guide/ref/gpload.html">gpload</a></li>
+<li><a target="_blank" rel="noopener" href="https://gpdb.docs.pivotal.io/6-17/utility_guide/ref/gpfdist.html">gpfdist</a></li>
+</ul>
+<p>以下内容也有gpload方面内容，本文并没有参考。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xibuhaohao/p/11127735.html">https://www.cnblogs.com/xibuhaohao/p/11127735.html</a></li>
+</ul>
+<h2 id="gpfdist加载数据"><a href="#gpfdist加载数据" class="headerlink" title="gpfdist加载数据"></a>gpfdist加载数据</h2><ul>
+<li><p>数据源</p>
+<p><code>cat &gt; demo.txt &lt;&lt;EOL</code></p>
+</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">a|b|c
+d|e|f<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<ul>
+<li>先创建正式表</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> demo<span class="token punctuation">(</span>c1 <span class="token keyword">text</span><span class="token punctuation">,</span>c2 <span class="token keyword">text</span><span class="token punctuation">,</span>c3 <span class="token keyword">text</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>再创建外部表，导入数据</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> external <span class="token keyword">table</span> demo_ext <span class="token punctuation">(</span><span class="token operator">like</span> demo<span class="token punctuation">)</span> LOCATION <span class="token punctuation">(</span><span class="token string">'gpfdist://etl:8080/demo.txt'</span> <span class="token punctuation">)</span> FORMAT <span class="token string">'TEXT'</span> <span class="token punctuation">(</span><span class="token keyword">DELIMITER</span> <span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>启动服务</li>
+</ul>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gpfdist <span class="token operator">></span> gpfdist.log
+
+<span class="token comment"># 测试连通性，应该能看到demo的文本    特殊的请求头，才会有正确的返回</span>
+<span class="token function">curl</span> -H <span class="token string">"X-GP-PROTO: 0"</span> etl:8080/demo.txt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>执行外部表操作</p>
+<ul>
+<li>查询外部表</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> demo_ext<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li><p>利用外部表加载数据</p>
+<blockquote>
+<p>跟copy命令一样，重复执行，就会重复加载。</p>
+</blockquote>
+</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> demo <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> demo_ext<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<h2 id="gpload加载数据"><a href="#gpload加载数据" class="headerlink" title="gpload加载数据"></a>gpload加载数据</h2><p>gpload对gpfdist封装增加高级特性：1、UPSERT。2、Transform。3、多gpfdist实例。<br>基于python实现，跨平台，用于与第三方ETL工具集成。</p>
+<p>不需要自己手动启动<code>gpfdist</code>服务，会自动的创建服务、外部表等。</p>
+<p>步骤：</p>
+<ul>
+<li>数据同上。</li>
+<li>创建表</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">create table testgpload(c1 text,c2 text,c3 text);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>配置文件</li>
+</ul>
+<p>cat &gt; demo.yaml &lt;&lt;EOL</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">VERSION</span><span class="token punctuation">:</span> 1.0.0.1
+<span class="token key atrule">DATABASE</span><span class="token punctuation">:</span> gpdb
+<span class="token key atrule">USER</span><span class="token punctuation">:</span> gpadmin
+<span class="token key atrule">HOST</span><span class="token punctuation">:</span> etl
+<span class="token key atrule">PORT</span><span class="token punctuation">:</span> <span class="token number">5432</span>
+<span class="token key atrule">GPLOAD</span><span class="token punctuation">:</span>
+  <span class="token key atrule">INPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+      <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+         <span class="token punctuation">-</span> demo.txt
+  <span class="token punctuation">-</span> <span class="token key atrule">FORMAT</span><span class="token punctuation">:</span> text
+  <span class="token punctuation">-</span> <span class="token key atrule">DELIMITER</span><span class="token punctuation">:</span> <span class="token string">'|'</span>
+  <span class="token key atrule">OUTPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">TABLE</span><span class="token punctuation">:</span> testgpload
+  <span class="token punctuation">-</span> <span class="token key atrule">MODE</span><span class="token punctuation">:</span> insert<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>加载命令</li>
+</ul>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gpload -f demo.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>日志</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token comment"># FILE跟SOURCE的级别问题</span>
+<span class="token number">2021</span>-09-13 <span class="token number">17</span>:40:51<span class="token operator">|</span>ERROR<span class="token operator">|</span>unexpected key: <span class="token string">"file"</span>
+<span class="token comment"># 文件不存在</span>
+<span class="token number">2021</span>-09-13 <span class="token number">17</span>:42:08<span class="token operator">|</span>INFO<span class="token operator">|</span>setting schema <span class="token string">'yunchou'</span> <span class="token keyword">for</span> table <span class="token string">'testgpload'</span>
+<span class="token number">2021</span>-09-13 <span class="token number">17</span>:42:08<span class="token operator">|</span>INFO<span class="token operator">|</span>started gpfdist -p <span class="token number">8000</span> -P <span class="token number">9000</span> -f <span class="token string">"demo.txt"</span> -t <span class="token number">30</span>
+<span class="token number">2021</span>-09-13 <span class="token number">17</span>:42:09<span class="token operator">|</span>ERROR<span class="token operator">|</span>ERROR:  http response code <span class="token number">404</span> from gpfdist <span class="token punctuation">(</span>gpfdist://szc49030:8000/demo.txt<span class="token punctuation">)</span>: HTTP/1.0 <span class="token number">404</span> <span class="token function">file</span> not found  <span class="token punctuation">(</span>seg0 slice1 <span class="token number">10.172</span>.49.30:55000 <span class="token assign-left variable">pid</span><span class="token operator">=</span><span class="token number">87876</span><span class="token punctuation">)</span>
+<span class="token comment"># 正常结果</span>
+<span class="token number">2021</span>-09-13 <span class="token number">17</span>:45:51<span class="token operator">|</span>INFO<span class="token operator">|</span>gpload succeeded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="管道加载，实现不落盘"><a href="#管道加载，实现不落盘" class="headerlink" title="管道加载，实现不落盘"></a>管道加载，实现不落盘</h2><p>使用管道加载，实现不落盘的加载数据。</p>
+<p>核心即管道文件。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">mkfifo</span>  mypipe<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>创建外部表，文件选择管道文件。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> external <span class="token keyword">table</span> demo_pipe <span class="token punctuation">(</span><span class="token operator">like</span> demo<span class="token punctuation">)</span> LOCATION <span class="token punctuation">(</span><span class="token string">'gpfdist://etl:8080/mypipe'</span> <span class="token punctuation">)</span> FORMAT <span class="token string">'TEXT'</span> <span class="token punctuation">(</span><span class="token keyword">DELIMITER</span> <span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>下面的命令会阻塞，直到有数据进来。(会一直卡在那，直到有数据进来，中间不会异常退出)</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> demo_pipe<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>将数据写入到管道中。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">cat</span> demo.txt <span class="token operator">></span> mypipe<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>在真实的场景中，可以用其他语言或方式，往管道里面写文件，然后从管道里面读内容，写入到表中。</p>
+<p>注意事项</p>
+<ul>
+<li><p>严格遵循操作管道文件的时序</p>
+</li>
+<li><p>确保管道不会被其它进程意外使用</p>
+</li>
+<li><p>对同一个管道不支持并发访问</p>
+</li>
+</ul>
+<h2 id="gpfdist多实例"><a href="#gpfdist多实例" class="headerlink" title="gpfdist多实例"></a>gpfdist多实例</h2><h3 id="gpfdist"><a href="#gpfdist" class="headerlink" title="gpfdist"></a>gpfdist</h3><p>gpfdist采用的是基于libevent的单进程单线程的工作模式，尽管可以最大限度发挥单个CPU核的最大性能，但是当单个CPU核的加载速度无法满足实际需求时，如何利用多CPU，甚至多机进行并行加载?使用gpfdist来实现，水平扩展。</p>
+<p>核心：通过外表的location中，指定多个gpfdist的url地址。</p>
+<p>下面的3个服务是相互独立的进程，可以分布在不同的机器上，也可以布在同一个机器上。</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell"><span class="token function">nohup</span> gpfdist -p <span class="token number">8081</span> -d /tmp/data1 <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">></span>gpfdist_8081.log <span class="token operator">&amp;</span>
+<span class="token function">nohup</span> gpfdist -p <span class="token number">8082</span> -d /tmp/data2 <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">></span>gpfdist_8082.log <span class="token operator">&amp;</span>
+<span class="token function">nohup</span> gpfdist -p <span class="token number">8083</span> -d /tmp/data3 <span class="token operator"><span class="token file-descriptor important">2</span>></span><span class="token file-descriptor important">&amp;1</span> <span class="token operator">></span>gpfdist_8083.log <span class="token operator">&amp;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>备注：</p>
+<p>-p，指定端口。</p>
+<p>-d，指定数据目录。</p>
+<ul>
+<li>创建目标表</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> <span class="token keyword">table</span> demo <span class="token punctuation">(</span>c1 <span class="token keyword">text</span>， c2 <span class="token keyword">text</span>， c3 <span class="token keyword">text</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>创建外部表，增加多个url</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> external <span class="token keyword">table</span> demo_ext <span class="token punctuation">(</span><span class="token operator">like</span> demo<span class="token punctuation">)</span> LOCATION <span class="token punctuation">(</span>
+    <span class="token string">'gpfdist://etl:8081/a.txt'</span><span class="token punctuation">,</span>
+    <span class="token string">'gpfdist://etl:8082/b.txt'</span><span class="token punctuation">,</span>
+    <span class="token string">'gpfdist://etl:8083/c.txt'</span>
+<span class="token punctuation">)</span> FORMAT <span class="token string">'TEXT'</span> <span class="token punctuation">(</span><span class="token keyword">DELIMITER</span> <span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ul>
+<li>查询外部表:</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> demo_ext<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ul>
+<li>加载数据:</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">insert</span> <span class="token keyword">into</span> demo <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> demo_ext<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h3 id="gpload"><a href="#gpload" class="headerlink" title="gpload"></a>gpload</h3><p>指定多个source配置。只能在单个物理机上。</p>
+<p>cat &gt; multi.yaml &lt;&lt;EOL</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">VERSION</span><span class="token punctuation">:</span> 1.0.0.1
+<span class="token key atrule">DATABASE</span><span class="token punctuation">:</span> gpdb
+<span class="token key atrule">USER</span><span class="token punctuation">:</span> gpadmin
+<span class="token key atrule">HOST</span><span class="token punctuation">:</span> etl
+<span class="token key atrule">PORT</span><span class="token punctuation">:</span> <span class="token number">5432</span>
+<span class="token key atrule">GPLOAD</span><span class="token punctuation">:</span>
+  <span class="token key atrule">INPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+      <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+         <span class="token punctuation">-</span> demo.txt
+  <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+      <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+         <span class="token punctuation">-</span> demo.txt
+  <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+      <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+         <span class="token punctuation">-</span> demo.txt
+  <span class="token punctuation">-</span> <span class="token key atrule">FORMAT</span><span class="token punctuation">:</span> text
+  <span class="token punctuation">-</span> <span class="token key atrule">DELIMITER</span><span class="token punctuation">:</span> <span class="token string">'|'</span>
+  <span class="token key atrule">OUTPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">TABLE</span><span class="token punctuation">:</span> testgpload
+  <span class="token punctuation">-</span> <span class="token key atrule">MODE</span><span class="token punctuation">:</span> insert<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>加载数据</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gpload -f multi.yaml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p>多实例总结：</p>
+<ul>
+<li>gpfdist可支持水平扩展</li>
+<li>gpload不支持在多机上启动gpfdist</li>
+<li>当加载瓶颈是网络带宽时,多实例不会改善性能</li>
+<li>当加载瓶颈为磁盘IO时，多gpfdist实例反而会导致性能下降</li>
+</ul>
+<h2 id="加载json文件"><a href="#加载json文件" class="headerlink" title="加载json文件"></a>加载json文件</h2><ul>
+<li>创建外部表</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">create</span> external <span class="token keyword">table</span> ext_json <span class="token punctuation">(</span><span class="token keyword">data</span> json<span class="token punctuation">)</span> location <span class="token punctuation">(</span><span class="token string">'gpfdist://etl:8080/sample.json'</span><span class="token punctuation">)</span> format <span class="token string">'text'</span> <span class="token punctuation">(</span><span class="token keyword">ESCAPE</span> E<span class="token string">'\x1E'</span> DELIMITERE <span class="token string">'\x1F'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>由于json数据，只有1列，故<code>DELIMITERE</code>可以关闭，这里用的是不存在的字符<code>\x1F</code>，另外，json里面有转义，但是我们不需要对其进行解析，也关闭，用到不存在的字符<code>\x1E</code>。</p>
+<ul>
+<li>查看外部表</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> <span class="token operator">*</span><span class="token keyword">from</span> ext_json<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>转换数据，使用pg自带的函数，能完成数据的解析。</p>
+<h2 id="mapping加载"><a href="#mapping加载" class="headerlink" title="mapping加载"></a>mapping加载</h2><p>增加了列属性，以及映射。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">VERSION</span><span class="token punctuation">:</span> 1.0.0.1
+<span class="token key atrule">DATABASE</span><span class="token punctuation">:</span> gpdb
+<span class="token key atrule">USER</span><span class="token punctuation">:</span> gpadmin
+<span class="token key atrule">HOST</span><span class="token punctuation">:</span> etl
+<span class="token key atrule">PORT</span><span class="token punctuation">:</span> <span class="token number">5432</span>
+<span class="token key atrule">GPLOAD</span><span class="token punctuation">:</span>
+  <span class="token key atrule">INPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+      <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+         <span class="token punctuation">-</span> demo.txt
+  <span class="token punctuation">-</span> <span class="token key atrule">FORMAT</span><span class="token punctuation">:</span> csv
+  <span class="token punctuation">-</span> <span class="token key atrule">COLUMNS</span><span class="token punctuation">:</span> 
+    <span class="token punctuation">-</span> <span class="token key atrule">col1</span><span class="token punctuation">:</span> int
+    <span class="token punctuation">-</span> <span class="token key atrule">col2</span><span class="token punctuation">:</span> decimal(5<span class="token punctuation">,</span>2)
+  <span class="token key atrule">OUTPUT</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> <span class="token key atrule">TABLE</span><span class="token punctuation">:</span> testgpload
+  <span class="token punctuation">-</span> <span class="token key atrule">MODE</span><span class="token punctuation">:</span> insert
+  <span class="token punctuation">-</span> <span class="token key atrule">MAPPING</span><span class="token punctuation">:</span>
+      <span class="token key atrule">id</span><span class="token punctuation">:</span> col1
+      <span class="token key atrule">value</span><span class="token punctuation">:</span> (col2 <span class="token punctuation">-</span> 32) * 5 / 9
+      <span class="token key atrule">updated</span><span class="token punctuation">:</span> now()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>总结：</p>
+<ul>
+<li>gpload通过mapping实现数据加工</li>
+<li>mapping可以为任何合法的表达式(expression)</li>
+<li>insert和merge模式都支持</li>
+</ul>
+<h2 id="gpload加载json"><a href="#gpload加载json" class="headerlink" title="gpload加载json"></a>gpload加载json</h2><p>跟mapping很像。</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml">VERSION<span class="token punctuation">:</span>1.0.0.1
+<span class="token key atrule">DATABASE</span><span class="token punctuation">:</span> test
+<span class="token key atrule">USER</span><span class="token punctuation">:</span> gpadmin
+<span class="token key atrule">HOST</span><span class="token punctuation">:</span> mdw
+PORT<span class="token punctuation">:</span><span class="token number">5432</span>
+<span class="token key atrule">GPLOAD</span><span class="token punctuation">:</span>
+  <span class="token key atrule">INPUT</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+        <span class="token key atrule">FILE</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> prize.jsonl
+    <span class="token punctuation">-</span> <span class="token key atrule">FORMAT</span><span class="token punctuation">:</span> text
+    <span class="token punctuation">-</span> <span class="token key atrule">DELIMITER</span><span class="token punctuation">:</span> E'\x1F'
+    <span class="token punctuation">-</span> <span class="token key atrule">ESCAPE</span><span class="token punctuation">:</span> E'\x1E'
+    <span class="token punctuation">-</span> <span class="token key atrule">COLUMNS</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">data</span><span class="token punctuation">:</span> json
+  <span class="token key atrule">OUTPUT</span><span class="token punctuation">:</span>
+   <span class="token punctuation">-</span> <span class="token key atrule">TABLE</span><span class="token punctuation">:</span> prize
+   <span class="token punctuation">-</span> <span class="token key atrule">MODE</span><span class="token punctuation">:</span> insert
+   <span class="token punctuation">-</span> <span class="token key atrule">MAPPING</span><span class="token punctuation">:</span>
+       <span class="token key atrule">year</span><span class="token punctuation">:</span> (data<span class="token punctuation">-</span><span class="token punctuation">></span><span class="token punctuation">></span>'year')<span class="token punctuation">:</span><span class="token punctuation">:</span>int
+       <span class="token key atrule">category</span><span class="token punctuation">:</span> data<span class="token punctuation">-</span><span class="token punctuation">></span><span class="token punctuation">></span>'category'
+       <span class="token key atrule">first_name</span><span class="token punctuation">:</span> json_array_elements(data<span class="token punctuation">-</span><span class="token punctuation">></span>'laureates')<span class="token punctuation">:</span><span class="token punctuation">:</span>json<span class="token punctuation">-</span><span class="token punctuation">></span><span class="token punctuation">></span>'firstname'
+       <span class="token key atrule">surname</span><span class="token punctuation">:</span> json_array_elements(data<span class="token punctuation">-</span><span class="token punctuation">></span>'laureates')<span class="token punctuation">:</span><span class="token punctuation">:</span>json<span class="token punctuation">-</span><span class="token punctuation">></span><span class="token punctuation">></span>'surname'<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<hr>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="gpfdist-1"><a href="#gpfdist-1" class="headerlink" title="gpfdist"></a>gpfdist</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gpfdist <span class="token punctuation">[</span>-d directory<span class="token punctuation">]</span> <span class="token punctuation">[</span>-p http_port<span class="token punctuation">]</span> <span class="token punctuation">[</span>-P last_http_port<span class="token punctuation">]</span> <span class="token punctuation">[</span>-l log_file<span class="token punctuation">]</span>
+   <span class="token punctuation">[</span>-t timeout<span class="token punctuation">]</span> <span class="token punctuation">[</span>-S<span class="token punctuation">]</span> <span class="token punctuation">[</span>-w time<span class="token punctuation">]</span> <span class="token punctuation">[</span>-v <span class="token operator">|</span> -V<span class="token punctuation">]</span> <span class="token punctuation">[</span>-s<span class="token punctuation">]</span> <span class="token punctuation">[</span>-m max_length<span class="token punctuation">]</span>
+   <span class="token punctuation">[</span>--ssl certificate_path <span class="token punctuation">[</span>--sslclean wait_time<span class="token punctuation">]</span> <span class="token punctuation">]</span>
+   <span class="token punctuation">[</span>-c config.yml<span class="token punctuation">]</span>
+
+gpfdist -? <span class="token operator">|</span> --help 
+
+gpfdist --version<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>示例</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">
+gpfdist -d /var/load_files -p <span class="token number">8081</span> <span class="token operator">&amp;</span>
+
+gpfdist -d /var/load_files -p <span class="token number">8081</span> -l /home/gpadmin/log <span class="token operator">&amp;</span>
+
+<span class="token comment">#使用kill 杀掉后台进程</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h3 id="gpload-1"><a href="#gpload-1" class="headerlink" title="gpload"></a>gpload</h3><pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">gpload -f control_file <span class="token punctuation">[</span>-l log_file<span class="token punctuation">]</span> <span class="token punctuation">[</span>-h hostname<span class="token punctuation">]</span> <span class="token punctuation">[</span>-p port<span class="token punctuation">]</span> 
+   <span class="token punctuation">[</span>-U username<span class="token punctuation">]</span> <span class="token punctuation">[</span>-d database<span class="token punctuation">]</span> <span class="token punctuation">[</span>-W<span class="token punctuation">]</span> <span class="token punctuation">[</span>--gpfdist_timeout seconds<span class="token punctuation">]</span> 
+   <span class="token punctuation">[</span>--no_auto_trans<span class="token punctuation">]</span> <span class="token punctuation">[</span>--max_retries retry_times<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>-v <span class="token operator">|</span> -V<span class="token punctuation">]</span> <span class="token punctuation">[</span>-q<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token punctuation">[</span>-D<span class="token punctuation">]</span>
+
+gpload -? 
+
+gpload --version<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>yaml配置文件的语法</p>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token punctuation">---</span>
+<span class="token key atrule">VERSION</span><span class="token punctuation">:</span> 1.0.0.1
+<span class="token key atrule">DATABASE</span><span class="token punctuation">:</span> db_name
+<span class="token key atrule">USER</span><span class="token punctuation">:</span> db_username
+<span class="token key atrule">HOST</span><span class="token punctuation">:</span> master_hostname
+<span class="token key atrule">PORT</span><span class="token punctuation">:</span> master_port
+<span class="token key atrule">GPLOAD</span><span class="token punctuation">:</span>
+   <span class="token key atrule">INPUT</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">SOURCE</span><span class="token punctuation">:</span>
+         <span class="token key atrule">LOCAL_HOSTNAME</span><span class="token punctuation">:</span>
+           <span class="token punctuation">-</span> hostname_or_ip
+         <span class="token key atrule">PORT</span><span class="token punctuation">:</span> http_port
+       <span class="token punctuation">|</span> PORT_RANGE<span class="token punctuation">:</span> <span class="token punctuation">[</span>start_port_range<span class="token punctuation">,</span> end_port_range<span class="token punctuation">]</span>
+         <span class="token key atrule">FILE</span><span class="token punctuation">:</span> 
+           <span class="token punctuation">-</span> /path/to/input_file
+         <span class="token key atrule">SSL</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+         <span class="token key atrule">CERTIFICATES_PATH</span><span class="token punctuation">:</span> /path/to/certificates
+    <span class="token punctuation">-</span> <span class="token key atrule">FULLY_QUALIFIED_DOMAIN_NAME</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">COLUMNS</span><span class="token punctuation">:</span>
+           <span class="token punctuation">-</span> <span class="token key atrule">field_name</span><span class="token punctuation">:</span> data_type
+    <span class="token punctuation">-</span> <span class="token key atrule">TRANSFORM</span><span class="token punctuation">:</span> <span class="token string">'transformation'</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">TRANSFORM_CONFIG</span><span class="token punctuation">:</span> <span class="token string">'configuration-file-path'</span> 
+    <span class="token punctuation">-</span> <span class="token key atrule">MAX_LINE_LENGTH</span><span class="token punctuation">:</span> integer 
+    <span class="token punctuation">-</span> <span class="token key atrule">FORMAT</span><span class="token punctuation">:</span> text <span class="token punctuation">|</span> csv
+    <span class="token punctuation">-</span> <span class="token key atrule">DELIMITER</span><span class="token punctuation">:</span> <span class="token string">'delimiter_character'</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">ESCAPE</span><span class="token punctuation">:</span> 'escape_character' <span class="token punctuation">|</span> 'OFF'
+    <span class="token punctuation">-</span> <span class="token key atrule">NULL_AS</span><span class="token punctuation">:</span> <span class="token string">'null_string'</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">FILL_MISSING_FIELDS</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">FORCE_NOT_NULL</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">QUOTE</span><span class="token punctuation">:</span> <span class="token string">'csv_quote_character'</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">HEADER</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">ENCODING</span><span class="token punctuation">:</span> database_encoding
+    <span class="token punctuation">-</span> <span class="token key atrule">ERROR_LIMIT</span><span class="token punctuation">:</span> integer
+    <span class="token punctuation">-</span> <span class="token key atrule">LOG_ERRORS</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+   <span class="token key atrule">EXTERNAL</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">SCHEMA</span><span class="token punctuation">:</span> schema <span class="token punctuation">|</span> '%'
+   <span class="token key atrule">OUTPUT</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">TABLE</span><span class="token punctuation">:</span> schema.table_name
+    <span class="token punctuation">-</span> <span class="token key atrule">MODE</span><span class="token punctuation">:</span> insert <span class="token punctuation">|</span> update <span class="token punctuation">|</span> merge
+    <span class="token punctuation">-</span> <span class="token key atrule">MATCH_COLUMNS</span><span class="token punctuation">:</span>
+           <span class="token punctuation">-</span> target_column_name
+    <span class="token punctuation">-</span> <span class="token key atrule">UPDATE_COLUMNS</span><span class="token punctuation">:</span>
+           <span class="token punctuation">-</span> target_column_name
+    <span class="token punctuation">-</span> <span class="token key atrule">UPDATE_CONDITION</span><span class="token punctuation">:</span> <span class="token string">'boolean_condition'</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">MAPPING</span><span class="token punctuation">:</span>
+              <span class="token key atrule">target_column_name</span><span class="token punctuation">:</span> source_column_name <span class="token punctuation">|</span> 'expression'
+   <span class="token key atrule">PRELOAD</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">TRUNCATE</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">REUSE_TABLES</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+    <span class="token punctuation">-</span> <span class="token key atrule">STAGING_TABLE</span><span class="token punctuation">:</span> external_table_name
+    <span class="token punctuation">-</span> <span class="token key atrule">FAST_MATCH</span><span class="token punctuation">:</span> true <span class="token punctuation">|</span> false
+   <span class="token key atrule">SQL</span><span class="token punctuation">:</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">BEFORE</span><span class="token punctuation">:</span> <span class="token string">"sql_command"</span>
+    <span class="token punctuation">-</span> <span class="token key atrule">AFTER</span><span class="token punctuation">:</span> <span class="token string">"sql_command"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+<h4 id="关于出错的一些选项"><a href="#关于出错的一些选项" class="headerlink" title="关于出错的一些选项"></a>关于出错的一些选项</h4><ul>
+<li><p>FILL_MISSING_FIELDS </p>
+<p>可选的，默认是false。针对尾行不完整的场景。设置为true的时候，当读到不完整的行时，不存在的字段会被设置为<code>NULL</code>。</p>
+<p>感觉用处不大。错误的数据，肯定不希望用这种方式来加载进去。另外，如果确实存缺失的列，也可以自己重建表。</p>
+</li>
+<li><p>ERROR_LIMIT </p>
+<p>可选。当开启该功能时，加载数据时，错误会隔离到单行的错误。</p>
+<p>说直白点，设置了这个数字，即错误没有达到最大错误时，所有的正常数据都会被加载，错误的数据，可能会被记录下来。这个功能，还有有用的，针对局部错误的行。</p>
+</li>
+<li><p>LOG_ERRORS </p>
+<p>依赖前面<code>ERROR_LIMIT</code>设置。使用下面的方式，读到错误的日志。</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">gp_read_error_log<span class="token punctuation">(</span><span class="token string">'table_name'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/greenplum/" rel="tag"># greenplum</a>
+              <a href="/tags/pg/" rel="tag"># pg</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/10/pg/%E5%8F%96%E6%95%B0%E5%AE%9E%E6%88%98/" rel="prev" title="取数实战">
+                  <i class="fa fa-chevron-left"></i> 取数实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/14/other/es/" rel="next" title="es入门">
+                  es入门 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chaofml</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+</body>
+</html>
