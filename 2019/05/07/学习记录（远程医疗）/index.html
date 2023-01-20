@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="[TOC] 前端Ext行编辑器功能，动态设置，某列可编辑思路有两种，一种是在编辑前，获取editor，然后设置其 disabled属性，但是麻烦。 另外一种，即放在viewmodel中，通过绑定，来达到动态的设置效果。（多采取此类方法） viewModel设置： viewModel:&amp;#123; 	data:&amp;#123; 		selections:0, 		item_type:0 &#x2F;&#x2F;这一项需要动">
 <meta property="og:type" content="article">
@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://blog.chaofml.cn/2019/05/07/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E8%BF%9C%E7%A8%8B%E5%8C%BB%E7%96%97%EF%BC%89/img/1561019586941.png">
 <meta property="og:image" content="https://blog.chaofml.cn/2019/05/07/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E8%BF%9C%E7%A8%8B%E5%8C%BB%E7%96%97%EF%BC%89/img/1561024246876.png">
 <meta property="article:published_time" content="2019-05-07T12:12:00.000Z">
-<meta property="article:modified_time" content="2023-01-20T06:31:09.604Z">
+<meta property="article:modified_time" content="2023-01-20T06:37:17.491Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="个人博客、超凡魔力">
 <meta name="twitter:card" content="summary">
@@ -256,7 +256,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-01-20 06:31:09" itemprop="dateModified" datetime="2023-01-20T06:31:09+00:00">2023-01-20</time>
+        <time title="修改时间：2023-01-20 06:37:17" itemprop="dateModified" datetime="2023-01-20T06:37:17+00:00">2023-01-20</time>
       </span>
 
   

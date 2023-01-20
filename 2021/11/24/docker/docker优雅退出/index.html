@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="Docker中 shell 启动程序后优雅退出三种方式本文来自转载 2021-11-09 08:55·云技术趣谈 之前的文章介绍了如何让容器优雅退出，但如果我们是通过shell 的方式启动我们的应用，那么pid 为1的进程就是shell 进程，无法将 kill -15 信号传递给我们的业务程序，进而执行优雅退出。比如下面写法">
 <meta property="og:type" content="article">
@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.chaofml.cn/2021/11/24/docker/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA/docker%E4%BC%98%E9%9B%85%E9%80%80%E5%87%BA.assets/2d9c62f1b04c4e6fafeb8949de3c0daa.jfif">
 <meta property="article:published_time" content="2021-11-24T15:25:20.000Z">
-<meta property="article:modified_time" content="2023-01-20T06:31:09.511Z">
+<meta property="article:modified_time" content="2023-01-20T06:37:17.414Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="转载">
 <meta property="article:tag" content="docker">
@@ -246,7 +246,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-01-20 06:31:09" itemprop="dateModified" datetime="2023-01-20T06:31:09+00:00">2023-01-20</time>
+        <time title="修改时间：2023-01-20 06:37:17" itemprop="dateModified" datetime="2023-01-20T06:37:17+00:00">2023-01-20</time>
       </span>
 
   
