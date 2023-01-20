@@ -1,29 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
+  <meta charset="utf-8">
+  
 
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
-
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
-  </script>
-<meta name="description" content="PHP常用函数总结 数学函数1.abs(): 求绝对值$abs &#x3D; abs(-4.2); &#x2F;&#x2F;4.2 数字绝对值数字  2.ceil(): 进一法取整echo ceil(9.999); &#x2F;&#x2F; 10 浮点数进一取整  3.floor(): 舍去法取整echo floor(9.999); &#x2F;&#x2F; 9 浮点数直接舍去小数部分 4.fmod(): 浮点数取余">
+  
+  <title>PHP常用函数总结 | 超凡魔力</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="PHP常用函数总结 数学函数1.abs(): 求绝对值$abs &#x3D; abs(-4.2); &#x2F;&#x2F;4.2 数字绝对值数字  2.ceil(): 进一法取整echo ceil(9.999); &#x2F;&#x2F; 10 浮点数进一取整  3.floor(): 舍去法取整echo floor(9.999); &#x2F;&#x2F; 9 浮点数直接舍去小数部分 4.fmod(): 浮点数取余">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PHP常用函数总结">
 <meta property="og:url" content="https://blog.chaofml.cn/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/index.html">
@@ -31,260 +15,80 @@
 <meta property="og:description" content="PHP常用函数总结 数学函数1.abs(): 求绝对值$abs &#x3D; abs(-4.2); &#x2F;&#x2F;4.2 数字绝对值数字  2.ceil(): 进一法取整echo ceil(9.999); &#x2F;&#x2F; 10 浮点数进一取整  3.floor(): 舍去法取整echo floor(9.999); &#x2F;&#x2F; 9 浮点数直接舍去小数部分 4.fmod(): 浮点数取余">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-12-13T09:41:00.000Z">
-<meta property="article:modified_time" content="2023-01-20T06:37:17.471Z">
+<meta property="article:modified_time" content="2023-01-20T08:15:40.115Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="php">
 <meta name="twitter:card" content="summary">
-
-
-<link rel="canonical" href="https://blog.chaofml.cn/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/">
-
-
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-<title>PHP常用函数总结 | 超凡魔力</title>
   
+    <link rel="alternate" href="/atom.xml" title="超凡魔力" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
+<meta name="generator" content="Hexo 5.2.0"></head>
 
-
-  <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">超凡魔力</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://blog.chaofml.cn"></form>
+      </div>
     </div>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <h1 class="site-title">超凡魔力</h1>
-      <i class="logo-line"></i>
-    </a>
-      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-php常用函数" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" class="article-date">
+  <time datetime="2019-12-13T09:41:00.000Z" itemprop="datePublished">2019-12-13</time>
+</a>
+    
   </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-</div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">数学函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-abs-%E6%B1%82%E7%BB%9D%E5%AF%B9%E5%80%BC"><span class="nav-number">1.1.</span> <span class="nav-text">1.abs(): 求绝对值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-ceil-%E8%BF%9B%E4%B8%80%E6%B3%95%E5%8F%96%E6%95%B4"><span class="nav-number">1.2.</span> <span class="nav-text">2.ceil(): 进一法取整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-floor-%E8%88%8D%E5%8E%BB%E6%B3%95%E5%8F%96%E6%95%B4"><span class="nav-number">1.3.</span> <span class="nav-text">3.floor(): 舍去法取整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-fmod-%E6%B5%AE%E7%82%B9%E6%95%B0%E5%8F%96%E4%BD%99"><span class="nav-number">1.4.</span> <span class="nav-text">4.fmod(): 浮点数取余</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-pow-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%9A%84n%E6%AC%A1%E6%96%B9"><span class="nav-number">1.5.</span> <span class="nav-text">5.pow(): 返回数的n次方</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-round-%E6%B5%AE%E7%82%B9%E6%95%B0%E5%9B%9B%E8%88%8D%E4%BA%94%E5%85%A5"><span class="nav-number">1.6.</span> <span class="nav-text">6.round(): 浮点数四舍五入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-sqrt-%E6%B1%82%E5%B9%B3%E6%96%B9%E6%A0%B9"><span class="nav-number">1.7.</span> <span class="nav-text">7.sqrt(): 求平方根</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-max-%E6%B1%82%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">1.8.</span> <span class="nav-text">8.max(): 求最大值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-min-%E6%B1%82%E6%9C%80%E5%B0%8F%E5%80%BC"><span class="nav-number">1.9.</span> <span class="nav-text">9.min(): 求最小值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-mt-rand-%E6%9B%B4%E5%A5%BD%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%95%B0"><span class="nav-number">1.10.</span> <span class="nav-text">10.mt_rand(): 更好的随机数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-rand-%E9%9A%8F%E6%9C%BA%E6%95%B0-%E8%BE%93%E5%85%A5-%E6%9C%80%E5%B0%8F-%E6%9C%80%E5%A4%A7-%E8%BE%93%E5%87%BA-%E9%9A%8F%E6%9C%BA%E6%95%B0%E9%9A%8F%E6%9C%BA%E8%BF%94%E5%9B%9E%E8%8C%83%E5%9B%B4%E5%86%85%E7%9A%84%E5%80%BC"><span class="nav-number">1.11.</span> <span class="nav-text">11.rand(): 随机数 输入: 最小|最大, 输出: 随机数随机返回范围内的值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-pi-%E8%8E%B7%E5%8F%96%E5%9C%86%E5%91%A8%E7%8E%87%E5%80%BC"><span class="nav-number">1.12.</span> <span class="nav-text">12.pi(): 获取圆周率值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-trim-%E5%88%A0%E9%99%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%A4%E7%AB%AF%E7%9A%84%E7%A9%BA%E6%A0%BC%E6%88%96%E5%85%B6%E4%BB%96%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.13.</span> <span class="nav-text">13.trim(): 删除字符串两端的空格或其他预定义字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-rtrim-%E5%88%A0%E9%99%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8F%B3%E8%BE%B9%E7%9A%84%E7%A9%BA%E6%A0%BC%E6%88%96%E5%85%B6%E4%BB%96%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.14.</span> <span class="nav-text">14.rtrim(): 删除字符串右边的空格或其他预定义字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-chop-rtrim-%E7%9A%84%E5%88%AB%E5%90%8D"><span class="nav-number">1.15.</span> <span class="nav-text">15.chop(): rtrim()的别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-ltrim-%E5%88%A0%E9%99%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B7%A6%E8%BE%B9%E7%9A%84%E7%A9%BA%E6%A0%BC%E6%88%96%E5%85%B6%E4%BB%96%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.16.</span> <span class="nav-text">16.ltrim(): 删除字符串左边的空格或其他预定义字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#17-dirname-%E8%BF%94%E5%9B%9E%E8%B7%AF%E5%BE%84%E4%B8%AD%E7%9A%84%E7%9B%AE%E5%BD%95%E9%83%A8%E5%88%86"><span class="nav-number">1.17.</span> <span class="nav-text">17.dirname(): 返回路径中的目录部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#18-str-pad-%E6%8A%8A%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A1%AB%E5%85%85%E4%B8%BA%E6%8C%87%E5%AE%9A%E7%9A%84%E9%95%BF%E5%BA%A6"><span class="nav-number">1.18.</span> <span class="nav-text">18.str_pad(): 把字符串填充为指定的长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#19-str-repeat-%E9%87%8D%E5%A4%8D%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.19.</span> <span class="nav-text">19.str_repeat(): 重复使用指定字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#20-str-split-%E6%8A%8A%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%86%E5%89%B2%E5%88%B0%E6%95%B0%E7%BB%84%E4%B8%AD"><span class="nav-number">1.20.</span> <span class="nav-text">20.str_split(): 把字符串分割到数组中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#21-strrev-%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.21.</span> <span class="nav-text">21.strrev(): 反转字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#22-wordwrap-%E6%8C%89%E7%85%A7%E6%8C%87%E5%AE%9A%E9%95%BF%E5%BA%A6%E5%AF%B9%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%9B%E8%A1%8C%E6%8A%98%E8%A1%8C%E5%A4%84%E7%90%86"><span class="nav-number">1.22.</span> <span class="nav-text">22.wordwrap(): 按照指定长度对字符串进行折行处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#23-str-shuffle-%E9%9A%8F%E6%9C%BA%E5%9C%B0%E6%89%93%E4%B9%B1%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%89%80%E6%9C%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.23.</span> <span class="nav-text">23.str_shuffle(): 随机地打乱字符串中所有字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#24-parse-str-%E5%B0%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A7%A3%E6%9E%90%E6%88%90%E5%8F%98%E9%87%8F"><span class="nav-number">1.24.</span> <span class="nav-text">24.parse_str(): 将字符串解析成变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#25-number-format-%E9%80%9A%E8%BF%87%E5%8D%83%E4%BD%8D%E5%88%86%E7%BB%84%E6%9D%A5%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%95%B0%E5%AD%97-%E8%BE%93%E5%85%A5-%E8%A6%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%9A%84%E6%95%B0%E5%AD%97-%E8%A7%84%E5%AE%9A%E5%A4%9A%E5%B0%91%E4%B8%AA%E5%B0%8F%E6%95%B0-%E8%A7%84%E5%AE%9A%E7%94%A8%E4%BD%9C%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E5%AD%97%E7%AC%A6-%E4%B8%B2-%E8%A7%84%E5%AE%9A%E7%94%A8%E4%BD%9C%E5%8D%83%E4%BD%8D%E5%88%86%E9%9A%94%E7%AC%A6%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.25.</span> <span class="nav-text">25.number_format(): 通过千位分组来格式化数字 输入: 要格式化的数字|规定多少个小数|规定用作小数点的字符 串|规定用作千位分隔符的字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-strtolower-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B8%BA%E5%B0%8F%E5%86%99"><span class="nav-number">1.26.</span> <span class="nav-text">26.strtolower(): 字符串转为小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#27-strtoupper-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B8%BA%E5%A4%A7%E5%86%99"><span class="nav-number">1.27.</span> <span class="nav-text">27.strtoupper(): 字符串转为大写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#28-ucfirst-%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%A6%96%E5%AD%97%E6%AF%8D%E5%A4%A7%E5%86%99"><span class="nav-number">1.28.</span> <span class="nav-text">28.ucfirst(): 字符串首字母大写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#29-ucwords-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%AF%8F%E4%B8%AA%E5%8D%95%E8%AF%8D%E9%A6%96%E5%AD%97%E7%AC%A6%E8%BD%AC%E4%B8%BA%E5%A4%A7%E5%86%99"><span class="nav-number">1.29.</span> <span class="nav-text">29.ucwords(): 字符串每个单词首字符转为大写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#30-htmlentities-%E6%8A%8A%E5%AD%97%E7%AC%A6%E8%BD%AC%E4%B8%BAHTML%E5%AE%9E%E4%BD%93"><span class="nav-number">1.30.</span> <span class="nav-text">30.htmlentities(): 把字符转为HTML实体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-htmlspecialchars-%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AD%97%E7%AC%A6%E8%BD%AChtml%E7%BC%96%E7%A0%81"><span class="nav-number">1.31.</span> <span class="nav-text">31.htmlspecialchars(): 预定义字符转html编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#32-nl2br-n%E8%BD%AC%E4%B9%89%E4%B8%BA%E6%A0%87%E7%AD%BE"><span class="nav-number">1.32.</span> <span class="nav-text">32.nl2br(): \n转义为
-标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#33-strip-tags-%E5%89%A5%E5%8E%BB-HTML%E3%80%81XML-%E4%BB%A5%E5%8F%8A-PHP-%E7%9A%84%E6%A0%87%E7%AD%BE"><span class="nav-number">1.33.</span> <span class="nav-text">33.strip_tags(): 剥去 HTML、XML 以及 PHP 的标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#34-addcslashes-%E5%9C%A8%E6%8C%87%E5%AE%9A%E7%9A%84%E5%AD%97%E7%AC%A6%E5%89%8D%E6%B7%BB%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E5%AD%97%E7%AC%A6"><span class="nav-number">1.34.</span> <span class="nav-text">34.addcslashes():在指定的字符前添加反斜线转义字符串中字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#35-stripcslashes-%E5%88%A0%E9%99%A4%E7%94%B1addcslashes-%E6%B7%BB%E5%8A%A0%E7%9A%84%E5%8F%8D%E6%96%9C%E7%BA%BF"><span class="nav-number">1.35.</span> <span class="nav-text">35.stripcslashes(): 删除由addcslashes()添加的反斜线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#36-addslashes-%E6%8C%87%E5%AE%9A%E9%A2%84%E5%AE%9A%E4%B9%89%E5%AD%97%E7%AC%A6%E5%89%8D%E6%B7%BB%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF"><span class="nav-number">1.36.</span> <span class="nav-text">36.addslashes(): 指定预定义字符前添加反斜线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#37-stripslashes-%E5%88%A0%E9%99%A4%E7%94%B1addslashes-%E6%B7%BB%E5%8A%A0%E7%9A%84%E8%BD%AC%E4%B9%89%E5%AD%97%E7%AC%A6"><span class="nav-number">1.37.</span> <span class="nav-text">37.stripslashes(): 删除由addslashes()添加的转义字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-quotemeta-%E5%9C%A8%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E4%BA%9B%E9%A2%84%E5%AE%9A%E4%B9%89%E7%9A%84%E5%AD%97%E7%AC%A6%E5%89%8D%E6%B7%BB%E5%8A%A0%E5%8F%8D%E6%96%9C%E7%BA%BF"><span class="nav-number">1.38.</span> <span class="nav-text">38.quotemeta(): 在字符串中某些预定义的字符前添加反斜线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#39-chr-%E4%BB%8E%E6%8C%87%E5%AE%9A%E7%9A%84-ASCII-%E5%80%BC%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6"><span class="nav-number">1.39.</span> <span class="nav-text">39.chr(): 从指定的 ASCII 值返回字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-ord-%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E7%9A%84ASCII%E5%80%BC"><span class="nav-number">1.40.</span> <span class="nav-text">40.ord(): 返回字符串第一个字符的ASCII值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#41-strcasecmp-%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E6%AF%94%E8%BE%83%E4%B8%A4%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.41.</span> <span class="nav-text">41.strcasecmp(): 不区分大小写比较两字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#42-strcmp-%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99%E6%AF%94%E8%BE%83%E4%B8%A4%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.42.</span> <span class="nav-text">42.strcmp(): 区分大小写比较两字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#43-strncmp-%E6%AF%94%E8%BE%83%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%89%8Dn%E4%B8%AA%E5%AD%97%E7%AC%A6-%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.43.</span> <span class="nav-text">43.strncmp(): 比较字符串前n个字符,区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#45-strnatcmp-%E8%87%AA%E7%84%B6%E9%A1%BA%E5%BA%8F%E6%B3%95%E6%AF%94%E8%BE%83%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6-%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.44.</span> <span class="nav-text">45.strnatcmp(): 自然顺序法比较字符串长度,区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#46-strnatcasecmp-%E8%87%AA%E7%84%B6%E9%A1%BA%E5%BA%8F%E6%B3%95%E6%AF%94%E8%BE%83%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6-%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.45.</span> <span class="nav-text">46.strnatcasecmp(): 自然顺序法比较字符串长度, 不区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#47-chunk-split-%EF%BC%9A%E5%B0%86%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%86%E6%88%90%E5%B0%8F%E5%9D%97"><span class="nav-number">1.46.</span> <span class="nav-text">47.chunk_split()：将字符串分成小块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#48-strtok-%E5%88%87%E5%BC%80%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.47.</span> <span class="nav-text">48.strtok(): 切开字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#49-explode-%E4%BD%BF%E7%94%A8%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%BA%E6%A0%87%E5%BF%97%E5%88%86%E5%89%B2%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.48.</span> <span class="nav-text">49.explode(): 使用一个字符串为标志分割另一个字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#50-implode-%E5%90%8Cjoin-%E5%B0%86%E6%95%B0%E7%BB%84%E5%80%BC%E7%94%A8%E9%A2%84%E8%AE%A2%E5%AD%97%E7%AC%A6%E8%BF%9E%E6%8E%A5%E6%88%90%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.49.</span> <span class="nav-text">50.implode(): 同join,将数组值用预订字符连接成字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#51-substr-%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.50.</span> <span class="nav-text">51.substr(): 截取字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#52-str-replace-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2%E6%93%8D%E4%BD%9C-%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.51.</span> <span class="nav-text">52.str_replace(): 字符串替换操作,区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#53-str-ireplace-%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2%E6%93%8D%E4%BD%9C-%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.52.</span> <span class="nav-text">53.str_ireplace() 字符串替换操作,不区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#54-substr-count-%E7%BB%9F%E8%AE%A1%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2-%E5%9C%A8%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0"><span class="nav-number">1.53.</span> <span class="nav-text">54.substr_count(): 统计一个字符串,在另一个字符串中出现次数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#55-substr-replace-%E6%9B%BF%E6%8D%A2%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E4%B8%B2%E4%B8%BA%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.54.</span> <span class="nav-text">55.substr_replace(): 替换字符串中某串为另一个字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#56-similar-text-%E8%BF%94%E5%9B%9E%E4%B8%A4%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%90%8C%E5%AD%97%E7%AC%A6%E7%9A%84%E6%95%B0%E9%87%8F"><span class="nav-number">1.55.</span> <span class="nav-text">56.similar_text(): 返回两字符串相同字符的数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#57-strrchr-%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%9C%A8%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9C%80%E5%90%8E%E4%B8%80%E6%AC%A1%E5%87%BA%E7%8E%B0%E4%BD%8D%E7%BD%AE%E5%BC%80%E5%A7%8B%E5%88%B0%E6%9C%AB%E5%B0%BE%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.56.</span> <span class="nav-text">57.strrchr(): 返回一个字符串在另一个字符串中最后一次出现位置开始到末尾的字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#58-strstr-%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%9C%A8%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E5%BC%80%E5%A7%8B%E4%BD%8D%E7%BD%AE%E5%88%B0%E7%BB%93%E6%9D%9F%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.57.</span> <span class="nav-text">58.strstr(): 返回一个字符串在另一个字符串中开始位置到结束的字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#60-stristr-%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%9C%A8%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E5%BC%80%E5%A7%8B%E4%BD%8D%E7%BD%AE%E5%88%B0%E7%BB%93%E6%9D%9F%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%8C%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.58.</span> <span class="nav-text">60.stristr(): 返回一个字符串在另一个字符串中开始位置到结束的字符串，不区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#61-strtr-%E8%BD%AC%E6%8D%A2%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E6%9F%90%E4%BA%9B%E5%AD%97%E7%AC%A6"><span class="nav-number">1.59.</span> <span class="nav-text">61.strtr(): 转换字符串中的某些字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#62-strpos-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E5%AD%97%E7%AC%A6%E6%9C%80%E5%85%88%E5%87%BA%E7%8E%B0%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.60.</span> <span class="nav-text">62.strpos(): 寻找字符串中某字符最先出现的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#63-stripos-%E5%AF%BB%E6%89%BE%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E5%AD%97%E7%AC%A6%E6%9C%80%E5%85%88%E5%87%BA%E7%8E%B0%E7%9A%84%E4%BD%8D%E7%BD%AE-%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99-%E8%B0%83%E7%94%A8-int-stripos-string-haystack-string-needle-int-offset"><span class="nav-number">1.61.</span> <span class="nav-text">63.stripos(): 寻找字符串中某字符最先出现的位置,不区分大小写 调用: int stripos ( string $haystack , string $needle [, int $offset ] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#64-strrpos-%E5%AF%BB%E6%89%BE%E6%9F%90%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E5%AD%97%E7%AC%A6%E6%9C%80%E5%90%8E%E5%87%BA%E7%8E%B0%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.62.</span> <span class="nav-text">64.strrpos(): 寻找某字符串中某字符最后出现的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#65-strripos-%E5%AF%BB%E6%89%BE%E6%9F%90%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9F%90%E5%AD%97%E7%AC%A6%E6%9C%80%E5%90%8E%E5%87%BA%E7%8E%B0%E7%9A%84%E4%BD%8D%E7%BD%AE-%E4%B8%8D%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.63.</span> <span class="nav-text">65.strripos(): 寻找某字符串中某字符最后出现的位置,不区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#66-strspn-%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E9%A6%96%E6%AC%A1%E7%AC%A6%E5%90%88mask%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6-%E8%B0%83%E7%94%A8-int-strspn-string-str1-string-str2-int-start-int-length"><span class="nav-number">1.64.</span> <span class="nav-text">66.strspn(): 返回字符串中首次符合mask的子字符串长度 调用: int strspn ( string $str1 , string $str2 [, int $start [, int $length ]] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#67-strcspn-%E8%BF%94%E5%9B%9E%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E4%B8%8D%E7%AC%A6%E5%90%88mask%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E9%95%BF%E5%BA%A6"><span class="nav-number">1.65.</span> <span class="nav-text">67.strcspn(): 返回字符串中不符合mask的字符串的长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#68-str-word-count-%E7%BB%9F%E8%AE%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%90%AB%E6%9C%89%E7%9A%84%E5%8D%95%E8%AF%8D%E6%95%B0"><span class="nav-number">1.66.</span> <span class="nav-text">68.str_word_count(): 统计字符串含有的单词数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#69-strlen-%E7%BB%9F%E8%AE%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6int-strlen-str-str"><span class="nav-number">1.67.</span> <span class="nav-text">69.strlen(): 统计字符串长度int strlen(str $str)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#70-count-chars-%E7%BB%9F%E8%AE%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%89%80%E6%9C%89%E5%AD%97%E6%AF%8D%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0-0-255-%E8%B0%83%E7%94%A8-mixed-count-chars-string-string-int-mode"><span class="nav-number">1.68.</span> <span class="nav-text">70.count_chars(): 统计字符串中所有字母出现次数(0..255) 调用: mixed count_chars ( string $string [, int $mode ] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#71-md5-%E5%AD%97%E7%AC%A6%E4%B8%B2md5%E7%BC%96%E7%A0%81"><span class="nav-number">1.69.</span> <span class="nav-text">71.md5(): 字符串md5编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#72-array-%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84"><span class="nav-number">1.70.</span> <span class="nav-text">72.array(): 生成一个数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#73-array-combine-%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84-%E7%94%A8%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E7%9A%84%E5%80%BC-%E4%BD%9C%E4%B8%BA%E9%94%AE%E5%90%8D-%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E5%80%BC%E4%BD%9C%E4%B8%BA%E5%80%BC"><span class="nav-number">1.71.</span> <span class="nav-text">73.array_combine(): 生成一个数组,用一个数组的值 作为键名,另一个数组值作为值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#74-range-%E5%88%9B%E5%BB%BA%E5%B9%B6%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%8C%85%E5%90%AB%E6%8C%87%E5%AE%9A%E8%8C%83%E5%9B%B4%E7%9A%84%E5%85%83%E7%B4%A0%E7%9A%84%E6%95%B0%E7%BB%84%E3%80%82"><span class="nav-number">1.72.</span> <span class="nav-text">74.range(): 创建并返回一个包含指定范围的元素的数组。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#75-compact-%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%94%B1%E5%8F%82%E6%95%B0%E6%89%80%E5%B8%A6%E5%8F%98%E9%87%8F%E7%BB%84%E6%88%90%E7%9A%84%E6%95%B0%E7%BB%84"><span class="nav-number">1.73.</span> <span class="nav-text">75.compact(): 创建一个由参数所带变量组成的数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#77-array-chunk-%E6%8A%8A%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E5%88%86%E5%89%B2%E4%B8%BA%E6%96%B0%E7%9A%84%E6%95%B0%E7%BB%84%E5%9D%97"><span class="nav-number">1.74.</span> <span class="nav-text">77.array_chunk(): 把一个数组分割为新的数组块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#78-array-merge-%E6%8A%8A%E4%B8%A4%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%95%B0%E7%BB%84%E5%90%88%E5%B9%B6%E4%B8%BA%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E3%80%82"><span class="nav-number">1.75.</span> <span class="nav-text">78.array_merge(): 把两个或多个数组合并为一个数组。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#79-array-slice-%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E6%A0%B9%E6%8D%AE%E6%9D%A1%E4%BB%B6%E5%8F%96%E5%87%BA%E4%B8%80%E6%AE%B5%E5%80%BC%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E3%80%82"><span class="nav-number">1.76.</span> <span class="nav-text">79.array_slice(): 在数组中根据条件取出一段值，并返回。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#80-array-diff-%E8%BF%94%E5%9B%9E%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%BB%84%E7%9A%84%E5%B7%AE%E9%9B%86%E6%95%B0%E7%BB%84"><span class="nav-number">1.77.</span> <span class="nav-text">80.array_diff(): 返回两个数组的差集数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#81-array-intersect-%E8%BF%94%E5%9B%9E%E4%B8%A4%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%95%B0%E7%BB%84%E7%9A%84%E4%BA%A4%E9%9B%86%E6%95%B0%E7%BB%84-%E8%BE%93%E5%87%BA-%E8%BF%94%E5%9B%9E%E2%80%99Dog%E2%80%99%E5%92%8C%E2%80%99Horse%E2%80%99-a1%E4%B8%8E-a2%E7%9A%84%E7%9B%B8%E5%90%8C%E4%B9%8B%E5%A4%84"><span class="nav-number">1.78.</span> <span class="nav-text">81.array_intersect(): 返回两个或多个数组的交集数组 输出: 返回’Dog’和’Horse’,$a1与$a2的相同之处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#82-array-search-%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E4%B8%80%E4%B8%AA%E5%80%BC%EF%BC%8C%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E9%94%AE%EF%BC%8C%E6%B2%A1%E6%9C%89%E8%BF%94%E5%9B%9E%E8%BF%94%E5%9B%9E%E5%81%87"><span class="nav-number">1.79.</span> <span class="nav-text">82.array_search(): 在数组中查找一个值，返回一个键，没有返回返回假</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#83-array-splice-%E6%8A%8A%E6%95%B0%E7%BB%84%E4%B8%AD%E4%B8%80%E9%83%A8%E5%88%86%E5%88%A0%E9%99%A4%E7%94%A8%E5%85%B6%E4%BB%96%E5%80%BC%E6%9B%BF%E4%BB%A3"><span class="nav-number">1.80.</span> <span class="nav-text">83.array_splice(): 把数组中一部分删除用其他值替代</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#84-array-sum-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%BB%84%E4%B8%AD%E6%89%80%E6%9C%89%E5%80%BC%E7%9A%84%E6%80%BB%E5%92%8C"><span class="nav-number">1.81.</span> <span class="nav-text">84.array_sum(): 返回数组中所有值的总和</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#85-in-array-%E5%9C%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E6%90%9C%E7%B4%A2%E7%BB%99%E5%AE%9A%E7%9A%84%E5%80%BC-%E5%8C%BA%E5%88%86%E5%A4%A7%E5%B0%8F%E5%86%99"><span class="nav-number">1.82.</span> <span class="nav-text">85.in_array(): 在数组中搜索给定的值,区分大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#86-array-key-exists-%E5%88%A4%E6%96%AD%E6%9F%90%E4%B8%AA%E6%95%B0%E7%BB%84%E4%B8%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%8C%87%E5%AE%9A%E7%9A%84-key"><span class="nav-number">1.83.</span> <span class="nav-text">86.array_key_exists(): 判断某个数组中是否存在指定的 key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#87-key-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%BB%84%E5%86%85%E9%83%A8%E6%8C%87%E9%92%88%E5%BD%93%E5%89%8D%E6%8C%87%E5%90%91%E5%85%83%E7%B4%A0%E7%9A%84%E9%94%AE%E5%90%8D"><span class="nav-number">1.84.</span> <span class="nav-text">87.key(): 返回数组内部指针当前指向元素的键名 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#88-current-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0-%E5%8D%95%E5%85%83"><span class="nav-number">1.85.</span> <span class="nav-text">88.current(): 返回数组中的当前元素(单元). 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#89-next-%E6%8A%8A%E6%8C%87%E5%90%91%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E7%9A%84%E6%8C%87%E9%92%88%E7%A7%BB%E5%8A%A8%E5%88%B0%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E4%BD%8D%E7%BD%AE-%E5%B9%B6%E8%BF%94%E5%9B%9E%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E7%9A%84%E5%80%BC"><span class="nav-number">1.86.</span> <span class="nav-text">89.next(): 把指向当前元素的指针移动到下一个元素的位置,并返回当前元素的值 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#90-prev-%E6%8A%8A%E6%8C%87%E5%90%91%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E7%9A%84%E6%8C%87%E9%92%88%E7%A7%BB%E5%8A%A8%E5%88%B0%E4%B8%8A%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E4%BD%8D%E7%BD%AE-%E5%B9%B6%E8%BF%94%E5%9B%9E%E5%BD%93%E5%89%8D%E5%85%83%E7%B4%A0%E7%9A%84%E5%80%BC"><span class="nav-number">1.87.</span> <span class="nav-text">90.prev(): 把指向当前元素的指针移动到上一个元素的位置,并返回当前元素的值 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#91-end-%E5%B0%86%E6%95%B0%E7%BB%84%E5%86%85%E9%83%A8%E6%8C%87%E9%92%88%E6%8C%87%E5%90%91%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E8%AF%A5%E5%85%83%E7%B4%A0%E7%9A%84%E5%80%BC-%E5%A6%82%E6%9E%9C%E6%88%90%E5%8A%9F"><span class="nav-number">1.88.</span> <span class="nav-text">91.end(): 将数组内部指针指向最后一个元素，并返回该元素的值(如果成功) 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#92-reset-%E6%8A%8A%E6%95%B0%E7%BB%84%E7%9A%84%E5%86%85%E9%83%A8%E6%8C%87%E9%92%88%E6%8C%87%E5%90%91%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E8%BF%99%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E5%80%BC"><span class="nav-number">1.89.</span> <span class="nav-text">92.reset(): 把数组的内部指针指向第一个元素，并返回这个元素的值 　　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#93-list-%E7%94%A8%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E5%85%83%E7%B4%A0%E4%B8%BA%E4%B8%80%E7%BB%84%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">1.90.</span> <span class="nav-text">93.list(): 用数组中的元素为一组变量赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#94-array-shift-%E5%88%A0%E9%99%A4%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%8C%E5%B9%B6%E8%BF%94%E5%9B%9E%E8%A2%AB%E5%88%A0%E9%99%A4%E5%85%83%E7%B4%A0%E7%9A%84%E5%80%BC"><span class="nav-number">1.91.</span> <span class="nav-text">94.array_shift(): 删除数组中的第一个元素，并返回被删除元素的值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#95-array-unshift-%E5%9C%A8%E6%95%B0%E7%BB%84%E5%BC%80%E5%A4%B4%E6%8F%92%E5%85%A5%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E5%85%83%E7%B4%A0"><span class="nav-number">1.92.</span> <span class="nav-text">95.array_unshift(): 在数组开头插入一个或多个元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#96-array-push-%E5%90%91%E6%95%B0%E7%BB%84%E6%9C%80%E5%90%8E%E5%8E%8B%E5%85%A5%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E5%85%83%E7%B4%A0"><span class="nav-number">1.93.</span> <span class="nav-text">96.array_push(): 向数组最后压入一个或多个元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#97-array-pop-%E5%8F%96%E5%BE%97%EF%BC%88%E5%88%A0%E9%99%A4%EF%BC%89%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"><span class="nav-number">1.94.</span> <span class="nav-text">97.array_pop(): 取得（删除）数组中的最后一个元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#98-shuffle-%E5%B0%86%E6%95%B0%E7%BB%84%E6%89%93%E4%B9%B1-%E4%BF%9D%E7%95%99%E9%94%AE%E5%90%8D"><span class="nav-number">1.95.</span> <span class="nav-text">98.shuffle(): 将数组打乱,保留键名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#99-count-%E8%AE%A1%E7%AE%97%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E5%8D%95%E5%85%83%E6%95%B0%E7%9B%AE%E6%88%96%E5%AF%B9%E8%B1%A1%E4%B8%AD%E7%9A%84%E5%B1%9E%E6%80%A7%E4%B8%AA%E6%95%B0"><span class="nav-number">1.96.</span> <span class="nav-text">99.count(): 计算数组中的单元数目或对象中的属性个数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#100-array-flip-%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E9%94%AE%E5%80%BC%E5%8F%8D%E8%BD%AC%E5%90%8E%E7%9A%84%E6%95%B0%E7%BB%84"><span class="nav-number">1.97.</span> <span class="nav-text">100.array_flip(): 返回一个键值反转后的数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#102-array-values-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%BB%84%E4%B8%AD%E6%89%80%E6%9C%89%E5%80%BC%EF%BC%8C%E7%BB%84%E6%88%90%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84"><span class="nav-number">1.98.</span> <span class="nav-text">102.array_values(): 返回数组中所有值，组成一个数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#103-array-reverse-%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E9%A1%BA%E5%BA%8F%E7%9B%B8%E5%8F%8D%E7%9A%84%E6%95%B0%E7%BB%84-%E5%85%83%E7%B4%A0%E9%A1%BA%E5%BA%8F%E7%9B%B8%E5%8F%8D%E7%9A%84%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%EF%BC%8C%E9%94%AE%E5%90%8D%E5%92%8C%E9%94%AE%E5%80%BC%E4%BE%9D%E7%84%B6%E5%8C%B9%E9%85%8D"><span class="nav-number">1.99.</span> <span class="nav-text">103.array_reverse(): 返回一个元素顺序相反的数组 元素顺序相反的一个数组，键名和键值依然匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#104-array-count-values-%E7%BB%9F%E8%AE%A1%E6%95%B0%E7%BB%84%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84%E5%80%BC%E5%87%BA%E7%8E%B0%E7%9A%84%E6%AC%A1%E6%95%B0"><span class="nav-number">1.100.</span> <span class="nav-text">104.array_count_values(): 统计数组中所有的值出现的次数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#105-array-rand-%E4%BB%8E%E6%95%B0%E7%BB%84%E4%B8%AD%E9%9A%8F%E6%9C%BA%E6%8A%BD%E5%8F%96%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E5%85%83%E7%B4%A0-%E6%B3%A8%E6%84%8F%E6%98%AF%E9%94%AE%E5%90%8D"><span class="nav-number">1.101.</span> <span class="nav-text">105.array_rand(): 从数组中随机抽取一个或多个元素,注意是键名!!!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#106-each-%E8%BF%94%E5%9B%9E%E6%95%B0%E7%BB%84%E4%B8%AD%E5%BD%93%E5%89%8D%E7%9A%84%E9%94%AE%EF%BC%8F%E5%80%BC%E5%AF%B9%E5%B9%B6%E5%B0%86%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88%E5%90%91%E5%89%8D%E7%A7%BB%E5%8A%A8%E4%B8%80%E6%AD%A5-%E8%B0%83%E7%94%A8array-each-array-amp-array"><span class="nav-number">1.102.</span> <span class="nav-text">106.each(): 返回数组中当前的键／值对并将数组指针向前移动一步 调用array each ( array &amp;$array )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#107-array-unique-%E5%88%A0%E9%99%A4%E9%87%8D%E5%A4%8D%E5%80%BC%EF%BC%8C%E8%BF%94%E5%9B%9E%E5%89%A9%E4%BD%99%E6%95%B0%E7%BB%84"><span class="nav-number">1.103.</span> <span class="nav-text">107.array_unique(): 删除重复值，返回剩余数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#108-sort-%E6%8C%89%E5%8D%87%E5%BA%8F%E5%AF%B9%E7%BB%99%E5%AE%9A%E6%95%B0%E7%BB%84%E7%9A%84%E5%80%BC%E6%8E%92%E5%BA%8F-%E4%B8%8D%E4%BF%9D%E7%95%99%E9%94%AE%E5%90%8D"><span class="nav-number">1.104.</span> <span class="nav-text">108.sort(): 按升序对给定数组的值排序,不保留键名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#116-fopen-%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E6%88%96%E8%80%85-URL"><span class="nav-number">1.105.</span> <span class="nav-text">116.fopen(): 打开文件或者 URL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#117-fclose-%E5%85%B3%E9%97%AD%E4%B8%80%E4%B8%AA%E5%B7%B2%E6%89%93%E5%BC%80%E7%9A%84%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88"><span class="nav-number">1.106.</span> <span class="nav-text">117.fclose(): 关闭一个已打开的文件指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#118-file-exists-%E6%A3%80%E6%9F%A5%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8"><span class="nav-number">1.107.</span> <span class="nav-text">118.file_exists(): 检查文件或目录是否存在</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#119-filesize-%E5%8F%96%E5%BE%97%E6%96%87%E4%BB%B6%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.108.</span> <span class="nav-text">119.filesize(): 取得文件大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#120-is-readable-%E5%88%A4%E6%96%AD%E7%BB%99%E5%AE%9A%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%8F%AF%E8%AF%BB"><span class="nav-number">1.109.</span> <span class="nav-text">120.is_readable(): 判断给定文件是否可读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#121-is-writable-%E5%88%A4%E6%96%AD%E7%BB%99%E5%AE%9A%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%8F%AF%E5%86%99"><span class="nav-number">1.110.</span> <span class="nav-text">121.is_writable(): 判断给定文件是否可写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#122-is-executable-%E5%88%A4%E6%96%AD%E7%BB%99%E5%AE%9A%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E5%8F%AF%E6%89%A7%E8%A1%8C"><span class="nav-number">1.111.</span> <span class="nav-text">122.is_executable(): 判断给定文件是否可执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#123-filectime-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E5%88%9B%E5%BB%BA%E6%97%B6%E9%97%B4"><span class="nav-number">1.112.</span> <span class="nav-text">123.filectime(): 获取文件的创建时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#124-filemtime-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E6%94%B9%E6%97%B6%E9%97%B4"><span class="nav-number">1.113.</span> <span class="nav-text">124.filemtime(): 获取文件的修改时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#125-fileatime-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8A%E6%AC%A1%E8%AE%BF%E9%97%AE%E6%97%B6%E9%97%B4"><span class="nav-number">1.114.</span> <span class="nav-text">125.fileatime(): 获取文件的上次访问时间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#126-stat-%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6%E5%A4%A7%E9%83%A8%E5%88%86%E5%B1%9E%E6%80%A7%E5%80%BC"><span class="nav-number">1.115.</span> <span class="nav-text">126.stat(): 获取文件大部分属性值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#127-fwrite-%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6"><span class="nav-number">1.116.</span> <span class="nav-text">127.fwrite(): 写入文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#128-fputs-%E5%90%8C%E4%B8%8A"><span class="nav-number">1.117.</span> <span class="nav-text">128.fputs(): 同上　 　　</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#129-fread-%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6"><span class="nav-number">1.118.</span> <span class="nav-text">129.fread(): 读取文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#130-feof-%E6%A3%80%E6%B5%8B%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E6%98%AF%E5%90%A6%E5%88%B0%E4%BA%86%E6%96%87%E4%BB%B6%E7%BB%93%E6%9D%9F%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.119.</span> <span class="nav-text">130.feof(): 检测文件指针是否到了文件结束的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#131-fgets-%E4%BB%8E%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E4%B8%AD%E8%AF%BB%E5%8F%96%E4%B8%80%E8%A1%8C"><span class="nav-number">1.120.</span> <span class="nav-text">131.fgets(): 从文件指针中读取一行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#132-fgetc-%E4%BB%8E%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E4%B8%AD%E8%AF%BB%E5%8F%96%E5%AD%97%E7%AC%A6"><span class="nav-number">1.121.</span> <span class="nav-text">132.fgetc(): 从文件指针中读取字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#133-file-%E6%8A%8A%E6%95%B4%E4%B8%AA%E6%96%87%E4%BB%B6%E8%AF%BB%E5%85%A5%E4%B8%80%E4%B8%AA%E6%95%B0%E7%BB%84%E4%B8%AD"><span class="nav-number">1.122.</span> <span class="nav-text">133.file(): 把整个文件读入一个数组中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#134-readfile-%E8%BE%93%E5%87%BA%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6-%E8%B0%83%E7%94%A8-int-readfile-string-filename-bool-use-include-path-resource-context"><span class="nav-number">1.123.</span> <span class="nav-text">134.readfile(): 输出一个文件　 调用: int readfile ( string $filename [, bool $use_include_path [, resource $context ]] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#135-file-get-contents-%E5%B0%86%E6%95%B4%E4%B8%AA%E6%96%87%E4%BB%B6%E8%AF%BB%E5%85%A5%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.124.</span> <span class="nav-text">135.file_get_contents(): 将整个文件读入一个字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#137-ftell-%E8%BF%94%E5%9B%9E%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E8%AF%BB-%E5%86%99%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.125.</span> <span class="nav-text">137.ftell(): 返回文件指针读&#x2F;写的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#138-fseek-%E5%9C%A8%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E4%B8%AD%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.126.</span> <span class="nav-text">138.fseek(): 在文件指针中定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#139-rewind-%E5%80%92%E5%9B%9E%E6%96%87%E4%BB%B6%E6%8C%87%E9%92%88%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.127.</span> <span class="nav-text">139.rewind(): 倒回文件指针的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#140-flock-%E8%BD%BB%E4%BE%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E9%94%81%E5%AE%9A"><span class="nav-number">1.128.</span> <span class="nav-text">140.flock(): 轻便的执行文件锁定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#141-basename-%E8%BF%94%E5%9B%9E%E8%B7%AF%E5%BE%84%E4%B8%AD%E7%9A%84%E6%96%87%E4%BB%B6%E5%90%8D%E9%83%A8%E5%88%86"><span class="nav-number">1.129.</span> <span class="nav-text">141.basename(): 返回路径中的文件名部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#142-dirname-%E8%BF%94%E5%9B%9E%E8%B7%AF%E5%BE%84%E4%B8%AD%E7%9A%84%E7%9B%AE%E5%BD%95%E9%83%A8%E5%88%86"><span class="nav-number">1.130.</span> <span class="nav-text">142.dirname(): 返回路径中的目录部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#143-pathinfo-%E8%BF%94%E5%9B%9E%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">1.131.</span> <span class="nav-text">143.pathinfo(): 返回文件路径的信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#144-opendir-%E6%89%93%E5%BC%80%E7%9B%AE%E5%BD%95%E5%8F%A5%E6%9F%84"><span class="nav-number">1.132.</span> <span class="nav-text">144.opendir(): 打开目录句柄</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#145-readdir-%E4%BB%8E%E7%9B%AE%E5%BD%95%E5%8F%A5%E6%9F%84%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%9D%A1%E7%9B%AE"><span class="nav-number">1.133.</span> <span class="nav-text">145.readdir(): 从目录句柄中读取条目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#146-closedir-%E5%85%B3%E9%97%AD%E7%9B%AE%E5%BD%95%E5%8F%A5%E6%9F%84"><span class="nav-number">1.134.</span> <span class="nav-text">146.closedir(): 关闭目录句柄</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#149-rmdir-%E5%88%A0%E9%99%A4%E7%9B%AE%E5%BD%95"><span class="nav-number">1.135.</span> <span class="nav-text">149.rmdir(): 删除目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#150-unlink-%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-number">1.136.</span> <span class="nav-text">150.unlink(): 删除文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#151-copy-%E6%8B%B7%E8%B4%9D%E6%96%87%E4%BB%B6"><span class="nav-number">1.137.</span> <span class="nav-text">151.copy(): 拷贝文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#152-rename-%E9%87%8D%E5%91%BD%E5%90%8D%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6%E6%88%96%E7%9B%AE%E5%BD%95"><span class="nav-number">1.138.</span> <span class="nav-text">152.rename(): 重命名一个文件或目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#153-is-uploaded-file-%E5%88%A4%E6%96%AD%E6%96%87%E4%BB%B6%E6%98%AF%E5%90%A6%E6%98%AF%E9%80%9A%E8%BF%87-HTTP-POST%E4%B8%8A%E4%BC%A0%E7%9A%84"><span class="nav-number">1.139.</span> <span class="nav-text">153.is_uploaded_file():判断文件是否是通过 HTTP POST上传的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#154-move-uploaded-file-%E5%B0%86%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%96%87%E4%BB%B6%E7%A7%BB%E5%8A%A8%E5%88%B0%E6%96%B0%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.140.</span> <span class="nav-text">154.move_uploaded_file(): 将上传的文件移动到新位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#155-time-%E8%BF%94%E5%9B%9E%E5%BD%93%E5%89%8D%E7%9A%84-Unix-%E6%97%B6%E9%97%B4%E6%88%B3time-%E8%B0%83%E7%94%A8-int-time-void-%E8%BE%93%E5%87%BA-%E8%BF%94%E5%9B%9E%E8%87%AA%E4%BB%8E-Unix-%E7%BA%AA%E5%85%83%EF%BC%88%E6%A0%BC%E6%9E%97%E5%A8%81%E6%B2%BB%E6%97%B6%E9%97%B4-1970-%E5%B9%B4-1-%E6%9C%88-1-%E6%97%A5-00-00-00%EF%BC%89%E5%88%B0%E5%BD%93%E5%89%8D%E6%97%B6%E9%97%B4%E7%9A%84%E7%A7%92%E6%95%B0"><span class="nav-number">1.141.</span> <span class="nav-text">155.time(): 返回当前的 Unix 时间戳time(); 调用: int time ( void ) 输出: 返回自从 Unix 纪元（格林威治时间 1970 年 1 月 1 日 00:00:00）到当前时间的秒数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#156-mktime-%E5%8F%96%E5%BE%97%E4%B8%80%E4%B8%AA%E6%97%A5%E6%9C%9F%E7%9A%84-Unix-%E6%97%B6%E9%97%B4%E6%88%B3"><span class="nav-number">1.142.</span> <span class="nav-text">156.mktime(): 取得一个日期的 Unix 时间戳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#157-checkdate-%E9%AA%8C%E8%AF%81%E4%B8%80%E4%B8%AA%E6%A0%BC%E9%87%8C%E9%AB%98%E9%87%8C%E6%97%A5%E6%9C%9F-%E8%B0%83%E7%94%A8-bool-checkdate-int-month-int-day-int-year-%E8%BE%93%E5%87%BA-%E5%A6%82%E6%9E%9C%E7%BB%99%E5%87%BA%E7%9A%84%E6%97%A5%E6%9C%9F%E6%9C%89%E6%95%88%E5%88%99%E8%BF%94%E5%9B%9E-TRUE%EF%BC%8C%E5%90%A6%E5%88%99%E8%BF%94%E5%9B%9E-FALSE"><span class="nav-number">1.143.</span> <span class="nav-text">157.checkdate(): 验证一个格里高里日期 调用: bool checkdate ( int $month , int $day , int $year) 输出: 如果给出的日期有效则返回 TRUE，否则返回 FALSE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#158-date-default-timezone-set-%E8%AE%BE%E5%AE%9A%E7%94%A8%E4%BA%8E%E4%B8%80%E4%B8%AA%E8%84%9A%E6%9C%AC%E4%B8%AD%E6%89%80%E6%9C%89%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E5%87%BD%E6%95%B0%E7%9A%84%E9%BB%98%E8%AE%A4%E6%97%B6%E5%8C%BA"><span class="nav-number">1.144.</span> <span class="nav-text">158.date_default_timezone_set(): 设定用于一个脚本中所有日期时间函数的默认时区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#159-getdate-%E5%8F%96%E5%BE%97%E6%97%A5%E6%9C%9F%EF%BC%8F%E6%97%B6%E9%97%B4%E4%BF%A1%E6%81%AF-%E8%B0%83%E7%94%A8-array-getdate-int-timestamp"><span class="nav-number">1.145.</span> <span class="nav-text">159.getdate(): 取得日期／时间信息 调用: array getdate ([ int $timestamp ] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#160-strtotime-%E5%B0%86%E4%BB%BB%E4%BD%95%E8%8B%B1%E6%96%87%E6%96%87%E6%9C%AC%E7%9A%84%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E6%8F%8F%E8%BF%B0%E8%A7%A3%E6%9E%90%E4%B8%BA-Unix-%E6%97%B6%E9%97%B4%E6%88%B3"><span class="nav-number">1.146.</span> <span class="nav-text">160.strtotime(): 将任何英文文本的日期时间描述解析为 Unix 时间戳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#161-microtime-%E8%BF%94%E5%9B%9E%E5%BD%93%E5%89%8D-Unix-%E6%97%B6%E9%97%B4%E6%88%B3%E5%92%8C%E5%BE%AE%E7%A7%92%E6%95%B0-%E8%B0%83%E7%94%A8-mixed-microtime-bool-get-as-float"><span class="nav-number">1.147.</span> <span class="nav-text">161.microtime(): 返回当前 Unix 时间戳和微秒数 调用: mixed microtime ([ bool $get_as_float ] )</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#162-intval-%E8%8E%B7%E5%8F%96%E5%8F%98%E9%87%8F%E7%9A%84%E6%95%B4%E6%95%B0%E5%80%BC-%E8%B0%83%E7%94%A8-int-intval-mixed-var-int-base-10-%E9%80%9A%E8%BF%87%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E7%9A%84%E8%BF%9B%E5%88%B6-base-%E8%BD%AC%E6%8D%A2%EF%BC%88%E9%BB%98%E8%AE%A4%E6%98%AF%E5%8D%81%E8%BF%9B%E5%88%B6%EF%BC%89%EF%BC%8C%E8%BF%94%E5%9B%9E%E5%8F%98%E9%87%8F-var-%E7%9A%84-integer-%E6%95%B0%E5%80%BC%E3%80%82-intval-%E4%B8%8D%E8%83%BD%E7%94%A8%E4%BA%8E-object%EF%BC%8C%E5%90%A6%E5%88%99%E4%BC%9A%E4%BA%A7%E7%94%9F-E-NOTICE-%E9%94%99%E8%AF%AF%E5%B9%B6%E8%BF%94%E5%9B%9E-1%E3%80%82"><span class="nav-number">1.148.</span> <span class="nav-text">162.intval(): 获取变量的整数值 调用: int intval ( mixed $var [, int $base &#x3D; 10 ] ) 通过使用指定的进制 base 转换（默认是十进制），返回变量 var 的 integer 数值。 intval() 不能用于 object，否则会产生 E_NOTICE 错误并返回 1。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">1.149.</span> <span class="nav-text">&quot;;
-}catch(PDOException $e){
- echo &quot;&quot; . $e-&gt;getMessage() . &quot;&quot;;
-}
-$sql &#x3D; &#39;SELECT * FROM users&#39;;
-$stmt &#x3D; $conn-&gt;prepare($sql);
-$stmt-&gt;execute();
-
-echo &quot;&quot;;
-while($row &#x3D; $stmt-&gt;fetch(PDO::FETCH_ASSOC)){
- echo &quot;&quot;;
- foreach($row as $value)
- {
- echo sprintf(&quot;%s&quot;, $value);
- }
- echo &quot;&quot;;
-}
-echo &quot;&quot;;
-?&gt;
-正则表达式-元字符
-元字符及其匹配范围
-\d 匹配任意一个十进制数字,等价于: [0-9] \D 匹配除十进制数字以外的任意数字,等价于: [^0-9] \s:匹配空白字符,等价于: [\n\f\r\t\v] \S: 匹配除空白字符以外的任意一个字符, 等价于[^\n\f\r\t\v]
-\w 匹配任意一个数字、字母和下划线,等价于: [0-9a-zA-Z_] \W 匹配除字母、数字和下划线以外的任意字符, 等价于: [^0-9a-zA-Z_] [] 1)用来表示范围。2)匹配任意一个中括号中定义的原子 　 [^]: 中括号里面的^(抑扬符)：表示匹配任意一个除中括号里面定义的原子
-限定次数
-
-匹配0次、1次或多次其前的原子, 等价于: {0,} + 匹配1次或多次其前的原子, 等价于: {1,} ? 匹配0次或1次其前的原子, 等价于: {0,1} {n} 表示其前的原子正好出现n次, 等价于: {n,} 表示其前的原子至少出现n次，最多不限制 　 {m,n} 表示其前的原子最少出现m次，最多出现n次 　
-
-其它
-. 匹配除换行符(\n)以外的任意字符【windows下还匹配\f\r】　 | 两个或多个分支选择【优先级最低】 ^ 匹配输入字符的开始位置　 $ 匹配输入字符的结束位置　 \b 匹配词边界　 \B 匹配非词边界　 () 1)模式单元，把多个小原子组成一个大原子。2)可以改变优先级
-</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">&quot; . $e-&gt;getMessage() . &quot;</span></a></li></ol></div>
-        </section>
-        <!--/noindex-->
-
-        <section class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">chaofml</p>
-  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">369</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">99</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-        </section>
-      </div>
-    </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
+    <h1 class="article-title" itemprop="name">
+      PHP常用函数总结
+    </h1>
   
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="思绪偶尔会在这里停留">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="超凡魔力">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          PHP常用函数总结
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2019-12-13 09:41:00" itemprop="dateCreated datePublished" datetime="2019-12-13T09:41:00+00:00">2019-12-13</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-01-20 06:37:17" itemprop="dateModified" datetime="2023-01-20T06:37:17+00:00">2023-01-20</time>
-      </span>
-
-  
-</div>
-
-        </div>
       </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
+    <div class="article-entry" itemprop="articleBody">
+      
         <p>PHP常用函数总结</p>
 <h1 id="数学函数"><a href="#数学函数" class="headerlink" title="数学函数"></a>数学函数</h1><h2 id="1-abs-求绝对值"><a href="#1-abs-求绝对值" class="headerlink" title="1.abs(): 求绝对值"></a>1.abs(): 求绝对值</h2><pre class="line-numbers language-none"><code class="language-none">$abs &#x3D; abs(-4.2); &#x2F;&#x2F;4.2 数字绝对值数字<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -553,101 +357,153 @@ echo "</table>";
 <p>其它</p>
 <p>. 匹配除换行符(\n)以外的任意字符【windows下还匹配\f\r】　 | 两个或多个分支选择【优先级最低】 ^ 匹配输入字符的开始位置　 $ 匹配输入字符的结束位置　 \b 匹配词边界　 \B 匹配非词边界　 () 1)模式单元，把多个小原子组成一个大原子。2)可以改变优先级</p>
 
+      
     </div>
+    <footer class="article-footer">
+      <a data-url="https://blog.chaofml.cn/2019/12/13/php%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" data-id="cld48zeo900pd11o00tjug7u7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/php/" rel="tag">php</a></li></ul>
 
-    
-    
-    
-
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/php/" rel="tag"># php</a>
-          </div>
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2019/12/12/git/github%E6%8A%80%E5%B7%A7/" rel="prev" title="github搜索技巧">
-                  <i class="fa fa-chevron-left"></i> github搜索技巧
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2019/12/13/shell/shell/" rel="next" title="shell">
-                  shell <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
     </footer>
-  </article>
-</div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/13/shell/shell/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          shell
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/12/12/git/github%E6%8A%80%E5%B7%A7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">github搜索技巧</div>
+    </a>
+  
+</nav>
 
+  
+</article>
 
-
-
-
-
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">豫ICP备17029463号-1 </a>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/default/">default</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/docker/%E6%B8%85%E7%90%86/">清理</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python-tools/">python - tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AD%A3%E5%88%99/">正则</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/">转载</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/js/">js</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/shell/">shell</a></li></ul></li></ul>
+    </div>
   </div>
 
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">chaofml</span>
-</div>
 
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">-shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkinsfile/" rel="tag">Jenkinsfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">K8s学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apache/" rel="tag">apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/array/" rel="tag">array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bs4/" rel="tag">bs4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/celery/" rel="tag">celery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chmod/" rel="tag">chmod</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chown/" rel="tag">chown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/conf/" rel="tag">conf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/copy/" rel="tag">copy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/" rel="tag">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cygwin/" rel="tag">cygwin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">db</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/default/" rel="tag">default</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-php/" rel="tag">docker php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-weblogic/" rel="tag">docker weblogic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/emoji/" rel="tag">emoji</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/es/" rel="tag">es</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ext/" rel="tag">ext</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/extjs/" rel="tag">extjs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/for/" rel="tag">for</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gp/" rel="tag">gp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gzip/" rel="tag">gzip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/host/" rel="tag">host</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ingore/" rel="tag">ingore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/install/" rel="tag">install</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/" rel="tag">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/" rel="tag">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k8s/" rel="tag">k8s</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ldap/" rel="tag">ldap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lua/" rel="tag">lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lxml/" rel="tag">lxml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/md5/" rel="tag">md5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openapi/" rel="tag">openapi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">other</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pdo/" rel="tag">pdo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pg/" rel="tag">pg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php-%E6%89%A9%E5%B1%95/" rel="tag">php 扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php-%E6%8F%92%E4%BB%B6/" rel="tag">php 插件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/" rel="tag">pip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgre/" rel="tag">postgre</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/" rel="tag">postgresql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rancher/" rel="tag">rancher</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/requests/" rel="tag">requests</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/restful-api/" rel="tag">restful api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/session/" rel="tag">session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/split/" rel="tag">split</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/" rel="tag">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static/" rel="tag">static</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/" rel="tag">tar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/think/" rel="tag">think</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tmux/" rel="tag">tmux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/underscope/" rel="tag">underscope</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vb/" rel="tag">vb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue3/" rel="tag">vue3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/" rel="tag">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%9A%E5%8A%A1/" rel="tag">业务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA/" rel="tag">个人</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%8C%BA%E8%A1%A8/" rel="tag">分区表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8C%E6%AD%A5/" rel="tag">同步</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E8%A3%85/" rel="tag">安装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E8%88%AA/" rel="tag">导航</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%93%E5%8C%85/" rel="tag">打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A9%BA%E6%A0%BC/" rel="tag">空格</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%AD%E6%B3%95/" rel="tag">语法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
     </div>
-  </footer>
-
-  
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
-  
-
-
-
-
-
+  </div>
 
 
   
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/shell/" style="font-size: 10px;">-shell</a> <a href="/tags/Jenkinsfile/" style="font-size: 10px;">Jenkinsfile</a> <a href="/tags/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 10px;">K8s学习笔记</a> <a href="/tags/apache/" style="font-size: 10px;">apache</a> <a href="/tags/array/" style="font-size: 10px;">array</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bs4/" style="font-size: 10px;">bs4</a> <a href="/tags/c/" style="font-size: 10px;">c</a> <a href="/tags/celery/" style="font-size: 10px;">celery</a> <a href="/tags/chmod/" style="font-size: 10px;">chmod</a> <a href="/tags/chown/" style="font-size: 10px;">chown</a> <a href="/tags/conf/" style="font-size: 10px;">conf</a> <a href="/tags/copy/" style="font-size: 10px;">copy</a> <a href="/tags/css/" style="font-size: 10px;">css</a> <a href="/tags/csv/" style="font-size: 12.31px;">csv</a> <a href="/tags/cygwin/" style="font-size: 10px;">cygwin</a> <a href="/tags/db/" style="font-size: 10px;">db</a> <a href="/tags/default/" style="font-size: 13.85px;">default</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 18.46px;">docker</a> <a href="/tags/docker-php/" style="font-size: 10px;">docker php</a> <a href="/tags/docker-weblogic/" style="font-size: 10px;">docker weblogic</a> <a href="/tags/emoji/" style="font-size: 10px;">emoji</a> <a href="/tags/es/" style="font-size: 10px;">es</a> <a href="/tags/ext/" style="font-size: 10px;">ext</a> <a href="/tags/extjs/" style="font-size: 11.54px;">extjs</a> <a href="/tags/for/" style="font-size: 10.77px;">for</a> <a href="/tags/git/" style="font-size: 11.54px;">git</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/gp/" style="font-size: 10.77px;">gp</a> <a href="/tags/greenplum/" style="font-size: 11.54px;">greenplum</a> <a href="/tags/gzip/" style="font-size: 10px;">gzip</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/host/" style="font-size: 10px;">host</a> <a href="/tags/ingore/" style="font-size: 10px;">ingore</a> <a href="/tags/install/" style="font-size: 10.77px;">install</a> <a href="/tags/iptables/" style="font-size: 10px;">iptables</a> <a href="/tags/java/" style="font-size: 10.77px;">java</a> <a href="/tags/js/" style="font-size: 15.38px;">js</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/k8s/" style="font-size: 12.31px;">k8s</a> <a href="/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/tags/ldap/" style="font-size: 10px;">ldap</a> <a href="/tags/linux/" style="font-size: 12.31px;">linux</a> <a href="/tags/lua/" style="font-size: 10px;">lua</a> <a href="/tags/lxml/" style="font-size: 10px;">lxml</a> <a href="/tags/md5/" style="font-size: 10px;">md5</a> <a href="/tags/mysql/" style="font-size: 14.62px;">mysql</a> <a href="/tags/nginx/" style="font-size: 13.85px;">nginx</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/openapi/" style="font-size: 10px;">openapi</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/other/" style="font-size: 13.85px;">other</a> <a href="/tags/pdo/" style="font-size: 10px;">pdo</a> <a href="/tags/pg/" style="font-size: 17.69px;">pg</a> <a href="/tags/php/" style="font-size: 16.92px;">php</a> <a href="/tags/php-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">php 扩展</a> <a href="/tags/php-%E6%8F%92%E4%BB%B6/" style="font-size: 10px;">php 插件</a> <a href="/tags/pip/" style="font-size: 10.77px;">pip</a> <a href="/tags/postgre/" style="font-size: 10px;">postgre</a> <a href="/tags/postgresql/" style="font-size: 11.54px;">postgresql</a> <a href="/tags/python/" style="font-size: 19.23px;">python</a> <a href="/tags/rancher/" style="font-size: 10px;">rancher</a> <a href="/tags/redis/" style="font-size: 13.85px;">redis</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/restful-api/" style="font-size: 10.77px;">restful api</a> <a href="/tags/session/" style="font-size: 10px;">session</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/split/" style="font-size: 10px;">split</a> <a href="/tags/sql/" style="font-size: 16.15px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/ssh/" style="font-size: 11.54px;">ssh</a> <a href="/tags/static/" style="font-size: 10px;">static</a> <a href="/tags/tar/" style="font-size: 10.77px;">tar</a> <a href="/tags/think/" style="font-size: 10px;">think</a> <a href="/tags/tmux/" style="font-size: 10px;">tmux</a> <a href="/tags/underscope/" style="font-size: 10px;">underscope</a> <a href="/tags/vb/" style="font-size: 10px;">vb</a> <a href="/tags/vim/" style="font-size: 10.77px;">vim</a> <a href="/tags/vue/" style="font-size: 11.54px;">vue</a> <a href="/tags/vue3/" style="font-size: 10px;">vue3</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/yum/" style="font-size: 10px;">yum</a> <a href="/tags/%E4%B8%9A%E5%8A%A1/" style="font-size: 10px;">业务</a> <a href="/tags/%E4%B8%AA%E4%BA%BA/" style="font-size: 10px;">个人</a> <a href="/tags/%E5%88%86%E5%8C%BA%E8%A1%A8/" style="font-size: 10px;">分区表</a> <a href="/tags/%E5%90%8C%E6%AD%A5/" style="font-size: 10px;">同步</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 13.08px;">大数据</a> <a href="/tags/%E5%AE%89%E8%A3%85/" style="font-size: 10px;">安装</a> <a href="/tags/%E5%AF%BC%E8%88%AA/" style="font-size: 10px;">导航</a> <a href="/tags/%E6%89%93%E5%8C%85/" style="font-size: 10px;">打包</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 10px;">模板</a> <a href="/tags/%E7%A9%BA%E6%A0%BC/" style="font-size: 10px;">空格</a> <a href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">编程语言</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E8%AF%AD%E6%B3%95/" style="font-size: 10px;">语法</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 19.23px;">转载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">进程</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">十月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/20/pg/%E6%95%B0%E6%8D%AE%E6%8F%92%E5%85%A5%E5%88%B0%E5%88%86%E5%8C%BA/">数据插入到分区</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/09/shell/%E6%AD%A3%E5%88%99/">常用的正则表达式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/22/other/%E8%BF%9C%E7%A8%8B%E5%8A%9E%E5%85%AC/">远程办公</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/20/apache/%E5%8E%8B%E6%B5%8B/">压测</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/14/shell/%E5%8E%8B%E7%BC%A9%E3%80%81%E8%A7%A3%E5%8E%8B/">压缩、解压</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 chaofml<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
 
 
+<script src="/js/script.js"></script>
 
 
+
+
+  </div>
 </body>
 </html>

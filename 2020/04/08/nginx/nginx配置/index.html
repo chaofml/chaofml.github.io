@@ -1,29 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
+  <meta charset="utf-8">
+  
 
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
-
-<script class="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
-  </script>
-<meta name="description" content="nginx配置 这是一篇比较全面的，关于nginx如何配置的手册。包含一般配置。示例等。须明白，配置不是代码，不一定严格按着配置顺序生效。">
+  
+  <title>nginx配置 | 超凡魔力</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="nginx配置 这是一篇比较全面的，关于nginx如何配置的手册。包含一般配置。示例等。须明白，配置不是代码，不一定严格按着配置顺序生效。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="nginx配置">
 <meta property="og:url" content="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/index.html">
@@ -36,231 +20,81 @@
 <meta property="og:image" content="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE.assets/1586766155163.png">
 <meta property="og:image" content="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE.assets/1586760006026.png">
 <meta property="article:published_time" content="2020-04-08T09:16:00.000Z">
-<meta property="article:modified_time" content="2023-01-20T06:37:17.439Z">
+<meta property="article:modified_time" content="2023-01-20T08:15:40.082Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="nginx">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE.assets/2826276797-5e8bbcbca0a24_articlex.png">
-
-
-<link rel="canonical" href="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/">
-
-
-<script class="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-<title>nginx配置 | 超凡魔力</title>
   
+    <link rel="alternate" href="/atom.xml" title="超凡魔力" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
 
+<meta name="generator" content="Hexo 5.2.0"></head>
 
-
-  <noscript>
-  <style>
-  body { margin-top: 2rem; }
-
-  .use-motion .menu-item,
-  .use-motion .sidebar,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header {
-    visibility: visible;
-  }
-
-  .use-motion .header,
-  .use-motion .site-brand-container .toggle,
-  .use-motion .footer { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle,
-  .use-motion .custom-logo-image {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line {
-    transform: scaleX(1);
-  }
-
-  .search-pop-overlay, .sidebar-nav { display: none; }
-  .sidebar-panel { display: block; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
-
-  <main class="main">
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">超凡魔力</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://blog.chaofml.cn"></form>
+      </div>
     </div>
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <h1 class="site-title">超凡魔力</h1>
-      <i class="logo-line"></i>
-    </a>
-      <p class="site-subtitle" itemprop="description">君子善思，善假于物，而不物于物。</p>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-nginx/nginx配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2020-04-08T09:16:00.000Z" itemprop="datePublished">2020-04-08</time>
+</a>
+    
   </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-</div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
         
   
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-  </div>
-
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#nginx%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">nginx配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%AE%B2%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">配置讲解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93"><span class="nav-number">2.1.</span> <span class="nav-text">整体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.1.</span> <span class="nav-text">整体结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">2.1.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%9D%97%E7%9A%84%E5%B5%8C%E5%A5%97"><span class="nav-number">2.1.3.</span> <span class="nav-text">指令块的嵌套</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E6%8C%87%E4%BB%A4"><span class="nav-number">2.2.</span> <span class="nav-text">全局指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#user"><span class="nav-number">2.2.1.</span> <span class="nav-text">user</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemon"><span class="nav-number">2.2.2.</span> <span class="nav-text">daemon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-processes"><span class="nav-number">2.2.3.</span> <span class="nav-text">worker_processes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-cpu-affinity"><span class="nav-number">2.2.4.</span> <span class="nav-text">worker_cpu_affinity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error-log"><span class="nav-number">2.2.5.</span> <span class="nav-text">error_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#access-log"><span class="nav-number">2.2.6.</span> <span class="nav-text">access_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rewrite-log"><span class="nav-number">2.2.7.</span> <span class="nav-text">rewrite_log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#log-format"><span class="nav-number">2.2.8.</span> <span class="nav-text">log_format</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pid"><span class="nav-number">2.2.9.</span> <span class="nav-text">pid</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-rlimit-nofile"><span class="nav-number">2.2.10.</span> <span class="nav-text">worker_rlimit_nofile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#events"><span class="nav-number">2.2.11.</span> <span class="nav-text">events</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#multi-accept"><span class="nav-number">2.2.11.1.</span> <span class="nav-text">multi_accept</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#accept-mutex-delay"><span class="nav-number">2.2.11.2.</span> <span class="nav-text">accept_mutex_delay</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http"><span class="nav-number">2.3.</span> <span class="nav-text">http</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">通用设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-cgi"><span class="nav-number">2.3.2.</span> <span class="nav-text">fast_cgi</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gzip%E6%A8%A1%E5%9D%97%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.3.3.</span> <span class="nav-text">gzip模块设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index%E6%98%BE%E7%A4%BA%E5%88%97%E8%A1%A8"><span class="nav-number">2.3.4.</span> <span class="nav-text">index显示列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#default-type"><span class="nav-number">2.3.5.</span> <span class="nav-text">default_type</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#server"><span class="nav-number">2.4.</span> <span class="nav-text">server</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#listen"><span class="nav-number">2.4.1.</span> <span class="nav-text">listen</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server-name"><span class="nav-number">2.4.2.</span> <span class="nav-text">server_name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#root"><span class="nav-number">2.4.3.</span> <span class="nav-text">root</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#include"><span class="nav-number">2.4.4.</span> <span class="nav-text">include</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error-page"><span class="nav-number">2.4.5.</span> <span class="nav-text">error_page</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index"><span class="nav-number">2.4.6.</span> <span class="nav-text">index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#server-tokens"><span class="nav-number">2.4.7.</span> <span class="nav-text">server_tokens</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#location"><span class="nav-number">2.4.8.</span> <span class="nav-text">location</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#location%E9%85%8D%E7%BD%AE%E8%A7%84%E5%88%99"><span class="nav-number">2.4.8.1.</span> <span class="nav-text">location配置规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84"><span class="nav-number">2.4.8.2.</span> <span class="nav-text">@路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">2.4.8.3.</span> <span class="nav-text">IP访问控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E8%AE%A4%E8%AF%81%E8%AE%BF%E9%97%AE"><span class="nav-number">2.4.8.4.</span> <span class="nav-text">用户认证访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nginx%E8%AE%BF%E9%97%AE%E7%8A%B6%E6%80%81%E7%9B%91%E6%8E%A7"><span class="nav-number">2.4.8.5.</span> <span class="nav-text">nginx访问状态监控</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%BC%96%E7%A0%81"><span class="nav-number">2.4.8.6.</span> <span class="nav-text">字符编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#expires%E7%BC%93%E5%AD%98"><span class="nav-number">2.4.8.7.</span> <span class="nav-text">expires缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etag%E7%BC%93%E5%AD%98"><span class="nav-number">2.4.8.8.</span> <span class="nav-text">etag缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#last-modify"><span class="nav-number">2.4.8.9.</span> <span class="nav-text">last-modify</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#add-header"><span class="nav-number">2.4.8.10.</span> <span class="nav-text">add_header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rewrite%E9%87%8D%E5%86%99%E6%9C%BA%E5%88%B6"><span class="nav-number">2.4.8.11.</span> <span class="nav-text">rewrite重写机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#try-files"><span class="nav-number">2.4.8.12.</span> <span class="nav-text">try_files</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#return"><span class="nav-number">2.4.8.13.</span> <span class="nav-text">return</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#proxy-pass%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-number">2.4.8.14.</span> <span class="nav-text">proxy_pass反向代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#upstream"><span class="nav-number">2.4.8.15.</span> <span class="nav-text">upstream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fast-pass"><span class="nav-number">2.4.9.</span> <span class="nav-text">fast_pass</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fastcgi-pass"><span class="nav-number">2.4.9.1.</span> <span class="nav-text">fastcgi_pass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastcgi-param"><span class="nav-number">2.4.9.2.</span> <span class="nav-text">fastcgi_param</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastcgi-index"><span class="nav-number">2.4.9.3.</span> <span class="nav-text">fastcgi_index</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastcgi-split-path-info"><span class="nav-number">2.4.9.4.</span> <span class="nav-text">fastcgi_split_path_info</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B8%A9%E4%BA%86%E5%A5%BD%E5%A4%9A%E6%AC%A1%E4%BE%9D%E6%97%A7%E4%B8%8D%E8%AE%B0%E5%BE%97%E6%80%8E%E4%B9%88%E8%AE%BE%E7%BD%AE%E7%9A%84ThinkPHP"><span class="nav-number">2.4.9.5.</span> <span class="nav-text">踩了好多次依旧不记得怎么设置的ThinkPHP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cgi-fix-pathinfo"><span class="nav-number">2.4.9.6.</span> <span class="nav-text">cgi.fix_pathinfo</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if-%E6%A8%A1%E5%9D%97"><span class="nav-number">2.4.10.</span> <span class="nav-text">if 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-number">2.4.10.1.</span> <span class="nav-text">文件判断</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#https"><span class="nav-number">2.5.</span> <span class="nav-text">https</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97"><span class="nav-number">2.6.</span> <span class="nav-text">日志</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEaccess-log"><span class="nav-number">2.6.0.0.1.</span> <span class="nav-text">设置access_log</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="nav-number">2.6.0.0.2.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">2.6.0.0.3.</span> <span class="nav-text">作用域</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.6.0.0.4.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8log-format%E8%87%AA%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.6.0.0.5.</span> <span class="nav-text">使用log_format自定义日志格式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-2"><span class="nav-number">2.6.0.0.6.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AEerror-log"><span class="nav-number">2.6.0.0.7.</span> <span class="nav-text">设置error_log</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-3"><span class="nav-number">2.6.0.0.8.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-1"><span class="nav-number">2.6.0.0.9.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#open-log-file-cache"><span class="nav-number">2.6.0.0.10.</span> <span class="nav-text">open_log_file_cache</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-4"><span class="nav-number">2.6.0.0.11.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-2"><span class="nav-number">2.6.0.0.12.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.6.0.0.13.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">2.7.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#geo"><span class="nav-number">2.8.</span> <span class="nav-text">geo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">启动命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97"><span class="nav-number">4.</span> <span class="nav-text">模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%AE%89%E8%A3%85"><span class="nav-number">4.1.</span> <span class="nav-text">模块安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E8%A7%A3%E8%AF%BB"><span class="nav-number">4.2.</span> <span class="nav-text">模块解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ngx-http-stub-status-module"><span class="nav-number">4.3.</span> <span class="nav-text">ngx_http_stub_status_module</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">5.</span> <span class="nav-text">附录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%9A%84%E4%B8%89%E5%A4%A7%E6%96%B9%E9%9D%A2"><span class="nav-number">6.</span> <span class="nav-text">Nginx服务器性能优化的三大方面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx%E7%9A%84worker%E8%BF%9B%E7%A8%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">6.1.</span> <span class="nav-text">Nginx的worker进程配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-processes-1"><span class="nav-number">6.1.1.</span> <span class="nav-text">worker_processes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#accept-mutex"><span class="nav-number">6.1.2.</span> <span class="nav-text">accept_mutex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#accept-mutex-delay-1"><span class="nav-number">6.1.3.</span> <span class="nav-text">accept_mutex_delay</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-connections"><span class="nav-number">6.1.4.</span> <span class="nav-text">worker_connections</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#worker-rlimit-nofile-1"><span class="nav-number">6.1.5.</span> <span class="nav-text">worker_rlimit_nofile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-accept-1"><span class="nav-number">6.1.6.</span> <span class="nav-text">multi_accept</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#use"><span class="nav-number">6.1.7.</span> <span class="nav-text">use</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx%E7%9A%84I-O%E9%85%8D%E7%BD%AE"><span class="nav-number">6.2.</span> <span class="nav-text">Nginx的I&#x2F;O配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sendfile"><span class="nav-number">6.2.1.</span> <span class="nav-text">sendfile</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Direct-I-O"><span class="nav-number">6.2.2.</span> <span class="nav-text">Direct I&#x2F;O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5I-O"><span class="nav-number">6.2.3.</span> <span class="nav-text">异步I&#x2F;O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%BC%E5%90%88I-O%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.2.4.</span> <span class="nav-text">综合I&#x2F;O设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx%E7%9A%84TCP%E9%85%8D%E7%BD%AE"><span class="nav-number">6.3.</span> <span class="nav-text">Nginx的TCP配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-NODELAY"><span class="nav-number">6.3.1.</span> <span class="nav-text">TCP_NODELAY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-CORK"><span class="nav-number">6.3.2.</span> <span class="nav-text">TCP_CORK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E7%BB%BC%E5%90%88"><span class="nav-number">6.4.</span> <span class="nav-text">大综合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%AF%B9%E6%AF%94"><span class="nav-number">6.5.</span> <span class="nav-text">性能测试对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%83%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#set%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.</span> <span class="nav-text">set方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add-header-1"><span class="nav-number">7.2.</span> <span class="nav-text">add_header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deny"><span class="nav-number">7.3.</span> <span class="nav-text">deny</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#return-1"><span class="nav-number">7.4.</span> <span class="nav-text">return</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E5%90%88nodejs"><span class="nav-number">7.5.</span> <span class="nav-text">配合nodejs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">7.6.</span> <span class="nav-text">调试环境搭建</span></a></li></ol></li></ol></div>
-        </section>
-        <!--/noindex-->
-
-        <section class="site-overview-wrap sidebar-panel">
-          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">chaofml</p>
-  <div class="site-description" itemprop="description">思绪偶尔会在这里停留</div>
-</div>
-<div class="site-state-wrap site-overview-item animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives">
-          <span class="site-state-item-count">369</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-        <span class="site-state-item-count">15</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-        <span class="site-state-item-count">99</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-        </section>
-      </div>
-    </div>
-  </aside>
-  <div class="sidebar-dimmer"></div>
-
-
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
-
-
-    <div class="main-inner post posts-expand">
-
-
+    <h1 class="article-title" itemprop="name">
+      nginx配置
+    </h1>
   
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="chaofml">
-      <meta itemprop="description" content="思绪偶尔会在这里停留">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="超凡魔力">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          nginx配置
-        </h1>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-04-08 09:16:00" itemprop="dateCreated datePublished" datetime="2020-04-08T09:16:00+00:00">2020-04-08</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-01-20 06:37:17" itemprop="dateModified" datetime="2023-01-20T06:37:17+00:00">2023-01-20</time>
-      </span>
-
-  
-</div>
-
-        </div>
       </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
+    <div class="article-entry" itemprop="articleBody">
+      
         <h1 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h1><blockquote>
 <p>这是一篇比较全面的，关于nginx如何配置的手册。包含一般配置。示例等。须明白，配置不是代码，不一定严格按着配置顺序生效。</p>
 </blockquote>
@@ -1565,101 +1399,153 @@ http &#123;
 
 <h2 id="配合nodejs"><a href="#配合nodejs" class="headerlink" title="配合nodejs"></a>配合nodejs</h2><h2 id="调试环境搭建"><a href="#调试环境搭建" class="headerlink" title="调试环境搭建"></a>调试环境搭建</h2><p>使用docker-compose等方式。</p>
 
+      
     </div>
+    <footer class="article-footer">
+      <a data-url="https://blog.chaofml.cn/2020/04/08/nginx/nginx%E9%85%8D%E7%BD%AE/" data-id="cld48zep200q311o04n53cro9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li></ul>
 
-    
-    
-    
-
-    <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/nginx/" rel="tag"># nginx</a>
-          </div>
-
-        
-
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2020/04/07/docker-compose/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2lnmp%E7%8E%AF%E5%A2%83/" rel="prev" title="使用docker-compose部署lnmp环境">
-                  <i class="fa fa-chevron-left"></i> 使用docker-compose部署lnmp环境
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2020/04/09/nginx/Nginx+Lua%E5%AE%9E%E7%8E%B0%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" rel="next" title="Nginx+Lua实现灰度发布">
-                  Nginx+Lua实现灰度发布 <i class="fa fa-chevron-right"></i>
-                </a>
-            </div>
-          </div>
     </footer>
-  </article>
-</div>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/09/nginx/Nginx+Lua%E5%AE%9E%E7%8E%B0%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Nginx+Lua实现灰度发布
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/07/docker-compose/%E4%BD%BF%E7%94%A8docker-compose%E9%83%A8%E7%BD%B2lnmp%E7%8E%AF%E5%A2%83/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用docker-compose部署lnmp环境</div>
+    </a>
+  
+</nav>
 
+  
+</article>
 
-
-
-
-
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      const commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">豫ICP备17029463号-1 </a>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/default/">default</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/docker/">docker</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/docker/%E6%B8%85%E7%90%86/">清理</a></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">nginx</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">other</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python-tools/">python - tools</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%AD%A3%E5%88%99/">正则</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/">转载</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/js/">js</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BD%AC%E8%BD%BD/shell/">shell</a></li></ul></li></ul>
+    </div>
   </div>
 
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">chaofml</span>
-</div>
 
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">-shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkinsfile/" rel="tag">Jenkinsfile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">K8s学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apache/" rel="tag">apache</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/array/" rel="tag">array</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/awk/" rel="tag">awk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bs4/" rel="tag">bs4</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/" rel="tag">c</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/celery/" rel="tag">celery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chmod/" rel="tag">chmod</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chown/" rel="tag">chown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/conf/" rel="tag">conf</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/copy/" rel="tag">copy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/css/" rel="tag">css</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/csv/" rel="tag">csv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cygwin/" rel="tag">cygwin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">db</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/default/" rel="tag">default</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/django/" rel="tag">django</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-php/" rel="tag">docker php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker-weblogic/" rel="tag">docker weblogic</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/emoji/" rel="tag">emoji</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/es/" rel="tag">es</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ext/" rel="tag">ext</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/extjs/" rel="tag">extjs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/for/" rel="tag">for</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag">go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gp/" rel="tag">gp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gzip/" rel="tag">gzip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/host/" rel="tag">host</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ingore/" rel="tag">ingore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/install/" rel="tag">install</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/" rel="tag">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/js/" rel="tag">js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/k8s/" rel="tag">k8s</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ldap/" rel="tag">ldap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lua/" rel="tag">lua</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lxml/" rel="tag">lxml</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/md5/" rel="tag">md5</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openapi/" rel="tag">openapi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/openssl/" rel="tag">openssl</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">other</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pdo/" rel="tag">pdo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pg/" rel="tag">pg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php-%E6%89%A9%E5%B1%95/" rel="tag">php 扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php-%E6%8F%92%E4%BB%B6/" rel="tag">php 插件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pip/" rel="tag">pip</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgre/" rel="tag">postgre</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/postgresql/" rel="tag">postgresql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rancher/" rel="tag">rancher</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/requests/" rel="tag">requests</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/restful-api/" rel="tag">restful api</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/session/" rel="tag">session</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/socat/" rel="tag">socat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/split/" rel="tag">split</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql/" rel="tag">sql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssh/" rel="tag">ssh</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/static/" rel="tag">static</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tar/" rel="tag">tar</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/think/" rel="tag">think</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tmux/" rel="tag">tmux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/underscope/" rel="tag">underscope</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vb/" rel="tag">vb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag">vim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue/" rel="tag">vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vue3/" rel="tag">vue3</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/" rel="tag">web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yum/" rel="tag">yum</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%9A%E5%8A%A1/" rel="tag">业务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA/" rel="tag">个人</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%8C%BA%E8%A1%A8/" rel="tag">分区表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8C%E6%AD%A5/" rel="tag">同步</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AE%89%E8%A3%85/" rel="tag">安装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%BC%E8%88%AA/" rel="tag">导航</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%89%93%E5%8C%85/" rel="tag">打包</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag">模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A9%BA%E6%A0%BC/" rel="tag">空格</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" rel="tag">编程语言</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%AD%E6%B3%95/" rel="tag">语法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BD%AC%E8%BD%BD/" rel="tag">转载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%9B%E7%A8%8B/" rel="tag">进程</a></li></ul>
     </div>
-  </footer>
-
-  
-  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
-
-  
-
-
-
-
-
+  </div>
 
 
   
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/shell/" style="font-size: 10px;">-shell</a> <a href="/tags/Jenkinsfile/" style="font-size: 10px;">Jenkinsfile</a> <a href="/tags/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 10px;">K8s学习笔记</a> <a href="/tags/apache/" style="font-size: 10px;">apache</a> <a href="/tags/array/" style="font-size: 10px;">array</a> <a href="/tags/awk/" style="font-size: 10px;">awk</a> <a href="/tags/bs4/" style="font-size: 10px;">bs4</a> <a href="/tags/c/" style="font-size: 10px;">c</a> <a href="/tags/celery/" style="font-size: 10px;">celery</a> <a href="/tags/chmod/" style="font-size: 10px;">chmod</a> <a href="/tags/chown/" style="font-size: 10px;">chown</a> <a href="/tags/conf/" style="font-size: 10px;">conf</a> <a href="/tags/copy/" style="font-size: 10px;">copy</a> <a href="/tags/css/" style="font-size: 10px;">css</a> <a href="/tags/csv/" style="font-size: 12.31px;">csv</a> <a href="/tags/cygwin/" style="font-size: 10px;">cygwin</a> <a href="/tags/db/" style="font-size: 10px;">db</a> <a href="/tags/default/" style="font-size: 13.85px;">default</a> <a href="/tags/django/" style="font-size: 10px;">django</a> <a href="/tags/docker/" style="font-size: 18.46px;">docker</a> <a href="/tags/docker-php/" style="font-size: 10px;">docker php</a> <a href="/tags/docker-weblogic/" style="font-size: 10px;">docker weblogic</a> <a href="/tags/emoji/" style="font-size: 10px;">emoji</a> <a href="/tags/es/" style="font-size: 10px;">es</a> <a href="/tags/ext/" style="font-size: 10px;">ext</a> <a href="/tags/extjs/" style="font-size: 11.54px;">extjs</a> <a href="/tags/for/" style="font-size: 10.77px;">for</a> <a href="/tags/git/" style="font-size: 11.54px;">git</a> <a href="/tags/go/" style="font-size: 10px;">go</a> <a href="/tags/gp/" style="font-size: 10.77px;">gp</a> <a href="/tags/greenplum/" style="font-size: 11.54px;">greenplum</a> <a href="/tags/gzip/" style="font-size: 10px;">gzip</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/host/" style="font-size: 10px;">host</a> <a href="/tags/ingore/" style="font-size: 10px;">ingore</a> <a href="/tags/install/" style="font-size: 10.77px;">install</a> <a href="/tags/iptables/" style="font-size: 10px;">iptables</a> <a href="/tags/java/" style="font-size: 10.77px;">java</a> <a href="/tags/js/" style="font-size: 15.38px;">js</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/k8s/" style="font-size: 12.31px;">k8s</a> <a href="/tags/kafka/" style="font-size: 10px;">kafka</a> <a href="/tags/ldap/" style="font-size: 10px;">ldap</a> <a href="/tags/linux/" style="font-size: 12.31px;">linux</a> <a href="/tags/lua/" style="font-size: 10px;">lua</a> <a href="/tags/lxml/" style="font-size: 10px;">lxml</a> <a href="/tags/md5/" style="font-size: 10px;">md5</a> <a href="/tags/mysql/" style="font-size: 14.62px;">mysql</a> <a href="/tags/nginx/" style="font-size: 13.85px;">nginx</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/openapi/" style="font-size: 10px;">openapi</a> <a href="/tags/openssl/" style="font-size: 10px;">openssl</a> <a href="/tags/other/" style="font-size: 13.85px;">other</a> <a href="/tags/pdo/" style="font-size: 10px;">pdo</a> <a href="/tags/pg/" style="font-size: 17.69px;">pg</a> <a href="/tags/php/" style="font-size: 16.92px;">php</a> <a href="/tags/php-%E6%89%A9%E5%B1%95/" style="font-size: 10px;">php 扩展</a> <a href="/tags/php-%E6%8F%92%E4%BB%B6/" style="font-size: 10px;">php 插件</a> <a href="/tags/pip/" style="font-size: 10.77px;">pip</a> <a href="/tags/postgre/" style="font-size: 10px;">postgre</a> <a href="/tags/postgresql/" style="font-size: 11.54px;">postgresql</a> <a href="/tags/python/" style="font-size: 19.23px;">python</a> <a href="/tags/rancher/" style="font-size: 10px;">rancher</a> <a href="/tags/redis/" style="font-size: 13.85px;">redis</a> <a href="/tags/requests/" style="font-size: 10px;">requests</a> <a href="/tags/restful-api/" style="font-size: 10.77px;">restful api</a> <a href="/tags/session/" style="font-size: 10px;">session</a> <a href="/tags/shell/" style="font-size: 20px;">shell</a> <a href="/tags/socat/" style="font-size: 10px;">socat</a> <a href="/tags/split/" style="font-size: 10px;">split</a> <a href="/tags/sql/" style="font-size: 16.15px;">sql</a> <a href="/tags/sqlite/" style="font-size: 10px;">sqlite</a> <a href="/tags/ssh/" style="font-size: 11.54px;">ssh</a> <a href="/tags/static/" style="font-size: 10px;">static</a> <a href="/tags/tar/" style="font-size: 10.77px;">tar</a> <a href="/tags/think/" style="font-size: 10px;">think</a> <a href="/tags/tmux/" style="font-size: 10px;">tmux</a> <a href="/tags/underscope/" style="font-size: 10px;">underscope</a> <a href="/tags/vb/" style="font-size: 10px;">vb</a> <a href="/tags/vim/" style="font-size: 10.77px;">vim</a> <a href="/tags/vue/" style="font-size: 11.54px;">vue</a> <a href="/tags/vue3/" style="font-size: 10px;">vue3</a> <a href="/tags/web/" style="font-size: 10px;">web</a> <a href="/tags/yum/" style="font-size: 10px;">yum</a> <a href="/tags/%E4%B8%9A%E5%8A%A1/" style="font-size: 10px;">业务</a> <a href="/tags/%E4%B8%AA%E4%BA%BA/" style="font-size: 10px;">个人</a> <a href="/tags/%E5%88%86%E5%8C%BA%E8%A1%A8/" style="font-size: 10px;">分区表</a> <a href="/tags/%E5%90%8C%E6%AD%A5/" style="font-size: 10px;">同步</a> <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="font-size: 13.08px;">大数据</a> <a href="/tags/%E5%AE%89%E8%A3%85/" style="font-size: 10px;">安装</a> <a href="/tags/%E5%AF%BC%E8%88%AA/" style="font-size: 10px;">导航</a> <a href="/tags/%E6%89%93%E5%8C%85/" style="font-size: 10px;">打包</a> <a href="/tags/%E6%A8%A1%E6%9D%BF/" style="font-size: 10px;">模板</a> <a href="/tags/%E7%A9%BA%E6%A0%BC/" style="font-size: 10px;">空格</a> <a href="/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" style="font-size: 10px;">编程语言</a> <a href="/tags/%E7%BD%91%E7%BB%9C/" style="font-size: 10px;">网络</a> <a href="/tags/%E8%AF%AD%E6%B3%95/" style="font-size: 10px;">语法</a> <a href="/tags/%E8%BD%AC%E8%BD%BD/" style="font-size: 19.23px;">转载</a> <a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 10px;">进程</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">一月 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">十月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">九月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">五月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">四月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">二月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">一月 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">十二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/11/">十一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">十月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/09/">九月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">八月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">七月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">六月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">五月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">四月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/02/">二月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">九月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">八月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">七月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/20/pg/%E6%95%B0%E6%8D%AE%E6%8F%92%E5%85%A5%E5%88%B0%E5%88%86%E5%8C%BA/">数据插入到分区</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/09/shell/%E6%AD%A3%E5%88%99/">常用的正则表达式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/22/other/%E8%BF%9C%E7%A8%8B%E5%8A%9E%E5%85%AC/">远程办公</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/20/apache/%E5%8E%8B%E6%B5%8B/">压测</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/14/shell/%E5%8E%8B%E7%BC%A9%E3%80%81%E8%A7%A3%E5%8E%8B/">压缩、解压</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2023 chaofml<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
 
 
 
 
+<script src="/js/script.js"></script>
 
 
+
+
+  </div>
 </body>
 </html>
