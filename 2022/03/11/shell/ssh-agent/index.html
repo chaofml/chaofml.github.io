@@ -21,7 +21,7 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Muse","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+    var CONFIG = {"hostname":"blog.chaofml.cn","root":"/","images":"/images","scheme":"Gemini","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
   </script>
 <meta name="description" content="在免密码登录ssh的基础上，实现，从一个机器上，在多台机器上相互免密码登录。 最开始，我以为： 比如，有1台机器O，然后配置好O在A、B、C上的面免密登录。然后呢，A、B、C之间，不设置免密登录。在O机器上设置ssh-agent，然后，使用O，ssh登录A，再从As可以面密登录B、C，不需要密码，这种场景。 实际上呢，顶多经过一次堡垒机，还能使用自己的秘钥登录。">
 <meta property="og:type" content="article">
@@ -31,7 +31,7 @@
 <meta property="og:description" content="在免密码登录ssh的基础上，实现，从一个机器上，在多台机器上相互免密码登录。 最开始，我以为： 比如，有1台机器O，然后配置好O在A、B、C上的面免密登录。然后呢，A、B、C之间，不设置免密登录。在O机器上设置ssh-agent，然后，使用O，ssh登录A，再从As可以面密登录B、C，不需要密码，这种场景。 实际上呢，顶多经过一次堡垒机，还能使用自己的秘钥登录。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-11T14:28:45.000Z">
-<meta property="article:modified_time" content="2023-01-20T05:51:58.022Z">
+<meta property="article:modified_time" content="2023-01-20T06:31:09.580Z">
 <meta property="article:author" content="chaofml">
 <meta property="article:tag" content="shell">
 <meta property="article:tag" content="ssh">
@@ -243,7 +243,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2023-01-20 05:51:58" itemprop="dateModified" datetime="2023-01-20T05:51:58+00:00">2023-01-20</time>
+        <time title="修改时间：2023-01-20 06:31:09" itemprop="dateModified" datetime="2023-01-20T06:31:09+00:00">2023-01-20</time>
       </span>
 
   
@@ -427,7 +427,7 @@ sshpass<span aria-hidden="true" class="line-numbers-rows"><span></span><span></s
 
   
   <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
   
 
