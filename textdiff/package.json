@@ -1,0 +1,10 @@
+{
+  "name": "textdiff",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地文本差异对比工具（Monaco Diff Editor）。此文件仅用于记录静态资源来源，应用本身不需要构建。",
+  "license": "ISC",
+  "dependencies": {
+    "monaco-editor": "0.45.0"
+  }
+}

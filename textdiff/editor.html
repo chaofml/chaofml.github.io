@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>在线编辑器 · 文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{overflow:hidden}
+
+  /* ---------- 主体：左侧文档列表 + 右侧编辑区 ---------- */
+  #body{flex:1 1 auto;min-height:0;display:flex}
+
+  #side{
+    flex:0 0 210px;display:flex;flex-direction:column;
+    border-right:1px solid var(--bar-border);background:#fbfbfc;
+  }
+  .side-head{
+    display:flex;align-items:center;gap:6px;flex:0 0 auto;
+    padding:5px 8px;border-bottom:1px solid var(--bar-border);
+    background:var(--bar-bg);font-size:12px;color:var(--text-faint);
+  }
+  #docList{flex:1 1 auto;overflow:auto;padding:4px}
+  .doc{
+    display:flex;align-items:center;gap:6px;
+    padding:5px 8px;border-radius:6px;cursor:pointer;
+    font-size:12.5px;color:var(--text);margin-bottom:2px;
+  }
+  .doc:hover{background:#eef1f5}
+  .doc.on{background:var(--accent-weak);color:var(--accent);font-weight:600}
+  .doc .nm{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .doc .tm{flex:0 0 auto;font-size:11px;color:var(--text-faint);font-variant-numeric:tabular-nums}
+  .doc.on .tm{color:var(--accent)}
+  .doc .del{
+    flex:0 0 auto;display:none;border:none;background:transparent;padding:0 3px;
+    color:var(--text-faint);cursor:pointer;font-size:14px;line-height:1;
+  }
+  .doc:hover .del{display:block}
+  .doc .del:hover{color:var(--del)}
+  .side-tip{
+    flex:0 0 auto;padding:6px 10px;border-top:1px solid var(--bar-border);
+    font-size:11px;line-height:1.75;color:var(--text-faint);
+  }
+
+  #main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+  #editHost{flex:1 1 auto;min-height:0}
+
+  /* ---------- 状态栏 ---------- */
+  #statusbar{
+    flex:0 0 auto;display:flex;align-items:center;gap:10px;
+    padding:3px 10px;border-top:1px solid var(--bar-border);background:var(--bar-bg);
+    font-size:12px;color:var(--text-faint);font-variant-numeric:tabular-nums;
+  }
+  #statusbar .spacer{flex:1 1 auto}
+  #stName{color:var(--text-dim);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #stSave.ok{color:var(--add)}
+  #stSave.warn{color:#9a6700;font-weight:600}
+  #stSave.dirty{color:var(--text-dim)}
+  .sep2{width:1px;height:12px;background:var(--bar-border)}
+  input.name-in{
+    font:inherit;font-size:12px;padding:1px 6px;border:1px solid var(--bar-border);
+    border-radius:5px;color:var(--text);background:#fff;width:220px;
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="center">
+    <div class="loading">
+      <div class="spinner"></div>
+      正在加载编辑器内核…
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="toolbar">
+    <a class="back" href="index.html" title="返回工具箱">← 工具箱</a>
+    <span class="brand">在线编辑器</span>
+    <span class="ver" title="页面版本">v1</span>
+    <span class="sep"></span>
+    <button id="btnNew" title="新建文档（Ctrl+Alt+N）">新建</button>
+    <button id="btnOpen" title="打开本地文件（可写回原文件）">打开本地</button>
+    <button id="btnSave" title="保存到本地（Ctrl+S）；已关联本地文件的会写回原文件">保存到本地</button>
+    <button id="btnSaveAs" title="另存为新的本地文件">另存为</button>
+    <span class="sep"></span>
+    <span class="hint-inline" style="color:var(--text-faint);font-size:11px">语言</span>
+    <select id="langSel" title="语法高亮（按文件名自动识别，也可手动指定）"></select>
+    <span class="spacer"></span>
+    <span class="diffstat" id="autoState"></span>
+  </div>
+
+  <div id="hintBar" class="hintbar" hidden></div>
+
+  <div id="body">
+    <aside id="side">
+      <div class="side-head">
+        <button class="mini" id="btnNew2">＋ 新建</button>
+        <span class="spacer" style="flex:1 1 auto"></span>
+        <span id="docCount"></span>
+      </div>
+      <div id="docList"></div>
+      <div class="side-tip">
+        内容会自动缓存在浏览器里，关掉窗口也不会丢；<br>
+        但缓存可能被清理，<b>重要内容请点「保存到本地」</b>。
+      </div>
+    </aside>
+    <section id="main">
+      <div id="editHost"></div>
+      <div id="statusbar">
+        <span id="stName">—</span>
+        <span class="sep2"></span>
+        <span id="stPos">行 1，列 1</span>
+        <span class="sep2"></span>
+        <span id="stCount">0 字符 · 0 行</span>
+        <span class="sep2"></span>
+        <span id="stEol">LF</span>
+        <span class="spacer"></span>
+        <span id="stSave">—</span>
+      </div>
+    </section>
+  </div>
+</div>
+
+<input type="file" id="filePick" hidden>
+
+<script src="vs/loader.js"></script>
+<script src="shared.js"></script>
+<script>
+TD.bootMonaco(function () {
+
+  var FS_OK = (typeof window.showOpenFilePicker === 'function' && typeof window.showSaveFilePicker === 'function');
+
+  if (location.protocol === 'file:') {
+    var hb = document.getElementById('hintBar');
+    hb.hidden = false;
+    hb.innerHTML = '<b>提示：</b>当前以 file:// 方式打开，工作线程可能无法启动，且浏览器缓存/本地文件接口可能不可用。' +
+                   '建议改为双击同目录下的 <code>start.bat</code> 使用。';
+  }
+
+  var MONO = '"Cascadia Mono", Consolas, "Microsoft YaHei", monospace';
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ============================================================ IndexedDB 封装
+  var DB_NAME = 'textdiff-editor';
+  var DB_VER = 1;
+  var dbp = null;
+
+  function openDb() {
+    if (dbp) { return dbp; }
+    dbp = new Promise(function (resolve, reject) {
+      var req = indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = function () {
+        var db = req.result;
+        if (!db.objectStoreNames.contains('docs')) { db.createObjectStore('docs', { keyPath: 'id' }); }
+        if (!db.objectStoreNames.contains('meta')) { db.createObjectStore('meta'); }
+      };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+    return dbp;
+  }
+
+  function idb(store, mode, fn) {
+    return openDb().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(store, mode);
+        var os = tx.objectStore(store);
+        var out;
+        var r = fn(os);
+        if (r) {
+          r.onsuccess = function () { out = r.result; };
+          r.onerror = function () { reject(r.error); };
+        }
+        tx.oncomplete = function () { resolve(out); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+
+  var store = {
+    all:   function () { return idb('docs', 'readonly',  function (os) { return os.getAll(); }).catch(function () { return []; }); },
+    put:   function (d) { return idb('docs', 'readwrite', function (os) { return os.put(d); }).catch(function () {}); },
+    del:   function (id) { return idb('docs', 'readwrite', function (os) { return os.delete(id); }).catch(function () {}); },
+    getMeta: function (k, dflt) {
+      return idb('meta', 'readonly', function (os) { return os.get(k); })
+        .then(function (v) { return (v === undefined || v === null) ? dflt : v; })
+        .catch(function () { return dflt; });
+    },
+    setMeta: function (k, v) { return idb('meta', 'readwrite', function (os) { return os.put(v, k); }).catch(function () {}); }
+  };
+
+  // ============================================================ 语言识别
+  var EXT_LANG = {
+    json: 'json', jsonc: 'json', sql: 'sql', md: 'markdown', markdown: 'markdown',
+    xml: 'xml', html: 'html', htm: 'html', js: 'javascript', ts: 'typescript',
+    css: 'css', less: 'less', scss: 'scss', php: 'php', py: 'python',
+    sh: 'shell', bash: 'shell', bat: 'bat', cmd: 'bat',
+    yml: 'yaml', yaml: 'yaml', ini: 'ini', conf: 'ini',
+    java: 'java', c: 'c', h: 'c', cpp: 'cpp', go: 'go', rb: 'ruby', lua: 'lua',
+    csv: 'plaintext', tsv: 'plaintext', log: 'plaintext', txt: 'plaintext'
+  };
+  function langForName(name) {
+    var m = /\.([A-Za-z0-9]+)$/.exec(name || '');
+    if (!m) { return 'plaintext'; }
+    return EXT_LANG[m[1].toLowerCase()] || 'plaintext';
+  }
+
+  // 语言下拉（手挑常用，避免几十项难找）
+  var LANGS = [
+    ['plaintext', '纯文本'], ['json', 'JSON'], ['sql', 'SQL'], ['markdown', 'Markdown'],
+    ['xml', 'XML'], ['html', 'HTML'], ['javascript', 'JavaScript'], ['typescript', 'TypeScript'],
+    ['css', 'CSS'], ['php', 'PHP'], ['python', 'Python'], ['shell', 'Shell'],
+    ['bat', 'Bat'], ['yaml', 'YAML'], ['ini', 'INI'], ['java', 'Java'], ['c', 'C'], ['cpp', 'C++']
+  ];
+
+  // ============================================================ 状态
+  var docs = [];             // [{id,name,content,lang,createdAt,updatedAt,handle|null,lastLocalAt|null}]
+  var curId = null;
+  var curDoc = null;
+  var loading = false;       // 程序写入内容时置位，避免误判"用户编辑"
+  var dirty = false;         // 有未落盘的改动
+  var autoTimer = null;
+  var lastAutoAt = null;
+
+  function uid() {
+    return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+  function fmtTime(ts) {
+    if (!ts) { return ''; }
+    var d = new Date(ts);
+    var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+    return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+  }
+  function fmtHM(ts) {
+    if (!ts) { return ''; }
+    var d = new Date(ts);
+    var p = function (n) { return n < 10 ? '0' + n : '' + n; };
+    return p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  // ============================================================ 编辑器
+  var ed = monaco.editor.create($('editHost'), {
+    language: 'plaintext',
+    wordWrap: 'on',
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    fontSize: 13,
+    lineHeight: 20,
+    fontFamily: MONO,
+    renderWhitespace: 'selection',
+    tabSize: 2,
+    padding: { top: 8, bottom: 8 },
+    fixedOverflowWidgets: true,
+    scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 }
+  });
+  var model = ed.getModel();
+
+  // 语言下拉填充
+  LANGS.forEach(function (p) {
+    var o = document.createElement('option');
+    o.value = p[0];
+    o.textContent = p[1];
+    $('langSel').appendChild(o);
+  });
+
+  // ============================================================ 渲染文档列表
+  function renderList() {
+    var box = $('docList');
+    box.innerHTML = '';
+    var sorted = docs.slice().sort(function (a, b) { return (a.createdAt || 0) - (b.createdAt || 0); });
+    sorted.forEach(function (d) {
+      var el = document.createElement('div');
+      el.className = 'doc' + (d.id === curId ? ' on' : '');
+      el.setAttribute('data-id', d.id);
+      el.innerHTML = '<span class="nm">' + TD.esc(d.name) + '</span>'
+        + '<span class="tm">' + fmtHM(d.updatedAt) + '</span>'
+        + '<button class="del" title="删除">×</button>';
+      el.onclick = function (e) {
+        if (e.target && e.target.classList && e.target.classList.contains('del')) { return; }
+        switchTo(d.id);
+      };
+      el.ondblclick = function (e) {
+        if (e.target && e.target.classList && e.target.classList.contains('del')) { return; }
+        renameDoc(d.id);
+      };
+      el.querySelector('.del').onclick = function (e) {
+        e.stopPropagation();
+        removeDoc(d.id);
+      };
+      box.appendChild(el);
+    });
+    $('docCount').textContent = docs.length + ' 份';
+  }
+
+  function updateStatus() {
+    var pos = ed.getPosition() || { lineNumber: 1, column: 1 };
+    var v = model.getValue();
+    $('stPos').textContent = '行 ' + pos.lineNumber + '，列 ' + pos.column;
+    $('stCount').textContent = v.length.toLocaleString() + ' 字符 · ' + TD.lineCount(model) + ' 行';
+    $('stEol').textContent = (model.getEOL() === '\r\n') ? 'CRLF' : 'LF';
+    $('stName').textContent = curDoc ? (curDoc.name + (curDoc.handle ? '（已关联本地文件）' : '')) : '—';
+
+    var saveEl = $('stSave');
+    if (!curDoc) { saveEl.textContent = '—'; saveEl.className = ''; }
+    else if (dirty) { saveEl.textContent = '待自动保存…'; saveEl.className = 'dirty'; }
+    else { saveEl.textContent = '已自动保存 ' + fmtTime(lastAutoAt); saveEl.className = 'ok'; }
+
+    if (curDoc && curDoc.lastLocalAt) {
+      var stale = (Date.now() - curDoc.lastLocalAt) > 30 * 60 * 1000;
+      $('autoState').innerHTML = '上次保存到本地 ' + fmtTime(curDoc.lastLocalAt)
+        + (stale ? ' <span style="color:#9a6700;font-weight:600">（已超过 30 分钟，建议再存一次）</span>' : '');
+    } else if (curDoc) {
+      $('autoState').innerHTML = '<span style="color:#9a6700">尚未保存到本地文件</span>';
+    } else {
+      $('autoState').innerHTML = '';
+    }
+  }
+
+  // ============================================================ 落盘
+  function persist(doc) {
+    if (!doc) { return Promise.resolve(); }
+    doc.updatedAt = Date.now();
+    if (doc.id === curId) { doc.content = model.getValue(); }
+    doc.lang = (doc.id === curId) ? model.getLanguageId() : doc.lang;
+    return store.put(doc).then(function () {
+      if (doc.id === curId) { dirty = false; lastAutoAt = Date.now(); }
+      renderList();
+      updateStatus();
+    });
+  }
+
+  function schedulePersist() {
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(function () { persist(curDoc); }, 1200);
+  }
+
+  // ============================================================ 切换 / 新建 / 重命名 / 删除
+  function switchTo(id) {
+    if (id === curId) { return; }
+    var prev = curDoc;
+    if (prev && dirty) { persist(prev); }      // 先把上一份落盘（同步内存 + 异步 IDB）
+
+    var d = null;
+    for (var i = 0; i < docs.length; i++) { if (docs[i].id === id) { d = docs[i]; } }
+    if (!d) { return; }
+
+    curId = id;
+    curDoc = d;
+
+    loading = true;
+    model.setValue(d.content || '');
+    monaco.editor.setModelLanguage(model, d.lang || 'plaintext');
+    loading = false;
+
+    dirty = false;
+    lastAutoAt = d.updatedAt || Date.now();
+    $('langSel').value = d.lang || 'plaintext';
+    ed.setPosition({ lineNumber: 1, column: 1 });
+    renderList();
+    updateStatus();
+    store.setMeta('curId', id);
+    ed.focus();
+  }
+
+  function newDoc(activate, forceNew) {
+    // 已经有一份空白未命名的话，直接切过去，避免堆一堆空文档
+    // （forceNew=true 跳过复用：打开本地文件必须落到独立的新文档里）
+    if (!forceNew) {
+      for (var i = 0; i < docs.length; i++) {
+        if (/^未命名/.test(docs[i].name) && !docs[i].content) {
+          if (activate !== false) { switchTo(docs[i].id); }
+          return docs[i];
+        }
+      }
+    }
+    var d = {
+      id: uid(),
+      name: '未命名' + (docs.length + 1) + '.txt',
+      content: '',
+      lang: 'plaintext',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      handle: null,
+      lastLocalAt: null
+    };
+    docs.push(d);
+    store.put(d);
+    if (activate !== false) { switchTo(d.id); } else { renderList(); }
+    return d;
+  }
+
+  function renameDoc(id) {
+    var d = null;
+    for (var i = 0; i < docs.length; i++) { if (docs[i].id === id) { d = docs[i]; } }
+    if (!d) { return; }
+    var name = window.prompt('重命名（可用扩展名来指定语法高亮，如 .sql / .json / .md）', d.name);
+    if (name === null) { return; }
+    name = name.trim();
+    if (!name) { return; }
+    d.name = name;
+    d.lang = langForName(name);
+    store.put(d).then(function () {
+      if (d.id === curId) {
+        monaco.editor.setModelLanguage(model, d.lang);
+        $('langSel').value = d.lang;
+      }
+      renderList();
+      updateStatus();
+    });
+  }
+
+  function removeDoc(id) {
+    var d = null;
+    for (var i = 0; i < docs.length; i++) { if (docs[i].id === id) { d = docs[i]; } }
+    if (!d) { return; }
+    if (!window.confirm('删除文档「' + d.name + '」？此操作不可撤销。\n（浏览器缓存里的副本会一并删除，已保存到本地的文件不受影响）')) { return; }
+
+    docs = docs.filter(function (x) { return x.id !== id; });
+    store.del(id);
+    if (id === curId) {
+      // 关键：先把 curDoc 摘掉，否则 switchTo 里会把刚删掉的文档又 persist 回库里（复活）
+      curDoc = null;
+      curId = null;
+      dirty = false;
+      clearTimeout(autoTimer);
+      if (docs.length) {
+        switchTo(docs[0].id);
+      } else {
+        loading = true; model.setValue(''); monaco.editor.setModelLanguage(model, 'plaintext'); loading = false;
+        newDoc(true);
+      }
+    }
+    renderList();
+    updateStatus();
+  }
+
+  // ============================================================ 本地文件
+  async function openLocal() {
+    if (!FS_OK) { $('filePick').click(); return; }
+    var handles;
+    try {
+      handles = await window.showOpenFilePicker({
+        multiple: false,
+        types: [{ description: '文本文件', accept: { 'text/plain': ['.txt', '.json', '.sql', '.md', '.csv', '.log', '.xml', '.html', '.js', '.php', '.yml', '.yaml', '.ini'] } }]
+      });
+    } catch (e) { return; }   // 用户取消
+    var handle = handles[0];
+    var file = await handle.getFile();
+    var buf = await file.arrayBuffer();
+    var text = TD.decodeBuffer(buf);
+
+    var d = newDoc(false, true);      // 建一个独立文档，下面立刻改名并灌内容
+    d.name = file.name;
+    d.content = text;
+    d.lang = langForName(file.name);
+    d.handle = handle;
+    d.updatedAt = Date.now();
+    d.lastLocalAt = Date.now();
+    await store.put(d);
+    switchTo(d.id);
+    TD.toast('已打开 ' + file.name);
+  }
+
+  async function pickSaveHandle(suggested) {
+    try {
+      return await window.showSaveFilePicker({
+        suggestedName: suggested || 'untitled.txt',
+        types: [{ description: '文本文件', accept: { 'text/plain': ['.txt', '.json', '.sql', '.md', '.csv', '.log'] } }]
+      });
+    } catch (e) { return null; }
+  }
+
+  async function saveLocal(forcePickAs) {
+    if (!curDoc) { TD.toast('没有打开的文档'); return; }
+    var text = model.getValue();
+
+    if (!FS_OK) {                      // 降级：下载
+      download(text, curDoc.name);
+      curDoc.lastLocalAt = Date.now();
+      store.put(curDoc);
+      updateStatus();
+      TD.toast('浏览器不支持写回原文件，已改为下载');
+      return;
+    }
+
+    var handle = curDoc.handle;
+    if (forcePickAs || !handle) {
+      handle = await pickSaveHandle(curDoc.name);
+      if (!handle) { return; }
+      curDoc.handle = handle;
+      if (handle.name) { curDoc.name = handle.name; }
+    } else {
+      // 重新打开页面后权限会失效，需要用户手势再确认一次
+      try {
+        var perm = await handle.queryPermission({ mode: 'readwrite' });
+        if (perm !== 'granted') {
+          perm = await handle.requestPermission({ mode: 'readwrite' });
+        }
+        if (perm !== 'granted') { TD.toast('没有写入权限，未保存'); return; }
+      } catch (e) {
+        curDoc.handle = null;          // handle 失效（文件被移动/删除）
+        TD.toast('原文件已失效，请重新选择保存位置');
+        return;
+      }
+    }
+
+    try {
+      var w = await handle.createWritable();
+      await w.write(text);
+      await w.close();
+      curDoc.lastLocalAt = Date.now();
+      await store.put(curDoc);
+      renderList();
+      updateStatus();
+      TD.toast('已保存到 ' + curDoc.name);
+    } catch (e) {
+      TD.toast('保存失败：' + (e && e.message ? e.message : e));
+    }
+  }
+
+  function download(text, name) {
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name || 'untitled.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  // ============================================================ 事件
+  model.onDidChangeContent(function () {
+    if (loading) { return; }
+    dirty = true;
+    updateStatus();
+    schedulePersist();
+  });
+
+  ed.onDidChangeCursorPosition(function () { updateStatus(); });
+
+  $('langSel').onchange = function () {
+    if (!curDoc) { return; }
+    var lang = $('langSel').value;
+    curDoc.lang = lang;
+    monaco.editor.setModelLanguage(model, lang);
+    store.put(curDoc);
+  };
+
+  $('btnNew').onclick = function () { newDoc(true); };
+  $('btnNew2').onclick = function () { newDoc(true); };
+  $('btnOpen').onclick = function () { openLocal(); };
+  $('btnSave').onclick = function () { saveLocal(false); };
+  $('btnSaveAs').onclick = function () { saveLocal(true); };
+
+  var filePick = $('filePick');
+  filePick.onchange = function () {
+    var f = filePick.files[0];
+    filePick.value = '';
+    if (!f) { return; }
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = TD.decodeBuffer(reader.result);
+      var d = newDoc(false, true);
+      d.name = f.name;
+      d.content = text;
+      d.lang = langForName(f.name);
+      d.updatedAt = Date.now();
+      store.put(d);
+      switchTo(d.id);
+      TD.toast('已打开 ' + f.name);
+    };
+    reader.readAsArrayBuffer(f);
+  };
+
+  // 快捷键
+  document.addEventListener('keydown', function (e) {
+    var ctrl = e.ctrlKey || e.metaKey;
+    if (ctrl && !e.altKey && (e.key === 's' || e.key === 'S')) { e.preventDefault(); saveLocal(false); return; }
+    if (ctrl && e.altKey && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); newDoc(true); return; }
+  });
+
+  // 关闭前用 localStorage 留一份应急快照（IndexedDB 是异步的，来不及写）
+  window.addEventListener('beforeunload', function () {
+    if (!dirty || !curDoc) { return; }
+    try {
+      localStorage.setItem('td-editor-emergency', JSON.stringify({ id: curDoc.id, content: model.getValue() }));
+    } catch (e) {}
+  });
+
+  // ============================================================ 启动
+  (async function boot() {
+    var list = await store.all();
+    docs = Array.isArray(list) ? list : [];
+
+    // 处理上一次异常关闭留下的应急快照
+    var emg = null;
+    try { emg = JSON.parse(localStorage.getItem('td-editor-emergency') || 'null'); } catch (e) {}
+    if (emg && emg.id && emg.content) {
+      var hit = null;
+      for (var i = 0; i < docs.length; i++) { if (docs[i].id === emg.id) { hit = docs[i]; } }
+      if (hit && hit.content !== emg.content) {
+        hit.content = emg.content;
+        hit.updatedAt = Date.now();
+        await store.put(hit);
+        TD.toast('已恢复上次关闭前的未保存内容');
+      }
+    }
+    try { localStorage.removeItem('td-editor-emergency'); } catch (e) {}
+
+    if (!docs.length) { newDoc(true); return; }
+
+    var last = await store.getMeta('curId', null);
+    var exists = false;
+    for (var k = 0; k < docs.length; k++) { if (docs[k].id === last) { exists = true; } }
+    renderList();
+    switchTo(exists ? last : docs[0].id);
+  })();
+});
+</script>
+</body>
+</html>

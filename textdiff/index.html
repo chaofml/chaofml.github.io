@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{height:auto;min-height:100%}
+  body{padding:36px 20px 60px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 8px;font-weight:600}
+  .sub{color:var(--text-dim);line-height:1.9;margin-bottom:26px;font-size:13px}
+  .sub code{background:#f2f3f5;border-radius:3px;padding:1px 5px;font-family:Consolas,monospace;font-size:12px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+  .card{
+    display:block;padding:16px 18px;border:1px solid var(--bar-border);border-radius:10px;
+    background:#fff;text-decoration:none;color:var(--text);
+    transition:border-color .15s,box-shadow .15s,transform .15s;
+  }
+  .card:hover{border-color:#b6cdfb;box-shadow:0 4px 16px rgba(47,111,235,.12);transform:translateY(-1px)}
+  .card h3{margin:0 0 8px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .card p{margin:0;color:var(--text-dim);line-height:1.75;font-size:12.5px}
+  .tag{
+    font-size:11px;font-weight:600;color:#1a7f37;background:#e6ffec;
+    border:1px solid #b7e6c4;border-radius:4px;padding:0 5px;line-height:1.7;white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>文本工具箱</h1>
+  <div class="sub">
+    本地离线工具集。双击 <code>start.bat</code> 启动，或把整个目录拷到任意静态服务器直接用。
+  </div>
+  <div class="cards" id="cards"></div>
+</div>
+
+<script>
+/* 加新工具就在这里加一行：文件与 index.html 同级、用相对路径即可 */
+var TOOLS = [
+  {
+    href: 'diff-editable.html',
+    name: '单 Diff 双栏',
+    tag: '推荐',
+    desc: '粘贴即对比：整页就是一个差异视图，左右两栏都能直接编辑，差异实时重算、滚动联动。适合快速看差异。'
+  },
+  {
+    href: 'diff-four-pane.html',
+    name: '四窗格对比',
+    desc: '上方两个独立输入框、下方只读差异视图，可拖动调整上下比例。适合大文本：输入区与差异区各自滚动，互不干扰。'
+  },
+  {
+    href: 'text-tools.html',
+    name: '文本处理',
+    desc: '去空行 / 去重 / 排序 / 反转 / trim / 压缩空格 / Tab 转空格 / 加去行号 / 前后缀 / 合并拆分 / 大小写 / 命名风格，另含一个简单的正则提取。勾选即实时预览，可一键写回输入。'
+  },
+  {
+    href: 'regex-tools.html',
+    name: '正则工作台',
+    desc: '贴文本 + 写正则：实时高亮所有命中、列出捕获组表格，支持提取 / 替换 / 过滤行，可切整段或逐行匹配，并支持 i / m / s 标志。'
+  },
+  {
+    href: 'editor.html',
+    name: '在线编辑器',
+    tag: '新',
+    desc: '多文档编辑：内容自动缓存在浏览器（关掉窗口、重开浏览器都不丢），一键保存到本地文件、可直接写回原文件，带语法高亮与状态栏。'
+  }
+];
+
+document.getElementById('cards').innerHTML = TOOLS.map(function (t) {
+  var tag = t.tag ? '<span class="tag">' + t.tag + '</span>' : '';
+  return '<a class="card" href="' + t.href + '">' +
+    '<h3>' + t.name + tag + '</h3>' +
+    '<p>' + t.desc + '</p>' +
+    '</a>';
+}).join('');
+</script>
+</body>
+</html>

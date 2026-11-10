@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>四窗格对比 · 文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{overflow:hidden}
+
+  /* ---------- 输入区（上下两块中的上面那块） ---------- */
+  #panes{display:flex;flex:0 0 auto;height:38%;min-height:60px}
+  .pane{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--bar-border)}
+  .pane:last-child{border-right:none}
+  .pane-bar{
+    display:flex;align-items:center;gap:6px;flex:0 0 auto;
+    padding:3px 8px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+    font-size:12px;color:var(--text-dim);
+  }
+  .pane-bar .ttl{font-weight:600;color:var(--text)}
+  .pane-bar .meta{font-variant-numeric:tabular-nums;color:var(--text-faint)}
+  .pane-body{flex:1 1 auto;min-height:0}
+  .pane.dragover::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:20;
+    border:2px dashed var(--accent);background:rgba(47,111,235,.05);
+  }
+
+  /* ---------- 上下分隔条 ---------- */
+  .split{
+    flex:0 0 auto;height:6px;background:var(--bar-bg);cursor:row-resize;position:relative;
+    border-top:1px solid var(--bar-border);border-bottom:1px solid var(--bar-border);
+  }
+  .split::after{
+    content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:36px;height:2px;background:#c9ced6;border-radius:1px;
+  }
+  .split:hover::after,.split.active::after{background:var(--accent)}
+
+  /* ---------- 差异区（下面那块） ---------- */
+  #diffSec{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  #diffBody{flex:1 1 auto;min-height:0}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="center">
+    <div class="loading">
+      <div class="spinner"></div>
+      正在加载编辑器内核…
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="toolbar">
+    <a class="back" href="index.html" title="返回工具箱">← 工具箱</a>
+    <span class="brand">四窗格对比</span>
+    <span class="ver" title="页面版本；如果看到的不是这个数字，说明浏览器用了缓存，请 Ctrl+Shift+R">v1</span>
+    <span class="sep"></span>
+    <button id="btnSide" class="on" title="左右并排">并排</button>
+    <button id="btnInline" title="同一栏内显示增删">内联</button>
+    <span class="sep"></span>
+    <label class="chk" id="labWs" title="忽略行首尾空白差异（不改动文本本身）">
+      <input type="checkbox" id="optWs">忽略空白
+    </label>
+    <label class="chk" id="labFold" title="把两侧相同的整段折叠起来，只留差异附近几行">
+      <input type="checkbox" id="optFold">折叠未变更行
+    </label>
+    <span class="sep"></span>
+    <button id="btnPrev" title="上一个差异（Alt+↑）">↑ 差异</button>
+    <button id="btnNext" title="下一个差异（Alt+↓）">↓ 差异</button>
+    <span class="sep"></span>
+    <button id="btnJson" title="两侧内容都做 JSON 格式化（2 空格缩进）">JSON 美化</button>
+    <button id="btnSwap" title="交换左右两侧内容">⇄ 交换</button>
+    <button id="btnClear" title="清空两侧内容">清空</button>
+    <span class="spacer"></span>
+    <button class="mini" id="btnFileA" title="把文件内容载入左侧（旧）">载入旧文件</button>
+    <button class="mini" id="btnFileB" title="把文件内容载入右侧（新）">载入新文件</button>
+    <span class="diffstat" id="stat"></span>
+  </div>
+
+  <div id="hintBar" class="hintbar" hidden></div>
+
+  <div id="panes">
+    <section class="pane">
+      <div class="pane-bar">
+        <span class="ttl">原始文本（旧）</span>
+        <span class="meta" id="metaA"></span>
+        <span class="spacer"></span>
+        <button class="mini" data-clear="a">清空</button>
+      </div>
+      <div class="pane-body" id="editA"></div>
+    </section>
+    <section class="pane">
+      <div class="pane-bar">
+        <span class="ttl">修改文本（新）</span>
+        <span class="meta" id="metaB"></span>
+        <span class="spacer"></span>
+        <button class="mini" data-clear="b">清空</button>
+      </div>
+      <div class="pane-body" id="editB"></div>
+    </section>
+  </div>
+
+  <div class="split" id="split" title="拖动调整输入区高度"></div>
+
+  <section id="diffSec">
+    <div class="pane-bar">
+      <span class="ttl">差异结果</span>
+      <span class="diffstat" id="statDiff"></span>
+      <span class="spacer"></span>
+      <span style="color:var(--text-faint)">输入区改动后自动重算 · 差异视图只读</span>
+    </div>
+    <div id="diffBody"></div>
+  </section>
+</div>
+
+<input type="file" id="fileA" hidden>
+<input type="file" id="fileB" hidden>
+
+<script src="vs/loader.js"></script>
+<script src="shared.js"></script>
+<script>
+TD.bootMonaco(function () {
+
+  if (location.protocol === 'file:') {
+    var hb = document.getElementById('hintBar');
+    hb.hidden = false;
+    hb.innerHTML = '<b>提示：</b>当前以 file:// 方式打开，工作线程可能无法启动（大文本对比会变慢或失败）。' +
+                   '建议改为双击同目录下的 <code>start.bat</code> 使用。';
+  }
+
+  var MONO = '"Cascadia Mono", Consolas, "Microsoft YaHei", monospace';
+
+  function inputOptions() {
+    return {
+      language: 'plaintext',
+      wordWrap: 'on',
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 13,
+      lineHeight: 20,
+      fontFamily: MONO,
+      renderWhitespace: 'selection',
+      tabSize: 2,
+      padding: { top: 8, bottom: 8 },
+      fixedOverflowWidgets: true,
+      scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 }
+    };
+  }
+
+  // ---- 上方两个输入编辑器 ----
+  var edA = monaco.editor.create(document.getElementById('editA'), inputOptions());
+  var edB = monaco.editor.create(document.getElementById('editB'), inputOptions());
+  var mOld = edA.getModel();
+  var mNew = edB.getModel();
+
+  // ---- 下方差异视图（只读，与输入编辑器共用 model，改动即重算）----
+  var diff = monaco.editor.createDiffEditor(document.getElementById('diffBody'), {
+    readOnly: true,
+    originalEditable: false,
+    renderSideBySide: true,
+    enableSplitViewResizing: true,
+    renderIndicators: true,
+    ignoreTrimWhitespace: false,
+    renderOverviewRuler: true,
+    diffWordWrap: 'on',
+    automaticLayout: true,
+    useInlineViewWhenSpaceIsLimited: true,
+    fontSize: 13,
+    lineHeight: 20,
+    fontFamily: MONO,
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    padding: { top: 8, bottom: 8 },
+    scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 },
+    hideUnchangedRegions: { enabled: false, contextLineCount: 3, minimumLineCount: 3, revealLineCount: 20 }
+  });
+  diff.setModel({ original: mOld, modified: mNew });
+
+  // ---- 输入区空状态提示 ----
+  function addHint(editor, title, sub) {
+    var el = document.createElement('div');
+    el.className = 'pane-hint';
+    el.innerHTML = '<b>' + TD.esc(title) + '</b><span>' + TD.esc(sub) + '</span>';
+    editor.getDomNode().appendChild(el);
+    function sync() {
+      el.style.display = editor.getModel().getValueLength() === 0 ? 'flex' : 'none';
+    }
+    editor.onDidChangeModelContent(sync);
+    sync();
+  }
+  addHint(edA, '原始文本（旧）', 'Ctrl + V 粘贴，或把文件拖到这里');
+  addHint(edB, '修改文本（新）', 'Ctrl + V 粘贴，或把文件拖到这里');
+
+  // ---- 行数 / 统计 ----
+  var metaA = document.getElementById('metaA');
+  var metaB = document.getElementById('metaB');
+  var statTop = document.getElementById('stat');
+  var statDiff = document.getElementById('statDiff');
+
+  function syncMeta() {
+    metaA.textContent = mOld.getValueLength() === 0 ? '' : (mOld.getLineCount() + ' 行');
+    metaB.textContent = mNew.getValueLength() === 0 ? '' : (mNew.getLineCount() + ' 行');
+  }
+  edA.onDidChangeModelContent(syncMeta);
+  edB.onDidChangeModelContent(syncMeta);
+  syncMeta();
+
+  // ---- 工具栏（公共绑定；差异区的统计另外同步一份）----
+  function refreshBoth() {
+    var s = TD.renderStat(statTop, mOld, mNew, diff.getLineChanges());
+    statDiff.innerHTML = statTop.innerHTML;
+    return s;
+  }
+  diff.onDidUpdateDiff(function () { refreshBoth(); syncMeta(); });
+  TD.bindToolbar({ diff: diff, mOld: mOld, mNew: mNew, statEl: statTop });
+  setTimeout(refreshBoth, 0);
+
+  // ---- 单侧清空 ----
+  Array.prototype.forEach.call(document.querySelectorAll('[data-clear]'), function (btn) {
+    btn.onclick = function () {
+      var m = btn.getAttribute('data-clear') === 'a' ? mOld : mNew;
+      m.setValue('');
+      monaco.editor.setModelLanguage(m, 'plaintext');
+    };
+  });
+
+  // ---- 上下分隔条拖动 ----
+  var panesEl = document.getElementById('panes');
+  var splitEl = document.getElementById('split');
+  splitEl.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    splitEl.classList.add('active');
+    var startY = e.clientY;
+    var startH = panesEl.getBoundingClientRect().height;
+    var total = document.getElementById('app').getBoundingClientRect().height;
+    function move(ev) {
+      var h = startH + (ev.clientY - startY);
+      h = Math.max(60, Math.min(h, total - 140));
+      panesEl.style.height = h + 'px';
+    }
+    function up() {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+      splitEl.classList.remove('active');
+    }
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  });
+
+  // ---- 拖入文件：落到哪个 pane 就进哪一侧 ----
+  function bindDrop(paneEl, model, onDone) {
+    paneEl.addEventListener('dragenter', function (e) { e.preventDefault(); paneEl.classList.add('dragover'); });
+    paneEl.addEventListener('dragover', function (e) { e.preventDefault(); paneEl.classList.add('dragover'); });
+    paneEl.addEventListener('dragleave', function () { paneEl.classList.remove('dragover'); });
+    paneEl.addEventListener('drop', function (e) {
+      e.preventDefault();
+      paneEl.classList.remove('dragover');
+      var dt = e.dataTransfer;
+      if (!dt) { return; }
+      if (dt.files && dt.files.length) { TD.loadFileInto(model, dt.files[0], onDone); return; }
+      var text = dt.getData('text/plain');
+      if (text) { model.setValue(text); if (onDone) { onDone(); } }
+    });
+  }
+  var paneEls = document.querySelectorAll('#panes .pane');
+  bindDrop(paneEls[0], mOld, syncMeta);
+  bindDrop(paneEls[1], mNew, syncMeta);
+
+  edA.focus();
+});
+</script>
+</body>
+</html>

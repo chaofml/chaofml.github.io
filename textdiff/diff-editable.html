@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>单 Diff 双栏 · 文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{overflow:hidden}
+  /* 整页就是一个 DiffEditor，两侧都能直接编辑 */
+  #diffHost{flex:1 1 auto;min-height:0;position:relative}
+  #diffHost.dragover::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:20;
+    border:2px dashed var(--accent);background:rgba(47,111,235,.05);
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="center">
+    <div class="loading">
+      <div class="spinner"></div>
+      正在加载编辑器内核…
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="toolbar">
+    <a class="back" href="index.html" title="返回工具箱">← 工具箱</a>
+    <span class="brand">单 Diff 双栏</span>
+    <span class="ver" title="页面版本；如果看到的不是这个数字，说明浏览器用了缓存，请 Ctrl+Shift+R">v1</span>
+    <span class="sep"></span>
+    <button id="btnSide" class="on" title="左右并排">并排</button>
+    <button id="btnInline" title="同一栏内显示增删">内联</button>
+    <span class="sep"></span>
+    <label class="chk" id="labWs" title="忽略行首尾空白差异（不改动文本本身）">
+      <input type="checkbox" id="optWs">忽略空白
+    </label>
+    <label class="chk" id="labFold" title="把两侧相同的整段折叠起来，只留差异附近几行">
+      <input type="checkbox" id="optFold">折叠未变更行
+    </label>
+    <span class="sep"></span>
+    <button id="btnPrev" title="上一个差异（Alt+↑）">↑ 差异</button>
+    <button id="btnNext" title="下一个差异（Alt+↓）">↓ 差异</button>
+    <span class="sep"></span>
+    <button id="btnJson" title="两侧内容都做 JSON 格式化（2 空格缩进）">JSON 美化</button>
+    <button id="btnSwap" title="交换左右两侧内容">⇄ 交换</button>
+    <button id="btnClear" title="清空两侧内容">清空</button>
+    <span class="spacer"></span>
+    <button class="mini" id="btnFileA" title="把文件内容载入左侧（旧）">载入旧文件</button>
+    <button class="mini" id="btnFileB" title="把文件内容载入右侧（新）">载入新文件</button>
+    <span class="diffstat" id="stat"></span>
+  </div>
+
+  <div id="hintBar" class="hintbar" hidden></div>
+
+  <div id="diffHost"></div>
+</div>
+
+<input type="file" id="fileA" hidden>
+<input type="file" id="fileB" hidden>
+
+<script src="vs/loader.js"></script>
+<script src="shared.js"></script>
+<script>
+TD.bootMonaco(function () {
+
+  if (location.protocol === 'file:') {
+    var hb = document.getElementById('hintBar');
+    hb.hidden = false;
+    hb.innerHTML = '<b>提示：</b>当前以 file:// 方式打开，工作线程可能无法启动（大文本对比会变慢或失败）。' +
+                   '建议改为双击同目录下的 <code>start.bat</code> 使用。';
+  }
+
+  var MONO = '"Cascadia Mono", Consolas, "Microsoft YaHei", monospace';
+  var host = document.getElementById('diffHost');
+
+  // ---- 两个 model：左＝旧，右＝新 ----
+  var mOld = monaco.editor.createModel('', 'plaintext');
+  var mNew = monaco.editor.createModel('', 'plaintext');
+
+  // ---- 唯一的编辑器：DiffEditor，两侧都可直接编辑 ----
+  //   originalEditable: true 让左侧（旧）也可编辑；
+  //   注意 readOnly 必须是 false，设成 true 会把两侧一起锁死。
+  var diff = monaco.editor.createDiffEditor(host, {
+    originalEditable: true,
+    readOnly: false,
+    renderSideBySide: true,
+    enableSplitViewResizing: true,
+    renderIndicators: true,
+    ignoreTrimWhitespace: false,
+    renderOverviewRuler: true,
+    diffWordWrap: 'on',
+    automaticLayout: true,
+    useInlineViewWhenSpaceIsLimited: true,
+    fontSize: 13,
+    lineHeight: 20,
+    fontFamily: MONO,
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    padding: { top: 8, bottom: 8 },
+    scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 },
+    hideUnchangedRegions: { enabled: false, contextLineCount: 3, minimumLineCount: 3, revealLineCount: 20 }
+  });
+  diff.setModel({ original: mOld, modified: mNew });
+
+  var edOld = diff.getOriginalEditor();
+  var edNew = diff.getModifiedEditor();
+
+  // ---- 两栏空状态提示（Monaco 不提供 placeholder，挂在各自编辑器 DOM 上）----
+  function addHint(editor, title, sub) {
+    var el = document.createElement('div');
+    el.className = 'pane-hint';
+    el.innerHTML = '<b>' + TD.esc(title) + '</b><span>' + TD.esc(sub) + '</span>';
+    editor.getDomNode().appendChild(el);
+    function sync() {
+      el.style.display = editor.getModel().getValueLength() === 0 ? 'flex' : 'none';
+    }
+    editor.onDidChangeModelContent(sync);
+    sync();
+  }
+  addHint(edOld, '原始文本（旧）', 'Ctrl + V 粘贴，或把文件拖到这一侧');
+  addHint(edNew, '修改文本（新）', 'Ctrl + V 粘贴，或把文件拖到这一侧');
+
+  // ---- 工具栏（公共绑定）----
+  TD.bindToolbar({ diff: diff, mOld: mOld, mNew: mNew });
+
+  // ---- 拖拽：按落点在左半还是右半决定进"旧"还是"新" ----
+  function sideOf(clientX) {
+    var r = edOld.getDomNode().getBoundingClientRect();
+    return clientX < r.right ? 'old' : 'new';
+  }
+  host.addEventListener('dragenter', function (e) { e.preventDefault(); host.classList.add('dragover'); });
+  host.addEventListener('dragover', function (e) { e.preventDefault(); host.classList.add('dragover'); });
+  host.addEventListener('dragleave', function (e) {
+    if (e.target === host) { host.classList.remove('dragover'); }
+  });
+  host.addEventListener('drop', function (e) {
+    e.preventDefault();
+    host.classList.remove('dragover');
+    var dt = e.dataTransfer;
+    if (!dt) { return; }
+    var model = sideOf(e.clientX) === 'old' ? mOld : mNew;
+    if (dt.files && dt.files.length) { TD.loadFileInto(model, dt.files[0]); return; }
+    var text = dt.getData('text/plain');
+    if (text) { model.setValue(text); }
+  });
+
+  // ---- 初始焦点：打开即可直接 Ctrl+V 贴到左侧 ----
+  edOld.focus();
+});
+</script>
+</body>
+</html>

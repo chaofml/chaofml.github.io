@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>文本处理 · 文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{overflow:hidden}
+
+  /* ---------- 规则区 ---------- */
+  .rules{
+    flex:0 0 auto;display:flex;flex-direction:column;gap:3px;
+    padding:6px 10px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+  }
+  .rgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px}
+  .rlabel{color:var(--text-faint);min-width:30px;text-align:right;flex:0 0 auto}
+  .rgroup .chk{color:var(--text-dim)}
+  .rgroup .chk.on{color:var(--accent)}
+  select{
+    font:inherit;font-size:12px;padding:2px 4px;border:1px solid var(--bar-border);
+    border-radius:5px;background:#fff;color:var(--text);cursor:pointer;
+  }
+  input[type=text].txt,input[type=number].num{
+    font:inherit;font-size:12px;padding:2px 6px;border:1px solid var(--bar-border);
+    border-radius:5px;color:var(--text);background:#fff;
+  }
+  input.txt{width:96px}
+  input.txt.re{width:200px;font-family:Consolas,monospace}
+  input.txt.invalid{border-color:var(--del);background:#fff5f5}
+  input.num{width:48px;text-align:center}
+  .hint-inline{color:var(--text-faint);font-size:11px}
+
+  /* ---------- 输入 / 输出 ---------- */
+  #panes{flex:1 1 auto;min-height:0;display:flex}
+  .pane{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--bar-border)}
+  .pane:last-child{border-right:none}
+  .pane-bar{
+    display:flex;align-items:center;gap:6px;flex:0 0 auto;
+    padding:3px 8px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+    font-size:12px;color:var(--text-dim);
+  }
+  .pane-bar .ttl{font-weight:600;color:var(--text)}
+  .pane-bar .meta{font-variant-numeric:tabular-nums;color:var(--text-faint)}
+  .pane-body{flex:1 1 auto;min-height:0}
+  .pane.dragover::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:20;
+    border:2px dashed var(--accent);background:rgba(47,111,235,.05);
+  }
+  /* 输出区被手动改过 → 冻结：标题栏变黄提示，规则不再覆盖 */
+  .pane-bar.frozen{background:#fff8e5;border-bottom-color:#f0e0b0}
+  .pane-bar.frozen #outState{color:#9a6700;font-weight:600}
+
+  /* ---------- 底部统计 ---------- */
+  .statbar{
+    flex:0 0 auto;padding:4px 10px;font-size:12px;color:var(--text-faint);
+    background:var(--bar-bg);border-top:1px solid var(--bar-border);
+    font-variant-numeric:tabular-nums;
+  }
+  .statbar b{color:var(--text-dim);font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="center">
+    <div class="loading">
+      <div class="spinner"></div>
+      正在加载编辑器内核…
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="toolbar">
+    <a class="back" href="index.html" title="返回工具箱">← 工具箱</a>
+    <span class="brand">文本处理</span>
+    <span class="ver" title="页面版本；如果看到的不是这个数字，说明浏览器用了缓存，请 Ctrl+Shift+R">v1</span>
+    <span class="sep"></span>
+    <button id="btnApply" title="把结果固化到输入区，并清空所有规则">↧ 写回输入</button>
+    <button id="btnCopy" title="复制处理结果">复制结果</button>
+    <button id="btnDownload" title="把处理结果保存为 txt">下载</button>
+    <span class="sep"></span>
+    <button id="btnFile">载入文件</button>
+    <button id="btnClear">清空输入</button>
+    <span class="sep"></span>
+    <label class="chk" id="l-wrap" title="关掉后长行不再折行（改为横向滚动），便于确认内容真实的行结构">
+      <input type="checkbox" id="optWrap" checked>自动换行
+    </label>
+    <span class="spacer"></span>
+    <span class="diffstat" id="quickinfo"></span>
+  </div>
+
+  <div id="hintBar" class="hintbar" hidden></div>
+
+  <div class="rules">
+    <div class="rgroup">
+      <span class="rlabel">正则</span>
+      <select id="r-reMode" title="「提取」在整段文本上执行（可跨行）；其余模式逐行执行">
+        <option value="">不用</option>
+        <option value="extract">提取匹配内容（每项一行）</option>
+        <option value="group">提取第 1 个捕获组</option>
+        <option value="keep">只保留匹配的行</option>
+        <option value="drop">剔除匹配的行</option>
+        <option value="replace">替换匹配内容</option>
+      </select>
+      <input type="text" id="r-re" class="txt re" placeholder="如 \d{14}" title="正则表达式">
+      <span class="hint-inline">替换为</span>
+      <input type="text" id="r-reTo" class="txt" placeholder="(空)">
+      <label class="chk" id="l-reI"><input type="checkbox" id="r-reI">忽略大小写</label>
+      <span class="hint-inline">优先级最高：先提取/筛选，再做下面的清洗与整理（所以「去重」「合并为一行」都会作用在提取结果上）</span>
+    </div>
+
+    <div class="rgroup">
+      <span class="rlabel">空白</span>
+      <label class="chk" id="l-eol" title="输入里的 CRLF / CR 一律会被正确识别、不会混进行内容；默认输出 LF，勾选后输出 CRLF"><input type="checkbox" id="r-eol">输出 CRLF（\r\n）</label>
+      <label class="chk" id="l-invisible"><input type="checkbox" id="r-invisible">去 BOM / 零宽字符</label>
+      <label class="chk" id="l-trim"><input type="checkbox" id="r-trim">去行首尾空白</label>
+      <label class="chk" id="l-spaces"><input type="checkbox" id="r-spaces">压缩连续空格</label>
+      <label class="chk" id="l-tabs"><input type="checkbox" id="r-tabs">Tab → 空格</label>
+      <input type="number" id="r-tabN" class="num" value="4" min="1" max="16" title="每个 Tab 替换成几个空格">
+      <label class="chk" id="l-empty"><input type="checkbox" id="r-empty">去空行</label>
+    </div>
+
+    <div class="rgroup">
+      <span class="rlabel">行</span>
+      <label class="chk" id="l-dedupe"><input type="checkbox" id="r-dedupe">去重</label>
+      <label class="chk" id="l-sort"><input type="checkbox" id="r-sort">排序</label>
+      <select id="r-sortMode" title="排序方式">
+        <option value="asc">字典 ↑</option>
+        <option value="desc">字典 ↓</option>
+        <option value="lenAsc">长度 ↑</option>
+        <option value="lenDesc">长度 ↓</option>
+        <option value="numAsc">数值 ↑</option>
+        <option value="numDesc">数值 ↓</option>
+      </select>
+      <label class="chk" id="l-reverse"><input type="checkbox" id="r-reverse">反转行序</label>
+      <span class="sep"></span>
+      <label class="chk" id="l-unnum"><input type="checkbox" id="r-unnum">去行号前缀</label>
+      <label class="chk" id="l-num"><input type="checkbox" id="r-num">加行号</label>
+      <span class="sep"></span>
+      <span class="hint-inline">每行前缀</span><input type="text" id="r-prefix" class="txt" placeholder="(无)">
+      <span class="hint-inline">后缀</span><input type="text" id="r-suffix" class="txt" placeholder="(无)">
+    </div>
+
+    <div class="rgroup">
+      <span class="rlabel">结构</span>
+      <label class="chk"><input type="radio" name="struct" value="" checked>不变</label>
+      <label class="chk"><input type="radio" name="struct" value="join">合并为一行</label>
+      <input type="text" id="r-joinSep" class="txt" value=" " title="支持 \n \t \r 转义">
+      <label class="chk"><input type="radio" name="struct" value="split">按分隔符拆成多行</label>
+      <input type="text" id="r-splitSep" class="txt" value="," title="支持 \n \t \r 转义">
+    </div>
+
+    <div class="rgroup">
+      <span class="rlabel">字母</span>
+      <span class="hint-inline">大小写</span>
+      <select id="r-case">
+        <option value="">不变</option>
+        <option value="upper">全部大写</option>
+        <option value="lower">全部小写</option>
+        <option value="swap">反转大小写</option>
+        <option value="title">每词首字母大写</option>
+      </select>
+      <span class="hint-inline">命名风格</span>
+      <select id="r-naming">
+        <option value="">不变</option>
+        <option value="camel">camelCase</option>
+        <option value="pascal">PascalCase</option>
+        <option value="snake">snake_case</option>
+        <option value="kebab">kebab-case</option>
+        <option value="const">CONSTANT_CASE</option>
+        <option value="dot">dot.case</option>
+      </select>
+      <span class="hint-inline">（命名风格按行转换，会先把 camel / 下划线 / 中划线 / 空格拆成词）</span>
+    </div>
+  </div>
+
+  <div id="panes">
+    <section class="pane" id="paneIn">
+      <div class="pane-bar">
+        <span class="ttl">输入</span>
+        <span class="meta" id="metaIn"></span>
+        <span class="spacer"></span>
+        <span>可编辑 · Ctrl+V 粘贴 · 可拖入文件</span>
+      </div>
+      <div class="pane-body" id="editIn"></div>
+    </section>
+    <section class="pane">
+      <div class="pane-bar" id="outBar">
+        <span class="ttl">输出</span>
+        <span class="meta" id="metaOut"></span>
+        <span class="spacer"></span>
+        <span id="outState">自动跟随规则 · 也可直接编辑</span>
+        <button class="mini" id="btnRegen" hidden title="丢弃手动修改，重新按规则生成">↻ 重新生成</button>
+      </div>
+      <div class="pane-body" id="editOut"></div>
+    </section>
+  </div>
+
+  <div class="statbar" id="statbar"></div>
+</div>
+
+<input type="file" id="filePick" hidden>
+
+<script src="vs/loader.js"></script>
+<script src="shared.js"></script>
+<script>
+TD.bootMonaco(function () {
+
+  if (location.protocol === 'file:') {
+    var hb = document.getElementById('hintBar');
+    hb.hidden = false;
+    hb.innerHTML = '<b>提示：</b>当前以 file:// 方式打开，工作线程可能无法启动。' +
+                   '建议改为双击同目录下的 <code>start.bat</code> 使用。';
+  }
+
+  var MONO = '"Cascadia Mono", Consolas, "Microsoft YaHei", monospace';
+
+  function editorOptions(readOnly) {
+    return {
+      language: 'plaintext',
+      readOnly: !!readOnly,
+      wordWrap: 'on',
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 13,
+      lineHeight: 20,
+      fontFamily: MONO,
+      renderWhitespace: 'selection',
+      tabSize: 2,
+      padding: { top: 8, bottom: 8 },
+      fixedOverflowWidgets: true,
+      scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 }
+    };
+  }
+
+  var edIn = monaco.editor.create(document.getElementById('editIn'), editorOptions(false));
+  // 输出区也可编辑：一旦手动改动就自动进入"冻结"状态，规则不再覆盖它（见下面的 freeze()）
+  var edOut = monaco.editor.create(document.getElementById('editOut'), editorOptions(false));
+
+  // ============================================================ 选项读取
+  function $(id) { return document.getElementById(id); }
+  function chk(id) { var e = $(id); return !!(e && e.checked); }
+  function val(id) { var e = $(id); return e ? e.value : ''; }
+
+  // 分隔符里允许写 \n \t \r
+  function unescapeSep(s) {
+    return String(s).replace(/\\r/g, '\r').replace(/\\n/g, '\n').replace(/\\t/g, '\t');
+  }
+
+  function readOptions() {
+    var struct = '';
+    var radios = document.querySelectorAll('input[name="struct"]');
+    for (var i = 0; i < radios.length; i++) { if (radios[i].checked) { struct = radios[i].value; } }
+    return {
+      crlf: chk('r-eol'),
+      reMode: val('r-reMode'),
+      re: val('r-re'),
+      reTo: val('r-reTo'),
+      reI: chk('r-reI'),
+      invisible: chk('r-invisible'),
+      trim: chk('r-trim'),
+      spaces: chk('r-spaces'),
+      tabs: chk('r-tabs'),
+      tabN: Math.max(1, Math.min(16, parseInt(val('r-tabN'), 10) || 4)),
+      empty: chk('r-empty'),
+      dedupe: chk('r-dedupe'),
+      sort: chk('r-sort'),
+      sortMode: val('r-sortMode') || 'asc',
+      reverse: chk('r-reverse'),
+      num: chk('r-num'),
+      unnum: chk('r-unnum'),
+      prefix: val('r-prefix'),
+      suffix: val('r-suffix'),
+      struct: struct,
+      joinSep: unescapeSep(val('r-joinSep')),
+      splitSep: unescapeSep(val('r-splitSep')),
+      caseMode: val('r-case'),
+      naming: val('r-naming')
+    };
+  }
+
+  // ============================================================ 变换实现
+
+  // 正则编译：语法错误时置 reBad（输入框标红），但绝不打断其它规则
+  var reBad = false;
+  function buildRe(pattern, flags) {
+    if (!pattern) { reBad = false; return null; }
+    try {
+      var r = new RegExp(pattern, flags);
+      reBad = false;
+      return r;
+    } catch (e) {
+      reBad = true;
+      return null;
+    }
+  }
+
+  function sortLines(lines, mode) {
+    var a = lines.slice();
+    switch (mode) {
+      case 'desc':    a.sort(function (x, y) { return x < y ? 1 : x > y ? -1 : 0; }); break;
+      case 'lenAsc':  a.sort(function (x, y) { return x.length - y.length; }); break;
+      case 'lenDesc': a.sort(function (x, y) { return y.length - x.length; }); break;
+      case 'numAsc':  a.sort(function (x, y) { return (parseFloat(x) || 0) - (parseFloat(y) || 0); }); break;
+      case 'numDesc': a.sort(function (x, y) { return (parseFloat(y) || 0) - (parseFloat(x) || 0); }); break;
+      default:        a.sort(function (x, y) { return x < y ? -1 : x > y ? 1 : 0; });
+    }
+    return a;
+  }
+
+  function splitWords(s) {
+    return s
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      .split(/[\s_\-.\/\\,;:|]+/)
+      .filter(function (w) { return w.length > 0; });
+  }
+  function cap(w) { return w.charAt(0).toUpperCase() + w.slice(1); }
+
+  function applyNaming(line, style) {
+    if (!line.trim()) { return line; }
+    var words = splitWords(line);
+    if (!words.length) { return line; }
+    var lo = words.map(function (w) { return w.toLowerCase(); });
+    switch (style) {
+      case 'camel':  return lo[0] + lo.slice(1).map(cap).join('');
+      case 'pascal': return lo.map(cap).join('');
+      case 'snake':  return lo.join('_');
+      case 'kebab':  return lo.join('-');
+      case 'const':  return lo.join('_').toUpperCase();
+      case 'dot':    return lo.join('.');
+      default:       return line;
+    }
+  }
+
+  function applyCase(text, mode) {
+    switch (mode) {
+      case 'upper': return text.toUpperCase();
+      case 'lower': return text.toLowerCase();
+      case 'swap':  return text.replace(/[a-zA-Z]/g, function (c) {
+        return c === c.toLowerCase() ? c.toUpperCase() : c.toLowerCase();
+      });
+      case 'title': return text.replace(/[A-Za-z]+/g, function (w) {
+        return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+      });
+      default: return text;
+    }
+  }
+
+  // 规则按固定顺序应用：换行/不可见字符 → 行内空白 → 行集合 → 结构 → 字母
+  function transform(text, o) {
+    if (!text) { return ''; }
+    o = o || readOptions();
+    var t = text;
+
+    if (o.invisible) { t = t.replace(/^\uFEFF/, '').replace(/[\u200B-\u200D\u2060\uFEFF]/g, ''); }
+
+    // 关键：CRLF / CR / LF 都必须当成换行拆掉。
+    // 只按 \n 拆的话，CRLF 输入的行尾会残留一个 \r，
+    // 拼成「前缀 + 行 + 后缀」之后那个 \r 就变成了看不见的换行（此坑已踩过一次）。
+    var lines = t.replace(/\r\n?/g, '\n').split('\n');
+
+    // ---- 正则规则：优先级最高，在拆行后立刻生效 ----
+    //   extract / group 在整段文本上取匹配（可跨行）；keep / drop 逐行筛选。
+    //   提取出来的每一项都会成为新的"行"，所以后面的 trim / 去重 / 排序 / 合并 都作用在它上面。
+    if (o.reMode === 'extract' || o.reMode === 'group') {
+      var reX = buildRe(o.re, 'g' + (o.reI ? 'i' : ''));
+      if (reX) {
+        var got = [];
+        var mm;
+        while ((mm = reX.exec(t)) !== null) {
+          got.push((o.reMode === 'group' && mm[1] !== undefined) ? mm[1] : mm[0]);
+          if (mm[0] === '') { reX.lastIndex++; }   // 防零宽匹配死循环
+        }
+        lines = got;
+      }
+    } else if (o.reMode === 'keep' || o.reMode === 'drop') {
+      var reF = buildRe(o.re, o.reI ? 'i' : '');
+      if (reF) {
+        lines = lines.filter(function (l) {
+          var hit = reF.test(l);
+          return o.reMode === 'keep' ? hit : !hit;
+        });
+      }
+    }
+
+    if (o.trim)   { lines = lines.map(function (l) { return l.replace(/^[\s\u3000]+|[\s\u3000]+$/g, ''); }); }
+    if (o.spaces) { lines = lines.map(function (l) { return l.replace(/[ \t\u3000]{2,}/g, ' '); }); }
+    if (o.tabs) {
+      var pad = new Array(o.tabN + 1).join(' ');
+      lines = lines.map(function (l) { return l.replace(/\t/g, pad); });
+    }
+    if (o.empty)  { lines = lines.filter(function (l) { return l.trim() !== ''; }); }
+
+    if (o.dedupe) {
+      var seen = Object.create(null);
+      lines = lines.filter(function (l) {
+        if (seen[l]) { return false; }
+        seen[l] = 1;
+        return true;
+      });
+    }
+
+    if (o.sort)    { lines = sortLines(lines, o.sortMode); }
+    if (o.reverse) { lines.reverse(); }
+
+    if (o.unnum) { lines = lines.map(function (l) { return l.replace(/^\s*\d+[.)\]:、\s]+/, ''); }); }
+    if (o.num)   { lines = lines.map(function (l, i) { return (i + 1) + '. ' + l; }); }
+
+    if (o.prefix) { lines = lines.map(function (l) { return o.prefix + l; }); }
+    if (o.suffix) { lines = lines.map(function (l) { return l + o.suffix; }); }
+
+    var NL = o.crlf ? '\r\n' : '\n';
+    if (o.struct === 'join') {
+      t = lines.join(o.joinSep);
+    } else {
+      t = lines.join(NL);
+      // 分隔符为空时 split('') 会把每个字符拆成一行，必须挡掉
+      if (o.struct === 'split' && o.splitSep !== '') { t = t.split(o.splitSep).join(NL); }
+    }
+
+    if (o.caseMode) { t = applyCase(t, o.caseMode); }
+    if (o.naming)   { t = t.split('\n').map(function (l) { return applyNaming(l, o.naming); }).join('\n'); }
+
+    // 替换放在最后：作用于整理完的最终文本
+    if (o.reMode === 'replace') {
+      var reR = buildRe(o.re, 'g' + (o.reI ? 'i' : ''));
+      if (reR) { t = t.replace(reR, o.reTo); }
+    }
+
+    return t;
+  }
+
+  // ============================================================ 输出 / 统计
+  var metaIn = document.getElementById('metaIn');
+  var metaOut = document.getElementById('metaOut');
+  var statbar = document.getElementById('statbar');
+  var quickinfo = document.getElementById('quickinfo');
+
+  function countLines(s) { return s === '' ? 0 : s.split('\n').length; }
+
+  var frozen = false;         // 输出是否被手动改过；冻结后规则改动不再覆盖它
+  var programmatic = false;   // 区分"程序写入"与"用户手改"
+
+  function freeze(on) {
+    if (frozen === on) { return; }
+    frozen = on;
+    var bar = document.getElementById('outBar');
+    var st = document.getElementById('outState');
+    var btn = document.getElementById('btnRegen');
+    if (bar) { bar.classList.toggle('frozen', on); }
+    if (st) { st.textContent = on ? '已手动修改 · 规则不再覆盖' : '自动跟随规则 · 也可直接编辑'; }
+    if (btn) { btn.hidden = !on; }
+  }
+
+  function setOutput(text) {
+    if (edOut.getValue() === text) { return; }
+    var st = edOut.getScrollTop();       // 保住滚动位置，避免重算时视图跳回顶部
+    programmatic = true;                 // 标记：这次变化来自程序，不是用户手改
+    edOut.setValue(text);
+    programmatic = false;
+    edOut.setScrollTop(st);
+  }
+
+  function updateStat() {
+    var inText = edIn.getValue();
+    var outText = edOut.getValue();
+
+    var inLines = countLines(inText);
+    var outLines = countLines(outText);
+    var chars = outText.length;
+    var longest = 0;
+    var longestLine = '';
+    var uniqCount = 0;
+
+    if (outLines > 0) {
+      var arr = outText.split('\n');
+      var uniq = Object.create(null);
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].length > longest) { longest = arr[i].length; longestLine = arr[i]; }
+        if (!uniq[arr[i]]) { uniq[arr[i]] = 1; uniqCount++; }
+      }
+    }
+
+    metaIn.textContent = inLines ? (inLines + ' 行') : '';
+    metaOut.textContent = outLines ? (outLines + ' 行') : '';
+
+    var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); };
+
+    var parts = [];
+    if (inLines || outLines) {
+      parts.push('行数 <b>' + inLines + '</b> → <b>' + outLines + '</b>');
+      parts.push('去重后 <b>' + uniqCount + '</b>');
+      parts.push('字符 <b>' + fmt(chars) + '</b>');
+      parts.push('最长行 <b>' + longest + '</b>');
+      if (longestLine) {
+        parts.push('（最长行：' + TD.esc(longestLine.slice(0, 40)) + (longestLine.length > 40 ? '…' : '') + '）');
+      }
+    } else {
+      parts.push('粘贴或拖入文本后，这里会显示统计');
+    }
+    statbar.innerHTML = parts.join(' &nbsp;│&nbsp; ');
+
+    quickinfo.innerHTML = (inLines || outLines) ? ('<b>' + inLines + '</b> → <b>' + outLines + '</b> 行') : '';
+  }
+
+  var reInput = document.getElementById('r-re');
+  function syncReStyle() {
+    if (!reInput) { return; }
+    reInput.classList.toggle('invalid', reBad);
+    reInput.title = reBad ? '正则表达式无效，请检查语法' : '正则表达式';
+  }
+
+  var recomputeTimer = null;
+  function recompute(immediate) {
+    clearTimeout(recomputeTimer);
+    var run = function () {
+      var o = readOptions();
+      // 提前校验正则，这样即使处于"冻结"状态，输入框也能及时标红
+      if (o.re) { buildRe(o.re, 'g'); } else { reBad = false; }
+      syncReStyle();
+      if (!frozen) { setOutput(transform(edIn.getValue(), o)); }
+      updateStat();
+    };
+    if (immediate) { run(); } else { recomputeTimer = setTimeout(run, 200); }
+  }
+
+  // 在输出区手动编辑 → 冻结：从此规则改动不再覆盖这里的修改
+  edOut.onDidChangeModelContent(function () {
+    if (programmatic) { return; }
+    if (!frozen) { freeze(true); }
+    updateStat();
+  });
+
+  // 重新生成：丢弃手动修改，回到跟随规则
+  var btnRegen = document.getElementById('btnRegen');
+  if (btnRegen) {
+    btnRegen.onclick = function () {
+      freeze(false);
+      recompute(true);
+    };
+  }
+
+  // ============================================================ 事件绑定
+  // 输入编辑器改动 → 重算（防抖）
+  edIn.onDidChangeModelContent(function () { recompute(false); });
+
+  // 所有规则控件改动 → 重算（走防抖，避免大文本时连续输入卡顿）
+  Array.prototype.forEach.call(document.querySelectorAll('.rules input, .rules select'), function (el) {
+    el.addEventListener('change', function () { recompute(false); });
+    el.addEventListener('input', function () { recompute(false); });
+  });
+
+  // 勾选态高亮
+  Array.prototype.forEach.call(document.querySelectorAll('.rules input[type=checkbox]'), function (box) {
+    var lab = box.parentNode;
+    var sync = function () { lab.classList.toggle('on', box.checked); };
+    box.addEventListener('change', sync);
+    sync();
+  });
+
+  // 写回输入：固化结果并清空规则（否则会重复叠加，例如行号会加两遍）
+  function resetRules() {
+    Array.prototype.forEach.call(document.querySelectorAll('.rules input[type=checkbox]'), function (b) {
+      b.checked = false;
+      b.parentNode.classList.toggle('on', false);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.rules input[type=radio]'), function (r) {
+      r.checked = (r.value === '');
+    });
+    $('r-reMode').value = '';
+    $('r-re').value = '';
+    $('r-reTo').value = '';
+    $('r-sortMode').value = 'asc';
+    $('r-case').value = '';
+    $('r-naming').value = '';
+    $('r-prefix').value = '';
+    $('r-suffix').value = '';
+    $('r-tabN').value = '4';
+    $('r-joinSep').value = ' ';
+    $('r-splitSep').value = ',';
+  }
+
+  document.getElementById('btnApply').onclick = function () {
+    var out = edOut.getValue();
+    if (!out && !edIn.getValue()) { TD.toast('没有可写回的内容'); return; }
+    freeze(false);                 // 先解冻，否则下面的重算不会更新输出
+    edIn.setValue(out);
+    resetRules();
+    recompute(true);
+    TD.toast('已写回输入，规则已重置');
+  };
+
+  // 复制结果
+  document.getElementById('btnCopy').onclick = function () {
+    var text = edOut.getValue();
+    if (!text) { TD.toast('结果为空'); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { TD.toast('已复制 ' + text.length + ' 个字符'); },
+        function () { TD.toast('复制失败，请在输出区手动全选复制'); }
+      );
+    } else {
+      TD.toast('浏览器不支持自动复制，请在输出区手动全选复制');
+    }
+  };
+
+  // 下载
+  document.getElementById('btnDownload').onclick = function () {
+    var text = edOut.getValue();
+    if (!text) { TD.toast('结果为空'); return; }
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'text-result.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    TD.toast('已开始下载');
+  };
+
+  // 载入文件 / 清空
+  var filePick = document.getElementById('filePick');
+  filePick.onchange = function () {
+    TD.loadFileInto(edIn.getModel(), filePick.files[0], function () { recompute(true); });
+    filePick.value = '';
+  };
+  document.getElementById('btnFile').onclick = function () { filePick.click(); };
+  document.getElementById('btnClear').onclick = function () {
+    freeze(false);
+    edIn.setValue('');
+    recompute(true);
+    TD.toast('已清空输入（规则保留）');
+  };
+
+  // 拖入文件 → 进输入区
+  var paneIn = document.getElementById('paneIn');
+  ['dragenter', 'dragover'].forEach(function (t) {
+    paneIn.addEventListener(t, function (e) { e.preventDefault(); paneIn.classList.add('dragover'); });
+  });
+  paneIn.addEventListener('dragleave', function () { paneIn.classList.remove('dragover'); });
+  paneIn.addEventListener('drop', function (e) {
+    e.preventDefault();
+    paneIn.classList.remove('dragover');
+    var dt = e.dataTransfer;
+    if (!dt) { return; }
+    if (dt.files && dt.files.length) { TD.loadFileInto(edIn.getModel(), dt.files[0], function () { recompute(true); }); return; }
+    var text = dt.getData('text/plain');
+    if (text) { edIn.setValue(text); recompute(true); }
+  });
+
+  // 自动换行开关：关掉后长行改为横向滚动，就不会被"折行"误导成换行了
+  var optWrap = document.getElementById('optWrap');
+  var lWrap = document.getElementById('l-wrap');
+  function applyWrap(on) {
+    edIn.updateOptions({ wordWrap: on ? 'on' : 'off' });
+    edOut.updateOptions({ wordWrap: on ? 'on' : 'off' });
+    if (lWrap) { lWrap.classList.toggle('on', on); }
+  }
+  if (optWrap) { optWrap.onchange = function () { applyWrap(optWrap.checked); }; }
+  applyWrap(true);
+
+  edIn.focus();
+  updateStat();
+});
+</script>
+</body>
+</html>

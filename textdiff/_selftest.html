@@ -1,0 +1,40 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<title>selftest</title>
+<style>body{margin:0;font:12px/1.6 Consolas,monospace}iframe{width:1400px;height:860px;border:0}</style>
+<!--
+  诊断页（仅排查用，不影响正常使用）。
+  用法：打开 _selftest.html?page=diff-editable.html
+  它会用同源 iframe 加载目标页，读出关键状态后用 GET 打回来，
+  请求会落在服务端日志 server.log 里（搜索 /_report 即可看到）。
+-->
+<iframe id="f"></iframe>
+<script>
+(function () {
+  var m = location.search.match(/[?&]page=([^&]+)/);
+  var page = m ? decodeURIComponent(m[1]) : 'index.html';
+  var f = document.getElementById('f');
+  f.src = page;
+
+  setTimeout(function () {
+    var q = ['page=' + encodeURIComponent(page)];
+    try {
+      var d = f.contentDocument;
+      var boot = d.getElementById('boot');
+      var app = d.getElementById('app');
+      // 关键：看"计算后的 display"，只看 hidden 属性会得到假阳性
+      q.push('boot.display=' + (boot ? getComputedStyle(boot).display : 'na'));
+      q.push('boot.hidden=' + (boot ? !!boot.hidden : 'na'));
+      q.push('app.display=' + (app ? getComputedStyle(app).display : 'na'));
+      q.push('monaco=' + d.querySelectorAll('.monaco-editor').length);
+      q.push('diff=' + d.querySelectorAll('.monaco-diff-editor').length);
+      q.push('hint=' + d.querySelectorAll('.pane-hint').length);
+      q.push('bodyText=' + encodeURIComponent(d.body.innerText.replace(/\s+/g, ' ').trim().slice(0, 90)));
+    } catch (e) {
+      q.push('err=' + encodeURIComponent(String(e)));
+    }
+    fetch('/_report?' + q.join('&'));
+  }, 9000);
+})();
+</script>

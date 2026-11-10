@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>正则工作台 · 文本工具箱</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  html,body{overflow:hidden}
+
+  /* ---------- 正则配置区 ---------- */
+  .rules{
+    flex:0 0 auto;display:flex;flex-direction:column;gap:3px;
+    padding:6px 10px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+  }
+  .rgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px}
+  .rlabel{color:var(--text-faint);min-width:30px;text-align:right;flex:0 0 auto}
+  .rgroup .chk{color:var(--text-dim)}
+  .rgroup .chk.on{color:var(--accent)}
+  select{
+    font:inherit;font-size:12px;padding:2px 4px;border:1px solid var(--bar-border);
+    border-radius:5px;background:#fff;color:var(--text);cursor:pointer;
+  }
+  input.txt{
+    font:inherit;font-size:12px;padding:3px 8px;border:1px solid var(--bar-border);
+    border-radius:5px;color:var(--text);background:#fff;
+  }
+  input.txt.re{width:320px;font-family:Consolas,monospace}
+  input.txt.invalid{border-color:var(--del);background:#fff5f5}
+  .reerr{color:var(--del);font-size:12px}
+  .hint-inline{color:var(--text-faint);font-size:11px}
+
+  /* ---------- 左右两块 ---------- */
+  #panes{flex:1 1 auto;min-height:0;display:flex}
+  .pane{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;border-right:1px solid var(--bar-border)}
+  .pane:last-child{border-right:none}
+  .pane-bar{
+    display:flex;align-items:center;gap:6px;flex:0 0 auto;
+    padding:3px 8px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+    font-size:12px;color:var(--text-dim);
+  }
+  .pane-bar .ttl{font-weight:600;color:var(--text)}
+  .pane-bar .meta{font-variant-numeric:tabular-nums;color:var(--text-faint)}
+  .pane-body{flex:1 1 auto;min-height:0}
+  .pane.dragover::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:20;
+    border:2px dashed var(--accent);background:rgba(47,111,235,.05);
+  }
+  button.mini.tab{opacity:.62}
+  button.mini.tab.on{opacity:1;background:var(--accent-weak);border-color:#b6cdfb;color:var(--accent);font-weight:600}
+
+  /* 命中高亮 */
+  .re-hit{background:rgba(255,196,0,.42);border-radius:2px;box-shadow:inset 0 -1px 0 rgba(190,140,0,.55)}
+
+  /* ---------- 捕获组表格 ---------- */
+  #groupBox{overflow:auto;background:#fff}
+  .gwrap{padding:10px}
+  table.gt{border-collapse:collapse;font:12px/1.65 Consolas,"Microsoft YaHei",monospace;width:100%}
+  table.gt th,table.gt td{border:1px solid var(--bar-border);padding:3px 8px;text-align:left;vertical-align:top;word-break:break-all}
+  table.gt th{background:var(--bar-bg);position:sticky;top:0;font-weight:600;white-space:nowrap}
+  table.gt td.idx{color:var(--text-faint);text-align:right;width:48px;white-space:nowrap}
+  table.gt td.empty{color:var(--text-faint)}
+  .gnote{color:var(--text-faint);font-size:12px;padding:6px 2px}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="center">
+    <div class="loading">
+      <div class="spinner"></div>
+      正在加载编辑器内核…
+    </div>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="toolbar">
+    <a class="back" href="index.html" title="返回工具箱">← 工具箱</a>
+    <span class="brand">正则工作台</span>
+    <span class="ver" title="页面版本；如果看到的不是这个数字，说明浏览器用了缓存，请 Ctrl+Shift+R">v1</span>
+    <span class="sep"></span>
+    <button id="btnApply" title="把结果固化到输入区">↧ 写回输入</button>
+    <button id="btnCopy" title="复制结果">复制结果</button>
+    <button id="btnDownload" title="把结果存为 txt">下载</button>
+    <span class="sep"></span>
+    <label class="chk" id="l-wrap" title="关掉后长行不再折行，便于确认内容真实的行结构">
+      <input type="checkbox" id="optWrap" checked>自动换行
+    </label>
+    <span class="spacer"></span>
+    <span class="diffstat" id="stat"></span>
+  </div>
+
+  <div id="hintBar" class="hintbar" hidden></div>
+
+  <div class="rules">
+    <div class="rgroup">
+      <span class="rlabel">正则</span>
+      <input type="text" id="re" class="txt re" placeholder="如  \d{14}   或   &quot;RequirementID&quot;:&quot;(\d{14})&quot;">
+      <span class="hint-inline">替换为</span>
+      <input type="text" id="reTo" class="txt" style="width:180px" placeholder="（可用 $1 $2 引用捕获组）">
+      <span class="reerr" id="reErr"></span>
+    </div>
+    <div class="rgroup">
+      <span class="rlabel">规则</span>
+      <span class="hint-inline">模式</span>
+      <select id="mode">
+        <option value="extract">提取匹配（每项一行）</option>
+        <option value="groups">提取全部捕获组（制表符连接）</option>
+        <option value="replace">替换匹配</option>
+        <option value="keep">只保留匹配的行</option>
+        <option value="drop">剔除匹配的行</option>
+      </select>
+      <span class="hint-inline">范围</span>
+      <select id="scope" title="整段：^ $ 代表全文首尾、匹配可跨行；逐行：每行独立匹配、^ $ 代表行首行尾">
+        <option value="all">整段匹配</option>
+        <option value="line">逐行匹配</option>
+      </select>
+      <span class="hint-inline">标志</span>
+      <label class="chk" id="l-i"><input type="checkbox" id="fI">i 忽略大小写</label>
+      <label class="chk" id="l-m"><input type="checkbox" id="fM">m ^$ 按行</label>
+      <label class="chk" id="l-s"><input type="checkbox" id="fS">s . 含换行</label>
+    </div>
+  </div>
+
+  <div id="panes">
+    <section class="pane" id="paneIn">
+      <div class="pane-bar">
+        <span class="ttl">输入</span>
+        <span class="meta" id="metaIn"></span>
+        <span class="spacer"></span>
+        <span>可编辑 · 命中会高亮 · 可拖入文件</span>
+      </div>
+      <div class="pane-body" id="editIn"></div>
+    </section>
+    <section class="pane">
+      <div class="pane-bar">
+        <button class="mini tab on" data-tab="result">结果</button>
+        <button class="mini tab" data-tab="groups">捕获组</button>
+        <span class="meta" id="metaOut"></span>
+        <span class="spacer"></span>
+        <span id="outNote">结果由正则实时算出</span>
+      </div>
+      <div class="pane-body" id="editOut"></div>
+      <div class="pane-body" id="groupBox" hidden><div class="gwrap" id="groupTable"></div></div>
+    </section>
+  </div>
+</div>
+
+<input type="file" id="filePick" hidden>
+
+<script src="vs/loader.js"></script>
+<script src="shared.js"></script>
+<script>
+TD.bootMonaco(function () {
+
+  if (location.protocol === 'file:') {
+    var hb = document.getElementById('hintBar');
+    hb.hidden = false;
+    hb.innerHTML = '<b>提示：</b>当前以 file:// 方式打开，工作线程可能无法启动。' +
+                   '建议改为双击同目录下的 <code>start.bat</code> 使用。';
+  }
+
+  var MONO = '"Cascadia Mono", Consolas, "Microsoft YaHei", monospace';
+  var LF = monaco.editor.EndOfLinePreference.LF;
+
+  function editorOptions(readOnly) {
+    return {
+      language: 'plaintext',
+      readOnly: !!readOnly,
+      wordWrap: 'on',
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      fontSize: 13,
+      lineHeight: 20,
+      fontFamily: MONO,
+      renderWhitespace: 'selection',
+      tabSize: 2,
+      padding: { top: 8, bottom: 8 },
+      fixedOverflowWidgets: true,
+      scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10 }
+    };
+  }
+
+  var edIn = monaco.editor.create(document.getElementById('editIn'), editorOptions(false));
+  var edOut = monaco.editor.create(document.getElementById('editOut'), editorOptions(true));
+  // 统一用 LF，保证「字符偏移」与 model 内部一致（高亮定位依赖它）
+  edOut.getModel().setEOL(monaco.editor.EndOfLineSequence.LF);
+
+  var deco = edIn.createDecorationsCollection([]);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var reEl = $('re'), reToEl = $('reTo'), reErr = $('reErr');
+  var modeEl = $('mode'), scopeEl = $('scope');
+  var statEl = $('stat'), metaIn = $('metaIn'), metaOut = $('metaOut');
+  var groupTable = $('groupTable');
+
+  function opts() {
+    return {
+      mode: modeEl.value,
+      scope: scopeEl.value,
+      to: reToEl.value,
+      i: $('fI').checked,
+      m: $('fM').checked,
+      s: $('fS').checked
+    };
+  }
+  function flagsOf(o) {
+    return (o.i ? 'i' : '') + (o.m ? 'm' : '') + (o.s ? 's' : '');
+  }
+
+  // 收集命中（逐行时把行内偏移换算成全文偏移，好让高亮落到正确位置）
+  function collect(re, text, scope) {
+    var res = [];
+    var targets = (scope === 'line') ? text.split('\n') : [text];
+    var base = 0;
+    for (var i = 0; i < targets.length; i++) {
+      var src = targets[i];
+      re.lastIndex = 0;
+      var m;
+      while ((m = re.exec(src)) !== null) {
+        res.push({
+          index: base + m.index,
+          text: m[0],
+          groups: Array.prototype.slice.call(m, 1)
+        });
+        if (m[0] === '') { re.lastIndex++; }      // 防零宽匹配死循环
+        if (res.length >= 20000) { return res; }  // 保险上限
+      }
+      base += src.length + 1;
+    }
+    return res;
+  }
+
+  function highlight(matches, model) {
+    if (matches.length > 3000) { deco.set([]); return; }   // 太多就不画了，免得卡
+    deco.set(matches.map(function (h) {
+      var s = model.getPositionAt(h.index);
+      var e = model.getPositionAt(h.index + h.text.length);
+      return {
+        range: new monaco.Range(s.lineNumber, s.column, e.lineNumber, e.column),
+        options: { inlineClassName: 're-hit' }
+      };
+    }));
+  }
+
+  function renderResult(matches, text, o, re) {
+    switch (o.mode) {
+      case 'extract':
+        return matches.map(function (h) { return h.text; }).join('\n');
+      case 'groups':
+        return matches.map(function (h) {
+          if (!h.groups.length) { return h.text; }
+          return h.groups.map(function (g) { return g === undefined ? '' : g; }).join('\t');
+        }).join('\n');
+      case 'replace':
+        if (o.scope === 'line') {
+          return text.split('\n').map(function (l) { return l.replace(re, o.to); }).join('\n');
+        }
+        return text.replace(re, o.to);
+      case 'keep':
+      case 'drop':
+        return text.split('\n').filter(function (l) {
+          re.lastIndex = 0;
+          var hit = re.test(l);
+          return o.mode === 'keep' ? hit : !hit;
+        }).join('\n');
+      default:
+        return '';
+    }
+  }
+
+  function renderGroups(matches) {
+    if (!matches.length) {
+      groupTable.innerHTML = '<div class="gnote">没有命中。</div>';
+      return;
+    }
+    var maxG = 0;
+    for (var i = 0; i < matches.length; i++) {
+      if (matches[i].groups.length > maxG) { maxG = matches[i].groups.length; }
+    }
+    var shown = matches.slice(0, 500);
+    var html = '<table class="gt"><thead><tr><th>#</th><th>整体匹配</th>';
+    for (var g = 1; g <= maxG; g++) { html += '<th>$' + g + '</th>'; }
+    html += '</tr></thead><tbody>';
+    shown.forEach(function (h, idx) {
+      html += '<tr><td class="idx">' + (idx + 1) + '</td><td>' + TD.esc(h.text) + '</td>';
+      for (var k = 1; k <= maxG; k++) {
+        var v = h.groups[k - 1];
+        html += '<td>' + (v === undefined ? '<span class="empty">—</span>' : TD.esc(v)) + '</td>';
+      }
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    if (matches.length > shown.length) {
+      html += '<div class="gnote">仅显示前 ' + shown.length + ' 条，共 ' + matches.length + ' 条</div>';
+    }
+    if (maxG === 0) {
+      html += '<div class="gnote">该正则没有捕获组（没有括号）；「整体匹配」一列就是命中内容。</div>';
+    }
+    groupTable.innerHTML = html;
+  }
+
+  function analyze() {
+    var model = edIn.getModel();
+    var text = model.getValue(LF);          // 取 LF 版本，保证偏移与 model 内部一致
+    var pat = reEl.value;
+    var o = opts();
+
+    deco.set([]);
+    reErr.textContent = '';
+    reEl.classList.remove('invalid');
+
+    if (!pat) {
+      edOut.setValue(text);
+      groupTable.innerHTML = '<div class="gnote">还没有填写正则。</div>';
+      statEl.innerHTML = '';
+      metaIn.textContent = TD.lineCount(model) ? (TD.lineCount(model) + ' 行') : '';
+      metaOut.textContent = TD.lineCount(edOut.getModel()) ? (TD.lineCount(edOut.getModel()) + ' 行') : '';
+      return;
+    }
+
+    var re;
+    try {
+      re = new RegExp(pat, flagsOf(o) + 'g');
+    } catch (e) {
+      reEl.classList.add('invalid');
+      reErr.textContent = '正则无效：' + e.message;
+      edOut.setValue('');
+      groupTable.innerHTML = '<div class="gnote">正则语法有误，已停用。</div>';
+      statEl.innerHTML = '<span style="color:var(--del)">正则无效</span>';
+      return;
+    }
+
+    var matches = collect(re, text, o.scope);
+    highlight(matches, model);
+    edOut.setValue(renderResult(matches, text, o, re));
+    renderGroups(matches);
+
+    var maxG = 0;
+    for (var i = 0; i < matches.length; i++) {
+      if (matches[i].groups.length > maxG) { maxG = matches[i].groups.length; }
+    }
+    metaIn.textContent = TD.lineCount(model) ? (TD.lineCount(model) + ' 行') : '';
+    metaOut.textContent = TD.lineCount(edOut.getModel()) ? (TD.lineCount(edOut.getModel()) + ' 行') : '';
+    statEl.innerHTML = '命中 <b style="color:var(--accent)">' + matches.length + '</b> 处'
+      + ' │ 捕获组 <b>' + maxG + '</b> 个'
+      + (matches.length > 3000 ? ' │ 命中过多，已停止高亮' : '');
+  }
+
+  // ---------------- 事件 ----------------
+  var timer = null;
+  function schedule() { clearTimeout(timer); timer = setTimeout(analyze, 220); }
+
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.rules input, .rules select'),
+    function (el) {
+      el.addEventListener('input', schedule);
+      el.addEventListener('change', schedule);
+    }
+  );
+  edIn.onDidChangeModelContent(schedule);
+
+  // 勾选态高亮
+  Array.prototype.forEach.call(document.querySelectorAll('.rgroup input[type=checkbox]'), function (box) {
+    var lab = box.parentNode;
+    var sync = function () { if (lab) { lab.classList.toggle('on', box.checked); } };
+    box.addEventListener('change', sync);
+    sync();
+  });
+
+  // 结果 / 捕获组 切换
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (btn) {
+    btn.onclick = function () {
+      var t = btn.getAttribute('data-tab');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
+        b.classList.toggle('on', b === btn);
+      });
+      $('editOut').hidden = (t !== 'result');
+      $('groupBox').hidden = (t !== 'groups');
+      if (t === 'result') { edOut.layout(); }
+    };
+  });
+
+  // 自动换行
+  var optWrap = $('optWrap'), lWrap = $('l-wrap');
+  function applyWrap(on) {
+    edIn.updateOptions({ wordWrap: on ? 'on' : 'off' });
+    edOut.updateOptions({ wordWrap: on ? 'on' : 'off' });
+    if (lWrap) { lWrap.classList.toggle('on', on); }
+  }
+  if (optWrap) { optWrap.onchange = function () { applyWrap(optWrap.checked); }; }
+  applyWrap(true);
+
+  // 写回输入 / 复制 / 下载 / 载入 / 清空
+  $('btnApply').onclick = function () {
+    var out = edOut.getValue();
+    if (!out && !edIn.getValue()) { TD.toast('没有可写回的内容'); return; }
+    edIn.setValue(out);
+    analyze();
+    TD.toast('已写回输入');
+  };
+
+  $('btnCopy').onclick = function () {
+    var text = edOut.getValue();
+    if (!text) { TD.toast('结果为空'); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { TD.toast('已复制 ' + text.length + ' 个字符'); },
+        function () { TD.toast('复制失败，请手动全选复制'); }
+      );
+    } else {
+      TD.toast('浏览器不支持自动复制，请手动全选复制');
+    }
+  };
+
+  $('btnDownload').onclick = function () {
+    var text = edOut.getValue();
+    if (!text) { TD.toast('结果为空'); return; }
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'regex-result.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    TD.toast('已开始下载');
+  };
+
+  var filePick = $('filePick');
+  filePick.onchange = function () {
+    TD.loadFileInto(edIn.getModel(), filePick.files[0], function () { analyze(); });
+    filePick.value = '';
+  };
+
+  // 拖入文件 → 进输入区
+  var paneIn = $('paneIn');
+  ['dragenter', 'dragover'].forEach(function (t) {
+    paneIn.addEventListener(t, function (e) { e.preventDefault(); paneIn.classList.add('dragover'); });
+  });
+  paneIn.addEventListener('dragleave', function () { paneIn.classList.remove('dragover'); });
+  paneIn.addEventListener('drop', function (e) {
+    e.preventDefault();
+    paneIn.classList.remove('dragover');
+    var dt = e.dataTransfer;
+    if (!dt) { return; }
+    if (dt.files && dt.files.length) { TD.loadFileInto(edIn.getModel(), dt.files[0], function () { analyze(); }); return; }
+    var text = dt.getData('text/plain');
+    if (text) { edIn.setValue(text); analyze(); }
+  });
+
+  // 给个例子，打开就能看懂怎么用
+  reEl.value = '\\d{14}';
+  edIn.setValue(
+    '【重复收费检查】{"serviceSonItem":"营销效果分析标准服务","RequirementID":"20230113000010"}\n' +
+    '{"serviceSonItem":"营销效果分析标准服务","RequirementID":"20230302000037"}\n' +
+    '{"serviceSonItem":"营销效果分析标准服务","RequirementID":"20230911000053"}'
+  );
+  analyze();
+  reEl.focus();
+  reEl.select();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+/* ==========================================================================
+   文本工具箱 · 公共样式
+   各工具页 <link rel="stylesheet" href="shared.css"> 引入，页面特有布局写在页面自己的 <style> 里。
+   ========================================================================== */
+
+:root{
+  --bar-bg:#f7f8fa;
+  --bar-border:#e4e6eb;
+  --text:#1f2328;
+  --text-dim:#5c6470;
+  --text-faint:#9aa3af;
+  --accent:#2f6feb;
+  --accent-weak:#e8f0fe;
+  --add:#1a7f37;
+  --del:#cf222e;
+}
+*{box-sizing:border-box}
+/* 必须显式声明！浏览器对 [hidden] 的默认 display:none 属于用户代理样式，
+   优先级低于页面里 #boot / #app 上的 display:flex，不加这行 `el.hidden = true` 完全不生效
+   （这个坑真的踩过一次：页面永远停在"正在加载…"）。 */
+[hidden]{display:none !important}
+html,body{height:100%;margin:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+  font-size:13px;color:var(--text);background:#fff;
+}
+
+/* ---------- 应用外壳 ---------- */
+#app{display:flex;flex-direction:column;height:100%}
+
+/* ---------- 工具栏 ---------- */
+.toolbar{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:6px 10px;background:var(--bar-bg);border-bottom:1px solid var(--bar-border);
+  flex:0 0 auto;
+}
+.back{
+  margin-right:2px;font-size:12px;color:var(--text-dim);text-decoration:none;white-space:nowrap;
+  padding:3px 8px;border:1px solid var(--bar-border);border-radius:6px;background:#fff;line-height:1.6;
+}
+.back:hover{color:var(--accent);border-color:#b6cdfb;background:var(--accent-weak)}
+.brand{font-weight:600;margin-right:4px;white-space:nowrap}
+.ver{
+  font-size:11px;color:var(--text-faint);background:#eceff3;border-radius:4px;
+  padding:1px 5px;margin-right:4px;vertical-align:1px;
+}
+button{
+  font:inherit;padding:3px 10px;border:1px solid var(--bar-border);background:#fff;
+  border-radius:6px;color:var(--text);cursor:pointer;white-space:nowrap;line-height:1.6;
+}
+button:hover{background:#f0f2f5;border-color:#d0d4da}
+button:active{transform:translateY(1px)}
+button.on{background:var(--accent-weak);border-color:#b6cdfb;color:var(--accent);font-weight:600}
+button.mini{padding:1px 7px;font-size:12px;border-radius:5px}
+.sep{width:1px;height:18px;background:var(--bar-border);margin:0 2px}
+.spacer{flex:1 1 auto}
+label.chk{display:inline-flex;align-items:center;gap:4px;color:var(--text-dim);cursor:pointer;user-select:none;white-space:nowrap}
+label.chk input{margin:0;cursor:pointer}
+label.chk.on{color:var(--accent)}
+
+/* ---------- 差异统计 ---------- */
+.diffstat{font-variant-numeric:tabular-nums;color:var(--text-faint);white-space:nowrap;font-size:12px}
+.diffstat .add{color:var(--add);font-weight:600}
+.diffstat .del{color:var(--del);font-weight:600}
+.diffstat .same{color:var(--add);font-weight:600}
+
+/* ---------- 顶部提示条 ---------- */
+.hintbar{
+  flex:0 0 auto;padding:5px 10px;font-size:12px;line-height:1.7;
+  background:#fff8e5;border-bottom:1px solid #f0e0b0;color:#7a5c00;
+}
+.hintbar b{font-weight:600}
+.hintbar code{background:#fff;border:1px solid #e8d9a8;border-radius:3px;padding:0 4px;font-family:Consolas,monospace}
+
+/* ---------- 两侧空状态提示（挂在 Monaco 编辑器 DOM 上，会跟着分隔条走）---------- */
+.pane-hint{
+  position:absolute;inset:0;display:none;flex-direction:column;align-items:center;
+  justify-content:center;color:var(--text-faint);text-align:center;line-height:2.1;
+  pointer-events:none;z-index:10;font-size:13px;
+}
+.pane-hint b{color:var(--text-dim);font-weight:600;margin-bottom:2px}
+
+/* ---------- 启动 / 报错 ---------- */
+#boot{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-dim);padding:24px;overflow:auto}
+#boot .center{max-width:720px}
+#boot .loading{text-align:center;line-height:2}
+#boot .spinner{
+  width:22px;height:22px;margin:0 auto 10px;border-radius:50%;
+  border:2px solid #dfe3e8;border-top-color:var(--accent);animation:td-spin .8s linear infinite;
+}
+@keyframes td-spin{to{transform:rotate(360deg)}}
+#boot .err h3{margin:0 0 8px;color:var(--del);font-size:15px}
+#boot .err{line-height:1.9}
+#boot ul{margin:6px 0 0;padding-left:20px}
+#boot code,#boot pre{background:#f2f3f5;border-radius:4px;font-family:Consolas,monospace}
+#boot code{padding:1px 4px}
+#boot pre{padding:8px 10px;overflow:auto;max-height:260px;font-size:12px;line-height:1.6;border:1px solid #e4e6eb;white-space:pre-wrap}
+#boot .diag{margin-top:10px;font-size:12px;color:var(--text-faint)}
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed;left:50%;bottom:28px;transform:translate(-50%,12px);
+  background:#24292f;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;
+  max-width:70vw;box-shadow:0 6px 20px rgba(0,0,0,.18);z-index:99;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}

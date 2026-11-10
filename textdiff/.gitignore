@@ -1,0 +1,8 @@
+# 第三方资源不入库（约 12MB）。重新获取方式（务必装到全新目录，不要原地覆盖）：
+#   npm i monaco-editor@0.45.0
+#   robocopy node_modules\monaco-editor\min\vs vs /E
+node_modules/
+package-lock.json
+vs/
+server.log
+client.log
